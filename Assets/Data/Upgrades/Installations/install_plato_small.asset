@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: install_plato_small
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: install_plato_small
+  displayName: "Plat\xF3 Peque\xF1o"
+  description: "Tu primer plat\xF3 profesional. Permite producci\xF3n simult\xE1nea
+    b\xE1sica."
+  category: 2
+  maxLevel: 1
+  baseCost: 500
+  costGrowthRate: 1.5
+  unlockStudioLevel: 0
+  effects:
+  - type: 5
+    valuePerLevel: 1
+  iconKey: plato_small
+  badgeColorHex: '#7F8C8D'

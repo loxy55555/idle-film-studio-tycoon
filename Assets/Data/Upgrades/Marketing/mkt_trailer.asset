@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: mkt_trailer
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: mkt_trailer
+  displayName: Departamento de Trailers
+  description: Trailers virales que generan hype antes del estreno.
+  category: 3
+  maxLevel: 8
+  baseCost: 20000
+  costGrowthRate: 1.46
+  unlockStudioLevel: 12
+  effects:
+  - type: 4
+    valuePerLevel: 0.25
+  - type: 7
+    valuePerLevel: 0.15
+  iconKey: trailer
+  badgeColorHex: '#1ABC9C'

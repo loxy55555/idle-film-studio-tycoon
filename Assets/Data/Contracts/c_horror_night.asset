@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365403d1101b33342aa8adedb1d627e4, type: 3}
+  m_Name: c_horror_night
+  m_EditorClassIdentifier: Assembly-CSharp::ContractConfig
+  id: c_horror_night
+  contractTitle: Noche de Terror
+  description: "Produce 3 pel\xEDculas de terror."
+  goalType: 1
+  targetGenre: 2
+  goalAmount: 3
+  timeLimit: 0
+  rewardMoney: 2500
+  rewardDiamonds: 0
+  rewardReputation: 8
+  rewardStudioXP: 35
+  unlockStudioLevel: 5
+  unlockCityLevel: 2
+  difficultyBand: 2
+  repeatable: 1

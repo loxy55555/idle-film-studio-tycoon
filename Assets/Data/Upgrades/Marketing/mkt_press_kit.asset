@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: mkt_press_kit
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: mkt_press_kit
+  displayName: "Campa\xF1a de Prensa"
+  description: "Cr\xEDticas y rese\xF1as que multiplican la visibilidad."
+  category: 3
+  maxLevel: 10
+  baseCost: 5000
+  costGrowthRate: 1.45
+  unlockStudioLevel: 8
+  effects:
+  - type: 4
+    valuePerLevel: 0.15
+  - type: 3
+    valuePerLevel: 200
+  iconKey: press
+  badgeColorHex: '#2980B9'

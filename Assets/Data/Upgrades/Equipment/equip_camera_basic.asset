@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: equip_camera_basic
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: equip_camera_basic
+  displayName: "C\xE1mara B\xE1sica"
+  description: "Una c\xE1mara de entrada nivel. Mejora la calidad visual de tus producciones."
+  category: 0
+  maxLevel: 10
+  baseCost: 150
+  costGrowthRate: 1.4
+  unlockStudioLevel: 0
+  effects:
+  - type: 0
+    valuePerLevel: 0.08
+  iconKey: cam_basic
+  badgeColorHex: '#3498DB'

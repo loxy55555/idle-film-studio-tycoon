@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Drama_La_Mujer_del_Puerto
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: La Mujer del Puerto
+  genre: 1
+  tagline: "Esperar al amor durante treinta a\xF1os."
+  cost: 13500
+  baseReward: 24300
+  baseRep: 105
+  duration: 235
+  quality: 3.5
+  unlockStudioLevel: 15
+  unlockCityLevel: 3
+  unlockReputation: 0
+  posterColorHex: '#2980B9'
+  genreIconKey: 
+  catalogTier: 5
+  contentKind: 3
+  sagaId: 

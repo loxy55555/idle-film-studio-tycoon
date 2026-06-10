@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: "Action_La_\xDAltima_Frontera"
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: "La \xDAltima Frontera"
+  genre: 0
+  tagline: "M\xE1s all\xE1 de toda frontera conocida."
+  cost: 50000
+  baseReward: 90000
+  baseRep: 340
+  duration: 560
+  quality: 4
+  unlockStudioLevel: 20
+  unlockCityLevel: 3
+  unlockReputation: 0
+  posterColorHex: '#C0392B'
+  genreIconKey: 
+  catalogTier: 5
+  contentKind: 3
+  sagaId: 

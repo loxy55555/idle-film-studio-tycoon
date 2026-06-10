@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Comedy_La_Gran_Comedia_Nacional
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: La Gran Comedia Nacional
+  genre: 3
+  tagline: "Una s\xE1tira del pa\xEDs que todos reconocer\xE1n."
+  cost: 136000
+  baseReward: 231200
+  baseRep: 818
+  duration: 1048
+  quality: 4.5
+  unlockStudioLevel: 23
+  unlockCityLevel: 3
+  unlockReputation: 0
+  posterColorHex: '#D35400'
+  genreIconKey: 
+  catalogTier: 5
+  contentKind: 3
+  sagaId: 

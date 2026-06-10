@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Horror_Pesadilla_Recurrente
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Pesadilla Recurrente
+  genre: 2
+  tagline: "El sue\xF1o no es el refugio que cre\xEDas."
+  cost: 270
+  baseReward: 460
+  baseRep: 3.3
+  duration: 21
+  quality: 1.5
+  unlockStudioLevel: 5
+  unlockCityLevel: 1
+  unlockReputation: 0
+  posterColorHex: '#7D3C98'
+  genreIconKey: 
+  catalogTier: 2
+  contentKind: 0
+  sagaId: 

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "claude-code": {
+      "command": "C:\\Users\\elise\\.local\\bin\\claude.exe",
+      "args": ["mcp", "serve"]
+    }
+  }
+}

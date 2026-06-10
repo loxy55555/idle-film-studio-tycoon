@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: "SciFi_El_\xDAltimo_Android"
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: "El \xDAltimo Android"
+  genre: 5
+  tagline: "Una m\xE1quina que aprendi\xF3 a sentir."
+  cost: 280
+  baseReward: 476
+  baseRep: 3.45
+  duration: 22
+  quality: 1.5
+  unlockStudioLevel: 5
+  unlockCityLevel: 1
+  unlockReputation: 0
+  posterColorHex: '#1ABC9C'
+  genreIconKey: 
+  catalogTier: 2
+  contentKind: 0
+  sagaId: 

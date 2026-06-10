@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365403d1101b33342aa8adedb1d627e4, type: 3}
+  m_Name: c_speed_run
+  m_EditorClassIdentifier: Assembly-CSharp::ContractConfig
+  id: c_speed_run
+  contractTitle: "Producci\xF3n Express"
+  description: "Produce una pel\xEDcula en menos de 10 segundos."
+  goalType: 7
+  targetGenre: 0
+  goalAmount: 1
+  timeLimit: 0
+  rewardMoney: 3500
+  rewardDiamonds: 2
+  rewardReputation: 10
+  rewardStudioXP: 50
+  unlockStudioLevel: 5
+  unlockCityLevel: 2
+  difficultyBand: 2
+  repeatable: 1

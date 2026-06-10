@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: SciFi_Mundo_Espejo
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Mundo Espejo
+  genre: 5
+  tagline: "Descubrir que tu mundo es una simulaci\xF3n."
+  cost: 8820
+  baseReward: 14994
+  baseRep: 73
+  duration: 178
+  quality: 3
+  unlockStudioLevel: 14
+  unlockCityLevel: 3
+  unlockReputation: 0
+  posterColorHex: '#1ABC9C'
+  genreIconKey: 
+  catalogTier: 5
+  contentKind: 3
+  sagaId: 

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Drama_La_Gran_Ilusion
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: "La Gran Ilusi\xF3n"
+  genre: 1
+  tagline: "Un sue\xF1o demasiado grande para ser real."
+  cost: 23000
+  baseReward: 41400
+  baseRep: 170
+  duration: 340
+  quality: 3.8
+  unlockStudioLevel: 18
+  unlockCityLevel: 3
+  unlockReputation: 0
+  posterColorHex: '#3498DB'
+  genreIconKey: 
+  catalogTier: 5
+  contentKind: 3
+  sagaId: 

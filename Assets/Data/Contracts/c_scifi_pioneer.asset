@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365403d1101b33342aa8adedb1d627e4, type: 3}
+  m_Name: c_scifi_pioneer
+  m_EditorClassIdentifier: Assembly-CSharp::ContractConfig
+  id: c_scifi_pioneer
+  contractTitle: "Pionero de la Ciencia Ficci\xF3n"
+  description: "Produce 3 pel\xEDculas de Sci-Fi."
+  goalType: 1
+  targetGenre: 5
+  goalAmount: 3
+  timeLimit: 0
+  rewardMoney: 7000
+  rewardDiamonds: 4
+  rewardReputation: 18
+  rewardStudioXP: 75
+  unlockStudioLevel: 10
+  unlockCityLevel: 4
+  difficultyBand: 4
+  repeatable: 1

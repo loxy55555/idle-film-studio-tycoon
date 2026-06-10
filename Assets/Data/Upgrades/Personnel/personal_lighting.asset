@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: personal_lighting
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: personal_lighting
+  displayName: "Gaffer (Iluminaci\xF3n T\xE9cnica)"
+  description: "La iluminaci\xF3n acelera y mejora el rodaje."
+  category: 1
+  maxLevel: 25
+  baseCost: 60
+  costGrowthRate: 1.48
+  unlockStudioLevel: 2
+  effects:
+  - type: 1
+    valuePerLevel: 0.1
+  iconKey: 
+  badgeColorHex: '#E67E22'

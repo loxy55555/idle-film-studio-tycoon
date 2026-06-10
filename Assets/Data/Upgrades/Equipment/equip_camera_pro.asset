@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02dd573efb10f3c40a60d7136ac696b1, type: 3}
+  m_Name: equip_camera_pro
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
+  id: equip_camera_pro
+  displayName: "C\xE1mara Profesional"
+  description: "\xD3ptica superior para detalles cinematogr\xE1ficos."
+  category: 0
+  maxLevel: 10
+  baseCost: 800
+  costGrowthRate: 1.42
+  unlockStudioLevel: 4
+  effects:
+  - type: 0
+    valuePerLevel: 0.15
+  - type: 4
+    valuePerLevel: 0.05
+  iconKey: cam_pro
+  badgeColorHex: '#2980B9'

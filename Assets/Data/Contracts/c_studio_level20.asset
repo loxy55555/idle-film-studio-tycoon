@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365403d1101b33342aa8adedb1d627e4, type: 3}
+  m_Name: c_studio_level20
+  m_EditorClassIdentifier: Assembly-CSharp::ContractConfig
+  id: c_studio_level20
+  contractTitle: Estudio Internacional
+  description: Llega al nivel 20.
+  goalType: 6
+  targetGenre: 0
+  goalAmount: 20
+  timeLimit: 0
+  rewardMoney: 80000
+  rewardDiamonds: 15
+  rewardReputation: 30
+  rewardStudioXP: 180
+  unlockStudioLevel: 19
+  unlockCityLevel: 6
+  difficultyBand: 6
+  repeatable: 0
