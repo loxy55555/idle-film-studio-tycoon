@@ -125,12 +125,12 @@ public static class StudioUIBuilder
         Stretch(switcher);
 
         // ── 5 Main Tab Panels (definitive HUD order) ─────────────────────────
+        var estudioPanel = BuildEstudioPanel(switcher);
+        FillParent(estudioPanel);
+
         var produccionPanel = BuildPeliculasMainPanel(switcher);
         produccionPanel.name = "ProduccionPanel";
         FillParent(produccionPanel);
-
-        var estudioPanel = BuildEstudioPanel(switcher);
-        FillParent(estudioPanel);
 
         var premiosPanel = BuildPremiosPanel(switcher);
         FillParent(premiosPanel);
@@ -151,8 +151,8 @@ public static class StudioUIBuilder
         var mainHubUI = switcher.gameObject.AddComponent<StudioHubUI>();
         var mainHubSO = new SerializedObject(mainHubUI);
         mainHubSO.FindProperty("tabPanels").arraySize = 5;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(0).objectReferenceValue = produccionPanel.gameObject;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(1).objectReferenceValue = estudioPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(0).objectReferenceValue = estudioPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(1).objectReferenceValue = produccionPanel.gameObject;
         mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(2).objectReferenceValue = premiosPanel.gameObject;
         mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(3).objectReferenceValue = coleccionPanel.gameObject;
         mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(4).objectReferenceValue = menuPanel.gameObject;
@@ -161,6 +161,9 @@ public static class StudioUIBuilder
             mainHubSO.FindProperty("tabButtons").GetArrayElementAtIndex(i).objectReferenceValue = navButtons[i];
         mainHubSO.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(mainHubUI);
+
+        // ── Bake definitive HUD structure into scene (Scene View = Play Mode) ─
+        HudDefinitiveSceneBaker.Bake(switcher, mainHubUI);
 
         // ── Wire GameHub systems ───────────────────────────────────────────────
         WireGameSystems(root);
@@ -287,23 +290,19 @@ public static class StudioUIBuilder
 
         // Studio Header — 4 tiles, fixed 76px (no runtime resize)
         var hdr = BuildStudioHeader(panel);
-        LE(hdr, 76);
+        LE(hdr, (int)HudLayoutConstants.StudioHeaderHeight);
         hdr.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
 
-        // Studio Scene — flex to push dept bar ~mid-screen
-        var scene = MakePanel(panel, "StudioScene", SCENE_BG);
-        LE(scene, 380, 1f);
-        var sceneLE = scene.gameObject.GetComponent<LayoutElement>();
-        sceneLE.minHeight = 300f;
-        sceneLE.flexibleWidth = 0f;
-        var sceneBorder = MakePanel(scene, "SceneBorder", new Color(0.08f, 0.10f, 0.18f));
-        Stretch(sceneBorder);
-        var sceneLabel = MakeText(scene, "ScenePlaceholder",
-            "[ ESCENA DEL ESTUDIO ]\nPlató · Equipo · Crew", 24, TEXT_DIM, TextAlignmentOptions.Center);
-        sceneLabel.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        Stretch(sceneLabel.GetComponent<RectTransform>());
+        // Studio Visual Stage — reserved for future art/animation (~45% screen)
+        var stage = MakePanel(panel, "StudioVisualStage", new Color(0.06f, 0.07f, 0.12f));
+        var stageLE = stage.gameObject.GetComponent<LayoutElement>() ?? stage.gameObject.AddComponent<LayoutElement>();
+        stageLE.flexibleHeight = HudLayoutConstants.StudioVisualShare;
+        stageLE.minHeight = HudLayoutConstants.StudioVisualMinHeight;
+        stageLE.flexibleWidth = 0f;
+        stageLE.preferredHeight = 0f;
+        stage.gameObject.AddComponent<StudioVisualStage>();
 
-        // Department mini-bar at ~mid-screen
+        // Department mini-bar (moved to sub-tab at runtime)
         var deptBar = BuildDeptMiniBar(panel);
         LE(deptBar, 180);
         deptBar.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;

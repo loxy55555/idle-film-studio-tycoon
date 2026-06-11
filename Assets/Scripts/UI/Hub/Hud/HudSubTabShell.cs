@@ -15,22 +15,12 @@ public static class HudSubTabShell
         public StudioHubUI navigation;
     }
 
-    public static BuildResult Create(RectTransform host, string idPrefix, string[] tabLabels, float tabBarHeight = 36f)
+    public static BuildResult Create(RectTransform host, string idPrefix, string[] tabLabels, float tabBarHeight = -1f)
     {
-        var result = new BuildResult { host = host, panels = new GameObject[tabLabels.Length], buttons = new Button[tabLabels.Length] };
+        if (tabBarHeight <= 0f)
+            tabBarHeight = HudLayoutConstants.SubTabBarHeight;
 
-        var tabBar = new GameObject(idPrefix + "SubTabBar", typeof(RectTransform), typeof(HorizontalLayoutGroup));
-        tabBar.transform.SetParent(host, false);
-        tabBar.transform.SetAsFirstSibling();
-        var tabBarLE = tabBar.AddComponent<LayoutElement>();
-        tabBarLE.preferredHeight = tabBarHeight;
-        tabBarLE.minHeight = tabBarHeight;
-        var tabHLG = tabBar.GetComponent<HorizontalLayoutGroup>();
-        tabHLG.spacing = 6;
-        tabHLG.childControlWidth = tabHLG.childControlHeight = true;
-        tabHLG.childForceExpandWidth = true;
-        tabHLG.childForceExpandHeight = true;
-        result.tabBar = tabBar.GetComponent<RectTransform>();
+        var result = new BuildResult { host = host, panels = new GameObject[tabLabels.Length], buttons = new Button[tabLabels.Length] };
 
         var subContent = new GameObject(idPrefix + "SubContent", typeof(RectTransform));
         subContent.transform.SetParent(host, false);
@@ -47,15 +37,33 @@ public static class HudSubTabShell
             Stretch(panel.GetComponent<RectTransform>());
             panel.SetActive(i == 0);
             result.panels[i] = panel;
-
-            result.buttons[i] = MakeSubTabButton(tabBar.transform, tabLabels[i]);
         }
+
+        var tabBar = new GameObject(idPrefix + "SubTabBar", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+        tabBar.transform.SetParent(host, false);
+        tabBar.transform.SetSiblingIndex(subContent.transform.GetSiblingIndex());
+
+        var tabBarLE = tabBar.AddComponent<LayoutElement>();
+        tabBarLE.preferredHeight = tabBarHeight;
+        tabBarLE.minHeight = tabBarHeight;
+        tabBarLE.flexibleHeight = 0f;
+        var tabHLG = tabBar.GetComponent<HorizontalLayoutGroup>();
+        tabHLG.spacing = 4;
+        tabHLG.padding = new RectOffset(4, 4, 2, 2);
+        tabHLG.childControlWidth = tabHLG.childControlHeight = true;
+        tabHLG.childForceExpandWidth = true;
+        tabHLG.childForceExpandHeight = true;
+        result.tabBar = tabBar.GetComponent<RectTransform>();
+
+        for (int i = 0; i < tabLabels.Length; i++)
+            result.buttons[i] = MakeSubTabButton(tabBar.transform, tabLabels[i]);
 
         var hub = host.gameObject.GetComponent<StudioHubUI>() ?? host.gameObject.AddComponent<StudioHubUI>();
         hub.tabPanels = result.panels;
         hub.tabButtons = result.buttons;
         result.navigation = hub;
 
+        HudLayoutPass.CompactSubTabBar(result.tabBar);
         return result;
     }
 
@@ -75,9 +83,9 @@ public static class HudSubTabShell
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        var hdr = RuntimeTmpText.Create(section.transform, title, 16, Color.white, FontStyles.Bold,
+        var hdr = RuntimeTmpText.Create(section.transform, title, 14, Color.white, FontStyles.Bold,
             TextAlignmentOptions.MidlineLeft, "SectionHeader");
-        hdr.gameObject.AddComponent<LayoutElement>().preferredHeight = 22;
+        hdr.gameObject.AddComponent<LayoutElement>().preferredHeight = HudLayoutConstants.SectionHeaderHeight;
 
         return section.GetComponent<RectTransform>();
     }
@@ -89,7 +97,7 @@ public static class HudSubTabShell
         go.GetComponent<Image>().color = new Color(0.09f, 0.09f, 0.18f);
         go.AddComponent<UIButtonScale>();
 
-        var tmp = RuntimeTmpText.Create(go.transform, label, 13, new Color(0.55f, 0.55f, 0.70f), FontStyles.Bold,
+        var tmp = RuntimeTmpText.Create(go.transform, label, 11, new Color(0.55f, 0.55f, 0.70f), FontStyles.Bold,
             TextAlignmentOptions.Center);
         Stretch(tmp.rectTransform);
         return go.GetComponent<Button>();

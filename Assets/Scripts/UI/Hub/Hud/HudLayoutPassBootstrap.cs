@@ -1,14 +1,13 @@
 using UnityEngine;
 
 /// <summary>
-/// Legacy runtime migration for scenes not yet baked (Phase 7A.3).
-/// Baked scenes skip this entirely — structure lives in the serialized scene.
+/// Legacy layout pass for unmigrated scenes. Baked scenes already contain final layout.
 /// </summary>
-[DefaultExecutionOrder(-160)]
-public static class DefinitiveHudBootstrap
+[DefaultExecutionOrder(-158)]
+public static class HudLayoutPassBootstrap
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void Install()
+    static void Run()
     {
         if (!Application.isPlaying) return;
 
@@ -18,15 +17,17 @@ public static class DefinitiveHudBootstrap
         if (HudBakedSceneRules.IsBaked(switcher))
             return;
 
-        HudDefinitiveStructureBuilder.Apply(switcher, showProductionTab: true);
+        var shell = switcher.GetComponent<DefinitiveHudShell>();
+        var mainNav = shell?.mainNavigation ?? switcher.GetComponent<StudioHubUI>();
+        HudLayoutPass.Apply(switcher, mainNav);
     }
 
     static RectTransform FindContentSwitcher()
     {
         foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
-            if (t.name == "ContentSwitcher")
-                return t as RectTransform;
+            if (t.name != "ContentSwitcher") continue;
+            return t as RectTransform;
         }
 
         return null;

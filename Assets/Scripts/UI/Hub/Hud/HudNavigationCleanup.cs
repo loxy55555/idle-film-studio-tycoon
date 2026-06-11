@@ -85,19 +85,19 @@ public static class HudNavigationCleanup
 
         if (nav.childCount < 5) return;
 
-        var production = FindTab(nav, "PEL", "PRODU");
+        var production = FindTab(nav, "PRO", "PRODU");
         var studio     = FindTab(nav, "ESTUDIO", "EST");
         var awards     = FindTab(nav, "PREMIO", "PRE", "OSC");
-        var collection = FindTab(nav, "COLECC", "COL", "CIUDAD", "CIU");
+        var collection = FindTab(nav, "COLECC", "COL");
         var menu       = FindTab(nav, "MENÚ", "MENU", "TIENDA", "TDA");
 
-        if (production == null) production = nav.GetChild(Mathf.Min(1, nav.childCount - 1));
         if (studio == null)     studio     = nav.GetChild(0);
-        if (awards == null)     awards     = nav.GetChild(Mathf.Min(3, nav.childCount - 1));
-        if (collection == null) collection = nav.GetChild(Mathf.Min(2, nav.childCount - 1));
+        if (production == null) production = nav.GetChild(Mathf.Min(1, nav.childCount - 1));
+        if (awards == null)     awards     = nav.GetChild(Mathf.Min(2, nav.childCount - 1));
+        if (collection == null) collection = nav.GetChild(Mathf.Min(3, nav.childCount - 1));
         if (menu == null)       menu       = nav.GetChild(Mathf.Min(4, nav.childCount - 1));
 
-        var ordered = new[] { production, studio, awards, collection, menu };
+        var ordered = new[] { studio, production, awards, collection, menu };
         for (int i = 0; i < ordered.Length; i++)
         {
             if (ordered[i] == null) continue;
