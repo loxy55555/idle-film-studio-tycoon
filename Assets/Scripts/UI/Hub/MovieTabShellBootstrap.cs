@@ -2,13 +2,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Adds PRODUCIR | COLECCIÓN sub-tabs inside PeliculasPanel at runtime.</summary>
+/// <summary>Adds PRODUCIR | COLECCIÓN sub-tabs inside PeliculasPanel at runtime (legacy shell only).</summary>
 public static class MovieTabShellBootstrap
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Install()
     {
         if (!Application.isPlaying) return;
+        if (Object.FindAnyObjectByType<DefinitiveHudShell>() != null) return;
+
+        foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (t.name != "ContentSwitcher") continue;
+            HudNavigationCleanup.StripLegacyProductionSubTabs(t as RectTransform);
+            break;
+        }
 
         foreach (var panel in Object.FindObjectsByType<MovieTabUI>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {

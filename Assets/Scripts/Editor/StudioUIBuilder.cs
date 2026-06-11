@@ -16,10 +16,9 @@ using TMPro;
 ///   MainContent     flex    — content switcher + bottom nav
 ///     EstudioPanel  flex    — studio scene · dept mini-bar · production · lower tabs
 ///     PeliculasPanel        — placeholder (movie history)
-///     CiudadPanel           — placeholder (city map)
-///     PremiosPanel          — existing prestige/oscar UI
-///     TiendaPanel           — placeholder (monetization)
-///   BottomNav        100 h  — Estudio | Películas | Ciudad | Premios | Tienda
+///     ColeccionPanel        — collection / sagas / legendaries
+///     MenuPanel             — settings menu
+///   BottomNav        100 h  — Producción | Estudio | Premios | Colección | Menú
 /// </summary>
 public static class StudioUIBuilder
 {
@@ -125,41 +124,38 @@ public static class StudioUIBuilder
         var switcher = MakePanel(mainContent, "ContentSwitcher", BG_DEEP);
         Stretch(switcher);
 
-        // ── 5 Main Tab Panels ─────────────────────────────────────────────────
-        var estudioPanel   = BuildEstudioPanel(switcher);
+        // ── 5 Main Tab Panels (definitive HUD order) ─────────────────────────
+        var produccionPanel = BuildPeliculasMainPanel(switcher);
+        produccionPanel.name = "ProduccionPanel";
+        FillParent(produccionPanel);
+
+        var estudioPanel = BuildEstudioPanel(switcher);
         FillParent(estudioPanel);
-
-        var peliculasPanel = BuildPeliculasMainPanel(switcher);
-        FillParent(peliculasPanel);
-
-        var ciudadPanel = BuildPlaceholderPanel(switcher, "CiudadPanel",
-            "CIUDAD", "Mapa de progresión\nGaraje → Hollywood\n(próximamente)", ACCENT_GOLD);
-        FillParent(ciudadPanel);
 
         var premiosPanel = BuildPremiosPanel(switcher);
         FillParent(premiosPanel);
 
-        var tiendaPanel = BuildPlaceholderPanel(switcher, "TiendaPanel",
-            "TIENDA", "Diamantes & compras\n(arquitectura preparada)", ACCENT_PURPLE);
-        FillParent(tiendaPanel);
+        var coleccionPanel = BuildColeccionPanel(switcher);
+        FillParent(coleccionPanel);
 
-        // Start: Estudio active, others hidden
-        peliculasPanel.gameObject.SetActive(false);
-        ciudadPanel.gameObject.SetActive(false);
+        var menuPanel = BuildMenuPanel(switcher);
+        FillParent(menuPanel);
+
+        // Start: Producción active
+        estudioPanel.gameObject.SetActive(false);
         premiosPanel.gameObject.SetActive(false);
-        tiendaPanel.gameObject.SetActive(false);
+        coleccionPanel.gameObject.SetActive(false);
+        menuPanel.gameObject.SetActive(false);
 
         // ── Wire StudioHubUI on ContentSwitcher (5-tab main nav) ─────────────
-        // This is the only serializable way: StudioHubUI.Start() re-registers
-        // onClick listeners each play; tabPanels/tabButtons are serialized fields.
         var mainHubUI = switcher.gameObject.AddComponent<StudioHubUI>();
         var mainHubSO = new SerializedObject(mainHubUI);
         mainHubSO.FindProperty("tabPanels").arraySize = 5;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(0).objectReferenceValue = estudioPanel.gameObject;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(1).objectReferenceValue = peliculasPanel.gameObject;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(2).objectReferenceValue = ciudadPanel.gameObject;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(3).objectReferenceValue = premiosPanel.gameObject;
-        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(4).objectReferenceValue = tiendaPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(0).objectReferenceValue = produccionPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(1).objectReferenceValue = estudioPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(2).objectReferenceValue = premiosPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(3).objectReferenceValue = coleccionPanel.gameObject;
+        mainHubSO.FindProperty("tabPanels").GetArrayElementAtIndex(4).objectReferenceValue = menuPanel.gameObject;
         mainHubSO.FindProperty("tabButtons").arraySize = 5;
         for (int i = 0; i < 5; i++)
             mainHubSO.FindProperty("tabButtons").GetArrayElementAtIndex(i).objectReferenceValue = navButtons[i];
@@ -222,8 +218,8 @@ public static class StudioUIBuilder
         sbHLG.childForceExpandWidth = sbHLG.childForceExpandHeight = true;
 
         MakeStat(statsBlock, "RepText",    "REP 0",  ACCENT_BLUE);
-        MakeStat(statsBlock, "OscarsText", "OSC 0",  ACCENT_GOLD);
-        MakeStat(statsBlock, "LevelText",  "Nv.1",   ACCENT_GREEN);
+        MakeStat(statsBlock, "CityText",   "C1",     ACCENT_GOLD);
+        MakeStat(statsBlock, "OscarsText", "★ 0",    ACCENT_GOLD);
 
         // Spacer pushes menu to the far right
         var spacer = MakePanel(bar, "TopBarSpacer", Color.clear);
@@ -253,8 +249,8 @@ public static class StudioUIBuilder
         so.FindProperty("moneyText")     .objectReferenceValue = moneyTxt;
         so.FindProperty("incomeText")    .objectReferenceValue = incomeTxt;
         so.FindProperty("reputationText").objectReferenceValue = FindTextInBlock(statsBlock, "RepText");
+        so.FindProperty("cityText")      .objectReferenceValue = FindTextInBlock(statsBlock, "CityText");
         so.FindProperty("oscarsText")    .objectReferenceValue = FindTextInBlock(statsBlock, "OscarsText");
-        so.FindProperty("levelText")     .objectReferenceValue = FindTextInBlock(statsBlock, "LevelText");
         so.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(topBarUI);
 
@@ -504,7 +500,7 @@ public static class StudioUIBuilder
         EditorUtility.SetDirty(miniUI);
     }
 
-    /// <summary>Full-screen movie tab: 3 choices + completed history.</summary>
+    /// <summary>Production tab: active slots widget, offers, new production action.</summary>
     static RectTransform BuildPeliculasMainPanel(RectTransform parent)
     {
         var panel = MakePanel(parent, "PeliculasPanel", BG_DEEP);
@@ -516,11 +512,13 @@ public static class StudioUIBuilder
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        var hdr = MakeText(panel, "Hdr", "PRODUCIR PELÍCULA", 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
+        var hdr = MakeText(panel, "Hdr", "PRODUCCIÓN", 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
         hdr.fontStyle = FontStyles.Bold;
         LE(hdr.GetComponent<RectTransform>(), 22);
 
-        // Compact square slots (orange zone in mockup)
+        var prodWidget = BuildProductionWidget(panel);
+        LE(prodWidget, 220);
+
         var slotsRow = MakePanel(panel, "MovieSlotsRow", BG_SECTION);
         LE(slotsRow, 200);
         slotsRow.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
@@ -534,38 +532,33 @@ public static class StudioUIBuilder
         slotLayout.tileCount = 3;
         slotLayout.maxTileSize = 192f;
 
-        var histHdr = MakeText(panel, "HistHdr", "HISTORIAL", 18, TEXT_SEC, TextAlignmentOptions.MidlineLeft);
-        histHdr.fontStyle = FontStyles.Bold;
-        LE(histHdr.GetComponent<RectTransform>(), 22);
-
-        var emptyLbl = MakeText(panel, "HistEmpty", "Sin películas completadas aún.", 15, TEXT_DIM, TextAlignmentOptions.Center);
-        LE(emptyLbl.GetComponent<RectTransform>(), 22);
-
-        var histScroll = MakeScrollRect(panel, "HistScroll", Color.clear);
-        LE(histScroll.GetComponent<RectTransform>(), 0, 1f);
-        histScroll.horizontal = false;
-        histScroll.vertical = true;
-        var histContent = histScroll.content;
-        var histVLG = histContent.gameObject.AddComponent<VerticalLayoutGroup>();
-        histVLG.padding = new RectOffset(4, 4, 4, 4);
-        histVLG.spacing = 6;
-        histVLG.childControlWidth = histVLG.childControlHeight = true;
-        histVLG.childForceExpandWidth = true;
-        histVLG.childForceExpandHeight = false;
-        histContent.gameObject.AddComponent<ContentSizeFitter>().verticalFit =
-            ContentSizeFitter.FitMode.PreferredSize;
+        var newBtnGo = new GameObject("NewProductionBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+        Undo.RegisterCreatedObjectUndo(newBtnGo, "NewProductionBtn");
+        newBtnGo.transform.SetParent(panel, false);
+        newBtnGo.GetComponent<Image>().color = ACCENT_GREEN;
+        SetRounded(newBtnGo.GetComponent<RectTransform>(), 8);
+        var newBtnLE = newBtnGo.AddComponent<LayoutElement>();
+        newBtnLE.preferredHeight = 44f;
+        newBtnGo.AddComponent<UIButtonScale>();
+        var newBtnLabel = MakeText(newBtnGo.GetComponent<RectTransform>(), "Lbl", "NUEVA PRODUCCIÓN", 16, TEXT_PRI, TextAlignmentOptions.Center);
+        newBtnLabel.fontStyle = FontStyles.Bold;
+        Stretch(newBtnLabel.GetComponent<RectTransform>());
+        var newBtn = newBtnGo.GetComponent<Button>();
 
         var tabUI = panel.gameObject.AddComponent<MovieTabUI>();
         var movies = LoadAllMovieConfigs();
         var tabSO = new SerializedObject(tabUI);
         tabSO.FindProperty("slotsRow").objectReferenceValue = slotsRow;
-        tabSO.FindProperty("historyContent").objectReferenceValue = histContent;
-        tabSO.FindProperty("historyEmptyLabel").objectReferenceValue = emptyLbl;
+        tabSO.FindProperty("historyContent").objectReferenceValue = null;
+        tabSO.FindProperty("historyEmptyLabel").objectReferenceValue = null;
         tabSO.FindProperty("allMovies").arraySize = movies.Length;
         for (int i = 0; i < movies.Length; i++)
             tabSO.FindProperty("allMovies").GetArrayElementAtIndex(i).objectReferenceValue = movies[i];
         tabSO.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(tabUI);
+
+        var shell = panel.gameObject.AddComponent<ProductionHudShell>();
+        shell.Configure(prodWidget, tabUI, newBtn);
 
         Debug.Log($"[Builder] MovieTabUI: {movies.Length} movies assigned.");
         return panel;
@@ -679,13 +672,24 @@ public static class StudioUIBuilder
         rColVLG.childForceExpandWidth = true;
         rColVLG.childForceExpandHeight = false;
 
-        var prodWidget = BuildProductionWidget(contratosCol);
-        LE(prodWidget, 128);
-
         var contratosPanel = BuildContratosPanel(contratosCol);
         LE(contratosPanel, 0, 1f);
 
         return row;
+    }
+
+    static RectTransform BuildColeccionPanel(RectTransform parent)
+    {
+        var panel = MakePanel(parent, "ColeccionPanel", BG_DEEP);
+        panel.gameObject.AddComponent<CollectionHudShell>();
+        return panel;
+    }
+
+    static RectTransform BuildMenuPanel(RectTransform parent)
+    {
+        var panel = MakePanel(parent, "MenuPanel", BG_DEEP);
+        panel.gameObject.AddComponent<MenuHudShell>();
+        return panel;
     }
 
     static MovieConfig[] LoadAllMovieConfigs()
@@ -1306,9 +1310,9 @@ public static class StudioUIBuilder
         hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
         hlg.childControlWidth     = hlg.childControlHeight     = true;
 
-        var labels = new[] { "ESTUDIO", "PELÍCULAS", "CIUDAD", "PREMIOS", "TIENDA" };
-        var icons  = new[] { "EST", "PEL", "CIU", "OSC", "TDA" };
-        var colors = new[] { ACCENT_GREEN, ACCENT_BLUE, ACCENT_GOLD, ACCENT_GOLD, ACCENT_PURPLE };
+        var labels = MainHudTabLabels.BottomNav;
+        var icons  = MainHudTabLabels.BottomIcons;
+        var colors = new[] { ACCENT_BLUE, ACCENT_GREEN, ACCENT_GOLD, ACCENT_GOLD, ACCENT_PURPLE };
 
         for (int i = 0; i < 5; i++)
         {

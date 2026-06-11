@@ -13,6 +13,7 @@ public class TopBarUI : MonoBehaviour
     [Header("Stats Row")]
     [SerializeField] private TextMeshProUGUI reputationText;
     [SerializeField] private TextMeshProUGUI oscarsText;
+    [SerializeField] private TextMeshProUGUI cityText;
     [SerializeField] private TextMeshProUGUI levelText;
 
     [SerializeField] private TextMeshProUGUI qualityText;
@@ -24,6 +25,7 @@ public class TopBarUI : MonoBehaviour
 
     private AnimatedMoneyText _animatedMoney;
     private DiamondWallet     _diamonds;
+    private CitySystem        _city;
     private DepartmentSystem  D  => GameHub.Instance?.departments;
     private PrestigeSystem    P  => GameHub.Instance?.prestige;
     private StudioLevelSystem SL => GameHub.Instance?.studioLevel;
@@ -32,6 +34,7 @@ public class TopBarUI : MonoBehaviour
 
     private bool _subscribed;
     private bool _diamondsSubscribed;
+    private bool _citySubscribed;
 
     private void Awake()
     {
@@ -57,14 +60,18 @@ public class TopBarUI : MonoBehaviour
             _diamondRT = diamondsText.GetComponent<RectTransform>();
 
         GameHub.OnGameReady += BindDiamonds;
+        GameHub.OnGameReady += BindCity;
         if (GameHub.Instance != null) BindDiamonds();
+        if (GameHub.Instance != null) BindCity();
         TrySubscribe();
     }
 
     private void OnDestroy()
     {
         GameHub.OnGameReady -= BindDiamonds;
+        GameHub.OnGameReady -= BindCity;
         UnbindDiamonds();
+        UnbindCity();
         if (studio == null) return;
         studio.OnMoneyChanged      -= UpdateMoney;
         studio.OnIncomeRateChanged -= UpdateIncome;
@@ -88,8 +95,11 @@ public class TopBarUI : MonoBehaviour
             reputationText = FindStatText(statsBlock, "RepText");
         if (oscarsText == null)
             oscarsText = FindStatText(statsBlock, "OscarsText");
+        if (cityText == null)
+            cityText = FindStatText(statsBlock, "CityText");
         if (levelText == null)
             levelText = FindStatText(statsBlock, "LevelText");
+        EnsureCityText(statsBlock as RectTransform);
     }
 
     void AutoWireDiamondsText()
@@ -163,6 +173,38 @@ public class TopBarUI : MonoBehaviour
         return null;
     }
 
+    void BindCity()
+    {
+        UnbindCity();
+        _city = GameHub.Instance?.city;
+        if (_city == null) return;
+        _city.OnCityLevelChanged += UpdateCity;
+        _citySubscribed = true;
+        UpdateCity(_city.Level);
+    }
+
+    void UnbindCity()
+    {
+        if (_city == null || !_citySubscribed) return;
+        _city.OnCityLevelChanged -= UpdateCity;
+        _citySubscribed = false;
+    }
+
+    void EnsureCityText(RectTransform statsBlock)
+    {
+        if (cityText != null || statsBlock == null) return;
+
+        cityText = RuntimeTmpText.Create(statsBlock, "C1", 18, new Color(0.95f, 0.77f, 0.06f), FontStyles.Bold,
+            TextAlignmentOptions.Center, "CityText");
+        cityText.gameObject.AddComponent<LayoutElement>().preferredWidth = 96f;
+    }
+
+    void UpdateCity(int level)
+    {
+        if (cityText == null) return;
+        cityText.text = "C" + level;
+    }
+
     void BindDiamonds()
     {
         UnbindDiamonds();
@@ -201,6 +243,7 @@ public class TopBarUI : MonoBehaviour
     {
         if (!_subscribed) TrySubscribe();
         if (!_diamondsSubscribed && GameHub.Instance?.diamonds != null) BindDiamonds();
+        if (!_citySubscribed && GameHub.Instance?.city != null) BindCity();
         UpdateStats();
     }
 
@@ -245,9 +288,12 @@ public class TopBarUI : MonoBehaviour
         }
 
         if (P != null && oscarsText != null)
-            oscarsText.text = "OSC " + P.oscars;
+            oscarsText.text = "★ " + P.oscars;
 
-        if (SL != null && levelText != null)
+        if (_city != null && cityText != null)
+            UpdateCity(_city.Level);
+
+        if (SL != null && levelText != null && levelText.gameObject.activeInHierarchy)
             levelText.text = "Nv." + SL.Level;
     }
 

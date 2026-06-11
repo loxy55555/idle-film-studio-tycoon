@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-155)]
 public class CityPanelUI : MonoBehaviour
 {
     static readonly Color BG_DEEP   = new Color(0.04f, 0.04f, 0.10f);
@@ -32,6 +33,16 @@ public class CityPanelUI : MonoBehaviour
     static void Bootstrap()
     {
         if (!Application.isPlaying) return;
+
+        foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (t.name != "PremiosCiudadSection") continue;
+            if (t.GetComponent<CityPanelUI>() != null) return;
+            t.gameObject.AddComponent<CityPanelUI>();
+            return;
+        }
+
+        if (Object.FindAnyObjectByType<DefinitiveHudShell>() != null) return;
 
         foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
