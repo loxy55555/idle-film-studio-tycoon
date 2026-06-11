@@ -25,6 +25,9 @@ MonoBehaviour:
   unlockReputation: 0
   posterColorHex: '#27AE60'
   genreIconKey: 
+  posterSprite: {fileID: 0}
   catalogTier: 3
-  contentKind: 0
-  sagaId: 
+  contentKind: 4
+  sagaId: neon_drift
+  sagaEntryIndex: 2
+  sagaDisplayName: Neon Drift

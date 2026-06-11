@@ -137,16 +137,18 @@ public class CitySystem : MonoBehaviour
 
     static void AppendContentBandLines(List<string> lines, int cityLevel)
     {
+        int movieTarget = ContentScaleDatabase.GetMovieTargetForCity(cityLevel);
+        lines.Add($"Catálogo ~{movieTarget} / {ContentScaleDatabase.TargetMovieCount} películas");
         lines.Add(cityLevel switch
         {
-            1 => "Películas Tier 1-2",
+            1 => "Tier 1–2 · películas básicas",
             2 => "Secuelas y remakes",
-            3 => "Películas épicas",
+            3 => "Producción profesional",
             4 => "Películas avanzadas",
-            5 => "Mejoras de arte",
-            6 => "Mejoras épicas",
-            7 => "Mejoras legendarias",
-            8 => "Catálogo completo",
+            5 => "Campaña y distribución",
+            6 => "VFX y premios",
+            7 => "Streaming y universos",
+            8 => "Imperio completo",
             _ => "",
         });
     }

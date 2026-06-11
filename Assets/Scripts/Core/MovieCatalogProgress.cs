@@ -23,6 +23,7 @@ public static class MovieCatalogProgress
         IReadOnlyCollection<string> completedKeys)
     {
         var completed = completedKeys != null ? new HashSet<string>(completedKeys) : new HashSet<string>();
+        int cityLevel = GameHub.Instance?.city?.Level ?? 1;
         int total = 0;
         int remaining = 0;
 
@@ -32,10 +33,10 @@ public static class MovieCatalogProgress
             {
                 if (m == null) continue;
                 if (m.unlockStudioLevel > studioLevel) continue;
-                if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsMovieUnlocked(m)) continue;
+                if (!CityProgressionRules.IsMovieUnlocked(m, cityLevel)) continue;
                 if (m.unlockReputation > 0 && reputation < m.unlockReputation) continue;
                 total++;
-                if (!completed.Contains(m.name))
+                if (SagaProgressionRules.IsOfferEligible(m, studioLevel, reputation, cityLevel, completed, allMovies))
                     remaining++;
             }
         }

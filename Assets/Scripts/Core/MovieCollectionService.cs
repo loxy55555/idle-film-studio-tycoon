@@ -23,7 +23,9 @@ public static class MovieCollectionService
     {
         public int discoveredTotal;
         public int catalogTotal;
+        public int targetCatalogTotal;
         public float completionPercent;
+        public float targetCompletionPercent;
         public GenreProgress[] genres;
         public SagaProgress[] sagas;
         public int sagasCompleted;
@@ -102,6 +104,8 @@ public static class MovieCollectionService
         snapshot.completionPercent = snapshot.catalogTotal > 0
             ? snapshot.discoveredTotal * 100f / snapshot.catalogTotal
             : 0f;
+        snapshot.targetCatalogTotal = ContentScaleDatabase.TargetMovieCount;
+        snapshot.targetCompletionPercent = snapshot.discoveredTotal * 100f / ContentScaleDatabase.TargetMovieCount;
 
         for (int i = 0; i < AllGenres.Length; i++)
         {
@@ -128,27 +132,43 @@ public static class MovieCollectionService
         }
 
         var sagaList = new List<SagaProgress>();
+        var processedSagas = new HashSet<string>();
+
         foreach (var pair in sagaMap)
         {
             int done = 0;
-            string display = pair.Key;
             foreach (var m in pair.Value)
             {
                 if (completed.Contains(m.name)) done++;
-                if (!string.IsNullOrEmpty(m.movieName) && display == pair.Key)
-                    display = FormatSagaName(pair.Key, m);
             }
 
+            int expected = SagaDatabase.GetExpectedSize(pair.Key, pair.Value.Count);
             sagaList.Add(new SagaProgress
             {
                 sagaId = pair.Key,
-                displayName = display,
+                displayName = SagaDatabase.GetDisplayName(pair.Key, pair.Value.Count > 0 ? pair.Value[0] : null),
                 discovered = done,
-                total = pair.Value.Count,
+                total = expected,
             });
 
-            if (done >= pair.Value.Count && pair.Value.Count > 0)
+            if (done >= expected && expected > 0)
                 snapshot.sagasCompleted++;
+
+            processedSagas.Add(pair.Key);
+        }
+
+        foreach (var def in SagaDatabase.All)
+        {
+            if (def == null || string.IsNullOrEmpty(def.sagaId)) continue;
+            if (processedSagas.Contains(def.sagaId)) continue;
+
+            sagaList.Add(new SagaProgress
+            {
+                sagaId = def.sagaId,
+                displayName = def.displayName,
+                discovered = 0,
+                total = def.ExpectedSize,
+            });
         }
 
         sagaList.Sort((a, b) => string.Compare(a.displayName, b.displayName, System.StringComparison.Ordinal));

@@ -299,7 +299,7 @@ public class MovieTabUI : MonoBehaviour
     }
 }
 
-/// <summary>Picks Rápida / Estándar / Épica offers; excludes permanently completed movies.</summary>
+/// <summary>Three uniform-random offers from the eligible pool. Rejected offers are not tracked.</summary>
 public static class MovieOfferPicker
 {
     public const int OfferSlotCount = 3;
@@ -311,72 +311,21 @@ public static class MovieOfferPicker
         IReadOnlyCollection<string> completedMovieKeys)
     {
         var result = new List<MovieConfig>(OfferSlotCount);
-        if (allMovies == null || allMovies.Length == 0) return result;
+        var eligible = MovieOfferPoolRules.BuildEligiblePool(
+            allMovies, studioLevel, reputation, completedMovieKeys);
+        if (eligible.Count == 0) return result;
 
-        var completed = completedMovieKeys != null
-            ? new HashSet<string>(completedMovieKeys)
-            : new HashSet<string>();
-
-        var unlocked = new List<MovieConfig>();
-        foreach (var m in allMovies)
+        var shuffled = new List<MovieConfig>(eligible);
+        for (int i = shuffled.Count - 1; i > 0; i--)
         {
-            if (m == null) continue;
-            if (completed.Contains(m.name)) continue;
-            if (m.unlockStudioLevel > studioLevel) continue;
-            if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsMovieUnlocked(m)) continue;
-            if (m.unlockReputation > 0 && reputation < m.unlockReputation) continue;
-            unlocked.Add(m);
+            int j = Random.Range(0, i + 1);
+            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
         }
 
-        if (unlocked.Count == 0) return result;
-        unlocked.Sort((a, b) => a.cost.CompareTo(b.cost));
-
-        int count = unlocked.Count;
-        int tierSize = Mathf.Max(1, count / 3);
-        int fastEnd  = Mathf.Min(tierSize, count);
-        int stdStart = fastEnd;
-        int stdEnd   = Mathf.Min(stdStart + tierSize, count);
-
-        var picked = new HashSet<MovieConfig>();
-        TryAdd(result, picked, PickRandom(Slice(unlocked, 0, fastEnd)));
-        TryAdd(result, picked, PickRandom(Slice(unlocked, stdStart, stdEnd)));
-        TryAdd(result, picked, PickRandom(Slice(unlocked, stdEnd, count)));
-
-        while (result.Count < OfferSlotCount && result.Count < unlocked.Count)
-        {
-            var fallback = PickRandom(unlocked, picked);
-            if (fallback == null) break;
-            TryAdd(result, picked, fallback);
-        }
+        int pickCount = Mathf.Min(OfferSlotCount, shuffled.Count);
+        for (int i = 0; i < pickCount; i++)
+            result.Add(shuffled[i]);
 
         return result;
-    }
-
-    static List<MovieConfig> Slice(List<MovieConfig> list, int start, int end)
-    {
-        var slice = new List<MovieConfig>();
-        for (int i = start; i < end && i < list.Count; i++)
-            slice.Add(list[i]);
-        return slice;
-    }
-
-    static MovieConfig PickRandom(List<MovieConfig> pool, HashSet<MovieConfig> alreadyPicked = null)
-    {
-        if (pool == null || pool.Count == 0) return null;
-        var candidates = new List<MovieConfig>();
-        foreach (var m in pool)
-        {
-            if (alreadyPicked != null && alreadyPicked.Contains(m)) continue;
-            candidates.Add(m);
-        }
-        if (candidates.Count == 0) return null;
-        return candidates[Random.Range(0, candidates.Count)];
-    }
-
-    static void TryAdd(List<MovieConfig> result, HashSet<MovieConfig> picked, MovieConfig movie)
-    {
-        if (movie == null || picked.Contains(movie)) return;
-        result.Add(movie);
-        picked.Add(movie);
     }
 }

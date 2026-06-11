@@ -65,10 +65,12 @@ public static class MovieTabShellBootstrap
         var coleccionPanel = new GameObject("ColeccionPanel", typeof(RectTransform));
         coleccionPanel.transform.SetParent(subContent.transform, false);
         Stretch(coleccionPanel.GetComponent<RectTransform>());
-        coleccionPanel.SetActive(false);
 
+        // Add component while active so Awake/BuildLayout runs before hiding the panel.
         var collectionUI = coleccionPanel.AddComponent<MovieCollectionUI>();
         collectionUI.allMovies = movieTab.allMovies;
+
+        coleccionPanel.SetActive(false);
 
         var btnProducir = MakeSubTabButton(tabBar.transform, "PRODUCIR");
         var btnColeccion = MakeSubTabButton(tabBar.transform, "COLECCIÓN");

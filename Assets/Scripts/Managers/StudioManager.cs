@@ -60,6 +60,8 @@ class ActiveProduction
 
     public MovieConfig config;
 
+    public ProductionBudget budget = ProductionBudget.Standard;
+
     public float elapsed;
 
     public float totalDuration;
@@ -141,6 +143,10 @@ public class StudioManager : MonoBehaviour
     public int MaxMovieSlots => maxMovieSlots;
 
     public int ActiveProductionCount => _productions.Count;
+
+    public int UsedProductionSlotUnits => LegendaryProductionRules.GetUsedSlotUnits(GetActiveMovieConfigs());
+
+    public int AvailableProductionSlotUnits => Mathf.Max(0, maxMovieSlots - UsedProductionSlotUnits);
 
     public int maxMovieSlots = 1;
 
@@ -477,7 +483,16 @@ public class StudioManager : MonoBehaviour
 
 
 
-    public void StartMovie(MovieConfig config)
+    public bool CanStartMovie(MovieConfig config, out string blockReason)
+    {
+        blockReason = null;
+        if (config == null) return false;
+
+        int used = UsedProductionSlotUnits;
+        return LegendaryProductionRules.CanStart(config, maxMovieSlots, used, out blockReason);
+    }
+
+    public void StartMovie(MovieConfig config, ProductionBudget budget = ProductionBudget.Standard)
 
     {
 
@@ -485,11 +500,11 @@ public class StudioManager : MonoBehaviour
 
 
 
-        if (currentMovies >= maxMovieSlots)
+        if (!CanStartMovie(config, out var blockReason))
 
         {
 
-            SetStatus("Slot de producción ocupado");
+            SetStatus(blockReason ?? "Slot de producción ocupado");
 
             return;
 
@@ -513,11 +528,11 @@ public class StudioManager : MonoBehaviour
 
 
 
-        var production = CreateProductionState(config);
+        var production = CreateProductionState(config, budget);
 
         _productions.Add(production);
 
-        currentMovies++;
+        currentMovies = _productions.Count;
 
         UpdateProductionFlags();
         NotifyProductionsChanged();
@@ -528,7 +543,16 @@ public class StudioManager : MonoBehaviour
 
 
 
-    ActiveProduction CreateProductionState(MovieConfig config)
+    IEnumerable<MovieConfig> GetActiveMovieConfigs()
+    {
+        foreach (var production in _productions)
+        {
+            if (production?.config != null)
+                yield return production.config;
+        }
+    }
+
+    ActiveProduction CreateProductionState(MovieConfig config, ProductionBudget budget = ProductionBudget.Standard)
 
     {
 
@@ -548,6 +572,8 @@ public class StudioManager : MonoBehaviour
 
         float xp      = StudioLevelSystem.CalculateMovieXP(config, U);
 
+        ProductionBudgetRules.Apply(ref duration, ref reward, ref repGain, budget);
+
 
 
         return new ActiveProduction
@@ -555,6 +581,8 @@ public class StudioManager : MonoBehaviour
         {
 
             config         = config,
+
+            budget         = budget,
 
             elapsed        = 0f,
 

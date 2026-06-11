@@ -25,6 +25,9 @@ MonoBehaviour:
   unlockReputation: 0
   posterColorHex: '#E74C3C'
   genreIconKey: 
-  catalogTier: 5
-  contentKind: 3
-  sagaId: 
+  posterSprite: {fileID: 0}
+  catalogTier: 3
+  contentKind: 4
+  sagaId: last_signal
+  sagaEntryIndex: 1
+  sagaDisplayName: "La \xDAltima Se\xF1al"

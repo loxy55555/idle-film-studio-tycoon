@@ -139,7 +139,15 @@ public class MovieButtonUI : MonoBehaviour
         if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsMovieUnlocked(movieConfig)) return true;
         if (_studio != null && _studio.IsMovieCompleted(movieConfig)) return true;
         if (movieConfig.unlockReputation  > 0 && (_studio?.reputation ?? 0) < movieConfig.unlockReputation) return true;
+        if (_studio != null && !SagaProgressionRules.ArePreviousSagaEntriesDiscovered(
+                movieConfig, _studio.CompletedMovieKeys, GetAllMovies())) return true;
         return false;
+    }
+
+    MovieConfig[] GetAllMovies()
+    {
+        var tab = Object.FindAnyObjectByType<MovieTabUI>(FindObjectsInactive.Include);
+        return tab != null ? tab.allMovies : null;
     }
 
     string GetLockReason()
@@ -150,6 +158,9 @@ public class MovieButtonUI : MonoBehaviour
             return $"Requiere Nv.{movieConfig.unlockStudioLevel}";
         if (movieConfig.unlockReputation > 0 && (_studio?.reputation ?? 0) < movieConfig.unlockReputation)
             return $"Requiere {movieConfig.unlockReputation:N0} REP";
+        if (_studio != null && !SagaProgressionRules.ArePreviousSagaEntriesDiscovered(
+                movieConfig, _studio.CompletedMovieKeys, GetAllMovies()))
+            return SagaProgressionRules.GetSagaBlockReason(movieConfig, GetAllMovies()) ?? "Saga bloqueada";
         if (_studio != null && _studio.IsMovieCompleted(movieConfig))
             return "Completada";
         return "Bloqueado";

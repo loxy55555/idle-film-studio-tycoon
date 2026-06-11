@@ -873,11 +873,12 @@ public static class StudioUIBuilder
     {
         var folder = category switch
         {
-            UpgradeCategory.Equipment    => "Assets/Data/Upgrades/Equipment",
-            UpgradeCategory.Personnel    => "Assets/Data/Upgrades/Personnel",
-            UpgradeCategory.Installation => "Assets/Data/Upgrades/Installations",
-            UpgradeCategory.Marketing    => "Assets/Data/Upgrades/Marketing",
-            _                            => "Assets/Data/Upgrades",
+            UpgradeCategory.Equipment     => "Assets/Data/Upgrades/Equipment",
+            UpgradeCategory.Personnel     => "Assets/Data/Upgrades/Personnel",
+            UpgradeCategory.Installation  => "Assets/Data/Upgrades/Installations",
+            UpgradeCategory.Marketing     => "Assets/Data/Upgrades/Marketing",
+            UpgradeCategory.ContentFeature => "Assets/Data/Upgrades/ContentFeatures",
+            _                             => "Assets/Data/Upgrades",
         };
 
         var guids  = AssetDatabase.FindAssets("t:UpgradeConfig", new[] { folder });

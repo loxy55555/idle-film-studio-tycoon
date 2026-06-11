@@ -21,10 +21,13 @@ MonoBehaviour:
   duration: 176
   quality: 3
   unlockStudioLevel: 14
-  unlockCityLevel: 3
+  unlockCityLevel: 4
   unlockReputation: 0
   posterColorHex: '#C2185B'
   genreIconKey: 
-  catalogTier: 5
-  contentKind: 3
-  sagaId: 
+  posterSprite: {fileID: 0}
+  catalogTier: 3
+  contentKind: 4
+  sagaId: shadow_trigger
+  sagaEntryIndex: 3
+  sagaDisplayName: Shadow Trigger

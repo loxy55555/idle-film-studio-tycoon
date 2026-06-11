@@ -2,19 +2,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Prestige / Oscars panel. Shows progress toward next Oscar and the prestige button.</summary>
+/// <summary>Oscars panel — claim Oscars permanently (no reset).</summary>
 public class AwardsPanelUI : MonoBehaviour
 {
     [Header("Oscar Display")]
     public TextMeshProUGUI oscarCountText;
     public TextMeshProUGUI multiplierText;
 
-    [Header("Progress to next prestige")]
+    [Header("Progress to next Oscar")]
     public TextMeshProUGUI thresholdLabel;
     public Slider prestigeProgressBar;
     public TextMeshProUGUI progressText;
 
-    [Header("Prestige Button")]
+    [Header("Oscar Button")]
     public Button prestigeButton;
     public TextMeshProUGUI prestigeButtonLabel;
 
@@ -185,8 +185,8 @@ public class AwardsPanelUI : MonoBehaviour
         }
 
         float rep       = studio.reputation;
-        float threshold = prestige.NextPrestigeThreshold;
-        bool  canP      = prestige.CanPrestige(rep);
+        float threshold = prestige.NextOscarThreshold;
+        bool  canClaim  = prestige.CanClaimOscar(rep);
 
         if (oscarCountText != null)
             oscarCountText.text = prestige.oscars == 1 ? "1 Oscar" : $"{prestige.oscars} Oscars";
@@ -212,19 +212,19 @@ public class AwardsPanelUI : MonoBehaviour
 
         if (prestigeButton != null)
         {
-            prestigeButton.interactable = canP;
+            prestigeButton.interactable = canClaim;
             var img = prestigeButton.GetComponent<Image>();
-            if (img != null) img.color = canP ? readyColor : notReadyColor;
+            if (img != null) img.color = canClaim ? readyColor : notReadyColor;
         }
 
         if (prestigeButtonLabel != null)
-            prestigeButtonLabel.text = canP ? "CONSEGUIR OSCAR" : "Sigue produciendo...";
+            prestigeButtonLabel.text = canClaim ? "CONSEGUIR OSCAR" : "Sigue produciendo...";
     }
 
     private void OnPrestigeClick()
     {
         if (prestige == null || studio == null) return;
-        if (!prestige.CanPrestige(studio.reputation)) return;
-        GameHub.Instance.Prestige();
+        if (!prestige.CanClaimOscar(studio.reputation)) return;
+        GameHub.Instance.ClaimOscar();
     }
 }

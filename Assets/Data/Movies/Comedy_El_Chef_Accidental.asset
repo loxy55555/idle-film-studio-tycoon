@@ -25,6 +25,9 @@ MonoBehaviour:
   unlockReputation: 0
   posterColorHex: '#D35400'
   genreIconKey: 
+  posterSprite: {fileID: 0}
   catalogTier: 1
-  contentKind: 0
-  sagaId: 
+  contentKind: 4
+  sagaId: shadow_trigger
+  sagaEntryIndex: 1
+  sagaDisplayName: Shadow Trigger

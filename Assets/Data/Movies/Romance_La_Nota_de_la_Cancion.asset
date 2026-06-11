@@ -21,10 +21,13 @@ MonoBehaviour:
   duration: 10
   quality: 1.2
   unlockStudioLevel: 3
-  unlockCityLevel: 1
+  unlockCityLevel: 2
   unlockReputation: 0
   posterColorHex: '#E91E8C'
   genreIconKey: 
-  catalogTier: 1
-  contentKind: 0
-  sagaId: 
+  posterSprite: {fileID: 0}
+  catalogTier: 2
+  contentKind: 4
+  sagaId: neon_drift
+  sagaEntryIndex: 1
+  sagaDisplayName: Neon Drift

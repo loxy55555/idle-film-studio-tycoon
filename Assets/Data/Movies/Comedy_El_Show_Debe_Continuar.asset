@@ -21,10 +21,13 @@ MonoBehaviour:
   duration: 1285
   quality: 4.5
   unlockStudioLevel: 24
-  unlockCityLevel: 3
+  unlockCityLevel: 4
   unlockReputation: 0
   posterColorHex: '#F39C12'
   genreIconKey: 
-  catalogTier: 5
-  contentKind: 3
+  posterSprite: {fileID: 0}
+  catalogTier: 3
+  contentKind: 0
   sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

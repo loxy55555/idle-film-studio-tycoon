@@ -25,6 +25,9 @@ MonoBehaviour:
   unlockReputation: 0
   posterColorHex: '#D35400'
   genreIconKey: 
-  catalogTier: 5
-  contentKind: 3
+  posterSprite: {fileID: 0}
+  catalogTier: 3
+  contentKind: 0
   sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

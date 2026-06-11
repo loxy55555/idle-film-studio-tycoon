@@ -87,6 +87,8 @@ public class StudioHubUI : MonoBehaviour
                 if (tabPanels[i] == null) continue;
                 bool active = i == idx;
                 tabPanels[i].SetActive(active);
+                if (active)
+                    tabPanels[i].GetComponent<MovieCollectionUI>()?.Refresh();
                 if (_panelGroups != null && i < _panelGroups.Length && _panelGroups[i] != null)
                 {
                     _panelGroups[i].DOKill();

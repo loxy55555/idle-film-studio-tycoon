@@ -21,10 +21,13 @@ MonoBehaviour:
   duration: 298
   quality: 3.5
   unlockStudioLevel: 17
-  unlockCityLevel: 3
+  unlockCityLevel: 4
   unlockReputation: 0
   posterColorHex: '#8E44AD'
   genreIconKey: 
-  catalogTier: 5
-  contentKind: 3
-  sagaId: 
+  posterSprite: {fileID: 0}
+  catalogTier: 3
+  contentKind: 4
+  sagaId: iron_circuit
+  sagaEntryIndex: 1
+  sagaDisplayName: Circuito de Hierro

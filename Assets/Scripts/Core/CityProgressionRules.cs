@@ -60,10 +60,10 @@ public static class CityProgressionRules
     {
         if (cfg == null) return 99;
 
-        int rulesCity = GetMovieRequiredCityFromRules(cfg);
-        if (cfg.unlockCityLevel > 1)
-            return Mathf.Max(rulesCity, cfg.unlockCityLevel);
-        return rulesCity;
+        if (cfg.unlockCityLevel >= 1 && cfg.unlockCityLevel <= ContentScaleDatabase.MaxCityLevel)
+            return cfg.unlockCityLevel;
+
+        return GetMovieRequiredCityFromRules(cfg);
     }
 
     static int GetMovieRequiredCityFromRules(MovieConfig cfg)
@@ -254,4 +254,31 @@ public static class CityProgressionRules
         }
         return count;
     }
+
+    // ── Phase 6 — city tier state facade (delegates to CitySystem; no new balance) ──
+
+    public static CityTier GetCurrentCity(GameHub hub) =>
+        GetCurrentCity(hub?.city);
+
+    public static CityTier GetCurrentCity(CitySystem city) =>
+        CityTierExtensions.FromLevel(city?.Level ?? 1);
+
+    public static int GetRequiredStars(CityTier tier) =>
+        CityLevelDatabase.GetLevel(tier.ToLevel()).requiredOscars;
+
+    public static int GetRequiredStarsForNextCity(GameHub hub)
+    {
+        var city = hub?.city;
+        if (city == null) return GetRequiredStars(CityTier.City1);
+        if (city.IsMaxLevel) return GetRequiredStars(CityTier.City8);
+
+        var next = city.GetNextDefinition();
+        return next != null ? next.requiredOscars : GetRequiredStars(CityTier.City8);
+    }
+
+    public static bool CanAdvanceCity(GameHub hub) =>
+        hub?.city != null && hub.city.CanUpgrade();
+
+    public static bool AdvanceCity(GameHub hub) =>
+        hub?.city != null && hub.city.TryUpgrade();
 }

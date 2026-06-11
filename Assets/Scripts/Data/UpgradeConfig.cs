@@ -1,7 +1,14 @@
 using System;
 using UnityEngine;
 
-public enum UpgradeCategory { Equipment, Personnel, Installation, Marketing }
+public enum UpgradeCategory
+{
+    Equipment = 0,
+    Personnel = 1,
+    Installation = 2,
+    Marketing = 3,
+    ContentFeature = 4,
+}
 
 public enum UpgradeEffectType
 {

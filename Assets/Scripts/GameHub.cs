@@ -281,19 +281,15 @@ public class GameHub : MonoBehaviour
 
 
 
-    public void Prestige()
-
+    public void ClaimOscar()
     {
-
-        prestige.Prestige(studio, departments);
-
-        upgrades?.Init();
-
-        studioLevel?.Init();
-
+        if (prestige == null || studio == null) return;
+        if (!prestige.TryClaimOscar(studio.reputation)) return;
         save?.Save();
-
     }
+
+    /// <summary>Legacy alias — permanent Oscar claim, no reset.</summary>
+    public void Prestige() => ClaimOscar();
 
 }
 

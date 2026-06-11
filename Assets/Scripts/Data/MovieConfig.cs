@@ -2,6 +2,8 @@ using UnityEngine;
 
 public enum MovieGenre { Action, Drama, Horror, Comedy, Romance, SciFi }
 
+public enum MovieRarity { Common, Rare, Epic, Legendary }
+
 [CreateAssetMenu(menuName = "IdleFilm/Movie")]
 public class MovieConfig : ScriptableObject
 {
@@ -32,6 +34,9 @@ public class MovieConfig : ScriptableObject
     [Tooltip("Minimum reputation required. 0 = no reputation gate.")]
     public float unlockReputation;
 
+    [Header("Rarity (future display)")]
+    public MovieRarity rarity = MovieRarity.Common;
+
     [Header("Visual (placeholder keys for future art)")]
     public string posterColorHex = "#3498DB";
     public string genreIconKey   = "";
@@ -40,6 +45,10 @@ public class MovieConfig : ScriptableObject
     [Header("City progression")]
     public MovieCatalogTier catalogTier = MovieCatalogTier.Tier1;
     public MovieContentKind contentKind = MovieContentKind.Standard;
-    [Tooltip("Future saga / universe id (e.g. hero_universe_01).")]
+    [Tooltip("Saga id (e.g. shadow_trigger). Empty = standalone.")]
     public string sagaId = "";
+    [Tooltip("Entry order inside saga (1-based).")]
+    public int sagaEntryIndex = 0;
+    [Tooltip("Optional saga display name override.")]
+    public string sagaDisplayName = "";
 }
