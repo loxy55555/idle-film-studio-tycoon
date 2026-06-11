@@ -152,7 +152,7 @@ public class MovieTabUI : MonoBehaviour
     {
         var cardGo = new GameObject("Slot_" + slotLabel, typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(slotsRow, false);
-        cardGo.GetComponent<Image>().color = cfg != null ? BG_CARD : BG_SECTION;
+        HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), cfg != null ? HudCardVariant.Primary : HudCardVariant.Hero);
         var le = cardGo.AddComponent<LayoutElement>();
         le.flexibleWidth = 1f;
         le.flexibleHeight = 0f;
@@ -187,7 +187,7 @@ public class MovieTabUI : MonoBehaviour
 
         var btnGo = new GameObject("ProduceBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(cardGo.transform, false);
-        btnGo.GetComponent<Image>().color = ACCENT_GREEN;
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<UIButtonScale>();
         var btnLE = btnGo.AddComponent<LayoutElement>();
         btnLE.preferredHeight = 32;
@@ -264,7 +264,7 @@ public class MovieTabUI : MonoBehaviour
     {
         var row = new GameObject("Hist_" + e.movieName, typeof(RectTransform), typeof(Image));
         row.transform.SetParent(historyContent, false);
-        row.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(row.GetComponent<Image>(), HudCardVariant.Primary);
         var le = row.AddComponent<LayoutElement>();
         le.preferredHeight = 72;
         le.flexibleWidth = 1;

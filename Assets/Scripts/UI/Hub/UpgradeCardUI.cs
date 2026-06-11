@@ -152,9 +152,7 @@ public class UpgradeCardUI : MonoBehaviour
                 buyButton.gameObject.AddComponent<UIButtonScale>();
             var btnImg = buyButton.GetComponent<Image>();
             if (btnImg != null)
-                btnImg.color = canBuy ? new Color(0.18f, 0.80f, 0.44f) :
-                               locked  ? new Color(0.50f, 0.50f, 0.50f) :
-                                         new Color(0.30f, 0.30f, 0.35f);
+                HudSkinProvider.ApplyPurchaseButton(btnImg, canBuy, locked);
         }
 
         if (levelBar != null)

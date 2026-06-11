@@ -135,7 +135,7 @@ public class AwardsPanelUI : MonoBehaviour
     {
         var btnGo = new GameObject("PrestigeBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(transform, false);
-        btnGo.GetComponent<Image>().color = notReadyColor;
+        HudSkinProvider.ApplyButtonState(btnGo.GetComponent<Image>(), HudButtonState.Disabled);
 
         var le = btnGo.AddComponent<LayoutElement>();
         le.preferredHeight = 44;
@@ -214,7 +214,8 @@ public class AwardsPanelUI : MonoBehaviour
         {
             prestigeButton.interactable = canClaim;
             var img = prestigeButton.GetComponent<Image>();
-            if (img != null) img.color = canClaim ? readyColor : notReadyColor;
+            if (img != null)
+                HudSkinProvider.ApplyButtonState(img, canClaim ? HudButtonState.Ready : HudButtonState.Disabled);
         }
 
         if (prestigeButtonLabel != null)

@@ -116,9 +116,7 @@ public class StudioHubUI : MonoBehaviour
     {
         if (btn == null) return;
         var label = btn.GetComponentInChildren<TextMeshProUGUI>();
-        if (label != null) label.color = active ? activeTabColor : inactiveTabColor;
         var img = btn.GetComponent<Image>();
-        if (img != null)
-            img.color = active ? new Color(0.14f, 0.14f, 0.28f) : new Color(0.09f, 0.09f, 0.18f);
+        HudSkinProvider.ApplyTab(img, label, active, HudTabVariant.MainNav);
     }
 }

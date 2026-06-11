@@ -245,7 +245,7 @@ public static class ContractCardFactory
     {
         var cardGo = new GameObject("Contract_Empty", typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(parent, false);
-        cardGo.GetComponent<Image>().color = BG_EMPTY;
+        HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), HudCardVariant.Empty);
 
         var le = cardGo.AddComponent<LayoutElement>();
         le.preferredHeight = height;
@@ -270,7 +270,7 @@ public static class ContractCardFactory
     {
         var cardGo = new GameObject("Contract_" + cfg.id, typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(parent, false);
-        cardGo.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), HudCardVariant.Primary);
         var le = cardGo.AddComponent<LayoutElement>();
         le.preferredHeight = historyMode ? 72 : ContractsPanelUI.FixedSlotHeightPublic;
         le.minHeight = le.preferredHeight;
@@ -319,7 +319,7 @@ public static class ContractCardFactory
 
             var claimGo = new GameObject("ClaimBtn", typeof(RectTransform), typeof(Image), typeof(Button));
             claimGo.transform.SetParent(cardGo.transform, false);
-            claimGo.GetComponent<Image>().color = BTN_GREEN;
+            HudSkinProvider.ApplyButton(claimGo.GetComponent<Image>(), HudButtonVariant.Primary);
             claimGo.AddComponent<LayoutElement>().preferredHeight = 30;
             claimGo.AddComponent<UIButtonScale>();
             var lbl = MakeText(claimGo.transform, "RECLAMAR", 15, TEXT_PRI, FontStyles.Bold);

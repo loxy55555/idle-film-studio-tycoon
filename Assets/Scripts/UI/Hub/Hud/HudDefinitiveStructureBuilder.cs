@@ -258,7 +258,7 @@ public static class HudDefinitiveStructureBuilder
     {
         var panel = new GameObject("ColeccionPanel", typeof(RectTransform), typeof(Image));
         panel.transform.SetParent(switcher, false);
-        panel.GetComponent<Image>().color = new Color(0.04f, 0.04f, 0.10f);
+        HudSkinProvider.ApplyPanel(panel.GetComponent<Image>(), HudPanelVariant.Deep);
         Stretch(panel.GetComponent<RectTransform>());
         panel.SetActive(false);
         EnsureVerticalLayout(panel.GetComponent<RectTransform>());
@@ -269,7 +269,7 @@ public static class HudDefinitiveStructureBuilder
     {
         var panel = new GameObject("MenuPanel", typeof(RectTransform), typeof(Image));
         panel.transform.SetParent(switcher, false);
-        panel.GetComponent<Image>().color = new Color(0.04f, 0.04f, 0.10f);
+        HudSkinProvider.ApplyPanel(panel.GetComponent<Image>(), HudPanelVariant.Deep);
         Stretch(panel.GetComponent<RectTransform>());
         panel.SetActive(false);
         return panel.GetComponent<RectTransform>();
@@ -279,7 +279,7 @@ public static class HudDefinitiveStructureBuilder
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
-        go.GetComponent<Image>().color = new Color(0.15f, 0.68f, 0.38f);
+        HudSkinProvider.ApplyButton(go.GetComponent<Image>(), HudButtonVariant.Success);
         go.AddComponent<UIButtonScale>();
         var le = go.AddComponent<LayoutElement>();
         le.preferredHeight = height;

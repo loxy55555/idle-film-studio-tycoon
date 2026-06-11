@@ -348,7 +348,7 @@ public class MovieCollectionUI : MonoBehaviour
 
         card.transform.SetParent(gridContent, false);
 
-        card.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
 
         var cardLE = card.GetComponent<LayoutElement>();
 
@@ -494,7 +494,7 @@ public class MovieCollectionUI : MonoBehaviour
 
         Stretch(scrollGo.GetComponent<RectTransform>());
 
-        scrollGo.GetComponent<Image>().color = BG_DEEP;
+        HudSkinProvider.ApplyPanel(scrollGo.GetComponent<Image>(), HudPanelVariant.Deep);
 
 
 
@@ -638,7 +638,7 @@ public class MovieCollectionUI : MonoBehaviour
 
         card.transform.SetParent(parent, false);
 
-        card.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
 
         card.AddComponent<LayoutElement>().preferredHeight = 0f;
 

@@ -109,7 +109,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         scrollLE.flexibleHeight = 1f;
         scrollLE.minHeight = SlotHeight;
 
-        scrollGo.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyPanel(scrollGo.GetComponent<Image>(), HudPanelVariant.Card);
 
         var scrollRT = scrollGo.GetComponent<RectTransform>();
         scrollRT.anchorMin = Vector2.zero;
@@ -216,7 +216,7 @@ public class MultiProductionPanelUI : MonoBehaviour
             var view = new SlotView();
             var go = new GameObject("ProdSlot", typeof(RectTransform), typeof(Image));
             go.transform.SetParent(parent, false);
-            go.GetComponent<Image>().color = BG_CARD;
+            HudSkinProvider.ApplyCard(go.GetComponent<Image>(), HudCardVariant.Primary);
 
             var le = go.AddComponent<LayoutElement>();
             le.preferredHeight = SlotHeight;

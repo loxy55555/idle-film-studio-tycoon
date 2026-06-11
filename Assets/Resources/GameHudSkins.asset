@@ -1,0 +1,126 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8630307437570346036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5db2591c3c1d3340ba37946d603fe8c, type: 3}
+  m_Name: UICardSkin
+  m_EditorClassIdentifier: Assembly-CSharp::UICardSkin
+  primarySprite: {fileID: 0}
+  secondarySprite: {fileID: 0}
+  heroSprite: {fileID: 0}
+  emptySprite: {fileID: 0}
+  primaryColor: {r: 0.101960786, g: 0.101960786, b: 0.1882353, a: 1}
+  secondaryColor: {r: 0.12156863, g: 0.12156863, b: 0.22745098, a: 1}
+  heroColor: {r: 0.078431375, g: 0.078431375, b: 0.15686275, a: 1}
+  emptyColor: {r: 0.05490196, g: 0.05490196, b: 0.11764706, a: 1}
+--- !u!114 &-5772123652505903676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a53786b51118e43a8e650c527605b4, type: 3}
+  m_Name: UITabSkin
+  m_EditorClassIdentifier: Assembly-CSharp::UITabSkin
+  mainNavActiveSprite: {fileID: 0}
+  mainNavInactiveSprite: {fileID: 0}
+  subTabActiveSprite: {fileID: 0}
+  subTabInactiveSprite: {fileID: 0}
+  categoryActiveSprite: {fileID: 0}
+  categoryInactiveSprite: {fileID: 0}
+  activeIndicatorSprite: {fileID: 0}
+  mainNavActiveBg: {r: 0.14, g: 0.14, b: 0.28, a: 1}
+  mainNavInactiveBg: {r: 0.09, g: 0.09, b: 0.18, a: 1}
+  mainNavActiveLabel: {r: 0.18, g: 0.8, b: 0.44, a: 1}
+  mainNavInactiveLabel: {r: 0.55, g: 0.55, b: 0.7, a: 1}
+  subTabActiveBg: {r: 0.14, g: 0.14, b: 0.28, a: 1}
+  subTabInactiveBg: {r: 0.09, g: 0.09, b: 0.18, a: 1}
+  subTabActiveLabel: {r: 1, g: 1, b: 1, a: 1}
+  subTabInactiveLabel: {r: 0.55, g: 0.55, b: 0.7, a: 1}
+  categoryActiveBg: {r: 0.12156863, g: 0.12156863, b: 0.22745098, a: 1}
+  categoryInactiveBg: {r: 0.101960786, g: 0.101960786, b: 0.1882353, a: 1}
+  categoryActiveLabel: {r: 1, g: 1, b: 1, a: 1}
+  categoryInactiveLabel: {r: 0.55, g: 0.55, b: 0.7, a: 1}
+  activeIndicatorColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+--- !u!114 &-1147037270995982508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73576292d4d91a441a2239e3898b8eef, type: 3}
+  m_Name: UIPanelSkin
+  m_EditorClassIdentifier: Assembly-CSharp::UIPanelSkin
+  deepSprite: {fileID: 0}
+  sectionSprite: {fileID: 0}
+  cardSprite: {fileID: 0}
+  cardAltSprite: {fileID: 0}
+  topBarSprite: {fileID: 0}
+  navSprite: {fileID: 0}
+  stageSprite: {fileID: 0}
+  deepColor: {r: 0.05490196, g: 0.05490196, b: 0.11764706, a: 1}
+  sectionColor: {r: 0.078431375, g: 0.078431375, b: 0.15686275, a: 1}
+  cardColor: {r: 0.101960786, g: 0.101960786, b: 0.1882353, a: 1}
+  cardAltColor: {r: 0.12156863, g: 0.12156863, b: 0.22745098, a: 1}
+  topBarColor: {r: 0.03529412, g: 0.03529412, b: 0.08235294, a: 1}
+  navColor: {r: 0.03137255, g: 0.03137255, b: 0.101960786, a: 1}
+  stageColor: {r: 0.06, g: 0.07, b: 0.12, a: 1}
+  clearColor: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7a8f40835f24c94e9a81827c426551d, type: 3}
+  m_Name: GameHudSkins
+  m_EditorClassIdentifier: Assembly-CSharp::GameHudSkins
+  panelSkin: {fileID: -1147037270995982508}
+  cardSkin: {fileID: -8630307437570346036}
+  buttonSkin: {fileID: 1650503645336161494}
+  tabSkin: {fileID: -5772123652505903676}
+--- !u!114 &1650503645336161494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227586b4cfbcb6d448b62780ffce9a5d, type: 3}
+  m_Name: UIButtonSkin
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSkin
+  primarySprite: {fileID: 0}
+  secondarySprite: {fileID: 0}
+  successSprite: {fileID: 0}
+  dangerSprite: {fileID: 0}
+  ghostSprite: {fileID: 0}
+  disabledSprite: {fileID: 0}
+  lockedSprite: {fileID: 0}
+  readySprite: {fileID: 0}
+  primaryColor: {r: 0.15294118, g: 0.68235296, b: 0.3764706, a: 1}
+  secondaryColor: {r: 0.12156863, g: 0.12156863, b: 0.22745098, a: 1}
+  successColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+  dangerColor: {r: 0.90588236, g: 0.29803923, b: 0.23529412, a: 1}
+  ghostColor: {r: 0.078431375, g: 0.078431375, b: 0.15686275, a: 1}
+  disabledColor: {r: 0.11764706, g: 0.11764706, b: 0.20392157, a: 1}
+  lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  readyColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+  cantAffordColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}

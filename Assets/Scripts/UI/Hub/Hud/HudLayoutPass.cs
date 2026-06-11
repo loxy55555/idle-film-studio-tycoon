@@ -160,6 +160,10 @@ public static class HudLayoutPass
         else
             stage.GetComponent<StudioVisualStage>().ApplyLayout();
 
+        var stageComponent = stage.GetComponent<StudioVisualStage>();
+        if (stageComponent != null)
+            StudioVisualStageLayers.EnsureHierarchy(stageComponent);
+
         return stage;
     }
 

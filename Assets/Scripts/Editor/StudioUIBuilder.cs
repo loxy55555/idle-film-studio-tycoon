@@ -106,6 +106,8 @@ public static class StudioUIBuilder
         var root = MakePanel(canvas.transform, "HubRoot", BG_DEEP);
         Stretch(root);
         root.gameObject.AddComponent<StudioUIShellLayout>();
+        if (root.GetComponent<HudSkinBootstrap>() == null)
+            root.gameObject.AddComponent<HudSkinBootstrap>();
 
         // ── TopBar ────────────────────────────────────────────────────────────
         var topBar = BuildTopBar(root);
@@ -233,7 +235,7 @@ public static class StudioUIBuilder
         var settingsBtn = new GameObject("SettingsBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(settingsBtn, "SettingsBtn");
         settingsBtn.transform.SetParent(bar, false);
-        settingsBtn.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(settingsBtn.GetComponent<Image>(), HudCardVariant.Primary);
         SetRounded(settingsBtn.GetComponent<RectTransform>(), 12);
         var settingsLE = settingsBtn.AddComponent<LayoutElement>();
         settingsLE.preferredWidth = 56;
@@ -300,7 +302,11 @@ public static class StudioUIBuilder
         stageLE.minHeight = HudLayoutConstants.StudioVisualMinHeight;
         stageLE.flexibleWidth = 0f;
         stageLE.preferredHeight = 0f;
-        stage.gameObject.AddComponent<StudioVisualStage>();
+        var stageComp = stage.gameObject.AddComponent<StudioVisualStage>();
+        StudioVisualStageLayers.EnsureHierarchy(stageComp);
+        if (stageComp.GetComponent<StudioVisualManager>() == null)
+            stageComp.gameObject.AddComponent<StudioVisualManager>();
+        StudioVisualThemeController.ApplyTheme(stageComp, CityTier.City1);
 
         // Department mini-bar (moved to sub-tab at runtime)
         var deptBar = BuildDeptMiniBar(panel);
@@ -534,7 +540,7 @@ public static class StudioUIBuilder
         var newBtnGo = new GameObject("NewProductionBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(newBtnGo, "NewProductionBtn");
         newBtnGo.transform.SetParent(panel, false);
-        newBtnGo.GetComponent<Image>().color = ACCENT_GREEN;
+        HudSkinProvider.ApplyButton(newBtnGo.GetComponent<Image>(), HudButtonVariant.Success);
         SetRounded(newBtnGo.GetComponent<RectTransform>(), 8);
         var newBtnLE = newBtnGo.AddComponent<LayoutElement>();
         newBtnLE.preferredHeight = 44f;
@@ -932,7 +938,7 @@ public static class StudioUIBuilder
         var btnGo = new GameObject("BuyBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(btnGo, "BuyBtn");
         btnGo.transform.SetParent(bottom, false);
-        btnGo.GetComponent<Image>().color = BTN_GREEN;
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Primary);
         SetRounded(btnGo.GetComponent<RectTransform>(), 8);
         LE(btnGo.GetComponent<RectTransform>(), 36, 0, 172, 36);
         btnGo.AddComponent<UIButtonScale>();
@@ -1122,7 +1128,7 @@ public static class StudioUIBuilder
         var claimGo = new GameObject("ClaimBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(claimGo, "ClaimBtn");
         claimGo.transform.SetParent(card, false);
-        claimGo.GetComponent<Image>().color = BTN_GREEN;
+        HudSkinProvider.ApplyButton(claimGo.GetComponent<Image>(), HudButtonVariant.Primary);
         SetRounded(claimGo.GetComponent<RectTransform>(), 8);
         LE(claimGo.GetComponent<RectTransform>(), 34, 1f);
         var claimLbl = new GameObject("Lbl", typeof(RectTransform)); claimLbl.transform.SetParent(claimGo.transform, false);
@@ -1351,7 +1357,7 @@ public static class StudioUIBuilder
         var go = new GameObject(name, typeof(RectTransform), typeof(Image));
         Undo.RegisterCreatedObjectUndo(go, name);
         go.transform.SetParent(parent, false);
-        go.GetComponent<Image>().color = color;
+        HudSkinProvider.ApplyPanelFromColor(go.GetComponent<Image>(), color);
         return go.GetComponent<RectTransform>();
     }
 

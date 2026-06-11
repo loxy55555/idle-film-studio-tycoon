@@ -118,7 +118,7 @@ public class MovieGridUI : MonoBehaviour
         // Card root
         var cardGo = new GameObject("Movie_" + cfg.movieName, typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(content, false);
-        cardGo.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), HudCardVariant.Primary);
         var cardRT = cardGo.GetComponent<RectTransform>();
         var cardLE = cardGo.AddComponent<LayoutElement>();
         cardLE.preferredHeight = 110;
@@ -202,7 +202,7 @@ public class MovieGridUI : MonoBehaviour
         // Right: produce button
         var btnGo = new GameObject("ProduceBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(cardGo.transform, false);
-        btnGo.GetComponent<Image>().color = ACCENT_GREEN;
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<UIButtonScale>();
         var btnLE = btnGo.AddComponent<LayoutElement>();
         btnLE.preferredWidth  = 110;

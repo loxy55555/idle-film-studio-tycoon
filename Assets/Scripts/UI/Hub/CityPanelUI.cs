@@ -186,7 +186,7 @@ public class CityPanelUI : MonoBehaviour
 
         var btnGo = new GameObject("UpgradeBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(content.transform, false);
-        btnGo.GetComponent<Image>().color = BTN_GREEN;
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<LayoutElement>().preferredHeight = 48;
         btnGo.AddComponent<UIButtonScale>();
         _upgradeButton = btnGo.GetComponent<Button>();
@@ -240,7 +240,7 @@ public class CityPanelUI : MonoBehaviour
             _upgradeButton.interactable = can;
             var img = _upgradeButton.GetComponent<Image>();
             if (img != null)
-                img.color = can ? BTN_GREEN : new Color(0.35f, 0.35f, 0.40f);
+                HudSkinProvider.ApplyButtonState(img, can ? HudButtonState.Ready : HudButtonState.Disabled);
         }
     }
 
@@ -255,7 +255,7 @@ public class CityPanelUI : MonoBehaviour
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(Image));
         go.transform.SetParent(parent, false);
-        go.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(go.GetComponent<Image>(), HudCardVariant.Primary);
         var le = go.AddComponent<LayoutElement>();
         if (height > 0) le.preferredHeight = height;
         var vlg = go.AddComponent<VerticalLayoutGroup>();

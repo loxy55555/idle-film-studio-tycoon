@@ -92,7 +92,8 @@ public static class MovieTabShellBootstrap
     {
         var go = new GameObject("Tab_" + label, typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
-        go.GetComponent<Image>().color = new Color(0.09f, 0.09f, 0.18f);
+        var img = go.GetComponent<Image>();
+        HudSkinProvider.ApplyTab(img, null, false, HudTabVariant.SubTab);
         go.AddComponent<UIButtonScale>();
 
         var tmp = RuntimeTmpText.Create(go.transform, label, 14, new Color(0.55f, 0.55f, 0.70f), FontStyles.Bold,
