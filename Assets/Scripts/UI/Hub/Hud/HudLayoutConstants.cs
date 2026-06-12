@@ -7,7 +7,7 @@ public static class HudLayoutConstants
     public const float StudioVisualShare   = 0.45f;
     public const float StudioVisualMinHeight = 280f;
     public const float SectionHeaderHeight = 18f;
-    public const float ProductionWidgetHeight = 180f;
-    public const float ProductionSlotsHeight  = 168f;
+    public const float ProductionWidgetHeight = 200f;
+    public const float ProductionSlotsHeight  = 180f;
     public const float ProductionActionHeight = 40f;
 }

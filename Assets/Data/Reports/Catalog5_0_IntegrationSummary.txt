@@ -1,0 +1,28 @@
+========================================================================
+CATÁLOGO 5.0 — Resumen integración premium definitiva
+========================================================================
+
+Total películas : 300
+
+Por rareza:
+  Common      : 170
+  Rare        : 100
+  Epic        : 20
+  Legendary   : 10
+
+Por género (total / Common / Premium):
+  Action         total=44  Common=29  Premium=15
+  SciFi          total=40  Common=25  Premium=15
+  Drama          total=35  Common=22  Premium=13
+  Horror         total=35  Common=22  Premium=13
+  Comedy         total=35  Common=22  Premium=13
+  Fantasy        total=30  Common=16  Premium=14
+  Romance        total=25  Common=13  Premium=12
+  Thriller       total=25  Common=13  Premium=12
+  Animation      total=20  Common= 8  Premium=12
+  Documentary    total=11  Common= 0  Premium=11
+
+Archivos generados:
+  Master : D:\UnityProjects\idlefilm\Assets\Data\Imports\MovieCatalog_Integrated_300.csv
+  Premium: D:\UnityProjects\idlefilm\Assets\Data\Exports\PremiumCatalogFinal.csv
+  Common : D:\UnityProjects\idlefilm\Assets\Data\Exports\CommonCatalogFinal.csv

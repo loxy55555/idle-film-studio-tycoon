@@ -1,0 +1,181 @@
+catalogId,displayName,genre,rarity,sagaId,sagaOrder,isLegendary,assetPath,assetGuid,posterColorHex,tagline
+Action_Alianza_Imposible,Alianza Imposible,Action,Common,,0,0,Assets/Data/Movies/Action_Alianza_Imposible.asset,e8b970b3a3448c9449a4b0d61678b4b1,#C0392B,Enemigos que deben unirse para sobrevivir.
+Action_Amanecer_de_Hierro,Amanecer de Hierro,Action,Common,,0,0,Assets/Data/Movies/Action_Amanecer_de_Hierro.asset,a1a1e4fadd38f7e4c8b6b8e050284031,#E74C3C,El mundo al borde del abismo.
+Action_Catastrofe_Total,Catástrofe Total,Action,Common,,0,0,Assets/Data/Movies/Action_Catastrofe_Total.asset,a64c87d5742b25246ad38e46ff86e299,#C0392B,El fin de la era.
+Action_Cazador_Implacable,Cazador Implacable,Action,Common,,0,0,Assets/Data/Movies/Action_Cazador_Implacable.asset,931a37f01e204e841bbea85b132f1117,#C0392B,Un cazador que nunca abandona la presa.
+Action_Cazadores_de_Sombras,Cazadores de Sombras,Action,Common,shadow_trigger,2,0,Assets/Data/Movies/Action_Cazadores_de_Sombras.asset,bdc49cf1a93487145bef86922d559dfb,#C0392B,Élite vs. red criminal invisible.
+Action_Colision_de_Mundos,Colisión de Mundos,Action,Common,,0,0,Assets/Data/Movies/Action_Colision_de_Mundos.asset,f07cf569e4da6f24cbfa67c74e859953,#E74C3C,Cuando dos fuerzas igualadas choquan.
+Action_Codigo_Rojo,Código Rojo,Action,Common,,0,0,Assets/Data/Movies/Action_Codigo_Rojo.asset,c5b16ecf7a225ee4c8f0d8367312aed8,#E74C3C,La ciudad entera como campo de batalla.
+Action_Destino_Marcado,Destino Marcado,Action,Common,,0,0,Assets/Data/Movies/Action_Destino_Marcado.asset,b77c4ce750d640c40b4052e6417cab87,#C0392B,No hay escapatoria del destino.
+Action_El_Infiltrado,El Infiltrado,Action,Common,,0,0,Assets/Data/Movies/Action_El_Infiltrado.asset,0853fa51c0cce334c84b28761cb18517,#E74C3C,Vivir bajo identidad falsa.
+Action_El_Precio_del_Honor,El Precio del Honor,Action,Common,,0,0,Assets/Data/Movies/Action_El_Precio_del_Honor.asset,13cf0d88d1585594eadfb46ac07957df,#E74C3C,Honor es lo único que queda.
+Action_El_Último_Bastion,El Último Bastión,Action,Common,,0,0,Assets/Data/Movies/Action_El_Último_Bastion.asset,1e5af1cce2020ee42a9ef06d1107af3c,#C0392B,Defender lo que queda del mundo civilizado.
+Action_Fuego_Cruzado,Fuego Cruzado,Action,Common,,0,0,Assets/Data/Movies/Action_Fuego_Cruzado.asset,915967732b4939e44a1da27af3e492d8,#C0392B,Los aliados de hoy son los enemigos de mañana.
+Action_Fuga_Nocturna,Fuga Nocturna,Action,Common,,0,0,Assets/Data/Movies/Action_Fuga_Nocturna.asset,a92bbbeb9aa01ce459aebd1b1bbdc9da,#E74C3C,Dos horas para escapar de la ciudad.
+Action_Golpe_Final,Golpe Final,Action,Common,,0,0,Assets/Data/Movies/Action_Golpe_Final.asset,df3ab39769c09ef45b5822b16ad39ff9,#E74C3C,Un atraco que cambiará todo.
+Action_Impacto_Directo,Impacto Directo,Action,Common,,0,0,Assets/Data/Movies/Action_Impacto_Directo.asset,a76458239c76af648a4435bc59ab0c5e,#C0392B,Nada puede detener la misión.
+Action_Imperativo_de_Guerra,Imperativo de Guerra,Action,Common,,0,0,Assets/Data/Movies/Action_Imperativo_de_Guerra.asset,7d40cb70e6b5d3040b5bd757080b2151,#C0392B,La batalla definitiva de la humanidad.
+Action_La_Gran_Ofensiva,La Gran Ofensiva,Action,Common,,0,0,Assets/Data/Movies/Action_La_Gran_Ofensiva.asset,c08cf65292c58d74693c382768a460c9,#C0392B,La operación más ambiciosa jamás planeada.
+Action_La_Linea_Roja,La Línea Roja,Action,Common,,0,0,Assets/Data/Movies/Action_La_Linea_Roja.asset,675ca5118086be143a8af6b3ccf69063,#E74C3C,Cuando cruzar la línea es lo correcto.
+Action_La_Última_Frontera,La Última Frontera,Action,Common,,0,0,Assets/Data/Movies/Action_La_Última_Frontera.asset,ad10b9cbb4a4de942b8550897733614d,#C0392B,Más allá de toda frontera conocida.
+Action_Legado_Belico,Legado Bélico,Action,Common,,0,0,Assets/Data/Movies/Action_Legado_Belico.asset,4379fd6000c924240b9c5de57679b690,#E74C3C,La guerra que definió generaciones.
+Action_Operacion_Tormenta,Operación Tormenta,Action,Common,,0,0,Assets/Data/Movies/Action_Operacion_Tormenta.asset,c2cd134e0d3b0d640b2cb6c9feb97d4b,#E74C3C,Un equipo de élite contra una amenaza global.
+Action_Persecucion_en_la_Ciudad,Persecución en la Ciudad,Action,Common,,0,0,Assets/Data/Movies/Action_Persecucion_en_la_Ciudad.asset,a573b9cf96970f14caea39a232c9d34c,#E74C3C,"Cuando el crimen toma las calles, un detective solitario actúa."
+Action_Punto_de_Ruptura,Punto de Ruptura,Action,Common,,0,0,Assets/Data/Movies/Action_Punto_de_Ruptura.asset,a3f54a30b04bf694b907dffbb65b17d5,#E74C3C,Todo o nada.
+Action_Rescate_al_Limite,Rescate al Límite,Action,Common,,0,0,Assets/Data/Movies/Action_Rescate_al_Limite.asset,66e3af27156dafc45a437ba03c63ba3b,#E74C3C,Una misión de rescate que pondrá a prueba todo.
+Action_Retribucion,Retribución,Action,Common,,0,0,Assets/Data/Movies/Action_Retribucion.asset,a18bd18b4d1f9b840820121c29c6b814,#E74C3C,Justicia fuera del sistema.
+Action_Sin_Regreso,Sin Regreso,Action,Common,last_signal,1,0,Assets/Data/Movies/Action_Sin_Regreso.asset,bf620e79894e6f046aaf9641f1de3661,#E74C3C,Una misión sin vuelta atrás.
+Action_Tormenta_de_Acero,Tormenta de Acero,Action,Common,,0,0,Assets/Data/Movies/Action_Tormenta_de_Acero.asset,0f6233676db3da3468b2815f5996cca2,#C0392B,Una guerra que nadie ganará.
+Action_Velocidad_Extrema,Velocidad Extrema,Action,Common,,0,0,Assets/Data/Movies/Action_Velocidad_Extrema.asset,6d3a5e4e27cb46b4c8554681170a3d1c,#C0392B,La velocidad como arma.
+Action_Zona_de_Exclusion,Zona de Exclusión,Action,Common,,0,0,Assets/Data/Movies/Action_Zona_de_Exclusion.asset,a5ece24220536f042bd9d2b1ca93aec1,#E74C3C,Penetrar en territorio prohibido.
+Action_Élite_Absoluta,Élite Absoluta,Action,Common,,0,0,Assets/Data/Movies/Action_Élite_Absoluta.asset,a36c7edae38e9344097b1f7999bb65b9,#E74C3C,Solo los mejores sobreviven.
+SciFi_Algoritmo,Algoritmo,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Algoritmo.asset,447880f03d142ea4ebbf9bdcef1379cc,#27AE60,La IA que se volvió más inteligente que sus creadores.
+SciFi_Ano_2199,Año 2199,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Ano_2199.asset,a8c9e60ca17ca9b4898e9be599d9a972,#27AE60,El futuro tiene sus propios problemas.
+SciFi_Codigo_de_Vida,Código de Vida,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Codigo_de_Vida.asset,8ff2116afb8d0f848b6e2cbf09b9e137,#27AE60,Reescribir el ADN humano.
+SciFi_Dominacion,Dominación,SciFi,Common,iron_circuit,4,0,Assets/Data/Movies/SciFi_Dominacion.asset,47a5f7fbb17953a4bbea0b6975ba9d9e,#1ABC9C,La conquista del espacio como destino humano.
+SciFi_Dominio_Cosmico,Dominio Cósmico,SciFi,Common,iron_circuit,5,0,Assets/Data/Movies/SciFi_Dominio_Cosmico.asset,dd58d25df5b5c9c4588ca1b287ecddce,#1ABC9C,Controlar el cosmos entero.
+SciFi_El_Codigo_Estelar,El Código Estelar,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_El_Codigo_Estelar.asset,1001f9635afcc4241855c33bc8b31705,#1ABC9C,Un mensaje oculto en las estrellas.
+SciFi_El_Proyecto_Arca,El Proyecto Arca,SciFi,Common,neon_drift,2,0,Assets/Data/Movies/SciFi_El_Proyecto_Arca.asset,e5ccc11f5f475c841bbfcd033583405c,#27AE60,Construir la última nave antes del fin.
+SciFi_El_Tiempo_No_Perdona,El Tiempo No Perdona,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_El_Tiempo_No_Perdona.asset,e075ba9f5e1ffab4aa0b9648b8b35015,#1ABC9C,Un viajero del tiempo que no puede parar.
+SciFi_El_Último_Android,El Último Android,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_El_Último_Android.asset,46c3ec31ef22ab5449d25b360f9fe10f,#1ABC9C,Una máquina que aprendió a sentir.
+SciFi_Frontera_Cuantica,Frontera Cuántica,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Frontera_Cuantica.asset,14b5650a1c3be704a9c8666cd1331c9f,#1ABC9C,La física es solo la primera barrera.
+SciFi_Genesis_II,Génesis II,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Genesis_II.asset,6b424a979d70507478a8d27af24cd65c,#27AE60,Recrear la vida desde cero.
+SciFi_Genesis_Universal,Génesis Universal,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Genesis_Universal.asset,b15ad32c9c73d294b90daebe208da3bf,#1ABC9C,"El origen del universo, revelado."
+SciFi_Invasion_Silenciosa,Invasión Silenciosa,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Invasion_Silenciosa.asset,234a7b42eca84754a82ca87f6b47a6c0,#1ABC9C,No sabes que están aquí... hasta que es tarde.
+SciFi_La_Anomalia,La Anomalía,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Anomalia.asset,390d7f45398c02644923adefd7c952e8,#27AE60,Una anomalía que rompe las leyes de la física.
+SciFi_La_Colonia,La Colonia,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Colonia.asset,f7ed4724f08aa1b4fb81c7ddad9dbf97,#1ABC9C,Sobrevivir en un planeta hostil.
+SciFi_La_Ecuacion_Final,La Ecuación Final,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Ecuacion_Final.asset,7aa3d96b79826b14c874e7ab0537b7ea,#27AE60,La teoría que lo explica todo.
+SciFi_La_Gran_Migracion,La Gran Migración,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Gran_Migracion.asset,278e155e9bc381b409d4263eef96c695,#27AE60,Abandonar la Tierra para siempre.
+SciFi_La_Senal,La Señal,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Senal.asset,0bcdfe399760ec24b9c317cb48476f03,#27AE60,Una señal del espacio cambia todo.
+SciFi_La_Última_Galaxia,La Última Galaxia,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_La_Última_Galaxia.asset,f2479db47b19d2048b6b869be79b1a00,#1ABC9C,Explorar los confines del universo conocido.
+SciFi_Los_Inmortales,Los Inmortales,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Los_Inmortales.asset,cbbbf3b03e3880944b4566926f2c4bdb,#1ABC9C,¿Qué pasa cuando no puedes morir?
+SciFi_Mente_Colmena,Mente Colmena,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Mente_Colmena.asset,ff2f6714f0fc7a24fac50e8110df6826,#27AE60,Una conciencia compartida por millones.
+SciFi_Mundo_Espejo,Mundo Espejo,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Mundo_Espejo.asset,3eaf725c7302be14794ee7aa853e769c,#1ABC9C,Descubrir que tu mundo es una simulación.
+SciFi_Nexo,Nexo,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Nexo.asset,9b196d6539f3126428f181ddbbde0535,#27AE60,La conexión entre dimensiones paralelas.
+SciFi_Paradoja,Paradoja,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Paradoja.asset,db35c398a7935eb41855c566a384bf67,#1ABC9C,Cambiar el pasado rompe el futuro.
+SciFi_Planeta_Virgen,Planeta Virgen,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Planeta_Virgen.asset,020aae145478f0c489f91b583ac5870f,#27AE60,El primer planeta habitable encontrado.
+SciFi_Protocolo_Omega,Protocolo Omega,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Protocolo_Omega.asset,0177e636eea5af742a37d9599ad47921,#1ABC9C,Un protocolo que no debía activarse.
+SciFi_Rebelde_Digital,Rebelde Digital,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Rebelde_Digital.asset,ce9ebefe358dd534596ba0e96d58f8af,#1ABC9C,Un hacker que lucha contra el sistema global.
+SciFi_Singularidad,Singularidad,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Singularidad.asset,6e040ffb8985c1048b1eaf7a32226e6a,#27AE60,El momento en que la máquina supera al humano.
+SciFi_Transferencia_Mental,Transferencia Mental,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Transferencia_Mental.asset,cced6814c3f1cac48af8342dc06c2980,#27AE60,¿Qué eres sin tu memoria?
+SciFi_Transicion,Transición,SciFi,Common,,0,0,Assets/Data/Movies/SciFi_Transicion.asset,daca7f5fab8789d45977e89f3f785aae,#27AE60,La humanidad ante su próxima evolución.
+Drama_Anos_de_Plomo,Años de Plomo,Drama,Common,,0,0,Assets/Data/Movies/Drama_Anos_de_Plomo.asset,c94c47ecb7c7a714e91467a065e4d932,#2980B9,Crecer en tiempos difíciles.
+Drama_Cartas_sin_Respuesta,Cartas sin Respuesta,Drama,Common,,0,0,Assets/Data/Movies/Drama_Cartas_sin_Respuesta.asset,cf4b792f1c84b8e44baf179baec76fc6,#3498DB,Una historia de amor que no puede ser.
+Drama_Cenizas_de_Verano,Cenizas de Verano,Drama,Common,,0,0,Assets/Data/Movies/Drama_Cenizas_de_Verano.asset,548a3bb6169ef3b4aa3841f98db39406,#2980B9,Un verano que lo cambió todo.
+Drama_Confesiones,Confesiones,Drama,Common,,0,0,Assets/Data/Movies/Drama_Confesiones.asset,32473f4be85dc974f93f1193b9d79b58,#2980B9,Decir la verdad siempre tiene consecuencias.
+Drama_Deuda_de_Sangre,Deuda de Sangre,Drama,Common,,0,0,Assets/Data/Movies/Drama_Deuda_de_Sangre.asset,da76d089c118345448da1a0be3b99a5e,#3498DB,Una deuda que se paga con el tiempo.
+Drama_El_Circulo,El Círculo,Drama,Common,iron_circuit,6,0,Assets/Data/Movies/Drama_El_Circulo.asset,381726673c79a4b43b64893ade7541a9,#2980B9,"La historia se repite, generación tras generación."
+Drama_El_Fotografo,El Fotógrafo,Drama,Common,,0,0,Assets/Data/Movies/Drama_El_Fotografo.asset,0c4fe1c5c52ad4843adf5c82a415c03b,#2980B9,Capturar la belleza del dolor.
+Drama_El_Nombre_del_Padre,El Nombre del Padre,Drama,Common,,0,0,Assets/Data/Movies/Drama_El_Nombre_del_Padre.asset,9b26614932a827044b1046077fa3e2d4,#2980B9,Buscar al padre que nunca estuvo.
+Drama_El_Peso_del_Silencio,El Peso del Silencio,Drama,Common,,0,0,Assets/Data/Movies/Drama_El_Peso_del_Silencio.asset,c8a80bcadceb92a459923350dec586f7,#3498DB,Lo que no se dice destruye más que las palabras.
+Drama_El_Poeta_Olvidado,El Poeta Olvidado,Drama,Common,,0,0,Assets/Data/Movies/Drama_El_Poeta_Olvidado.asset,f08f26314d0c0fd458ea0099d5b2c216,#2980B9,Rescatar la obra de un genio incomprendido.
+Drama_El_Último_Cuadro,El Último Cuadro,Drama,Common,,0,0,Assets/Data/Movies/Drama_El_Último_Cuadro.asset,b3d48abcbde687c47bae02f4c89fb08c,#2980B9,Pintar la obra maestra antes de morir.
+Drama_Espejo_Roto,Espejo Roto,Drama,Common,,0,0,Assets/Data/Movies/Drama_Espejo_Roto.asset,b86dfbfa6ab143542a335cee45d1c8fa,#3498DB,Reconstruirse después de la traición.
+Drama_Generaciones,Generaciones,Drama,Common,,0,0,Assets/Data/Movies/Drama_Generaciones.asset,c5cd0a6d9c427c1418e73003070ee314,#3498DB,Cien años de historia familiar.
+Drama_Invierno_Eterno,Invierno Eterno,Drama,Common,,0,0,Assets/Data/Movies/Drama_Invierno_Eterno.asset,f05d48ec8b43ba34c95075c7334f78fe,#2980B9,Un frío que dura más que el invierno.
+Drama_La_Dignidad,La Dignidad,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Dignidad.asset,82c3a53b64744d14495f55ea7037d811,#2980B9,Mantener la dignidad cuando todo se derrumba.
+Drama_La_Gran_Ilusion,La Gran Ilusión,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Gran_Ilusion.asset,cbbb30e04d9537a4d98d23a7a8f227d4,#3498DB,Un sueño demasiado grande para ser real.
+Drama_La_Herencia,La Herencia,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Herencia.asset,a12a6c659c901df4c9313c27ea6af808,#3498DB,Una familia divida por el dinero.
+Drama_La_Mujer_del_Puerto,La Mujer del Puerto,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Mujer_del_Puerto.asset,7623965019ae97244a56fee1fcd43976,#2980B9,Esperar al amor durante treinta años.
+Drama_La_Promesa,La Promesa,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Promesa.asset,f780a1fcb20fafc478f7bd43f15a88aa,#3498DB,Una promesa que atraviesa décadas.
+Drama_La_Última_Cena,La Última Cena,Drama,Common,,0,0,Assets/Data/Movies/Drama_La_Última_Cena.asset,83cbb96ea7ccdd642b36027ae2074efa,#3498DB,Una familia que se despide.
+Drama_Lo_Que_Quedo,Lo Que Quedó,Drama,Common,,0,0,Assets/Data/Movies/Drama_Lo_Que_Quedo.asset,35821c9c74e497d49817306a10f6ae56,#3498DB,Los objetos guardan la memoria de sus dueños.
+Drama_Mar_de_Fondo,Mar de Fondo,Drama,Common,iron_circuit,3,0,Assets/Data/Movies/Drama_Mar_de_Fondo.asset,7b730423ab1e32b41ad176c55a03383f,#3498DB,Lo que viene de lo profundo no se puede ignorar.
+Drama_Marea_Alta,Marea Alta,Drama,Common,,0,0,Assets/Data/Movies/Drama_Marea_Alta.asset,1ebe34a3b3f1d1f43b98068dbad347d4,#3498DB,"Una ciudad inundada, un amor que resiste."
+Drama_Puentes_de_Papel,Puentes de Papel,Drama,Common,,0,0,Assets/Data/Movies/Drama_Puentes_de_Papel.asset,f749acf0c5e07284783f7280bcf0e5f1,#2980B9,Las palabras que construyen y destruyen.
+Drama_Raices_Rotas,Raíces Rotas,Drama,Common,,0,0,Assets/Data/Movies/Drama_Raices_Rotas.asset,af25416a91c25b04886f94a0244ef675,#2980B9,Volver al pueblo que nos abandonó.
+Drama_Sombras_de_Familia,Sombras de Familia,Drama,Common,,0,0,Assets/Data/Movies/Drama_Sombras_de_Familia.asset,9a75af88d3688c44a8d85a40773bdd42,#3498DB,Los secretos que se heredan.
+Drama_Tiempo_Prestado,Tiempo Prestado,Drama,Common,,0,0,Assets/Data/Movies/Drama_Tiempo_Prestado.asset,3386c4901b5d2034687fe8795afd4c90,#2980B9,Vivir sabiendo que el tiempo se acaba.
+Drama_Tierra_de_Nadie,Tierra de Nadie,Drama,Common,,0,0,Assets/Data/Movies/Drama_Tierra_de_Nadie.asset,cb4f1a98cfb95d34cb3253a260cd628a,#3498DB,"Entre dos mundos, sin pertenecer a ninguno."
+Drama_Vida_y_Obra,Vida y Obra,Drama,Common,,0,0,Assets/Data/Movies/Drama_Vida_y_Obra.asset,07c95a747f8389d4b8030173e1950882,#3498DB,La biografía de un siglo.
+Drama_Volver_a_Empezar,Volver a Empezar,Drama,Common,,0,0,Assets/Data/Movies/Drama_Volver_a_Empezar.asset,55750c73f262bd84c8c63a814d725417,#3498DB,Nada es imposible si empiezas desde cero.
+Horror_Aberracion,Aberración,Horror,Common,,0,0,Assets/Data/Movies/Horror_Aberracion.asset,9e2f31ec1a99b5e4696d17c63cb47dc0,#8E44AD,Algo salió mal en el laboratorio.
+Horror_Bestia,Bestia,Horror,Common,,0,0,Assets/Data/Movies/Horror_Bestia.asset,cc487f063a17d104b9e9b41c65d8e5d9,#8E44AD,Una criatura que desafía toda clasificación científica.
+Horror_Caja_Negra,Caja Negra,Horror,Common,,0,0,Assets/Data/Movies/Horror_Caja_Negra.asset,495dd2d98f7bbad40a4478bf04cc7b85,#8E44AD,Encontrar la caja fue el principio del fin.
+Horror_Carne_y_Hueso,Carne y Hueso,Horror,Common,,0,0,Assets/Data/Movies/Horror_Carne_y_Hueso.asset,cb6fca996d94919499c0ec0313b36023,#7D3C98,El monstruo más aterrador es el humano.
+Horror_Caza_Nocturna,Caza Nocturna,Horror,Common,,0,0,Assets/Data/Movies/Horror_Caza_Nocturna.asset,f4e27a644c7011145a8a0e8ccf326a37,#7D3C98,La noche pertenece a los que cazan.
+Horror_Cosas_que_Acechan,Cosas que Acechan,Horror,Common,,0,0,Assets/Data/Movies/Horror_Cosas_que_Acechan.asset,89101c4a4e6705e468375f0e9aaed620,#7D3C98,No mires debajo de la cama.
+Horror_Dimension_Oscura,Dimensión Oscura,Horror,Common,,0,0,Assets/Data/Movies/Horror_Dimension_Oscura.asset,86bcd555888c992499345591c413b4b3,#8E44AD,Una grieta en la realidad deja pasar algo.
+Horror_Eco_del_Infierno,Eco del Infierno,Horror,Common,,0,0,Assets/Data/Movies/Horror_Eco_del_Infierno.asset,27b5ebd8364a7e9488ea30cc4a54d2db,#8E44AD,Voces que vienen del más allá.
+Horror_El_Culto,El Culto,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Culto.asset,10de56eecc09cd04aa72a8a557a1b7be,#7D3C98,Una secta que nunca deja ir a sus miembros.
+Horror_El_Exorcismo_de_Villa_Roja,El Exorcismo de Villa Roja,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Exorcismo_de_Villa_Roja.asset,ba22dbbeacac03e4e8cd65cba50cbe96,#7D3C98,Una posesión que desafía toda lógica.
+Horror_El_Portal,El Portal,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Portal.asset,3c314204bfdd83b4298172e4906b6bc6,#8E44AD,Abrir la puerta fue el peor error.
+Horror_El_Psicopata,El Psicópata,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Psicopata.asset,8cf90b6e71ff95442983651edb777e91,#7D3C98,"Una mente retorcida, una ciudad aterrorizada."
+Horror_El_Ritual,El Ritual,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Ritual.asset,a650df368ded72f49a1a6ad3c82b122d,#8E44AD,Ceremonias que no deben realizarse.
+Horror_El_Último_Grito,El Último Grito,Horror,Common,,0,0,Assets/Data/Movies/Horror_El_Último_Grito.asset,911a076cf96047841b6a78b2b5548713,#8E44AD,"Cinco amigos, una cabaña, ningún retorno."
+Horror_Engendro,Engendro,Horror,Common,,0,0,Assets/Data/Movies/Horror_Engendro.asset,3ded5a6f3f5e87641b7ab04dd638ae13,#7D3C98,Una creación que se volvió contra su creador.
+Horror_Gritos_en_el_Bosque,Gritos en el Bosque,Horror,Common,,0,0,Assets/Data/Movies/Horror_Gritos_en_el_Bosque.asset,e5a5a818b9cf61549b06e0f5b3f0e03b,#8E44AD,El bosque recuerda lo que enterramos.
+Horror_La_Casa_del_Fin,La Casa del Fin,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Casa_del_Fin.asset,511de102ac6a1374ea364f7f3dc054ed,#8E44AD,Una casa que no deja salir a sus huéspedes.
+Horror_La_Criatura_del_Pantano,La Criatura del Pantano,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Criatura_del_Pantano.asset,b8403e76377634f4aabc640b9f75e7f2,#8E44AD,Algo antiguo despertó en las aguas.
+Horror_La_Guarida,La Guarida,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Guarida.asset,5f57c5a4864a6954b8aeb2030a03a982,#7D3C98,Su hogar ya no les pertenece.
+Horror_La_Infeccion,La Infección,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Infeccion.asset,98c4c681bed4c0e448404827922e7fe4,#7D3C98,Un virus que convierte lo humano en monstruo.
+Horror_La_Mascara,La Máscara,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Mascara.asset,686f26dd7a3c9a5408c9cbdccb5fa167,#7D3C98,Detrás de cada máscara hay una historia sangrienta.
+Horror_La_Plaga,La Plaga,Horror,Common,,0,0,Assets/Data/Movies/Horror_La_Plaga.asset,9a1469bdd3ba2d3498d885baca805335,#7D3C98,Cuando la enfermedad toma control.
+Horror_Maldicion_Ancestral,Maldición Ancestral,Horror,Common,,0,0,Assets/Data/Movies/Horror_Maldicion_Ancestral.asset,d00b6bffa484cb24199eea829183160c,#7D3C98,Una maldición que dura siglos.
+Horror_Noche_de_los_Muertos,Noche de los Muertos,Horror,Common,,0,0,Assets/Data/Movies/Horror_Noche_de_los_Muertos.asset,6e42a02b211d53a43ac64d1a7bd52b5e,#8E44AD,Los muertos vuelven con hambre.
+Horror_Oscuridad_Total,Oscuridad Total,Horror,Common,,0,0,Assets/Data/Movies/Horror_Oscuridad_Total.asset,2a152b3f52e32964ca54f47d4a32e600,#8E44AD,"Sin luz, el miedo se amplifica."
+Horror_Pesadilla_Recurrente,Pesadilla Recurrente,Horror,Common,,0,0,Assets/Data/Movies/Horror_Pesadilla_Recurrente.asset,63498e639dfdb5c4b8e625cb0e94661f,#7D3C98,El sueño no es el refugio que creías.
+Horror_Punto_Sin_Retorno,Punto Sin Retorno,Horror,Common,,0,0,Assets/Data/Movies/Horror_Punto_Sin_Retorno.asset,e4aa0531db28dfb4f8481465dec9ca15,#8E44AD,Ya no hay camino de vuelta.
+Horror_Sangre_en_las_Paredes,Sangre en las Paredes,Horror,Common,iron_circuit,1,0,Assets/Data/Movies/Horror_Sangre_en_las_Paredes.asset,f44dfe13baefadf4297d598f245a9df9,#8E44AD,Una casa construida sobre secretos.
+Horror_Sombras_del_Pasado,Sombras del Pasado,Horror,Common,,0,0,Assets/Data/Movies/Horror_Sombras_del_Pasado.asset,a9c703573a50ceb469fce412bd62f731,#7D3C98,El pasado siempre regresa.
+Horror_Terror_Absoluto,Terror Absoluto,Horror,Common,,0,0,Assets/Data/Movies/Horror_Terror_Absoluto.asset,7cfe4640a1093784b8a3f97052a1cd2a,#7D3C98,El miedo máximo que el cine puede ofrecer.
+Comedy_Amor_en_Cuarentena,Amor en Cuarentena,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Amor_en_Cuarentena.asset,83c1f0aebaf50174b84d00dda9326720,#F39C12,Enamorarse en el peor momento posible.
+Comedy_Boda_de_Pelicula,Boda de Película,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Boda_de_Pelicula.asset,59c2a9a36a68c254da52b647fa9e3ddc,#D35400,Organizar una boda en 48 horas.
+Comedy_Caos_Total,Caos Total,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Caos_Total.asset,e3b8a3be3b0611244bee412304d8a72a,#D35400,Un día donde todo sale mal a la vez.
+Comedy_Cuerpos_Cambiados,Cuerpos Cambiados,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Cuerpos_Cambiados.asset,19589c2ecfa45834d897ca90907013f4,#F39C12,Un niño en el cuerpo de un CEO.
+Comedy_Doble_Identidad,Doble Identidad,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Doble_Identidad.asset,fba7acaa29a5ba04b9248bbe77334837,#F39C12,Ser dos personas a la vez agota.
+Comedy_El_Agente_Secreto_Torpe,El Agente Secreto Torpe,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Agente_Secreto_Torpe.asset,0a144c6223ee3334dbb5361d3cb3a1f3,#F39C12,La CIA no entrenó para esto.
+Comedy_El_Chef_Accidental,El Chef Accidental,Comedy,Common,shadow_trigger,1,0,Assets/Data/Movies/Comedy_El_Chef_Accidental.asset,3bc7a39a91452794d95ad2b67b83d93e,#D35400,Un fontanero que acaba dirigiendo un restaurante.
+Comedy_El_Detective_Torpe,El Detective Torpe,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Detective_Torpe.asset,adf700c9dfbfc19439735fc7da7df990,#D35400,Resolver crímenes por accidente.
+Comedy_El_Doble_Perfecto,El Doble Perfecto,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Doble_Perfecto.asset,810d2ea64eeb5cb498feebaa7ed20f15,#D35400,Hacerse pasar por famoso tiene sus riesgos.
+Comedy_El_Falso_Medico,El Falso Médico,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Falso_Medico.asset,982a88a5fc6163643ba27bbe8c44cb4b,#D35400,Pasarse por doctor sin estudios fue mala idea.
+Comedy_El_Gran_Malentendido,El Gran Malentendido,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Gran_Malentendido.asset,cadafa9b63b76484994c2de065f901cf,#D35400,Una cadena de errores que no para de crecer.
+Comedy_El_Heredero_Rebelde,El Heredero Rebelde,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Heredero_Rebelde.asset,2e0889e6fdcebed40b97b8e4df4e4bed,#D35400,Heredar un imperio que no quieres.
+Comedy_El_Jefe_Imposible,El Jefe Imposible,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Jefe_Imposible.asset,2263a3a2257e1354ab193c0cd499369a,#F39C12,Trabajar para el peor jefe del mundo.
+Comedy_El_Millonario_Accidental,El Millonario Accidental,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Millonario_Accidental.asset,052374a22de1ff1438c797732151eb38,#F39C12,Ganar la lotería es el inicio de los problemas.
+Comedy_El_Novio_Fantasma,El Novio Fantasma,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Novio_Fantasma.asset,36ad1e0fc89abf546a89bccdb7642238,#F39C12,Cuando tu prometido resulta ser un espíritu.
+Comedy_El_Papa_Modernisimo,El Papá Modernísimo,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Papa_Modernisimo.asset,879e7655f50800a47afe77aed4b45c2f,#F39C12,Criar hijos en la era digital.
+Comedy_El_Politico_Honesto,El Político Honesto,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Politico_Honesto.asset,fb0195712c568a346bb7987c92636f0d,#F39C12,El único político que no miente sobrevive... por poco.
+Comedy_El_Show_Debe_Continuar,El Show Debe Continuar,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Show_Debe_Continuar.asset,f75ca255d4f6cb8489e19399a43b7452,#F39C12,"En el escenario del mundo, todos actuamos."
+Comedy_El_Vecino_Espia,El Vecino Espía,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Vecino_Espia.asset,d70a62397fdf4d045adf8db945950788,#D35400,El vecino más curioso del edificio.
+Comedy_El_Último_Comico,El Último Cómico,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_El_Último_Comico.asset,6dd9965e139d4be41b20c527218e669d,#D35400,El último grande del humor.
+Comedy_Familia_en_Fuga,Familia en Fuga,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Familia_en_Fuga.asset,f1a203d51aa7b054e828bfadf9fb2248,#D35400,Escapar de la familia en unas vacaciones.
+Comedy_Intercambio_de_Vidas,Intercambio de Vidas,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Intercambio_de_Vidas.asset,9129cc13483d5dc4da1f06785295b44a,#D35400,Vivir la vida del otro es más difícil de lo que parece.
+Comedy_La_Gran_Comedia_Nacional,La Gran Comedia Nacional,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_La_Gran_Comedia_Nacional.asset,3bb5104192d1d32458c3cd0da19abdd2,#D35400,Una sátira del país que todos reconocerán.
+Comedy_La_Reunion_de_Excompaneros,La Reunión de Excompañeros,Comedy,Common,iron_circuit,2,0,Assets/Data/Movies/Comedy_La_Reunion_de_Excompaneros.asset,1c36d8aa89ac743488531de3e817505b,#F39C12,Reunirse veinte años después.
+Comedy_Los_Vecinos_del_Caos,Los Vecinos del Caos,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Los_Vecinos_del_Caos.asset,fac1ec0a027e76c4a90e766324b4c754,#D35400,Vivir junto a la familia más ruidosa del barrio.
+Comedy_Mi_Cunado_Es_un_Desastre,Mi Cuñado Es un Desastre,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Mi_Cunado_Es_un_Desastre.asset,1b26e9414b3a9b4428c4d8863ddfe929,#F39C12,La familia política más caótica del barrio.
+Comedy_Novatos,Novatos,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Novatos.asset,bb52d928c41a85d44a4af8555ea086ff,#F39C12,Su primer día de trabajo.
+Comedy_Operacion_Suegra,Operación Suegra,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Operacion_Suegra.asset,734171b3d09940b47848706c6fdc3eac,#F39C12,Impresionar a la suegra es cuestión de vida o muerte.
+Comedy_Superstar_Accidental,Superstar Accidental,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Superstar_Accidental.asset,f9eaa01f1c25b6a408d32b40944fd4f2,#D35400,"Viral por accidente, famoso por necesidad."
+Comedy_Vacaciones_en_Crisis,Vacaciones en Crisis,Comedy,Common,,0,0,Assets/Data/Movies/Comedy_Vacaciones_en_Crisis.asset,85988efefc2d04f41a41bbbaaf9ba187,#F39C12,El peor viaje familiar de la historia.
+Romance_Amor_en_Tokyo,Amor en Tokyo,Romance,Common,,0,0,Assets/Data/Movies/Romance_Amor_en_Tokyo.asset,ea2c53d17e7660c479cc1897f3745f4a,#C2185B,Un amor que nació entre tradiciones distintas.
+Romance_Amor_Sin_Fin,Amor Sin Fin,Romance,Common,,0,0,Assets/Data/Movies/Romance_Amor_Sin_Fin.asset,fe13b91aa9c7adf4895f398b0475f525,#C2185B,Una historia de amor que dura para siempre.
+Romance_Cartas_de_Abril,Cartas de Abril,Romance,Common,,0,0,Assets/Data/Movies/Romance_Cartas_de_Abril.asset,e94b3abfd49c3004298d41820e24bb6a,#E91E8C,Un amor epistolar que desafía el tiempo.
+Romance_Corazones_Cruzados,Corazones Cruzados,Romance,Common,,0,0,Assets/Data/Movies/Romance_Corazones_Cruzados.asset,f0348a5f0cf0d2a4296bf8b782dd389d,#E91E8C,Dos almas que siempre se encuentran.
+Romance_Danzando_en_la_Oscuridad,Danzando en la Oscuridad,Romance,Common,,0,0,Assets/Data/Movies/Romance_Danzando_en_la_Oscuridad.asset,0e04ca0331daa074e95c56ca2c421864,#E91E8C,Bailar sin poder verse.
+Romance_Dos_Mundos_Distintos,Dos Mundos Distintos,Romance,Common,,0,0,Assets/Data/Movies/Romance_Dos_Mundos_Distintos.asset,3c477d125f72759409d483b42ea4b7b4,#C2185B,"Él de clase alta, ella de barrio. El amor no entiende de clases."
+Romance_El_Amor_Prohibido,El Amor Prohibido,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Amor_Prohibido.asset,c94e6fc3f8241de42a6dc92b43a48782,#E91E8C,Amar cuando el mundo lo prohíbe.
+Romance_El_Arquitecto_de_Suenos,El Arquitecto de Sueños,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Arquitecto_de_Suenos.asset,49cb24535c00fb844a420e5e2d199d58,#E91E8C,Construir juntos algo más que una casa.
+Romance_El_Barista,El Barista,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Barista.asset,a181001e966ad464c8965ca8520bb8c3,#C2185B,Enamorarse de la persona que prepara tu café.
+Romance_El_Billete_de_Tren,El Billete de Tren,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Billete_de_Tren.asset,c81b6764013e49e45b434dce8f9c8bda,#C2185B,Un viaje en tren cambia su vida para siempre.
+Romance_El_Contrato_Nupcial,El Contrato Nupcial,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Contrato_Nupcial.asset,72a142795fc8eaf44b4bb614b619fc51,#C2185B,Casarse por acuerdo y enamorarse por accidente.
+Romance_El_Destino_Tenia_un_Plan,El Destino Tenía un Plan,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Destino_Tenia_un_Plan.asset,dc2df17bfe5666e499da3266b68b74fd,#E91E8C,Dos personas que el universo siempre une.
+Romance_El_Hombre_del_Sombrero,El Hombre del Sombrero,Romance,Common,shadow_trigger,3,0,Assets/Data/Movies/Romance_El_Hombre_del_Sombrero.asset,37d78faaf4c19d94c93bf8288e9bba55,#C2185B,Un misterioso desconocido en el mercado.
+Romance_El_Restaurante_Secreto,El Restaurante Secreto,Romance,Common,,0,0,Assets/Data/Movies/Romance_El_Restaurante_Secreto.asset,a8d423d28dd34484ba3da33408cd8ce8,#E91E8C,Enamorarse del chef que nunca muestra su cara.
+Romance_Eternamente,Eternamente,Romance,Common,,0,0,Assets/Data/Movies/Romance_Eternamente.asset,b24fea1a828661a4fb243608715c0b54,#E91E8C,El amor más grande jamás filmado.
+Romance_Eterno_Retorno,Eterno Retorno,Romance,Common,,0,0,Assets/Data/Movies/Romance_Eterno_Retorno.asset,619ba63314f785c4697f299dd55fafae,#C2185B,El amor que se repite a través del tiempo.
+Romance_Flores_de_Invierno,Flores de Invierno,Romance,Common,,0,0,Assets/Data/Movies/Romance_Flores_de_Invierno.asset,3f2c4d05419b54c48b867e8a3c115878,#E91E8C,Amor que florece en el frío.
+Romance_La_Fotografa_de_Guerra,La Fotógrafa de Guerra,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Fotografa_de_Guerra.asset,998ea6c215707824aab3d2d8693ad9f0,#E91E8C,Un amor nació donde menos se esperaba.
+Romance_La_Historia_de_Amor_del_Siglo,La Historia de Amor del Siglo,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Historia_de_Amor_del_Siglo.asset,071b6f7712ddf124c9c556d83dd46e16,#C2185B,Dos vidas entrelazadas por el destino.
+Romance_La_Libreria_de_los_Suenos,La Librería de los Sueños,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Libreria_de_los_Suenos.asset,33be3b5b5476fa64c9be192ed869e5d1,#E91E8C,Encontrarse entre las páginas.
+Romance_La_Nota_de_la_Cancion,La Nota de la Canción,Romance,Common,neon_drift,1,0,Assets/Data/Movies/Romance_La_Nota_de_la_Cancion.asset,bc1b754ff69ec964f9cde99574a37c7e,#E91E8C,Una canción que los unió.
+Romance_La_Pianista,La Pianista,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Pianista.asset,132d99d98a173d64d93a74fd678f9ef0,#E91E8C,La música como lenguaje del amor.
+Romance_La_Propuesta,La Propuesta,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Propuesta.asset,a5283ab48f3b0084da116e73bf34c603,#C2185B,La propuesta más inesperada del año.
+Romance_La_Segunda_Oportunidad,La Segunda Oportunidad,Romance,Common,,0,0,Assets/Data/Movies/Romance_La_Segunda_Oportunidad.asset,017ebe33a3f241643a86088b91d8f43b,#E91E8C,Reconectar con el amor perdido años atrás.
+Romance_Medianoche_en_Roma,Medianoche en Roma,Romance,Common,,0,0,Assets/Data/Movies/Romance_Medianoche_en_Roma.asset,e226b6f5a115a5e48bc73fa16285762a,#C2185B,Una noche en la ciudad eterna.
+Romance_Mas_Alla_del_Oceano,Más Allá del Océano,Romance,Common,,0,0,Assets/Data/Movies/Romance_Mas_Alla_del_Oceano.asset,dfb9d382eb1f3cd49a3422b256abc973,#C2185B,Un amor que sobrevive la distancia.
+Romance_Primer_Cafe,Primer Café,Romance,Common,,0,0,Assets/Data/Movies/Romance_Primer_Cafe.asset,e5112b37b27481745822360ef8546cd7,#E91E8C,Dos desconocidos en la misma cafetería.
+Romance_Promesas_Bajo_la_Lluvia,Promesas Bajo la Lluvia,Romance,Common,,0,0,Assets/Data/Movies/Romance_Promesas_Bajo_la_Lluvia.asset,ecf4beeb7a79c6b428fa78a89aa9a4a7,#C2185B,Una promesa hecha en la tormenta.
+Romance_Siete_Dias,Siete Días,Romance,Common,,0,0,Assets/Data/Movies/Romance_Siete_Dias.asset,1e972165b1cfd0941b791b9b36b8f1fb,#C2185B,Solo tienen una semana para decidir.
+Romance_Verano_en_la_Costa,Verano en la Costa,Romance,Common,,0,0,Assets/Data/Movies/Romance_Verano_en_la_Costa.asset,4e4e8fd93bf59e54486adf4093aa3f10,#C2185B,Un amor de verano que podría durar toda la vida.

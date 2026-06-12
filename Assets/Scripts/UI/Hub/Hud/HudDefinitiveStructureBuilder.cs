@@ -110,7 +110,7 @@ public static class HudDefinitiveStructureBuilder
 
         Button newBtn = panel.Find("NewProductionBtn")?.GetComponent<Button>();
         if (newBtn == null)
-            newBtn = CreateActionButton(panel, "NewProductionBtn", "NUEVA PRODUCCIÓN", HudLayoutConstants.ProductionActionHeight);
+            newBtn = CreateActionButton(panel, "NewProductionBtn", Loc.Get(LocKeys.ProdNewProduction), HudLayoutConstants.ProductionActionHeight);
 
         var shell = panel.gameObject.GetComponent<ProductionHudShell>() ?? panel.gameObject.AddComponent<ProductionHudShell>();
         shell.Configure(productionWidget, movieTab, newBtn);

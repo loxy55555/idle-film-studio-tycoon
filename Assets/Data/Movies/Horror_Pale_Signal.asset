@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Horror_Pale_Signal
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Pale Signal
+  genre: 2
+  tagline: Emergency broadcast repeats a personal message.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 4
+  unlockReputation: 0
+  rarity: 0
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: PaleSignal.png
+  posterSprite: {fileID: 0}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

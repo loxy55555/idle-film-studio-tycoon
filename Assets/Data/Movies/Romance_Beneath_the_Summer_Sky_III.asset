@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Romance_Beneath_the_Summer_Sky_III
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: A Utumnpromise
+  genre: 4
+  tagline: Return to the place where it started.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 6
+  unlockReputation: 0
+  rarity: 2
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: AUtumnpromise.png
+  posterSprite: {fileID: 1563790039214287207, guid: 12c336856ed451d4caedd87e089f9a93, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

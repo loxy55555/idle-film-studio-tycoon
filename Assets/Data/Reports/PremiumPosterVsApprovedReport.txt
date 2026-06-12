@@ -1,0 +1,97 @@
+========================================================================
+INFORME — PremiumPosterCatalog vs Distribución Premium Aprobada
+========================================================================
+
+Referencia pósters : Assets/Data/Exports/PremiumPosterCatalog.csv
+Distribución objetivo: Assets/Data/Exports/PremiumMoviesReview.csv
+
+OBJETIVO GLOBAL
+  Rare: 90 | Epic: 20 | Legendary: 10 | Total: 120
+
+------------------------------------------------------------------------
+RESUMEN GLOBAL
+------------------------------------------------------------------------
+  Total actual (pósters)  : 130
+  Total objetivo (aprob.) : 120
+  Diferencia              : +10  → deben pasar a Common: 10
+
+------------------------------------------------------------------------
+POR GÉNERO — Actual vs Objetivo vs Diferencia
+------------------------------------------------------------------------
+Género          Actual  Objetivo    Diff  Tras -10
+------------------------------------------------------------------------
+Action              15         1     +14         5
+SciFi               15         4     +11        15
+Drama               13         8      +5        13
+Horror              13        12      +1        13
+Comedy              13        23     -10        13
+Fantasy             14        10      +4        14
+Romance             12        21      -9        12
+Thriller            12        14      -2        12
+Animation           12        17      -5        12
+Documentary         11        10      +1        11
+------------------------------------------------------------------------
+TOTAL              130       120     +10       120
+
+------------------------------------------------------------------------
+DESGLOSE OBJETIVO POR RAREZA (aprobado)
+------------------------------------------------------------------------
+  Legendary   :  10
+  Epic        :  20
+  Rare        :  90
+
+------------------------------------------------------------------------
+GÉNEROS CON EXCESO (candidatos a demotion)
+------------------------------------------------------------------------
+  Action: +14 (tiene 15, objetivo 1)
+  SciFi: +11 (tiene 15, objetivo 4)
+  Drama: +5 (tiene 13, objetivo 8)
+  Horror: +1 (tiene 13, objetivo 12)
+  Fantasy: +4 (tiene 14, objetivo 10)
+  Documentary: +1 (tiene 11, objetivo 10)
+
+------------------------------------------------------------------------
+GÉNEROS CON DÉFICIT (faltan pósters premium vs objetivo)
+------------------------------------------------------------------------
+  Comedy: -10 (tiene 13, objetivo 23)
+  Romance: -9 (tiene 12, objetivo 21)
+  Thriller: -2 (tiene 12, objetivo 14)
+  Animation: -5 (tiene 12, objetivo 17)
+
+------------------------------------------------------------------------
+10 PELÍCULAS PROPUESTAS PARA PASAR A COMMON
+(criterio: género con exceso, no legendaria, no en lista aprobada)
+------------------------------------------------------------------------
+   1. Action       | Beyond The Frontier
+   2. Action       | Operation Coldfire
+   3. Action       | Silent Extraction
+   4. Action       | The Last Dominion
+   5. Action       | Empire Of Ashes
+   6. Action       | Ghost Battalion
+   7. Action       | Kingdom Of Dust
+   8. Action       | Crimson Border
+   9. Action       | Dead Frequency
+  10. Action       | Black Horizon
+
+------------------------------------------------------------------------
+10 LEGENDARIAS OFICIALES — conservar en premium (pósters)
+------------------------------------------------------------------------
+  Action         → Iron Wolves
+  SciFi          → Echoes Of Tit An
+  Drama          → When The River Sleeps
+  Horror         → The Hollow House
+  Comedy         → Detectivepot At O
+  Fantasy        → S On G Of The For Gottenre A Lm
+  Romance        → A Sky For Two
+  Thriller       → Red File 27
+  Animation      → Littlegi An Ts
+  Documentary    → NO ENCONTRADA EN PÓSTERS
+
+------------------------------------------------------------------------
+NOTAS
+------------------------------------------------------------------------
+  • PremiumPosterCatalog no incluye rareza; el objetivo por rareza viene de PremiumMoviesReview.
+  • Reducir 10 títulos restaura el total global (130→120) pero NO alinea todos los géneros.
+  • Action (+14) y SciFi (+11) concentran el exceso; Comedy (-10) y Romance (-9) tienen déficit.
+  • Tras demote propuesto: Action queda 5 vs objetivo 1; hace falta otra fase para alinear géneros.
+  • NO se modificó MovieCatalog.

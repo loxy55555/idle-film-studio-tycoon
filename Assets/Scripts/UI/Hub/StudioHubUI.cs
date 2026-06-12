@@ -115,8 +115,13 @@ public class StudioHubUI : MonoBehaviour
     private void UpdateTabStyle(Button btn, bool active)
     {
         if (btn == null) return;
-        var label = btn.GetComponentInChildren<TextMeshProUGUI>();
+
+        var label = btn.transform.Find("Label")?.GetComponent<TextMeshProUGUI>()
+                 ?? btn.GetComponentInChildren<TextMeshProUGUI>();
         var img = btn.GetComponent<Image>();
         HudSkinProvider.ApplyTab(img, label, active, HudTabVariant.MainNav);
+
+        var indicator = btn.transform.Find("ActiveLine")?.GetComponent<Image>();
+        HudSkinProvider.ApplyTabIndicator(indicator, active);
     }
 }

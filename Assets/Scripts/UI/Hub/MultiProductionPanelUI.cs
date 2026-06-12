@@ -4,28 +4,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Shows all active movie productions inside ProductionWidget (ContratosColumn, hub principal).
-/// Attached at runtime by ProductionStatusUI on the same GameObject.
-/// </summary>
+/// <summary>Premium active production list inside ProductionWidget (Phase 8.2).</summary>
 public class MultiProductionPanelUI : MonoBehaviour
 {
     public static MultiProductionPanelUI Instance { get; private set; }
 
-    static readonly Color BG_CARD      = new Color(0.10f, 0.10f, 0.19f);
-    static readonly Color BG_SECTION   = new Color(0.09f, 0.09f, 0.18f);
-    static readonly Color TEXT_PRI     = Color.white;
-    static readonly Color TEXT_SEC     = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color ACCENT_GOLD  = new Color(0.95f, 0.77f, 0.06f);
-
-    const float SlotHeight = 72f;
-    const float MaxWidgetHeight = 300f;
+    const float MaxWidgetHeight = 320f;
 
     RectTransform _slotsRoot;
-    ScrollRect      _scroll;
-    LayoutElement   _widgetLE;
-    StudioManager   _studio;
+    ScrollRect    _scroll;
+    LayoutElement _widgetLE;
+    StudioManager _studio;
+    MovieConfig[] _catalog;
     readonly List<SlotView> _slots = new();
 
     void Awake()
@@ -38,6 +28,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         BuildSlotsRoot();
         GameHub.OnGameReady += Bind;
         if (GameHub.Instance != null) Bind();
+        ProductionPremiereHooks.EnsureOnCanvas();
     }
 
     void OnDestroy()
@@ -59,8 +50,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         {
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
         }
     }
 
@@ -68,6 +58,7 @@ public class MultiProductionPanelUI : MonoBehaviour
     {
         Unbind();
         _studio = GameHub.Instance?.studio;
+        _catalog = MoviePosterVisual.ResolveCatalog();
         if (_studio != null)
             _studio.OnProductionsChanged += Refresh;
         Refresh();
@@ -107,7 +98,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         var scrollLE = scrollGo.AddComponent<LayoutElement>();
         scrollLE.flexibleWidth = 1f;
         scrollLE.flexibleHeight = 1f;
-        scrollLE.minHeight = SlotHeight;
+        scrollLE.minHeight = ActiveProductionSlotLayout.SlotHeight;
 
         HudSkinProvider.ApplyPanel(scrollGo.GetComponent<Image>(), HudPanelVariant.Card);
 
@@ -153,6 +144,7 @@ public class MultiProductionPanelUI : MonoBehaviour
     void Refresh()
     {
         if (_studio == null || _slotsRoot == null) return;
+        if (_catalog == null) _catalog = MoviePosterVisual.ResolveCatalog();
 
         var active = _studio.GetProductionSnapshots();
         int displayCount = active.Count > 0 ? active.Count : 1;
@@ -161,15 +153,16 @@ public class MultiProductionPanelUI : MonoBehaviour
         for (int i = 0; i < displayCount; i++)
         {
             if (i < active.Count)
-                _slots[i].Apply(active[i]);
+                _slots[i].Apply(active[i], _catalog);
             else
                 _slots[i].ApplyIdle();
         }
 
-        float contentHeight = displayCount * SlotHeight + (displayCount - 1) * 6f + 12f;
-        float widgetHeight  = Mathf.Clamp(contentHeight, SlotHeight + 12f, MaxWidgetHeight);
+        float slotH = ActiveProductionSlotLayout.SlotHeight;
+        float contentHeight = displayCount * slotH + (displayCount - 1) * 6f + 12f;
+        float widgetHeight  = Mathf.Clamp(contentHeight, slotH + 12f, MaxWidgetHeight);
         _widgetLE.preferredHeight = widgetHeight;
-        _widgetLE.minHeight = SlotHeight + 12f;
+        _widgetLE.minHeight = slotH + 12f;
         _widgetLE.flexibleHeight = 0f;
 
         _scroll.enabled = contentHeight > widgetHeight;
@@ -204,136 +197,55 @@ public class MultiProductionPanelUI : MonoBehaviour
     class SlotView
     {
         public RectTransform root;
-        TextMeshProUGUI _title;
-        TextMeshProUGUI _genre;
-        TextMeshProUGUI _time;
-        TextMeshProUGUI _reward;
-        Slider          _slider;
-        SmoothProgressBar _smooth;
+        ActiveProductionSlotLayout.SlotRefs _refs;
 
         public static SlotView Create(Transform parent)
         {
             var view = new SlotView();
-            var go = new GameObject("ProdSlot", typeof(RectTransform), typeof(Image));
-            go.transform.SetParent(parent, false);
-            HudSkinProvider.ApplyCard(go.GetComponent<Image>(), HudCardVariant.Primary);
-
-            var le = go.AddComponent<LayoutElement>();
-            le.preferredHeight = SlotHeight;
-            le.minHeight = SlotHeight;
-
-            var vlg = go.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(8, 8, 6, 6);
-            vlg.spacing = 3;
-            vlg.childControlWidth = vlg.childControlHeight = true;
-            vlg.childForceExpandWidth = true;
-            vlg.childForceExpandHeight = false;
-
-            var topRow = new GameObject("TopRow", typeof(RectTransform));
-            topRow.transform.SetParent(go.transform, false);
-            var hlg = topRow.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 6;
-            hlg.childControlWidth = hlg.childControlHeight = true;
-            hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
-            topRow.AddComponent<LayoutElement>().preferredHeight = 20;
-
-            view._title = RuntimeTmpText.Create(topRow.transform, "Película", 14, TEXT_PRI, FontStyles.Bold);
-            var titleLE = view._title.gameObject.AddComponent<LayoutElement>();
-            titleLE.flexibleWidth = 1;
-            view._genre = RuntimeTmpText.Create(topRow.transform, "—", 12, ACCENT_GOLD);
-            view._genre.gameObject.AddComponent<LayoutElement>().preferredWidth = 72;
-
-            var barGo = new GameObject("Bar", typeof(RectTransform), typeof(Image), typeof(Slider));
-            barGo.transform.SetParent(go.transform, false);
-            barGo.GetComponent<Image>().color = BG_SECTION;
-            barGo.AddComponent<LayoutElement>().preferredHeight = 12;
-            view._slider = barGo.GetComponent<Slider>();
-            SetupSlider(view._slider);
-            ReadOnlySlider.Configure(view._slider);
-            view._smooth = barGo.AddComponent<SmoothProgressBar>();
-
-            var botRow = new GameObject("BotRow", typeof(RectTransform));
-            botRow.transform.SetParent(go.transform, false);
-            var blg = botRow.AddComponent<HorizontalLayoutGroup>();
-            blg.spacing = 8;
-            blg.childControlWidth = blg.childControlHeight = true;
-            blg.childForceExpandWidth = blg.childForceExpandHeight = true;
-            botRow.AddComponent<LayoutElement>().preferredHeight = 18;
-
-            view._time = RuntimeTmpText.Create(botRow.transform, "—", 12, TEXT_SEC);
-            view._time.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-            view._reward = RuntimeTmpText.Create(botRow.transform, "", 12, ACCENT_GREEN, FontStyles.Bold,
-                TextAlignmentOptions.MidlineRight);
-            view._reward.gameObject.AddComponent<LayoutElement>().preferredWidth = 130;
-
-            view.root = go.GetComponent<RectTransform>();
+            view._refs = ActiveProductionSlotLayout.Create(parent);
+            view.root = view._refs.root;
             return view;
         }
 
-        public void Apply(ProductionSlotSnapshot snap)
+        public void Apply(ProductionSlotSnapshot snap, MovieConfig[] catalog)
         {
-            _title.text = snap.movieName;
-            _genre.text = GenreLabel(snap.genre);
-            _time.text = FormatTime(snap.timeLeftSeconds);
-            _reward.text = "+" + AnimatedMoneyText.FormatMoney(snap.rewardMoney);
+            var cfg = MoviePosterVisual.FindByName(catalog, snap.movieName);
+            _refs.titleText.text = snap.movieName;
+            _refs.statusText.text = Loc.Get(LocKeys.ProdStatusProducing);
+            _refs.timeText.text = ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+
+            if (cfg != null)
+            {
+                MoviePosterVisual.Apply(_refs.posterImage, cfg);
+                MovieRarityVisual.ApplyFrame(_refs.rarityFrame, cfg.rarity);
+            }
+            else
+            {
+                _refs.posterImage.color = new Color(0.15f, 0.18f, 0.28f);
+                if (_refs.rarityFrame != null)
+                    _refs.rarityFrame.color = MovieRarityVisual.GetAccentColor(MovieRarity.Common);
+            }
+
             UpdateProgress(snap);
         }
 
         public void ApplyIdle()
         {
-            _title.text = "Sin producción activa";
-            _genre.text = "";
-            _time.text = "Inicia una película";
-            _reward.text = "";
-            if (_smooth != null) _smooth.SetNormalized(0f);
-            else if (_slider != null) _slider.value = 0f;
+            _refs.titleText.text = Loc.Get(LocKeys.ProdNoActive);
+            _refs.statusText.text = string.Empty;
+            _refs.timeText.text = Loc.Get(LocKeys.ProdStartMovie);
+            _refs.posterImage.sprite = null;
+            _refs.posterImage.color = new Color(0.09f, 0.09f, 0.18f);
+            if (_refs.rarityFrame != null) _refs.rarityFrame.color = Color.clear;
+            if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(0f);
+            else if (_refs.progressBar != null) _refs.progressBar.value = 0f;
         }
 
         public void UpdateProgress(ProductionSlotSnapshot snap)
         {
-            if (_smooth != null) _smooth.SetNormalized(snap.progress01);
-            else if (_slider != null) _slider.value = snap.progress01;
-            _time.text = FormatTime(snap.timeLeftSeconds);
-        }
-
-        static string FormatTime(float seconds)
-        {
-            int s = Mathf.CeilToInt(seconds);
-            return s >= 60 ? $"{s / 60:0}:{s % 60:00} rest." : $"{s:0}s rest.";
-        }
-
-        static void SetupSlider(Slider slider)
-        {
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.direction = Slider.Direction.LeftToRight;
-
-            var fillArea = new GameObject("Fill Area", typeof(RectTransform));
-            fillArea.transform.SetParent(slider.transform, false);
-            var faRT = fillArea.GetComponent<RectTransform>();
-            faRT.anchorMin = Vector2.zero;
-            faRT.anchorMax = Vector2.one;
-            faRT.offsetMin = faRT.offsetMax = Vector2.zero;
-
-            var fill = new GameObject("Fill", typeof(RectTransform), typeof(Image));
-            fill.transform.SetParent(fillArea.transform, false);
-            fill.GetComponent<Image>().color = ACCENT_GREEN;
-            var fillRT = fill.GetComponent<RectTransform>();
-            fillRT.anchorMin = Vector2.zero;
-            fillRT.anchorMax = Vector2.one;
-            fillRT.offsetMin = fillRT.offsetMax = Vector2.zero;
-            slider.fillRect = fillRT;
+            if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(snap.progress01);
+            else if (_refs.progressBar != null) _refs.progressBar.value = snap.progress01;
+            _refs.timeText.text = ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
         }
     }
-
-    static string GenreLabel(MovieGenre g) => g switch
-    {
-        MovieGenre.Action  => "ACCIÓN",
-        MovieGenre.Drama   => "DRAMA",
-        MovieGenre.Horror  => "TERROR",
-        MovieGenre.Comedy  => "COMEDIA",
-        MovieGenre.Romance => "ROMANCE",
-        MovieGenre.SciFi   => "SCI-FI",
-        _                  => g.ToString().ToUpper(),
-    };
 }

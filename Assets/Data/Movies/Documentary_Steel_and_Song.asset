@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Documentary_Steel_and_Song
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Life Above the Clouds
+  genre: 9
+  tagline: Shipyard workers sing through shifts.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 8
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: LifeAbovetheClouds.png
+  posterSprite: {fileID: 8511019797622936038, guid: 8179a313867903f4da8046cc8507339d, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

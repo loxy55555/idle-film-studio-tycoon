@@ -1,0 +1,24 @@
+FASE 5.1 — Legendary Conflict Audit
+  Common audited     : 170
+  Total conflicts    : 6
+  Critical           : 0
+  Minor              : 6
+  Report             : Assets/Data/Reports/LegendaryConflictReport.csv
+
+FASE 5.2 — Poster Assignment Audit
+  Premium total      : 130
+  Posters on disk    : 130
+  Posters assigned OK: 130
+  Posters missing    : 0
+  Name mismatches    : 0
+  Orphan posters     : 0
+  Duplicate refs     : 0
+  Report             : Assets/Data/Reports/PosterAssignmentReport.csv
+
+FASE 5.3 — Saga Audit
+  Total sagas        : 15
+  Movies in sagas    : 58
+  Standalone movies  : 242
+  Issues found       : 11
+  Critical issues    : 0
+  Report             : Assets/Data/Reports/SagaAuditReport.csv

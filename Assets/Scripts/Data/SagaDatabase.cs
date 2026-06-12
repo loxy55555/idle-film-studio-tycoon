@@ -62,10 +62,21 @@ public static class SagaDatabase
     {
         return new[]
         {
-            MakeBuiltin("shadow_trigger", "Shadow Trigger", SagaSizeClass.Medium, 4, 1),
-            MakeBuiltin("neon_drift", "Neon Drift", SagaSizeClass.Mini, 2, 2),
-            MakeBuiltin("last_signal", "La Última Señal", SagaSizeClass.Single, 1, 3),
-            MakeBuiltin("iron_circuit", "Circuito de Hierro", SagaSizeClass.Large, 6, 4),
+            MakeBuiltin("project_avalanche", "Project Avalanche", SagaSizeClass.Large, 6, 2),
+            MakeBuiltin("dominion", "Dominion", SagaSizeClass.Large, 6, 3),
+            MakeBuiltin("atlas_signal", "Atlas Signal", SagaSizeClass.Medium, 4, 3),
+            MakeBuiltin("the_long_road", "The Long Road", SagaSizeClass.Medium, 4, 2),
+            MakeBuiltin("hollow_creek", "Hollow Creek", SagaSizeClass.Medium, 4, 3),
+            MakeBuiltin("moonkeeper", "Moonkeeper", SagaSizeClass.Medium, 4, 4),
+            MakeBuiltin("the_last_colony", "The Last Colony", SagaSizeClass.Large, 6, 5),
+            MakeBuiltin("winter_letters", "Winter Letters", SagaSizeClass.Mini, 2, 2),
+            MakeBuiltin("blackwater", "Blackwater", SagaSizeClass.Medium, 4, 4),
+            MakeBuiltin("uncle_gary", "Uncle Gary", SagaSizeClass.Mini, 2, 3),
+            MakeBuiltin("the_hidden_crown", "The Hidden Crown", SagaSizeClass.Medium, 4, 5),
+            MakeBuiltin("the_glass_forest", "The Glass Forest", SagaSizeClass.Mini, 2, 4),
+            MakeBuiltin("beneath_the_summer_sky", "Beneath the Summer Sky", SagaSizeClass.Mini, 2, 3),
+            MakeBuiltin("the_black_ledger", "The Black Ledger", SagaSizeClass.Medium, 4, 5),
+            MakeBuiltin("shadow_trigger", "Shadow Trigger", SagaSizeClass.Medium, 4, 2),
         };
     }
 

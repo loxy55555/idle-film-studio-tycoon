@@ -4,9 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Películas tab: 3 production choices on top + completed movies history below.
-/// </summary>
+/// <summary>Production tab — premium offer cards + history (Phase 8.2).</summary>
 public class MovieTabUI : MonoBehaviour
 {
     [Header("Data")]
@@ -17,14 +15,9 @@ public class MovieTabUI : MonoBehaviour
     public RectTransform historyContent;
     public TextMeshProUGUI historyEmptyLabel;
 
-    static readonly Color BG_CARD    = new Color(0.10f, 0.10f, 0.19f);
-    static readonly Color BG_SECTION = new Color(0.08f, 0.08f, 0.16f);
     static readonly Color TEXT_PRI   = Color.white;
     static readonly Color TEXT_SEC   = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color ACCENT_GOLD  = new Color(0.95f, 0.77f, 0.06f);
-
-    static readonly string[] SlotLabels = { "RÁPIDA", "ESTÁNDAR", "ÉPICA" };
+    static readonly Color ACCENT_GOLD = new Color(0.95f, 0.77f, 0.06f);
 
     readonly List<MovieButtonUI> _slotButtons = new();
     Coroutine _layoutRoutine;
@@ -32,7 +25,11 @@ public class MovieTabUI : MonoBehaviour
     StudioManager     _studio;
     StudioLevelSystem _level;
 
-    void Awake() => GameHub.OnGameReady += Bind;
+    void Awake()
+    {
+        GameHub.OnGameReady += Bind;
+        ProductionPremiereHooks.EnsureOnCanvas();
+    }
 
     void OnEnable()
     {
@@ -110,11 +107,11 @@ public class MovieTabUI : MonoBehaviour
         {
             MovieConfig cfg = i < picks.Count ? picks[i] : null;
             string emptyLabel = catalogEmpty
-                ? "Catálogo completado"
+                ? Loc.Get(LocKeys.ProdCatalogComplete)
                 : catalogLow && cfg == null
-                    ? "Sin oferta disponible"
-                    : "—";
-            var slot = CreateSlotCard(cfg, SlotLabels[i], emptyLabel);
+                    ? Loc.Get(LocKeys.ProdNoOffer)
+                    : Loc.Get(LocKeys.ProdEmptySlot);
+            var slot = CreateSlotCard(cfg, emptyLabel);
             if (slot != null) _slotButtons.Add(slot);
         }
 
@@ -148,98 +145,40 @@ public class MovieTabUI : MonoBehaviour
         _layoutRoutine = null;
     }
 
-    MovieButtonUI CreateSlotCard(MovieConfig cfg, string slotLabel, string emptyLabel = "—")
+    MovieButtonUI CreateSlotCard(MovieConfig cfg, string emptyLabel)
     {
-        var cardGo = new GameObject("Slot_" + slotLabel, typeof(RectTransform), typeof(Image));
+        var cardGo = new GameObject(cfg != null ? "Offer_" + cfg.movieName : "Offer_Empty",
+            typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(slotsRow, false);
-        HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), cfg != null ? HudCardVariant.Primary : HudCardVariant.Hero);
         var le = cardGo.AddComponent<LayoutElement>();
         le.flexibleWidth = 1f;
         le.flexibleHeight = 0f;
 
-        var vlg = cardGo.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(4, 4, 4, 4);
-        vlg.spacing = 1;
-        vlg.childControlWidth = vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true;
-        vlg.childForceExpandHeight = false;
-        vlg.childAlignment = TextAnchor.UpperCenter;
-
-        var lbl = MakeTmp(cardGo.transform, slotLabel, 11, ACCENT_GOLD, TextAlignmentOptions.Center);
-        lbl.fontStyle = FontStyles.Bold;
-        lbl.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 14;
-
         if (cfg == null)
         {
-            MakeTmp(cardGo.transform, emptyLabel, 12, TEXT_SEC, TextAlignmentOptions.Center);
+            MovieOfferCardLayoutBuilder.Build(cardGo.transform, null, true);
+            var empty = cardGo.GetComponentInChildren<TextMeshProUGUI>();
+            if (empty != null) empty.text = emptyLabel;
             return null;
         }
 
-        var title = MakeTmp(cardGo.transform, cfg.movieName, 13, TEXT_PRI, TextAlignmentOptions.Center);
-        title.fontStyle = FontStyles.Bold;
-        title.textWrappingMode = TextWrappingModes.Normal;
-        title.overflowMode = TextOverflowModes.Ellipsis;
-        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
-
-        var stats = MakeTmp(cardGo.transform, BuildPreview(cfg), 10, TEXT_SEC, TextAlignmentOptions.Center);
-        stats.textWrappingMode = TextWrappingModes.Normal;
-        stats.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 56;
-
-        var btnGo = new GameObject("ProduceBtn", typeof(RectTransform), typeof(Image), typeof(Button));
-        btnGo.transform.SetParent(cardGo.transform, false);
-        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
-        btnGo.AddComponent<UIButtonScale>();
-        var btnLE = btnGo.AddComponent<LayoutElement>();
-        btnLE.preferredHeight = 32;
-        btnLE.flexibleHeight = 0f;
-        MakeTmp(btnGo.transform, "▶", 16, TEXT_PRI, TextAlignmentOptions.Center);
+        var wire = MovieOfferCardLayoutBuilder.Build(cardGo.transform, cfg, false);
 
         var ui = cardGo.AddComponent<MovieButtonUI>();
         ui.movieConfig = cfg;
-        ui.titleText = title;
-        ui.produceButton = btnGo.GetComponent<Button>();
+        ui.posterImage = wire.posterImage;
+        ui.rarityFrame = wire.rarityFrame;
+        ui.titleText = wire.titleText;
+        ui.genreText = wire.genreText;
+        ui.rarityText = wire.rarityText;
+        ui.durationText = wire.durationText;
+        ui.unlockText = wire.unlockText;
+        ui.lockedOverlay = wire.lockedOverlay;
+        ui.produceButton = wire.selectButton;
+        ui.selectLabelText = wire.selectLabelText;
         ui.Setup(cfg, _studio);
         return ui;
     }
-
-    string BuildPreview(MovieConfig cfg)
-    {
-        var d = GameHub.Instance?.departments;
-        float q = d?.CalculateQuality() ?? 1f;
-        float s = d?.CalculateSpeed() ?? 1f;
-        float cr = d?.CalculateCostReduction() ?? 0f;
-        long cost = (long)(cfg.cost * (1f - cr));
-        long reward = (long)(cfg.baseReward * cfg.quality * q);
-        float secs = cfg.duration / s;
-
-        var lines = new List<string>
-        {
-            GenreLabel(cfg.genre),
-            "Coste: " + AnimatedMoneyText.FormatMoney(cost),
-            "Duración: " + secs.ToString("0.0") + "s",
-            "Recompensa: +" + AnimatedMoneyText.FormatMoney(reward),
-        };
-
-        if (_studio != null)
-        {
-            float variety = _studio.GetPreviewVarietyBonusPercent(cfg);
-            if (variety > 0f)
-                lines.Add("+" + variety.ToString("0") + "% variedad");
-        }
-
-        return string.Join("\n", lines);
-    }
-
-    static string GenreLabel(MovieGenre g) => g switch
-    {
-        MovieGenre.Action  => "ACCIÓN",
-        MovieGenre.Drama   => "DRAMA",
-        MovieGenre.Horror  => "TERROR",
-        MovieGenre.Comedy  => "COMEDIA",
-        MovieGenre.Romance => "ROMANCE",
-        MovieGenre.SciFi   => "SCI-FI",
-        _                  => g.ToString().ToUpper(),
-    };
 
     void RebuildHistory()
     {
@@ -275,27 +214,14 @@ public class MovieTabUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
 
-        var title = MakeTmp(row.transform, e.movieName, 16, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
-        title.fontStyle = FontStyles.Bold;
-        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        var title = RuntimeTmpText.Create(row.transform, e.movieName, 16, TEXT_PRI, FontStyles.Bold,
+            TextAlignmentOptions.MidlineLeft, "Title");
+        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
 
-        var rewards = MakeTmp(row.transform,
-            $"+{AnimatedMoneyText.FormatMoney(e.moneyReward)}  +{e.repGain:0.0} REP  +{e.xpGain:0} XP",
-            14, ACCENT_GOLD, TextAlignmentOptions.MidlineRight);
-        rewards.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = 260;
-    }
-
-    static TextMeshProUGUI MakeTmp(Transform parent, string text, float size, Color color, TextAlignmentOptions align)
-    {
-        var go = new GameObject("Txt", typeof(RectTransform));
-        go.transform.SetParent(parent, false);
-        var tmp = go.AddComponent<TextMeshProUGUI>();
-        tmp.text = text;
-        tmp.fontSize = size;
-        tmp.color = color;
-        tmp.alignment = align;
-        tmp.overflowMode = TextOverflowModes.Ellipsis;
-        return tmp;
+        var rewards = RuntimeTmpText.Create(row.transform,
+            ProductionLoc.FormatHistoryRewards(e.moneyReward, e.repGain, e.xpGain),
+            14, ACCENT_GOLD, FontStyles.Normal, TextAlignmentOptions.MidlineRight, "Rewards");
+        rewards.gameObject.AddComponent<LayoutElement>().preferredWidth = 260;
     }
 }
 

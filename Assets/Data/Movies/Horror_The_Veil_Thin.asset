@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Horror_The_Veil_Thin
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: The Watcher In Room12
+  genre: 2
+  tagline: Boundaries between worlds wear thin at solstice.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 3
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: TheWatcherInRoom12.png
+  posterSprite: {fileID: -2261789788299226899, guid: dc2248a4509e0824699b4f20d3809a92, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

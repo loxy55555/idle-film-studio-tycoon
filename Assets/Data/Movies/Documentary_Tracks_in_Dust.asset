@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Documentary_Tracks_in_Dust
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: The Last Forest
+  genre: 9
+  tagline: Nomads crossing deserts for water.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 8
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: TheLastForest.png
+  posterSprite: {fileID: -4116161520789979351, guid: 601ba68d20855114d80996a45bf3eb2e, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

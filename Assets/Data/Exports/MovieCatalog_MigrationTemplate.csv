@@ -1,0 +1,301 @@
+catalogId,displayName,genre,rarity,sagaId,sagaOrder,isLegendary,posterColorHex,tagline,slotReserved
+Action_Slot_01,Alianza Imposible,Action,Common,,0,0,#C0392B,Enemigos que deben unirse para sobrevivir.,0
+Action_Slot_02,Amanecer de Hierro,Action,Common,,0,0,#E74C3C,El mundo al borde del abismo.,0
+Action_Slot_03,Catástrofe Total,Action,Common,,0,0,#C0392B,El fin de la era.,0
+Action_Slot_04,Cazador Implacable,Action,Common,,0,0,#C0392B,Un cazador que nunca abandona la presa.,0
+Action_Slot_05,Cazadores de Sombras,Action,Common,shadow_trigger,2,0,#C0392B,Élite vs. red criminal invisible.,0
+Action_Slot_06,Código Rojo,Action,Common,,0,0,#E74C3C,La ciudad entera como campo de batalla.,0
+Action_Slot_07,Colisión de Mundos,Action,Common,,0,0,#E74C3C,Cuando dos fuerzas igualadas choquan.,0
+Action_Slot_08,Destino Marcado,Action,Common,,0,0,#C0392B,No hay escapatoria del destino.,0
+Action_Slot_09,El Infiltrado,Action,Common,,0,0,#E74C3C,Vivir bajo identidad falsa.,0
+Action_Slot_10,El Precio del Honor,Action,Common,,0,0,#E74C3C,Honor es lo único que queda.,0
+Action_Slot_11,El Último Bastión,Action,Common,,0,0,#C0392B,Defender lo que queda del mundo civilizado.,0
+Action_Slot_12,Fuego Cruzado,Action,Common,,0,0,#C0392B,Los aliados de hoy son los enemigos de mañana.,0
+Action_Slot_13,Fuga Nocturna,Action,Common,,0,0,#E74C3C,Dos horas para escapar de la ciudad.,0
+Action_Slot_14,Golpe Final,Action,Common,,0,0,#E74C3C,Un atraco que cambiará todo.,0
+Action_Slot_15,Impacto Directo,Action,Common,,0,0,#C0392B,Nada puede detener la misión.,0
+Action_Slot_16,Imperativo de Guerra,Action,Common,,0,0,#C0392B,La batalla definitiva de la humanidad.,0
+Action_Slot_17,La Gran Ofensiva,Action,Common,,0,0,#C0392B,La operación más ambiciosa jamás planeada.,0
+Action_Slot_18,La Línea Roja,Action,Common,,0,0,#E74C3C,Cuando cruzar la línea es lo correcto.,0
+Action_Slot_19,La Última Frontera,Action,Common,,0,0,#C0392B,Más allá de toda frontera conocida.,0
+Action_Slot_20,Legado Bélico,Action,Common,,0,0,#E74C3C,La guerra que definió generaciones.,0
+Action_Slot_21,Operación Tormenta,Action,Common,,0,0,#E74C3C,Un equipo de élite contra una amenaza global.,0
+Action_Slot_22,Persecución en la Ciudad,Action,Common,,0,0,#E74C3C,"Cuando el crimen toma las calles, un detective solitario actúa.",0
+Action_Slot_23,Punto de Ruptura,Action,Common,,0,0,#E74C3C,Todo o nada.,0
+Action_Slot_24,Rescate al Límite,Action,Common,,0,0,#E74C3C,Una misión de rescate que pondrá a prueba todo.,0
+Action_Slot_25,Retribución,Action,Common,,0,0,#E74C3C,Justicia fuera del sistema.,0
+Action_Slot_26,Sin Regreso,Action,Common,last_signal,1,0,#E74C3C,Una misión sin vuelta atrás.,0
+Action_Slot_27,Tormenta de Acero,Action,Common,,0,0,#C0392B,Una guerra que nadie ganará.,0
+Action_Slot_28,Velocidad Extrema,Action,Common,,0,0,#C0392B,La velocidad como arma.,0
+Action_Slot_29,Zona de Exclusión,Action,Common,,0,0,#E74C3C,Penetrar en territorio prohibido.,0
+Action_Legendary,[TBD Legendary Action],Action,Legendary,,0,1,#E74C3C,[CATALOG SLOT],1
+SciFi_Slot_01,Algoritmo,SciFi,Common,,0,0,#27AE60,La IA que se volvió más inteligente que sus creadores.,0
+SciFi_Slot_02,Año 2199,SciFi,Common,,0,0,#27AE60,El futuro tiene sus propios problemas.,0
+SciFi_Slot_03,Código de Vida,SciFi,Common,,0,0,#27AE60,Reescribir el ADN humano.,0
+SciFi_Slot_04,Dominación,SciFi,Common,iron_circuit,4,0,#1ABC9C,La conquista del espacio como destino humano.,0
+SciFi_Slot_05,Dominio Cósmico,SciFi,Common,iron_circuit,5,0,#1ABC9C,Controlar el cosmos entero.,0
+SciFi_Slot_06,El Código Estelar,SciFi,Common,,0,0,#1ABC9C,Un mensaje oculto en las estrellas.,0
+SciFi_Slot_07,El Proyecto Arca,SciFi,Common,neon_drift,2,0,#27AE60,Construir la última nave antes del fin.,0
+SciFi_Slot_08,El Tiempo No Perdona,SciFi,Common,,0,0,#1ABC9C,Un viajero del tiempo que no puede parar.,0
+SciFi_Slot_09,El Último Android,SciFi,Common,,0,0,#1ABC9C,Una máquina que aprendió a sentir.,0
+SciFi_Slot_10,Frontera Cuántica,SciFi,Common,,0,0,#1ABC9C,La física es solo la primera barrera.,0
+SciFi_Slot_11,Génesis II,SciFi,Common,,0,0,#27AE60,Recrear la vida desde cero.,0
+SciFi_Slot_12,Génesis Universal,SciFi,Common,,0,0,#1ABC9C,"El origen del universo, revelado.",0
+SciFi_Slot_13,Invasión Silenciosa,SciFi,Common,,0,0,#1ABC9C,No sabes que están aquí... hasta que es tarde.,0
+SciFi_Slot_14,La Anomalía,SciFi,Common,,0,0,#27AE60,Una anomalía que rompe las leyes de la física.,0
+SciFi_Slot_15,La Colonia,SciFi,Common,,0,0,#1ABC9C,Sobrevivir en un planeta hostil.,0
+SciFi_Slot_16,La Ecuación Final,SciFi,Common,,0,0,#27AE60,La teoría que lo explica todo.,0
+SciFi_Slot_17,La Gran Migración,SciFi,Common,,0,0,#27AE60,Abandonar la Tierra para siempre.,0
+SciFi_Slot_18,La Señal,SciFi,Common,,0,0,#27AE60,Una señal del espacio cambia todo.,0
+SciFi_Slot_19,La Última Galaxia,SciFi,Common,,0,0,#1ABC9C,Explorar los confines del universo conocido.,0
+SciFi_Slot_20,Los Inmortales,SciFi,Common,,0,0,#1ABC9C,¿Qué pasa cuando no puedes morir?,0
+SciFi_Slot_21,Mente Colmena,SciFi,Common,,0,0,#27AE60,Una conciencia compartida por millones.,0
+SciFi_Slot_22,Mundo Espejo,SciFi,Common,,0,0,#1ABC9C,Descubrir que tu mundo es una simulación.,0
+SciFi_Slot_23,Nexo,SciFi,Common,,0,0,#27AE60,La conexión entre dimensiones paralelas.,0
+SciFi_Slot_24,Paradoja,SciFi,Common,,0,0,#1ABC9C,Cambiar el pasado rompe el futuro.,0
+SciFi_Slot_25,Planeta Virgen,SciFi,Common,,0,0,#27AE60,El primer planeta habitable encontrado.,0
+SciFi_Slot_26,Protocolo Omega,SciFi,Common,,0,0,#1ABC9C,Un protocolo que no debía activarse.,0
+SciFi_Slot_27,Rebelde Digital,SciFi,Common,,0,0,#1ABC9C,Un hacker que lucha contra el sistema global.,0
+SciFi_Slot_28,Singularidad,SciFi,Common,,0,0,#27AE60,El momento en que la máquina supera al humano.,0
+SciFi_Slot_29,Transferencia Mental,SciFi,Common,,0,0,#27AE60,¿Qué eres sin tu memoria?,0
+SciFi_Legendary,[TBD Legendary SciFi],SciFi,Legendary,,0,1,#1ABC9C,[CATALOG SLOT],1
+Drama_Slot_01,Años de Plomo,Drama,Common,,0,0,#2980B9,Crecer en tiempos difíciles.,0
+Drama_Slot_02,Cartas sin Respuesta,Drama,Common,,0,0,#3498DB,Una historia de amor que no puede ser.,0
+Drama_Slot_03,Cenizas de Verano,Drama,Common,,0,0,#2980B9,Un verano que lo cambió todo.,0
+Drama_Slot_04,Confesiones,Drama,Common,,0,0,#2980B9,Decir la verdad siempre tiene consecuencias.,0
+Drama_Slot_05,Deuda de Sangre,Drama,Common,,0,0,#3498DB,Una deuda que se paga con el tiempo.,0
+Drama_Slot_06,El Círculo,Drama,Common,iron_circuit,6,0,#2980B9,"La historia se repite, generación tras generación.",0
+Drama_Slot_07,El Fotógrafo,Drama,Common,,0,0,#2980B9,Capturar la belleza del dolor.,0
+Drama_Slot_08,El Nombre del Padre,Drama,Common,,0,0,#2980B9,Buscar al padre que nunca estuvo.,0
+Drama_Slot_09,El Peso del Silencio,Drama,Common,,0,0,#3498DB,Lo que no se dice destruye más que las palabras.,0
+Drama_Slot_10,El Poeta Olvidado,Drama,Common,,0,0,#2980B9,Rescatar la obra de un genio incomprendido.,0
+Drama_Slot_11,El Último Cuadro,Drama,Common,,0,0,#2980B9,Pintar la obra maestra antes de morir.,0
+Drama_Slot_12,Espejo Roto,Drama,Common,,0,0,#3498DB,Reconstruirse después de la traición.,0
+Drama_Slot_13,Generaciones,Drama,Common,,0,0,#3498DB,Cien años de historia familiar.,0
+Drama_Slot_14,Invierno Eterno,Drama,Common,,0,0,#2980B9,Un frío que dura más que el invierno.,0
+Drama_Slot_15,La Dignidad,Drama,Common,,0,0,#2980B9,Mantener la dignidad cuando todo se derrumba.,0
+Drama_Slot_16,La Gran Ilusión,Drama,Common,,0,0,#3498DB,Un sueño demasiado grande para ser real.,0
+Drama_Slot_17,La Herencia,Drama,Common,,0,0,#3498DB,Una familia divida por el dinero.,0
+Drama_Slot_18,La Mujer del Puerto,Drama,Common,,0,0,#2980B9,Esperar al amor durante treinta años.,0
+Drama_Slot_19,La Promesa,Drama,Common,,0,0,#3498DB,Una promesa que atraviesa décadas.,0
+Drama_Slot_20,La Última Cena,Drama,Common,,0,0,#3498DB,Una familia que se despide.,0
+Drama_Slot_21,Lo Que Quedó,Drama,Common,,0,0,#3498DB,Los objetos guardan la memoria de sus dueños.,0
+Drama_Slot_22,Mar de Fondo,Drama,Common,iron_circuit,3,0,#3498DB,Lo que viene de lo profundo no se puede ignorar.,0
+Drama_Slot_23,Marea Alta,Drama,Common,,0,0,#3498DB,"Una ciudad inundada, un amor que resiste.",0
+Drama_Slot_24,Puentes de Papel,Drama,Common,,0,0,#2980B9,Las palabras que construyen y destruyen.,0
+Drama_Slot_25,Raíces Rotas,Drama,Common,,0,0,#2980B9,Volver al pueblo que nos abandonó.,0
+Drama_Slot_26,Sombras de Familia,Drama,Common,,0,0,#3498DB,Los secretos que se heredan.,0
+Drama_Slot_27,Tiempo Prestado,Drama,Common,,0,0,#2980B9,Vivir sabiendo que el tiempo se acaba.,0
+Drama_Slot_28,Tierra de Nadie,Drama,Common,,0,0,#3498DB,"Entre dos mundos, sin pertenecer a ninguno.",0
+Drama_Slot_29,Vida y Obra,Drama,Common,,0,0,#3498DB,La biografía de un siglo.,0
+Drama_Legendary,[TBD Legendary Drama],Drama,Legendary,,0,1,#3498DB,[CATALOG SLOT],1
+Horror_Slot_01,Aberración,Horror,Common,,0,0,#8E44AD,Algo salió mal en el laboratorio.,0
+Horror_Slot_02,Bestia,Horror,Common,,0,0,#8E44AD,Una criatura que desafía toda clasificación científica.,0
+Horror_Slot_03,Caja Negra,Horror,Common,,0,0,#8E44AD,Encontrar la caja fue el principio del fin.,0
+Horror_Slot_04,Carne y Hueso,Horror,Common,,0,0,#7D3C98,El monstruo más aterrador es el humano.,0
+Horror_Slot_05,Caza Nocturna,Horror,Common,,0,0,#7D3C98,La noche pertenece a los que cazan.,0
+Horror_Slot_06,Cosas que Acechan,Horror,Common,,0,0,#7D3C98,No mires debajo de la cama.,0
+Horror_Slot_07,Dimensión Oscura,Horror,Common,,0,0,#8E44AD,Una grieta en la realidad deja pasar algo.,0
+Horror_Slot_08,Eco del Infierno,Horror,Common,,0,0,#8E44AD,Voces que vienen del más allá.,0
+Horror_Slot_09,El Culto,Horror,Common,,0,0,#7D3C98,Una secta que nunca deja ir a sus miembros.,0
+Horror_Slot_10,El Exorcismo de Villa Roja,Horror,Common,,0,0,#7D3C98,Una posesión que desafía toda lógica.,0
+Horror_Slot_11,El Portal,Horror,Common,,0,0,#8E44AD,Abrir la puerta fue el peor error.,0
+Horror_Slot_12,El Psicópata,Horror,Common,,0,0,#7D3C98,"Una mente retorcida, una ciudad aterrorizada.",0
+Horror_Slot_13,El Ritual,Horror,Common,,0,0,#8E44AD,Ceremonias que no deben realizarse.,0
+Horror_Slot_14,El Último Grito,Horror,Common,,0,0,#8E44AD,"Cinco amigos, una cabaña, ningún retorno.",0
+Horror_Slot_15,Engendro,Horror,Common,,0,0,#7D3C98,Una creación que se volvió contra su creador.,0
+Horror_Slot_16,Gritos en el Bosque,Horror,Common,,0,0,#8E44AD,El bosque recuerda lo que enterramos.,0
+Horror_Slot_17,La Casa del Fin,Horror,Common,,0,0,#8E44AD,Una casa que no deja salir a sus huéspedes.,0
+Horror_Slot_18,La Criatura del Pantano,Horror,Common,,0,0,#8E44AD,Algo antiguo despertó en las aguas.,0
+Horror_Slot_19,La Guarida,Horror,Common,,0,0,#7D3C98,Su hogar ya no les pertenece.,0
+Horror_Slot_20,La Infección,Horror,Common,,0,0,#7D3C98,Un virus que convierte lo humano en monstruo.,0
+Horror_Slot_21,La Máscara,Horror,Common,,0,0,#7D3C98,Detrás de cada máscara hay una historia sangrienta.,0
+Horror_Slot_22,La Plaga,Horror,Common,,0,0,#7D3C98,Cuando la enfermedad toma control.,0
+Horror_Slot_23,Maldición Ancestral,Horror,Common,,0,0,#7D3C98,Una maldición que dura siglos.,0
+Horror_Slot_24,Noche de los Muertos,Horror,Common,,0,0,#8E44AD,Los muertos vuelven con hambre.,0
+Horror_Slot_25,Oscuridad Total,Horror,Common,,0,0,#8E44AD,"Sin luz, el miedo se amplifica.",0
+Horror_Slot_26,Pesadilla Recurrente,Horror,Common,,0,0,#7D3C98,El sueño no es el refugio que creías.,0
+Horror_Slot_27,Punto Sin Retorno,Horror,Common,,0,0,#8E44AD,Ya no hay camino de vuelta.,0
+Horror_Slot_28,Sangre en las Paredes,Horror,Common,iron_circuit,1,0,#8E44AD,Una casa construida sobre secretos.,0
+Horror_Slot_29,Sombras del Pasado,Horror,Common,,0,0,#7D3C98,El pasado siempre regresa.,0
+Horror_Legendary,[TBD Legendary Horror],Horror,Legendary,,0,1,#8E44AD,[CATALOG SLOT],1
+Comedy_Slot_01,Amor en Cuarentena,Comedy,Common,,0,0,#F39C12,Enamorarse en el peor momento posible.,0
+Comedy_Slot_02,Boda de Película,Comedy,Common,,0,0,#D35400,Organizar una boda en 48 horas.,0
+Comedy_Slot_03,Caos Total,Comedy,Common,,0,0,#D35400,Un día donde todo sale mal a la vez.,0
+Comedy_Slot_04,Cuerpos Cambiados,Comedy,Common,,0,0,#F39C12,Un niño en el cuerpo de un CEO.,0
+Comedy_Slot_05,Doble Identidad,Comedy,Common,,0,0,#F39C12,Ser dos personas a la vez agota.,0
+Comedy_Slot_06,El Agente Secreto Torpe,Comedy,Common,,0,0,#F39C12,La CIA no entrenó para esto.,0
+Comedy_Slot_07,El Chef Accidental,Comedy,Common,shadow_trigger,1,0,#D35400,Un fontanero que acaba dirigiendo un restaurante.,0
+Comedy_Slot_08,El Detective Torpe,Comedy,Common,,0,0,#D35400,Resolver crímenes por accidente.,0
+Comedy_Slot_09,El Doble Perfecto,Comedy,Common,,0,0,#D35400,Hacerse pasar por famoso tiene sus riesgos.,0
+Comedy_Slot_10,El Falso Médico,Comedy,Common,,0,0,#D35400,Pasarse por doctor sin estudios fue mala idea.,0
+Comedy_Slot_11,El Gran Malentendido,Comedy,Common,,0,0,#D35400,Una cadena de errores que no para de crecer.,0
+Comedy_Slot_12,El Heredero Rebelde,Comedy,Common,,0,0,#D35400,Heredar un imperio que no quieres.,0
+Comedy_Slot_13,El Jefe Imposible,Comedy,Common,,0,0,#F39C12,Trabajar para el peor jefe del mundo.,0
+Comedy_Slot_14,El Millonario Accidental,Comedy,Common,,0,0,#F39C12,Ganar la lotería es el inicio de los problemas.,0
+Comedy_Slot_15,El Novio Fantasma,Comedy,Common,,0,0,#F39C12,Cuando tu prometido resulta ser un espíritu.,0
+Comedy_Slot_16,El Papá Modernísimo,Comedy,Common,,0,0,#F39C12,Criar hijos en la era digital.,0
+Comedy_Slot_17,El Político Honesto,Comedy,Common,,0,0,#F39C12,El único político que no miente sobrevive... por poco.,0
+Comedy_Slot_18,El Show Debe Continuar,Comedy,Common,,0,0,#F39C12,"En el escenario del mundo, todos actuamos.",0
+Comedy_Slot_19,El Vecino Espía,Comedy,Common,,0,0,#D35400,El vecino más curioso del edificio.,0
+Comedy_Slot_20,El Último Cómico,Comedy,Common,,0,0,#D35400,El último grande del humor.,0
+Comedy_Slot_21,Familia en Fuga,Comedy,Common,,0,0,#D35400,Escapar de la familia en unas vacaciones.,0
+Comedy_Slot_22,Intercambio de Vidas,Comedy,Common,,0,0,#D35400,Vivir la vida del otro es más difícil de lo que parece.,0
+Comedy_Slot_23,La Gran Comedia Nacional,Comedy,Common,,0,0,#D35400,Una sátira del país que todos reconocerán.,0
+Comedy_Slot_24,La Reunión de Excompañeros,Comedy,Common,iron_circuit,2,0,#F39C12,Reunirse veinte años después.,0
+Comedy_Slot_25,Los Vecinos del Caos,Comedy,Common,,0,0,#D35400,Vivir junto a la familia más ruidosa del barrio.,0
+Comedy_Slot_26,Mi Cuñado Es un Desastre,Comedy,Common,,0,0,#F39C12,La familia política más caótica del barrio.,0
+Comedy_Slot_27,Novatos,Comedy,Common,,0,0,#F39C12,Su primer día de trabajo.,0
+Comedy_Slot_28,Operación Suegra,Comedy,Common,,0,0,#F39C12,Impresionar a la suegra es cuestión de vida o muerte.,0
+Comedy_Slot_29,Superstar Accidental,Comedy,Common,,0,0,#D35400,"Viral por accidente, famoso por necesidad.",0
+Comedy_Legendary,[TBD Legendary Comedy],Comedy,Legendary,,0,1,#F39C12,[CATALOG SLOT],1
+Fantasy_Slot_01,[TBD Fantasy 01],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_02,[TBD Fantasy 02],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_03,[TBD Fantasy 03],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_04,[TBD Fantasy 04],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_05,[TBD Fantasy 05],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_06,[TBD Fantasy 06],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_07,[TBD Fantasy 07],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_08,[TBD Fantasy 08],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_09,[TBD Fantasy 09],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_10,[TBD Fantasy 10],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_11,[TBD Fantasy 11],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_12,[TBD Fantasy 12],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_13,[TBD Fantasy 13],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_14,[TBD Fantasy 14],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_15,[TBD Fantasy 15],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_16,[TBD Fantasy 16],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_17,[TBD Fantasy 17],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_18,[TBD Fantasy 18],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_19,[TBD Fantasy 19],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_20,[TBD Fantasy 20],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_21,[TBD Fantasy 21],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_22,[TBD Fantasy 22],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_23,[TBD Fantasy 23],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_24,[TBD Fantasy 24],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_25,[TBD Fantasy 25],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_26,[TBD Fantasy 26],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_27,[TBD Fantasy 27],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_28,[TBD Fantasy 28],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Slot_29,[TBD Fantasy 29],Fantasy,Common,,0,0,#9B59B6,[CATALOG SLOT],0
+Fantasy_Legendary,[TBD Legendary Fantasy],Fantasy,Legendary,,0,1,#9B59B6,[CATALOG SLOT],0
+Romance_Slot_01,Amor Sin Fin,Romance,Common,,0,0,#C2185B,Una historia de amor que dura para siempre.,0
+Romance_Slot_02,Amor en Tokyo,Romance,Common,,0,0,#C2185B,Un amor que nació entre tradiciones distintas.,0
+Romance_Slot_03,Cartas de Abril,Romance,Common,,0,0,#E91E8C,Un amor epistolar que desafía el tiempo.,0
+Romance_Slot_04,Corazones Cruzados,Romance,Common,,0,0,#E91E8C,Dos almas que siempre se encuentran.,0
+Romance_Slot_05,Danzando en la Oscuridad,Romance,Common,,0,0,#E91E8C,Bailar sin poder verse.,0
+Romance_Slot_06,Dos Mundos Distintos,Romance,Common,,0,0,#C2185B,"Él de clase alta, ella de barrio. El amor no entiende de clases.",0
+Romance_Slot_07,El Amor Prohibido,Romance,Common,,0,0,#E91E8C,Amar cuando el mundo lo prohíbe.,0
+Romance_Slot_08,El Arquitecto de Sueños,Romance,Common,,0,0,#E91E8C,Construir juntos algo más que una casa.,0
+Romance_Slot_09,El Barista,Romance,Common,,0,0,#C2185B,Enamorarse de la persona que prepara tu café.,0
+Romance_Slot_10,El Billete de Tren,Romance,Common,,0,0,#C2185B,Un viaje en tren cambia su vida para siempre.,0
+Romance_Slot_11,El Contrato Nupcial,Romance,Common,,0,0,#C2185B,Casarse por acuerdo y enamorarse por accidente.,0
+Romance_Slot_12,El Destino Tenía un Plan,Romance,Common,,0,0,#E91E8C,Dos personas que el universo siempre une.,0
+Romance_Slot_13,El Hombre del Sombrero,Romance,Common,shadow_trigger,3,0,#C2185B,Un misterioso desconocido en el mercado.,0
+Romance_Slot_14,El Restaurante Secreto,Romance,Common,,0,0,#E91E8C,Enamorarse del chef que nunca muestra su cara.,0
+Romance_Slot_15,Eternamente,Romance,Common,,0,0,#E91E8C,El amor más grande jamás filmado.,0
+Romance_Slot_16,Eterno Retorno,Romance,Common,,0,0,#C2185B,El amor que se repite a través del tiempo.,0
+Romance_Slot_17,Flores de Invierno,Romance,Common,,0,0,#E91E8C,Amor que florece en el frío.,0
+Romance_Slot_18,La Fotógrafa de Guerra,Romance,Common,,0,0,#E91E8C,Un amor nació donde menos se esperaba.,0
+Romance_Slot_19,La Historia de Amor del Siglo,Romance,Common,,0,0,#C2185B,Dos vidas entrelazadas por el destino.,0
+Romance_Slot_20,La Librería de los Sueños,Romance,Common,,0,0,#E91E8C,Encontrarse entre las páginas.,0
+Romance_Slot_21,La Nota de la Canción,Romance,Common,neon_drift,1,0,#E91E8C,Una canción que los unió.,0
+Romance_Slot_22,La Pianista,Romance,Common,,0,0,#E91E8C,La música como lenguaje del amor.,0
+Romance_Slot_23,La Propuesta,Romance,Common,,0,0,#C2185B,La propuesta más inesperada del año.,0
+Romance_Slot_24,La Segunda Oportunidad,Romance,Common,,0,0,#E91E8C,Reconectar con el amor perdido años atrás.,0
+Romance_Slot_25,Más Allá del Océano,Romance,Common,,0,0,#C2185B,Un amor que sobrevive la distancia.,0
+Romance_Slot_26,Medianoche en Roma,Romance,Common,,0,0,#C2185B,Una noche en la ciudad eterna.,0
+Romance_Slot_27,Primer Café,Romance,Common,,0,0,#E91E8C,Dos desconocidos en la misma cafetería.,0
+Romance_Slot_28,Promesas Bajo la Lluvia,Romance,Common,,0,0,#C2185B,Una promesa hecha en la tormenta.,0
+Romance_Slot_29,Siete Días,Romance,Common,,0,0,#C2185B,Solo tienen una semana para decidir.,0
+Romance_Legendary,[TBD Legendary Romance],Romance,Legendary,,0,1,#E91E63,[CATALOG SLOT],1
+Thriller_Slot_01,[TBD Thriller 01],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_02,[TBD Thriller 02],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_03,[TBD Thriller 03],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_04,[TBD Thriller 04],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_05,[TBD Thriller 05],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_06,[TBD Thriller 06],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_07,[TBD Thriller 07],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_08,[TBD Thriller 08],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_09,[TBD Thriller 09],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_10,[TBD Thriller 10],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_11,[TBD Thriller 11],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_12,[TBD Thriller 12],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_13,[TBD Thriller 13],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_14,[TBD Thriller 14],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_15,[TBD Thriller 15],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_16,[TBD Thriller 16],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_17,[TBD Thriller 17],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_18,[TBD Thriller 18],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_19,[TBD Thriller 19],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_20,[TBD Thriller 20],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_21,[TBD Thriller 21],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_22,[TBD Thriller 22],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_23,[TBD Thriller 23],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_24,[TBD Thriller 24],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_25,[TBD Thriller 25],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_26,[TBD Thriller 26],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_27,[TBD Thriller 27],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_28,[TBD Thriller 28],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Slot_29,[TBD Thriller 29],Thriller,Common,,0,0,#34495E,[CATALOG SLOT],0
+Thriller_Legendary,[TBD Legendary Thriller],Thriller,Legendary,,0,1,#34495E,[CATALOG SLOT],0
+Animation_Slot_01,[TBD Animation 01],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_02,[TBD Animation 02],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_03,[TBD Animation 03],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_04,[TBD Animation 04],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_05,[TBD Animation 05],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_06,[TBD Animation 06],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_07,[TBD Animation 07],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_08,[TBD Animation 08],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_09,[TBD Animation 09],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_10,[TBD Animation 10],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_11,[TBD Animation 11],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_12,[TBD Animation 12],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_13,[TBD Animation 13],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_14,[TBD Animation 14],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_15,[TBD Animation 15],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_16,[TBD Animation 16],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_17,[TBD Animation 17],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_18,[TBD Animation 18],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_19,[TBD Animation 19],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_20,[TBD Animation 20],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_21,[TBD Animation 21],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_22,[TBD Animation 22],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_23,[TBD Animation 23],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_24,[TBD Animation 24],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_25,[TBD Animation 25],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_26,[TBD Animation 26],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_27,[TBD Animation 27],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_28,[TBD Animation 28],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Slot_29,[TBD Animation 29],Animation,Common,,0,0,#E67E22,[CATALOG SLOT],0
+Animation_Legendary,[TBD Legendary Animation],Animation,Legendary,,0,1,#E67E22,[CATALOG SLOT],0
+Documentary_Slot_01,[TBD Documentary 01],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_02,[TBD Documentary 02],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_03,[TBD Documentary 03],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_04,[TBD Documentary 04],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_05,[TBD Documentary 05],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_06,[TBD Documentary 06],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_07,[TBD Documentary 07],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_08,[TBD Documentary 08],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_09,[TBD Documentary 09],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_10,[TBD Documentary 10],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_11,[TBD Documentary 11],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_12,[TBD Documentary 12],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_13,[TBD Documentary 13],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_14,[TBD Documentary 14],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_15,[TBD Documentary 15],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_16,[TBD Documentary 16],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_17,[TBD Documentary 17],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_18,[TBD Documentary 18],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_19,[TBD Documentary 19],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_20,[TBD Documentary 20],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_21,[TBD Documentary 21],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_22,[TBD Documentary 22],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_23,[TBD Documentary 23],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_24,[TBD Documentary 24],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_25,[TBD Documentary 25],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_26,[TBD Documentary 26],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_27,[TBD Documentary 27],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_28,[TBD Documentary 28],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Slot_29,[TBD Documentary 29],Documentary,Common,,0,0,#607D8B,[CATALOG SLOT],0
+Documentary_Legendary,[TBD Legendary Documentary],Documentary,Legendary,,0,1,#607D8B,[CATALOG SLOT],0

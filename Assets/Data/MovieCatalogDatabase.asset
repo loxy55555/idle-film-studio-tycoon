@@ -1,0 +1,3892 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 827d8f6aaacd1c0458cf6532b1c7b897, type: 3}
+  m_Name: MovieCatalogDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::MovieCatalogDatabase
+  targetMovieCount: 300
+  schemaVersion: 4
+  builtAtUtc: 2026-06-12T00:05:10.3078086Z
+  entries:
+  - catalogId: Action_Aftershock
+    displayName: Night Convoy
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Aftershock.asset
+    assetGuid: cd98ffea63989d74ebf4091647708a0b
+    posterColorHex: 0
+    posterFile: NightConvoy.png
+    tagline: When the mission ends
+  - catalogId: Action_Blackout_Run
+    displayName: Operation Coldfire
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Blackout_Run.asset
+    assetGuid: 0a5548a848b4c4846922374c3c76a5dc
+    posterColorHex: 0
+    posterFile: OperationColdfire.png
+    tagline: Power fails across the city during a prison break.
+  - catalogId: Action_Borderline
+    displayName: Silent Extraction
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Borderline.asset
+    assetGuid: 643b94fb87e36d945b027a4bde48969e
+    posterColorHex: 0
+    posterFile: SilentExtraction.png
+    tagline: Two nations. One fugitive. Total chaos.
+  - catalogId: Action_Breacher_Unit
+    displayName: The Last Dominion
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Breacher_Unit.asset
+    assetGuid: b73e2cf043bb41648b90f82be899cfa1
+    posterColorHex: 0
+    posterFile: TheLastDominion.png
+    tagline: Doors
+  - catalogId: Action_Broken_Protocol
+    displayName: Beyond The Frontier
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Broken_Protocol.asset
+    assetGuid: e10a28fb091d0364fa830619aaa67608
+    posterColorHex: 0
+    posterFile: BeyondTheFrontier.png
+    tagline: Rules of engagement become suggestions under fire.
+  - catalogId: Action_Collateral_Run
+    displayName: Zero Contact
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Collateral_Run.asset
+    assetGuid: cde3e0ead0d60ec45bd9e37ff9857472
+    posterColorHex: 0
+    posterFile: ZeroContact.png
+    tagline: Every second of delay costs civilian lives.
+  - catalogId: Action_Convoy_Seven
+    displayName: Convoy Seven
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Convoy_Seven.asset
+    assetGuid: b4b66d5a26ff07247972c8049694e5e2
+    posterColorHex: 0
+    posterFile: ConvoySeven.png
+    tagline: Seventh convoy through the deadliest road on earth.
+  - catalogId: Action_Crash_Vector
+    displayName: Crash Vector
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Crash_Vector.asset
+    assetGuid: e81c20d040d0fd04da0a2afdd1474716
+    posterColorHex: 0
+    posterFile: CrashVector.png
+    tagline: A pilot must land a failing jet in hostile territory.
+  - catalogId: Action_Crossfire_Alley
+    displayName: Crossfire Alley
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Crossfire_Alley.asset
+    assetGuid: a55ff6293ed6bb44ea52a444d5ce97f7
+    posterColorHex: 0
+    posterFile: CrossfireAlley.png
+    tagline: Every alley is an ambush waiting to happen.
+  - catalogId: Action_Extraction_Point
+    displayName: Extraction Point
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Extraction_Point.asset
+    assetGuid: a522a45279d05eb43a79f472718278e4
+    posterColorHex: 0
+    posterFile: ExtractionPoint.png
+    tagline: Get them out before the perimeter collapses.
+  - catalogId: Action_Final_Vector
+    displayName: Final Vector
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Final_Vector.asset
+    assetGuid: fa7cbde893f976346a1b9fb058362d03
+    posterColorHex: 0
+    posterFile: FinalVector.png
+    tagline: Intercept the missile or lose a capital.
+  - catalogId: Action_Fireline
+    displayName: Fireline
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Fireline.asset
+    assetGuid: bd8ed23e8b4a90a4298de20fbe75a13d
+    posterColorHex: 0
+    posterFile: Fireline.png
+    tagline: Firefighters battle flames and a hidden conspiracy.
+  - catalogId: Action_Frontline_Echo
+    displayName: Frontline Echo
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Frontline_Echo.asset
+    assetGuid: e4e297b71b3645c438808a827abb6a16
+    posterColorHex: 0
+    posterFile: FrontlineEcho.png
+    tagline: Veterans return to the only war that still matters.
+  - catalogId: Action_Frontline_Ghost
+    displayName: Black Horizon
+    genre: 0
+    rarity: 1
+    sagaId: shadow_trigger
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Frontline_Ghost.asset
+    assetGuid: 7a86a159e6e36a34ca84fe0e2ee5cba0
+    posterColorHex: 0
+    posterFile: BlackHorizon.png
+    tagline: Declared dead
+  - catalogId: Action_Ghost_Company
+    displayName: Ghost Company
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Ghost_Company.asset
+    assetGuid: b94e34ebd9505f14ab8b31fa9c47d4a5
+    posterColorHex: 0
+    posterFile: GhostCompany.png
+    tagline: A unit erased from every roster except the enemy's.
+  - catalogId: Action_Hammer_Strike
+    displayName: Hammer Strike
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Hammer_Strike.asset
+    assetGuid: eb0314eb0578b6748a3c64b94da7dcd8
+    posterColorHex: 0
+    posterFile: HammerStrike.png
+    tagline: A blunt force operation with surgical precision.
+  - catalogId: Action_Hardline_Justice
+    displayName: Hardline Justice
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Hardline_Justice.asset
+    assetGuid: c0eee0bf537d5954d8ff0dde18ceb646
+    posterColorHex: 0
+    posterFile: HardlineJustice.png
+    tagline: A cop crosses every line to stop a syndicate.
+  - catalogId: Action_Hostile_Air
+    displayName: Hostile Air
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Hostile_Air.asset
+    assetGuid: 58c9813ed6c519a4987e4841c243646e
+    posterColorHex: 0
+    posterFile: HostileAir.png
+    tagline: Friendly skies turn hostile in seconds.
+  - catalogId: Action_Iron_Descent
+    displayName: Broken Siege
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 5
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Iron_Descent.asset
+    assetGuid: f6c3377574c354f46a79f9aae66eb60c
+    posterColorHex: 0
+    posterFile: BrokenSiege.png
+    tagline: An orbital drop team lands in the wrong war.
+  - catalogId: Action_Iron_Gate
+    displayName: Iron Gate
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Iron_Gate.asset
+    assetGuid: 4efd4b15450516146a0615fd78cae34a
+    posterColorHex: 0
+    posterFile: IronGate.png
+    tagline: Storm the gate or lose the hostages.
+  - catalogId: Action_Last_Stand_Bridge
+    displayName: Last Stand Bridge
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Last_Stand_Bridge.asset
+    assetGuid: 7ef359f4b918ab74fb17748d9d792dc2
+    posterColorHex: 0
+    posterFile: LastStandBridge.png
+    tagline: Hold the bridge until reinforcements arrive.
+  - catalogId: Action_Legendary
+    displayName: Iron Wolves
+    genre: 0
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Action_Legendary.asset
+    assetGuid: 8de525b8ae8560b4089132c1cada3d2a
+    posterColorHex: 1
+    posterFile: IronWolves.png
+    tagline: An elite unit hunts what the world refused to believe existed.
+  - catalogId: Action_Midnight_Extraction
+    displayName: Midnight Extraction
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Midnight_Extraction.asset
+    assetGuid: e3ac98f580a71614da7e6ee74c0e07bf
+    posterColorHex: 0
+    posterFile: MidnightExtraction.png
+    tagline: A hostage rescue with no extraction window.
+  - catalogId: Action_Night_Raid
+    displayName: Night Raid
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Night_Raid.asset
+    assetGuid: 55711cdd614bb784e86d5896bd986a20
+    posterColorHex: 0
+    posterFile: NightRaid.png
+    tagline: Special forces enter a fortress in darkness.
+  - catalogId: Action_Nightfall_Protocol
+    displayName: Crimson Border
+    genre: 0
+    rarity: 1
+    sagaId: shadow_trigger
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Nightfall_Protocol.asset
+    assetGuid: 984032c6cee4d6c4c9dfc6cca5b529cb
+    posterColorHex: 0
+    posterFile: CrimsonBorder.png
+    tagline: When the sun sets
+  - catalogId: Action_Outrider
+    displayName: Outrider
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Outrider.asset
+    assetGuid: c82d6da7cd2469a40a0a736437c740c1
+    posterColorHex: 0
+    posterFile: Outrider.png
+    tagline: One scout against an advancing army.
+  - catalogId: Action_Overwatch_Down
+    displayName: Overwatch Down
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Overwatch_Down.asset
+    assetGuid: 4c6717fb0c312e74aac344bc50609d30
+    posterColorHex: 0
+    posterFile: OverwatchDown.png
+    tagline: A sniper team loses eyes in the sky.
+  - catalogId: Action_Pressure_Point
+    displayName: Pressure Point
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Pressure_Point.asset
+    assetGuid: 70c6b922b8818194e9da66e4070f9662
+    posterColorHex: 0
+    posterFile: PressurePoint.png
+    tagline: One warehouse. One bomb. One chance.
+  - catalogId: Action_Rapid_Fire
+    displayName: Rapid Fire
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Rapid_Fire.asset
+    assetGuid: 26925843d223f684c9c9bebb4dfeba2c
+    posterColorHex: 0
+    posterFile: RapidFire.png
+    tagline: Bullets
+  - catalogId: Action_Rapid_Thunder
+    displayName: Rapid Thunder
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Rapid_Thunder.asset
+    assetGuid: a1aeda2c30f55b84589cdd567621de95
+    posterColorHex: 0
+    posterFile: RapidThunder.png
+    tagline: Lightning war in a city that never sleeps.
+  - catalogId: Action_Red_Sector
+    displayName: Red Sector
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Red_Sector.asset
+    assetGuid: 27d25eb4b603edc4d930d586cc8aebc5
+    posterColorHex: 0
+    posterFile: RedSector.png
+    tagline: A quarantined district hides a military secret.
+  - catalogId: Action_Resolute
+    displayName: Resolute
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Resolute.asset
+    assetGuid: 1097bda8abe26a340ac59a77a4bbfe50
+    posterColorHex: 0
+    posterFile: Resolute.png
+    tagline: One soldier refuses to abandon the mission.
+  - catalogId: Action_Rogue_Squadron
+    displayName: Rogue Squadron
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Rogue_Squadron.asset
+    assetGuid: 6b5333fc63b666244bedb6d6ea36f2f4
+    posterColorHex: 0
+    posterFile: RogueSquadron.png
+    tagline: Pilots who answer to no flag save the day.
+  - catalogId: Action_Shockwave
+    displayName: Shockwave
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Shockwave.asset
+    assetGuid: 0cc20b84e59984744afbba9e2482433c
+    posterColorHex: 0
+    posterFile: Shockwave.png
+    tagline: One explosion rewrites the city's power map.
+  - catalogId: Action_Steel_Covenant
+    displayName: Steel Covenant
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Steel_Covenant.asset
+    assetGuid: bac6c4dda0eb9fa48818ed0c4a135a49
+    posterColorHex: 0
+    posterFile: SteelCovenant.png
+    tagline: Allies forged in combat must trust or die.
+  - catalogId: Action_Steel_Horizon
+    displayName: Dead Frequency
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Steel_Horizon.asset
+    assetGuid: c02a194c76309ff488ef28c549ba915a
+    posterColorHex: 0
+    posterFile: DeadFrequency.png
+    tagline: Fleet commanders gamble everything on one offensive.
+  - catalogId: Action_Steel_Rain
+    displayName: Steel Rain
+    genre: 0
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Steel_Rain.asset
+    assetGuid: d37d3f3de2e419c4d948758636f1b921
+    posterColorHex: 0
+    posterFile: SteelRain.png
+    tagline: Artillery decides the battle before infantry moves.
+  - catalogId: Action_Steel_Veil
+    displayName: Steel Veil
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Steel_Veil.asset
+    assetGuid: c78da2739147184449fe89190fc3c0ee
+    posterColorHex: 0
+    posterFile: SteelVeil.png
+    tagline: A covert war fought without uniforms.
+  - catalogId: Action_Strike_Package
+    displayName: Strike Package
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Strike_Package.asset
+    assetGuid: a3a4ba7a7240e9844b081b306d038944
+    posterColorHex: 0
+    posterFile: StrikePackage.png
+    tagline: Every asset in the theater on one target.
+  - catalogId: Action_Tactical_Silence
+    displayName: Tactical Silence
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Tactical_Silence.asset
+    assetGuid: 37b0c1d74b171c7498ee919c40526f73
+    posterColorHex: 0
+    posterFile: TacticalSilence.png
+    tagline: No comms. No backup. No mistakes.
+  - catalogId: Action_Terminal_Velocity
+    displayName: Terminal Velocity
+    genre: 0
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Terminal_Velocity.asset
+    assetGuid: 62aa1fef45bf8ef498b1cf2a50703ceb
+    posterColorHex: 0
+    posterFile: TerminalVelocity.png
+    tagline: Falling is the easy part. Landing is not.
+  - catalogId: Action_Urban_Siege
+    displayName: Empire Of Ashes
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Urban_Siege.asset
+    assetGuid: 50d2a2d02d38d0942937cb9d787125ba
+    posterColorHex: 0
+    posterFile: EmpireOfAshes.png
+    tagline: One city block becomes a war zone overnight.
+  - catalogId: Action_Velocity_Kill
+    displayName: Wild Horizons
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Velocity_Kill.asset
+    assetGuid: ee681ab1ea7eed247bb20a69ad95c061
+    posterColorHex: 0
+    posterFile: WildHorizons.png
+    tagline: Speed is the only weapon left on the table.
+  - catalogId: Action_Warpath
+    displayName: Ghost Battalion
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 6
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Warpath.asset
+    assetGuid: 0c7c1fe7a7602c64abc910a14696a376
+    posterColorHex: 0
+    posterFile: GhostBattalion.png
+    tagline: A general's last campaign becomes personal.
+  - catalogId: Action_Zero_Hour_Convoy
+    displayName: Kingdom Of Dust
+    genre: 0
+    rarity: 1
+    sagaId: project_avalanche
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Action_Zero_Hour_Convoy.asset
+    assetGuid: 234fd48420d9ded439a67818dd745d88
+    posterColorHex: 0
+    posterFile: KingdomOfDust.png
+    tagline: Supplies must reach the front before dawn.
+  - catalogId: Animation_Bubble_City
+    displayName: The Moonlight Bakery
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Bubble_City.asset
+    assetGuid: 6acf431879304fd42b92ac6a9204b5ee
+    posterColorHex: 0
+    posterFile: TheMoonlightBakery.png
+    tagline: Entire civilization lives inside bubbles.
+  - catalogId: Animation_Cloud_Riders
+    displayName: The Ocean Beyond Maps
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Cloud_Riders.asset
+    assetGuid: a8c79df0bdf40a243ab741d44ee24a46
+    posterColorHex: 0
+    posterFile: TheOceanBeyondMaps.png
+    tagline: Children sail clouds in homemade ships.
+  - catalogId: Animation_Dragon_s_Lunchbox
+    displayName: A Thousand Fireflies
+    genre: 8
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Dragon_s_Lunchbox.asset
+    assetGuid: d24da1e64107c2546bc065a1658f1ad1
+    posterColorHex: 0
+    posterFile: AThousandFireflies.png
+    tagline: School lunch hides a dragon egg.
+  - catalogId: Animation_Legendary
+    displayName: Little Giants
+    genre: 8
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Animation_Legendary.asset
+    assetGuid: 90139172e4f9ee1479118ebb1ca44e06
+    posterColorHex: 1
+    posterFile: LittleGiants.png
+    tagline: Small heroes carry the biggest hearts in the biggest adventure.
+  - catalogId: Animation_Little_Giants_II
+    displayName: Big Trouble Club
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Little_Giants_II.asset
+    assetGuid: 81da5b4075b5cc64490b03c183040999
+    posterColorHex: 0
+    posterFile: LittleGiantsII.png
+    tagline: Giants return. Problems grew too.
+  - catalogId: Animation_Magic_Pencil
+    displayName: Magic Pencil
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Magic_Pencil.asset
+    assetGuid: b1e9ff2943343d945b0f3158c5195e75
+    posterColorHex: 0
+    posterFile: MagicPencil.png
+    tagline: Draw something. It comes alive briefly.
+  - catalogId: Animation_Moonlight_Mice
+    displayName: The Secret Treehouse
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Moonlight_Mice.asset
+    assetGuid: 81a2aff1356b9af4790141af9e7d94bc
+    posterColorHex: 0
+    posterFile: TheSecretTreehouse.png
+    tagline: Midnight quests for cheese and courage.
+  - catalogId: Animation_Paint_the_Wind
+    displayName: Paint the Wind
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Paint_the_Wind.asset
+    assetGuid: efd63283e1bb4684898a2f1134117556
+    posterColorHex: 0
+    posterFile: PainttheWind.png
+    tagline: Colors move with the breeze magically.
+  - catalogId: Animation_Paper_Kingdom
+    displayName: Paper Kingdom
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Paper_Kingdom.asset
+    assetGuid: b192fa9fd4439544ca2a7b60fb7937ac
+    posterColorHex: 0
+    posterFile: PaperKingdom.png
+    tagline: Origami citizens defend their realm.
+  - catalogId: Animation_Penguin_Express
+    displayName: Penguin Express
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Penguin_Express.asset
+    assetGuid: 5979073c38004f94494c6df75d5cd3e3
+    posterColorHex: 0
+    posterFile: PenguinExpress.png
+    tagline: Express delivery across ice continents.
+  - catalogId: Animation_Robot_Best_Friend
+    displayName: Beyond Maple Hill
+    genre: 8
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Robot_Best_Friend.asset
+    assetGuid: cc840a5dc60ed4a438754803af6b1a29
+    posterColorHex: 0
+    posterFile: BeyondMapleHill.png
+    tagline: Friendship programmed beyond specs.
+  - catalogId: Animation_Sky_Garden
+    displayName: Captain Acorn
+    genre: 8
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Sky_Garden.asset
+    assetGuid: c6fbb1b835753784287d4fffd1fe05c4
+    posterColorHex: 0
+    posterFile: CaptainAcorn.png
+    tagline: Floating gardens need young caretakers.
+  - catalogId: Animation_Star_Pup
+    displayName: Star Pup
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Star_Pup.asset
+    assetGuid: 2c796fe5f1c1c4241bd604ccfd999fbf
+    posterColorHex: 0
+    posterFile: StarPup.png
+    tagline: A stray dog maps constellations for kids.
+  - catalogId: Animation_Starlight_Parade
+    displayName: The Flying Orchard
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Starlight_Parade.asset
+    assetGuid: 2d601d7cda503cc4d827fa0beaab2936
+    posterColorHex: 0
+    posterFile: TheFlyingOrchard.png
+    tagline: Annual parade lights up the night sky.
+  - catalogId: Animation_The_Clockwork_Fox
+    displayName: The Clockwork Fox
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_The_Clockwork_Fox.asset
+    assetGuid: 95d32553acaa16845aa98a3f775e7782
+    posterColorHex: 0
+    posterFile: TheClockworkFox.png
+    tagline: A mechanical fox searches for warmth.
+  - catalogId: Animation_The_Last_Kite
+    displayName: The Last Kite
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_The_Last_Kite.asset
+    assetGuid: dbba3f6652b7ba742acce63f3c60765e
+    posterColorHex: 0
+    posterFile: TheLastKite.png
+    tagline: One kite carries a village's hope aloft.
+  - catalogId: Animation_The_Singing_Stone
+    displayName: The Lantern Parade
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_The_Singing_Stone.asset
+    assetGuid: e1c11a70ba29c7444ac175fe9fe35c32
+    posterColorHex: 0
+    posterFile: TheLanternParade.png
+    tagline: A stone teaches a village to harmonize.
+  - catalogId: Animation_Tiny_Titans
+    displayName: Tiny Titans
+    genre: 8
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Tiny_Titans.asset
+    assetGuid: bc873929c28279846a2638f83b289653
+    posterColorHex: 0
+    posterFile: TinyTitans.png
+    tagline: Miniature gods argue over a sandbox world.
+  - catalogId: Animation_Tiny_Voyagers
+    displayName: The Lost Balloon
+    genre: 8
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Tiny_Voyagers.asset
+    assetGuid: bbec87c042d541a47926a81cbb683d3e
+    posterColorHex: 0
+    posterFile: TheLostBalloon.png
+    tagline: Microscopic explorers inside a backyard.
+  - catalogId: Animation_Whisper_Woods
+    displayName: Oliver And The Sky Whale
+    genre: 8
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Animation_Whisper_Woods.asset
+    assetGuid: 50e7e6f7b0506524bbd06c748d15ee61
+    posterColorHex: 0
+    posterFile: OliverAndTheSkyWhale.png
+    tagline: Trees whisper advice to lost children.
+  - catalogId: Comedy_Accidental_Guru
+    displayName: Welcome To Dis A Ster
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Accidental_Guru.asset
+    assetGuid: 0f466eecec50ebc4cb279a1e62dfae34
+    posterColorHex: 0
+    posterFile: WelcomeToDisASter.png
+    tagline: Accidental wisdom goes viral overnight.
+  - catalogId: Comedy_Accidental_Hero
+    displayName: L At E A G A In
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Accidental_Hero.asset
+    assetGuid: 0c7e4cf5dff1c1844b42c2ceb996ccb3
+    posterColorHex: 0
+    posterFile: LAtEAGAIn.png
+    tagline: Save the cat. Become mayor accidentally.
+  - catalogId: Comedy_Bad_Advice_Hotline
+    displayName: Bad Advice Hotline
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Bad_Advice_Hotline.asset
+    assetGuid: 76351a31fabb4954fb1b8260dc7fe562
+    posterColorHex: 0
+    posterFile: BadAdviceHotline.png
+    tagline: Call for help. Receive catastrophe.
+  - catalogId: Comedy_Boss_of_None
+    displayName: Boss of None
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Boss_of_None.asset
+    assetGuid: d64f152a1e702bf49b3e47bdf40dbe86
+    posterColorHex: 0
+    posterFile: BossofNone.png
+    tagline: Promoted by mistake. Promoted again anyway.
+  - catalogId: Comedy_Cooking_Catastrophe
+    displayName: Cooking Catastrophe
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Cooking_Catastrophe.asset
+    assetGuid: 859eb2e38dd1c6041a3e8fe6d033d37f
+    posterColorHex: 0
+    posterFile: CookingCatastrophe.png
+    tagline: Celebrity chef meets reality TV reality.
+  - catalogId: Comedy_Dog_Mayor
+    displayName: Dog Mayor
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Dog_Mayor.asset
+    assetGuid: 08197967619f29648b206033fcb129f8
+    posterColorHex: 0
+    posterFile: DogMayor.png
+    tagline: A town elects a dog. Bureaucracy adapts reluctantly.
+  - catalogId: Comedy_Double_Booked
+    displayName: M On Day Morn In G
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Double_Booked.asset
+    assetGuid: 84cc3f0c961d3be448901ca98861e5a8
+    posterColorHex: 0
+    posterFile: MOnDayMornInG.png
+    tagline: Two weddings. One venue. Zero adults in charge.
+  - catalogId: Comedy_Ghost_Roommate
+    displayName: Ghost Roommate
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Ghost_Roommate.asset
+    assetGuid: c3f9c8f91d6320d40a95453d6ae89889
+    posterColorHex: 0
+    posterFile: GhostRoommate.png
+    tagline: Haunting with chores and rent disputes.
+  - catalogId: Comedy_Improv_Nation
+    displayName: The Last Day Of F
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Improv_Nation.asset
+    assetGuid: 1593431774452614397fc04040658963
+    posterColorHex: 0
+    posterFile: TheLastDayOfF.png
+    tagline: Nationwide improv tournament. No one is ready.
+  - catalogId: Comedy_Late_Shift_Laughs
+    displayName: Late Shift Laughs
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Late_Shift_Laughs.asset
+    assetGuid: 33100dacc656c8342860ffbeaaaea453
+    posterColorHex: 0
+    posterFile: LateShiftLaughs.png
+    tagline: Retail workers versus the universe.
+  - catalogId: Comedy_Laugh_Track
+    displayName: Laugh Track
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Laugh_Track.asset
+    assetGuid: ea0508bdd7d6c7c4ebd30be8a608a2bb
+    posterColorHex: 0
+    posterFile: LaughTrack.png
+    tagline: Sitcom laugh track follows one man in real life.
+  - catalogId: Comedy_Legendary
+    displayName: Detective Potato
+    genre: 3
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Comedy_Legendary.asset
+    assetGuid: 87ff12c044d69b741a36d4d0c2a14863
+    posterColorHex: 1
+    posterFile: DetectivePotato.png
+    tagline: The city's strangest detective solves crimes with charm and starch.
+  - catalogId: Comedy_Love_in_Transit
+    displayName: Love in Transit
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Love_in_Transit.asset
+    assetGuid: ab3b9647fefd9c14b81dea5faf37e50f
+    posterColorHex: 0
+    posterFile: LoveinTransit.png
+    tagline: Commuters fall in love on the wrong train.
+  - catalogId: Comedy_Mismatched_Pair
+    displayName: Mismatched Pair
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Mismatched_Pair.asset
+    assetGuid: bba0ebb9c5ab5314db547697abb540e8
+    posterColorHex: 0
+    posterFile: MismatchedPair.png
+    tagline: Odd couple detectives solve absurd crimes.
+  - catalogId: Comedy_Office_Panic
+    displayName: Office Panic
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Office_Panic.asset
+    assetGuid: 4c1825d8ad299d7499dc7f530fd932c4
+    posterColorHex: 0
+    posterFile: OfficePanic.png
+    tagline: Corporate retreat becomes survival comedy.
+  - catalogId: Comedy_Parent_Trap_2_0
+    displayName: Parent Trap 2.0
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Parent_Trap_2_0.asset
+    assetGuid: 211859ba18e892741a50f9a0eba320f1
+    posterColorHex: 0
+    posterFile: ParentTrap20.png
+    tagline: Kids reverse-engineer adult relationships.
+  - catalogId: Comedy_Pizza_Tribunal
+    displayName: The Newneighbors
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Pizza_Tribunal.asset
+    assetGuid: e767a12108ed41546b6af3c29ae488d2
+    posterColorHex: 0
+    posterFile: TheNewneighbors.png
+    tagline: Delivery dispute escalates to municipal court.
+  - catalogId: Comedy_Room_for_Error
+    displayName: City H A Lldis A Ster
+    genre: 3
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Room_for_Error.asset
+    assetGuid: ab97e9176d47a3042a3a75b4d4fe55fa
+    posterColorHex: 0
+    posterFile: CityHALldisASter.png
+    tagline: Airbnb listing omits the haunted annex.
+  - catalogId: Comedy_Roommate_Protocol
+    displayName: Roommate Protocol
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Roommate_Protocol.asset
+    assetGuid: 4585267e98fec8d4e9b1a0a0d645eb52
+    posterColorHex: 0
+    posterFile: RoommateProtocol.png
+    tagline: Three strangers. One lease. Infinite rules.
+  - catalogId: Comedy_Side_Gig
+    displayName: The Wr On Gwedd In G
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Side_Gig.asset
+    assetGuid: 48a79033c087cf541846f872d5f4b753
+    posterColorHex: 0
+    posterFile: TheWrOnGweddInG.png
+    tagline: A temp job becomes a permanent comedy of errors.
+  - catalogId: Comedy_Startup_Chaos
+    displayName: Startup Chaos
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Startup_Chaos.asset
+    assetGuid: 8387c5c1ca335e04da4e12fa4340947b
+    posterColorHex: 0
+    posterFile: StartupChaos.png
+    tagline: Pitch deck. Product missing. Funding anyway.
+  - catalogId: Comedy_Sushi_Disaster
+    displayName: Sushi Disaster
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Sushi_Disaster.asset
+    assetGuid: 4ea06953791b63042bb140fc0a18a260
+    posterColorHex: 0
+    posterFile: SushiDisaster.png
+    tagline: One roll destroys a chef's reputation.
+  - catalogId: Comedy_The_Backup_Plan
+    displayName: The Backup Plan
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_The_Backup_Plan.asset
+    assetGuid: 67fd67f9671b19a41a7c4a016abe556b
+    posterColorHex: 0
+    posterFile: TheBackupPlan.png
+    tagline: Plan B becomes Plan A through incompetence.
+  - catalogId: Comedy_The_Great_Mix_Up
+    displayName: The Gre At Mix-Up
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_The_Great_Mix_Up.asset
+    assetGuid: 7dee36df732c3ab4985dd38e5c26ce81
+    posterColorHex: 0
+    posterFile: TheGreatMixUp.png
+    tagline: Identical bags. Identical chaos.
+  - catalogId: Comedy_The_Heist_That_Wasn_t
+    displayName: The Heist That Wasn't
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_The_Heist_That_Wasn_t.asset
+    assetGuid: e1d1ed6f77398ec419ce1d1c2e3d63ee
+    posterColorHex: 0
+    posterFile: TheHeistThatWasnt.png
+    tagline: Amateurs steal the wrong safe. Twice.
+  - catalogId: Comedy_The_Wrong_Speech
+    displayName: The Wrong Speech
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_The_Wrong_Speech.asset
+    assetGuid: 794b61fcb34421d4fb41243a5d41d13c
+    posterColorHex: 0
+    posterFile: TheWrongSpeech.png
+    tagline: Best man reads the wrong notes. Twice.
+  - catalogId: Comedy_Uncle_Gary
+    displayName: Uncle Gary
+    genre: 3
+    rarity: 0
+    sagaId: uncle_gary
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary.asset
+    assetGuid: dbf53cf62cfea4f47820d5f910e8b807
+    posterColorHex: 0
+    posterFile: UncleGary.png
+    tagline: Gary means well. Chaos follows anyway.
+  - catalogId: Comedy_Uncle_Gary_II
+    displayName: Uncle Gary II
+    genre: 3
+    rarity: 0
+    sagaId: uncle_gary
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_II.asset
+    assetGuid: f5e6c476bdb3cb541b846779454c3cc9
+    posterColorHex: 0
+    posterFile: UncleGaryII.png
+    tagline: Gary babysits. Parents reconsider life choices.
+  - catalogId: Comedy_Uncle_Gary_III
+    displayName: Uncle Gary III
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_III.asset
+    assetGuid: f6f29356ee4699e4b96e09ce78262e51
+    posterColorHex: 0
+    posterFile: UncleGaryIII.png
+    tagline: Family reunion. Gary brings fireworks. Literally.
+  - catalogId: Comedy_Uncle_Gary_IV
+    displayName: F A Milyemergency
+    genre: 3
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_IV.asset
+    assetGuid: 7942cbe92877ff44abb8ccb86c3d6098
+    posterColorHex: 0
+    posterFile: FAMilyemergency.png
+    tagline: Gary runs for office. Sanity loses.
+  - catalogId: Comedy_Uncle_Gary_V
+    displayName: Uncle Gary V
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_V.asset
+    assetGuid: 9b9f3d83622ca144893b126e6da0a71d
+    posterColorHex: 0
+    posterFile: UncleGaryV.png
+    tagline: Gary opens a food truck. Health code weeps.
+  - catalogId: Comedy_Uncle_Gary_VI
+    displayName: The Ye A Reveryth In Gbroke
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_VI.asset
+    assetGuid: ad3dea89c14de4144aaf5b6abdd27444
+    posterColorHex: 0
+    posterFile: TheYeAReverythInGbroke.png
+    tagline: Gary's wedding. Everyone else pays the price.
+  - catalogId: Comedy_Uncle_Gary_VII
+    displayName: Uncleg A Ry'Spl An
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_VII.asset
+    assetGuid: 4a3b0962f71432348883ad09279c9faa
+    posterColorHex: 0
+    posterFile: UnclegARySplAn.png
+    tagline: Final Gary. Maximum Gary. Still somehow charming.
+  - catalogId: Comedy_Uncle_Gary_VIII
+    displayName: Welcome Home Steve
+    genre: 3
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Uncle_Gary_VIII.asset
+    assetGuid: 62294bd00dfdac149b0d6efaf090a1c3
+    posterColorHex: 0
+    posterFile: WelcomeHomeSteve.png
+    tagline: The Gary saga ends. Gary disagrees.
+  - catalogId: Comedy_Wedding_Crashers_Anonymous
+    displayName: Wedding Crashers Anonymous
+    genre: 3
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Comedy_Wedding_Crashers_Anonymous.asset
+    assetGuid: 11f35e208a372b9468e70f8ec97d83e8
+    posterColorHex: 0
+    posterFile: WeddingCrashersAnonymous.png
+    tagline: They quit crashing. Weddings find them.
+  - catalogId: Documentary_Border_Seeds
+    displayName: Beneath the Ice
+    genre: 9
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_Border_Seeds.asset
+    assetGuid: 4b285d7affede0e4ca6311fd1e7e6316
+    posterColorHex: 0
+    posterFile: BeneaththeIce.png
+    tagline: Farmers plant crops along disputed lines.
+  - catalogId: Documentary_City_of_Light
+    displayName: Giants Of The Deep
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_City_of_Light.asset
+    assetGuid: 4e5ac8ed1588d704a9fd627acbed1445
+    posterColorHex: 0
+    posterFile: GiantsOfTheDeep.png
+    tagline: Paris artisans keep ancient crafts alive.
+  - catalogId: Documentary_Hidden_Rivers
+    displayName: Hidden Rivers
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_Hidden_Rivers.asset
+    assetGuid: 836e0b390b88f614796e34bf1c7d0de4
+    posterColorHex: 0
+    posterFile: HiddenRivers.png
+    tagline: Underground rivers mapped for the first time.
+  - catalogId: Documentary_Legendary
+    displayName: Voices of the Deep
+    genre: 9
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Documentary_Legendary.asset
+    assetGuid: df37aec09af4bb0479bc451def6b7034
+    posterColorHex: 1
+    posterFile: voiceofthedeep.png
+    tagline: The ocean still speaks to those willing to listen.
+  - catalogId: Documentary_Steel_and_Song
+    displayName: Life Above the Clouds
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_Steel_and_Song.asset
+    assetGuid: 64e3f8fd247d0224ea599aaf3f2e9601
+    posterColorHex: 0
+    posterFile: LifeAbovetheClouds.png
+    tagline: Shipyard workers sing through shifts.
+  - catalogId: Documentary_The_Archivist
+    displayName: Cities Of Tomorrow
+    genre: 9
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_The_Archivist.asset
+    assetGuid: 557bf9760504fd54baa1a5ad0edafb9b
+    posterColorHex: 0
+    posterFile: CitiesOfTomorrow.png
+    tagline: One person saves a nation's film heritage.
+  - catalogId: Documentary_The_Glassblower
+    displayName: Desert Kingdoms
+    genre: 9
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_The_Glassblower.asset
+    assetGuid: 89d1ca50753303c449ce550c0e3d8e2c
+    posterColorHex: 0
+    posterFile: DesertKingdoms.png
+    tagline: Molten art in a family workshop.
+  - catalogId: Documentary_The_Last_Beekeeper
+    displayName: Secrets of the Reef
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_The_Last_Beekeeper.asset
+    assetGuid: da631dc4be2dd794892d6080b57c042f
+    posterColorHex: 0
+    posterFile: SecretsoftheReef.png
+    tagline: One hive may save a region's crops.
+  - catalogId: Documentary_Tracks_in_Dust
+    displayName: The Last Forest
+    genre: 9
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_Tracks_in_Dust.asset
+    assetGuid: 2c531b880e7ce3b44b14051f1b73577f
+    posterColorHex: 0
+    posterFile: TheLastForest.png
+    tagline: Nomads crossing deserts for water.
+  - catalogId: Documentary_Voices_of_the_Deep_II
+    displayName: Edge Of The Volcano
+    genre: 9
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Documentary_Voices_of_the_Deep_II.asset
+    assetGuid: d10bd5afc740a634fbddf0dd6d5c8d18
+    posterColorHex: 0
+    posterFile: EdgeOfTheVolcano.png
+    tagline: Return to trenches no light reaches.
+  - catalogId: Drama_Ash_and_Honey
+    displayName: The Logest Sea S On
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Ash_and_Honey.asset
+    assetGuid: 92ffd32bc8f18104398e00079b9e6278
+    posterColorHex: 0
+    posterFile: TheLogestSeaSOn.png
+    tagline: Bitterness and sweetness in the same jar.
+  - catalogId: Drama_Blue_Hour
+    displayName: A Pl A Cec A Lled Tomorrow
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Blue_Hour.asset
+    assetGuid: baf9017feb13bf14385374625d82bf5a
+    posterColorHex: 0
+    posterFile: APlACecALledTomorrow.png
+    tagline: Twilight conversations that change everything.
+  - catalogId: Drama_Borrowed_Time
+    displayName: Borrowed Time
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Borrowed_Time.asset
+    assetGuid: f51f58b57c68af948aa5ab24e33b5241
+    posterColorHex: 0
+    posterFile: BorrowedTime.png
+    tagline: A diagnosis reorders every priority.
+  - catalogId: Drama_Broken_Choir
+    displayName: Broken Choir
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Broken_Choir.asset
+    assetGuid: 8360eb588e7fc4d4f9de2b55808e5d41
+    posterColorHex: 0
+    posterFile: BrokenChoir.png
+    tagline: A church choir reunites after scandal.
+  - catalogId: Drama_Crosswind
+    displayName: Crosswind
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Crosswind.asset
+    assetGuid: 5d20b248cd40cd741966338a30d557c7
+    posterColorHex: 0
+    posterFile: Crosswind.png
+    tagline: Sibling pilots face the same storm differently.
+  - catalogId: Drama_Evening_Class
+    displayName: The L On G Road Home
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Evening_Class.asset
+    assetGuid: c6964a9b747a85247b1b021401cc60f0
+    posterColorHex: 0
+    posterFile: TheLOnGRoadHome.png
+    tagline: Adults learn to read and to hope again.
+  - catalogId: Drama_Fading_Light
+    displayName: A Utumnh A Rbor
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Fading_Light.asset
+    assetGuid: ad0956d930cd8b2419616bd88c722797
+    posterColorHex: 0
+    posterFile: AUtumnhARbor.png
+    tagline: Care for the dying. Learn to let go.
+  - catalogId: Drama_Field_Notes
+    displayName: The Oldpi An O
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Field_Notes.asset
+    assetGuid: 2945e6ad4f241634585700abbd55e814
+    posterColorHex: 0
+    posterFile: TheOldpiAnO.png
+    tagline: A journalist stays too long in a border town.
+  - catalogId: Drama_Glass_Harbor
+    displayName: Glass Harbor
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Glass_Harbor.asset
+    assetGuid: 25544c29c6aaa634a80491ca8c1664ac
+    posterColorHex: 0
+    posterFile: GlassHarbor.png
+    tagline: A port town mourns a ship that never returned.
+  - catalogId: Drama_Harvest_Moon
+    displayName: Harvest Moon
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Harvest_Moon.asset
+    assetGuid: 2b1d51e8f21ec284aa0ccd13f2c93ffa
+    posterColorHex: 0
+    posterFile: HarvestMoon.png
+    tagline: One last season on the family farm.
+  - catalogId: Drama_Homeward
+    displayName: Homeward
+    genre: 1
+    rarity: 0
+    sagaId: the_long_road
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Homeward.asset
+    assetGuid: 91f003839785343478850ad64decabf3
+    posterColorHex: 0
+    posterFile: Homeward.png
+    tagline: Return to the place that never felt like home.
+  - catalogId: Drama_Ledger_of_Grace
+    displayName: The Quietshore
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Ledger_of_Grace.asset
+    assetGuid: c22e751792eac57459c174167328b174
+    posterColorHex: 0
+    posterFile: TheQuietshore.png
+    tagline: Debts forgiven. Debts remembered.
+  - catalogId: Drama_Legendary
+    displayName: When the River Sleeps
+    genre: 1
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Drama_Legendary.asset
+    assetGuid: a913848ca25882344942999853e24a94
+    posterColorHex: 1
+    posterFile: WhentheRiverSleeps.png
+    tagline: A family secret surfaces when the drought ends and the river runs again.
+  - catalogId: Drama_Northbound
+    displayName: Northbound
+    genre: 1
+    rarity: 0
+    sagaId: the_long_road
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Northbound.asset
+    assetGuid: f2d21e885d35541488c6a03ef5516b82
+    posterColorHex: 0
+    posterFile: Northbound.png
+    tagline: A bus ride north becomes a reckoning.
+  - catalogId: Drama_Open_Field
+    displayName: Be For E The Rain
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Open_Field.asset
+    assetGuid: 5c0008136c6bb044f98d325f7dbf44e5
+    posterColorHex: 0
+    posterFile: BeForETheRain.png
+    tagline: Childhood friends meet where they once played.
+  - catalogId: Drama_Painted_Sky
+    displayName: Painted Sky
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Painted_Sky.asset
+    assetGuid: 2c766f1b1a5cb4344810d4ef9eb10c2a
+    posterColorHex: 0
+    posterFile: PaintedSky.png
+    tagline: An artist paints the sky before going blind.
+  - catalogId: Drama_Paper_Cranes
+    displayName: Paper Cranes
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Paper_Cranes.asset
+    assetGuid: 850487f61df81e24483c9e112a4274fd
+    posterColorHex: 0
+    posterFile: PaperCranes.png
+    tagline: Origami left on graves becomes a movement.
+  - catalogId: Drama_Paper_House
+    displayName: Paper House
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Paper_House.asset
+    assetGuid: a79581125ea0fa34a9afe1a89b710478
+    posterColorHex: 0
+    posterFile: PaperHouse.png
+    tagline: Wealth built on documents that may be forged.
+  - catalogId: Drama_Quiet_Mercy
+    displayName: Quiet Mercy
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Quiet_Mercy.asset
+    assetGuid: 145d347aee95c6a4898e252570c3179f
+    posterColorHex: 0
+    posterFile: QuietMercy.png
+    tagline: A nurse chooses compassion over policy.
+  - catalogId: Drama_River_s_End
+    displayName: River's End
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_River_s_End.asset
+    assetGuid: 9a9f273f3966bbb43b35ce10db42dbab
+    posterColorHex: 0
+    posterFile: RiversEnd.png
+    tagline: A town disappears when the dam is built.
+  - catalogId: Drama_Salt_Line
+    displayName: Salt Line
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Salt_Line.asset
+    assetGuid: f967929a3ced1df44b61d32f3ea53a85
+    posterColorHex: 0
+    posterFile: SaltLine.png
+    tagline: Coastal erosion mirrors a failing marriage.
+  - catalogId: Drama_Silent_Auction
+    displayName: Bene At Hquietw At Ers
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Silent_Auction.asset
+    assetGuid: 8dc1cbcd0c0686d47b4bba88d96695fb
+    posterColorHex: 0
+    posterFile: BeneAtHquietwAtErs.png
+    tagline: A charity event exposes private shame.
+  - catalogId: Drama_Small_Mercies
+    displayName: Small Mercies
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Small_Mercies.asset
+    assetGuid: 822019c50aa8f8a47979756843fd448f
+    posterColorHex: 0
+    posterFile: SmallMercies.png
+    tagline: Kindness becomes rebellion in a rigid town.
+  - catalogId: Drama_Still_Waters
+    displayName: Still Waters
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Still_Waters.asset
+    assetGuid: 0397ef54a82d4674cb09e786b2bc23ce
+    posterColorHex: 0
+    posterFile: StillWaters.png
+    tagline: Calm surfaces hide generations of silence.
+  - catalogId: Drama_Stone_Garden
+    displayName: Betweentwo Sea S On S
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Stone_Garden.asset
+    assetGuid: cded1054e025003498a5dbc294134ef5
+    posterColorHex: 0
+    posterFile: BetweentwoSeaSOnS.png
+    tagline: Grief grows into something unexpectedly alive.
+  - catalogId: Drama_The_Goodbye_Room
+    displayName: The Goodbye Room
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_The_Goodbye_Room.asset
+    assetGuid: 60b35baef22747e4dacd031c4ff31a32
+    posterColorHex: 0
+    posterFile: TheGoodbyeRoom.png
+    tagline: A hospice where every door is a farewell.
+  - catalogId: Drama_The_Last_Lesson
+    displayName: The Last Lesson
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_The_Last_Lesson.asset
+    assetGuid: d29d1b832e2b50f4faa39947b2be3468
+    posterColorHex: 0
+    posterFile: TheLastLesson.png
+    tagline: A teacher's final year changes every student.
+  - catalogId: Drama_The_Long_Road
+    displayName: The Long Road
+    genre: 1
+    rarity: 0
+    sagaId: the_long_road
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_The_Long_Road.asset
+    assetGuid: 51c605617b54f0a4ba1c19746a2b260d
+    posterColorHex: 0
+    posterFile: TheLongRoad.png
+    tagline: A father walks home across a divided country.
+  - catalogId: Drama_The_Long_Road_II
+    displayName: The Long Road II
+    genre: 1
+    rarity: 0
+    sagaId: the_long_road
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_The_Long_Road_II.asset
+    assetGuid: 9338cfc033106b4458e2c2e520cb71b6
+    posterColorHex: 0
+    posterFile: TheLongRoadII.png
+    tagline: The road home is longer the second time.
+  - catalogId: Drama_The_Weight_of_Rain
+    displayName: The Weight of Rain
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_The_Weight_of_Rain.asset
+    assetGuid: 6d96c014df765ed4d859837d01b5c9ef
+    posterColorHex: 0
+    posterFile: TheWeightofRain.png
+    tagline: Floods wash up truths buried for decades.
+  - catalogId: Drama_Two_Rivers
+    displayName: The Bookshop On Ced A Rstreet
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Two_Rivers.asset
+    assetGuid: bd1686351dace0449b4b0e979fde4c2a
+    posterColorHex: 0
+    posterFile: TheBookshopOnCedARstreet.png
+    tagline: Two towns. One water rights war. One family.
+  - catalogId: Drama_Undertow
+    displayName: The Last Summer House
+    genre: 1
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Undertow.asset
+    assetGuid: f47689773bac95043a5de38c04003a2d
+    posterColorHex: 0
+    posterFile: TheLastSummerHouse.png
+    tagline: Love pulls harder when the tide turns cruel.
+  - catalogId: Drama_Winter_Letters
+    displayName: Winter  Letters
+    genre: 1
+    rarity: 1
+    sagaId: winter_letters
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Winter_Letters.asset
+    assetGuid: c8816da1996554146861bddee5bce9e7
+    posterColorHex: 0
+    posterFile: WinterLetters.png
+    tagline: Old correspondence reveals a family fracture.
+  - catalogId: Drama_Winter_Letters_II
+    displayName: Winter Letters II
+    genre: 1
+    rarity: 0
+    sagaId: winter_letters
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Winter_Letters_II.asset
+    assetGuid: 995bf2ef91cbeaf4299ce8ab895f5c75
+    posterColorHex: 0
+    posterFile: WinterLettersII.png
+    tagline: Return to the house the letters never left.
+  - catalogId: Drama_Winter_Letters_III
+    displayName: Winter Letters III
+    genre: 1
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Drama_Winter_Letters_III.asset
+    assetGuid: 46d173838d1c5a9448f3351d439c8ab4
+    posterColorHex: 0
+    posterFile: WinterLettersIII.png
+    tagline: The final letter arrives without a stamp.
+  - catalogId: Fantasy_Ash_Crown
+    displayName: The Emer A Ld To Wer
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Ash_Crown.asset
+    assetGuid: c3a898b035c20234c9d0286b2ccd0d70
+    posterColorHex: 0
+    posterFile: TheEmerALdToWer.png
+    tagline: Throne of embers passes to an unlikely ruler.
+  - catalogId: Fantasy_Crown_of_Embers
+    displayName: The Last Dr A G On Keeper
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Crown_of_Embers.asset
+    assetGuid: 542b5df9e7f3eef44bd04f4204c5a52a
+    posterColorHex: 0
+    posterFile: TheLastDrAGOnKeeper.png
+    tagline: Fire crown for a queen who hates heat.
+  - catalogId: Fantasy_Dragon_s_Debt
+    displayName: The Forgotten M A Ge
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Dragon_s_Debt.asset
+    assetGuid: 626f997d229f2344b8214eea7f2402f8
+    posterColorHex: 0
+    posterFile: TheForgottenMAGe.png
+    tagline: A dragon saved a village. The bill is due.
+  - catalogId: Fantasy_Dragon_s_Echo
+    displayName: The Silvercrown
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Dragon_s_Echo.asset
+    assetGuid: 0bdf1bab81003e644b8c21f55a8ff8a9
+    posterColorHex: 0
+    posterFile: TheSilvercrown.png
+    tagline: An old dragon's voice guides a young thief.
+  - catalogId: Fantasy_Forgotten_Realm
+    displayName: The Star Bornqueen
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Forgotten_Realm.asset
+    assetGuid: a4396c0ab0bea064fb23beb2790e1fb4
+    posterColorHex: 0
+    posterFile: TheStarBornqueen.png
+    tagline: Maps lie. The realm remembers.
+  - catalogId: Fantasy_Glass_Crown
+    displayName: Whisperw In D V A Lley
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Glass_Crown.asset
+    assetGuid: ff485070a878c574a8e959043da06263
+    posterColorHex: 0
+    posterFile: WhisperwInDVALley.png
+    tagline: Transparency as tyranny in a fairy court.
+  - catalogId: Fantasy_Legendary
+    displayName: Song of the Forgotten Realm
+    genre: 6
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Fantasy_Legendary.asset
+    assetGuid: b1b70169be5347e4391fc651fc7d7cde
+    posterColorHex: 1
+    posterFile: SongoftheForgottenRealm.png
+    tagline: A lost melody can reopen a kingdom erased from history.
+  - catalogId: Fantasy_Moonkeeper
+    displayName: Moonkeeper
+    genre: 6
+    rarity: 0
+    sagaId: moonkeeper
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Moonkeeper.asset
+    assetGuid: ab2cbe8584098c74385cad9e389af2af
+    posterColorHex: 0
+    posterFile: Moonkeeper.png
+    tagline: One guardian tends the door between worlds.
+  - catalogId: Fantasy_Moonkeeper_II
+    displayName: Moonkeeper II
+    genre: 6
+    rarity: 0
+    sagaId: moonkeeper
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Moonkeeper_II.asset
+    assetGuid: 9803985d60fdffb40ab8d8699fec4269
+    posterColorHex: 0
+    posterFile: MoonkeeperII.png
+    tagline: The door opens wider each full moon.
+  - catalogId: Fantasy_Moonkeeper_III
+    displayName: Moonkeeper III
+    genre: 6
+    rarity: 0
+    sagaId: moonkeeper
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Moonkeeper_III.asset
+    assetGuid: a93befd5ae5f0c843a2e5158ecaf6680
+    posterColorHex: 0
+    posterFile: MoonkeeperIII.png
+    tagline: Guardian becomes prisoner of the threshold.
+  - catalogId: Fantasy_Moonkeeper_IV
+    displayName: Moonkeeper IV
+    genre: 6
+    rarity: 0
+    sagaId: moonkeeper
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Moonkeeper_IV.asset
+    assetGuid: c5daaefea5151e7469ebf232870e627f
+    posterColorHex: 0
+    posterFile: MoonkeeperIV.png
+    tagline: Final vigil before the door falls forever.
+  - catalogId: Fantasy_Moonkeeper_V
+    displayName: Moonkeeper V
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Moonkeeper_V.asset
+    assetGuid: 3ab60bb9f34b5554aa0cc5a54fb7c497
+    posterColorHex: 0
+    posterFile: MoonkeeperV.png
+    tagline: Last moon. Last keeper. Last chance.
+  - catalogId: Fantasy_Oathbound
+    displayName: Oathbound
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Oathbound.asset
+    assetGuid: 647fdc2ecdb507947b34f3517bd78662
+    posterColorHex: 0
+    posterFile: Oathbound.png
+    tagline: Swear an oath. Lose the option to leave.
+  - catalogId: Fantasy_Realmfall
+    displayName: Realmfall
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Realmfall.asset
+    assetGuid: 03c236eb8da137b4eb8d2e3f2f427c0d
+    posterColorHex: 0
+    posterFile: Realmfall.png
+    tagline: When magic fails
+  - catalogId: Fantasy_River_of_Stars
+    displayName: Beyond Frostpe A K
+    genre: 6
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_River_of_Stars.asset
+    assetGuid: 76e8a43c124f4844384c1a1ef3f6b0fd
+    posterColorHex: 0
+    posterFile: BeyondFrostpeAK.png
+    tagline: A river flows upward carrying constellations.
+  - catalogId: Fantasy_Runebreaker
+    displayName: The Gate S Of Elderglen
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Runebreaker.asset
+    assetGuid: b8281b61ac8f7324eb2e2b37510222aa
+    posterColorHex: 0
+    posterFile: TheGateSOfElderglen.png
+    tagline: Break the rune. Break the curse. Break yourself.
+  - catalogId: Fantasy_Spellbound_Market
+    displayName: The Goldenst A G
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Spellbound_Market.asset
+    assetGuid: a080cfc1606d74149bb72e09581ef23c
+    posterColorHex: 0
+    posterFile: TheGoldenstAG.png
+    tagline: Magic traded like goods with fine print.
+  - catalogId: Fantasy_Spellwright
+    displayName: Spellwright
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Spellwright.asset
+    assetGuid: c82d4ff582cd1964fbff843616fe7823
+    posterColorHex: 0
+    posterFile: Spellwright.png
+    tagline: Write magic into law. Watch law fight back.
+  - catalogId: Fantasy_Starforge
+    displayName: The Hidden Grove
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Starforge.asset
+    assetGuid: a70bca4aaea57a4418950ff15abb8c32
+    posterColorHex: 0
+    posterFile: TheHiddenGrove.png
+    tagline: Weapons forged from fallen stars decide a war.
+  - catalogId: Fantasy_The_Glass_Forest
+    displayName: The Glass Forest
+    genre: 6
+    rarity: 0
+    sagaId: the_glass_forest
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Glass_Forest.asset
+    assetGuid: 5bfea178af8c65442a482adef322f504
+    posterColorHex: 0
+    posterFile: TheGlassForest.png
+    tagline: Trees of crystal sing when the moon is full.
+  - catalogId: Fantasy_The_Glass_Forest_II
+    displayName: The Glass Forest II
+    genre: 6
+    rarity: 0
+    sagaId: the_glass_forest
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Glass_Forest_II.asset
+    assetGuid: 8481be139a77bd847b8d2fac3ad63240
+    posterColorHex: 0
+    posterFile: TheGlassForestII.png
+    tagline: Crystal roots reach toward a dying sun.
+  - catalogId: Fantasy_The_Glass_Forest_III
+    displayName: Moon S To Ne Path
+    genre: 6
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Glass_Forest_III.asset
+    assetGuid: bbb171273df650349a35d921fe10c81e
+    posterColorHex: 0
+    posterFile: MoonSToNePath.png
+    tagline: Forest walks toward the capital at dawn.
+  - catalogId: Fantasy_The_Glass_Forest_IV
+    displayName: The Glass Forest IV
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Glass_Forest_IV.asset
+    assetGuid: d70728666fdcf354fa61b575dccb138a
+    posterColorHex: 0
+    posterFile: TheGlassForestIV.png
+    tagline: Crystal shards cut more than flesh.
+  - catalogId: Fantasy_The_Hidden_Crown
+    displayName: The Hidden Crown
+    genre: 6
+    rarity: 0
+    sagaId: the_hidden_crown
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Hidden_Crown.asset
+    assetGuid: 825e077d78b48424c8ed3997b597992c
+    posterColorHex: 0
+    posterFile: TheHiddenCrown.png
+    tagline: A crown hidden in plain sight chooses its heir.
+  - catalogId: Fantasy_The_Hidden_Crown_II
+    displayName: The Hidden Crown II
+    genre: 6
+    rarity: 0
+    sagaId: the_hidden_crown
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Hidden_Crown_II.asset
+    assetGuid: 755bc83917b2c6549b844eed15f2b622
+    posterColorHex: 0
+    posterFile: TheHiddenCrownII.png
+    tagline: Rebellion wears the crown's shadow.
+  - catalogId: Fantasy_The_Hidden_Crown_III
+    displayName: The Hidden Crown III
+    genre: 6
+    rarity: 0
+    sagaId: the_hidden_crown
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Hidden_Crown_III.asset
+    assetGuid: 2a7964937d415644f86ec9dae8466a13
+    posterColorHex: 0
+    posterFile: TheHiddenCrownIII.png
+    tagline: Three kingdoms. One crown. Zero peace.
+  - catalogId: Fantasy_The_Hidden_Crown_IV
+    displayName: The Hidden Crown IV
+    genre: 6
+    rarity: 0
+    sagaId: the_hidden_crown
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Hidden_Crown_IV.asset
+    assetGuid: 4e2012a97f5da544c99c2cb0afd313ec
+    posterColorHex: 0
+    posterFile: TheHiddenCrownIV.png
+    tagline: Coronation day. Assassins RSVP yes.
+  - catalogId: Fantasy_The_Hidden_Crown_V
+    displayName: The Hidden Crown V
+    genre: 6
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_The_Hidden_Crown_V.asset
+    assetGuid: 9a5ef80afd9822847810b6f244fce042
+    posterColorHex: 0
+    posterFile: TheHiddenCrownV.png
+    tagline: Peace treaty signed in dragon blood.
+  - catalogId: Fantasy_Throne_of_Thorns
+    displayName: The Cryst A L Forest
+    genre: 6
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Throne_of_Thorns.asset
+    assetGuid: a151cfd18756ef244958f4a152db769c
+    posterColorHex: 0
+    posterFile: TheCrystALForest.png
+    tagline: Sit carefully. The throne bites back.
+  - catalogId: Fantasy_Witch_s_Bargain
+    displayName: The Kingdom Of Silent Moon S
+    genre: 6
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Fantasy_Witch_s_Bargain.asset
+    assetGuid: 4b31f9cde566e6047916cb6adaa1db95
+    posterColorHex: 0
+    posterFile: TheKingdomOfSilentMoonS.png
+    tagline: Power offered. Price deferred. Never free.
+  - catalogId: Horror_Black_Mirror_Lake
+    displayName: Black Mirror Lake
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Black_Mirror_Lake.asset
+    assetGuid: 786046cd576523f4590d896d4b911261
+    posterColorHex: 0
+    posterFile: BlackMirrorLake.png
+    tagline: Reflections show what should not be there.
+  - catalogId: Horror_Blackwater_Echo
+    displayName: The Whispering Woods
+    genre: 2
+    rarity: 1
+    sagaId: blackwater
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Blackwater_Echo.asset
+    assetGuid: 6bd7f96ec516f6d4fa0c5bd07cdc400d
+    posterColorHex: 0
+    posterFile: TheWhisperingWoods.png
+    tagline: Water carries voices from upstream crimes.
+  - catalogId: Horror_Bone_Lantern
+    displayName: Bone Lantern
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Bone_Lantern.asset
+    assetGuid: 22761ffebe4fa7941ac4e3a72ff7168d
+    posterColorHex: 0
+    posterFile: BoneLantern.png
+    tagline: Light made from things that should stay buried.
+  - catalogId: Horror_Borrowed_Skin
+    displayName: Black Wood Road
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Borrowed_Skin.asset
+    assetGuid: c66cf387688b89040b86e430af30aa30
+    posterColorHex: 0
+    posterFile: BlackWoodRoad.png
+    tagline: Wear someone else's face for one night only.
+  - catalogId: Horror_Cold_Communion
+    displayName: Cold Communion
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Cold_Communion.asset
+    assetGuid: 202a3da1cf6eacb4889f278bed895ff1
+    posterColorHex: 0
+    posterFile: ColdCommunion.png
+    tagline: Communion wine tastes like river water.
+  - catalogId: Horror_Cold_Threshold
+    displayName: Cold Threshold
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Cold_Threshold.asset
+    assetGuid: cb3b732917ece9b43898ea29cd7f4013
+    posterColorHex: 0
+    posterFile: ColdThreshold.png
+    tagline: Do not open the door when it is cold inside.
+  - catalogId: Horror_Crimson_Static
+    displayName: Dead Silence Motel
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Crimson_Static.asset
+    assetGuid: c3af67c7ff8aaea44b4ed449a63d657a
+    posterColorHex: 0
+    posterFile: DeadSilenceMotel.png
+    tagline: Every radio plays the same dying breath.
+  - catalogId: Horror_Fever_House
+    displayName: Fever House
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Fever_House.asset
+    assetGuid: 55fe5daf6b8465d44a027c897a3abef0
+    posterColorHex: 0
+    posterFile: FeverHouse.png
+    tagline: Quarantine becomes possession.
+  - catalogId: Horror_Grave_Shift
+    displayName: House At Winter L A Ke
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Grave_Shift.asset
+    assetGuid: e5dc8df1bc8835a4885232f773e71308
+    posterColorHex: 0
+    posterFile: HouseAtWinterLAKe.png
+    tagline: Night workers hear digging from empty plots.
+  - catalogId: Horror_Grinning_Dark
+    displayName: Grinning Dark
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Grinning_Dark.asset
+    assetGuid: a97670b8192024c468f59a6fa1ce21b9
+    posterColorHex: 0
+    posterFile: GrinningDark.png
+    tagline: Darkness wears a familiar smile.
+  - catalogId: Horror_Hollow_Creek
+    displayName: Hollow Creek
+    genre: 2
+    rarity: 0
+    sagaId: hollow_creek
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek.asset
+    assetGuid: 662fac716dbe1d44ebcc79d727207f20
+    posterColorHex: 0
+    posterFile: HollowCreek.png
+    tagline: Something in the creek keeps calling names.
+  - catalogId: Horror_Hollow_Creek_II
+    displayName: Hollow Creek II
+    genre: 2
+    rarity: 0
+    sagaId: hollow_creek
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek_II.asset
+    assetGuid: 5ee95c00e2c4f744492fc720ce309e1f
+    posterColorHex: 0
+    posterFile: HollowCreekII.png
+    tagline: The creek runs backward after the flood.
+  - catalogId: Horror_Hollow_Creek_III
+    displayName: Hollow Creek III
+    genre: 2
+    rarity: 0
+    sagaId: hollow_creek
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek_III.asset
+    assetGuid: 1780c5d9d8499c4409031582b556c260
+    posterColorHex: 0
+    posterFile: HollowCreekIII.png
+    tagline: Names carved into trees that were never cut.
+  - catalogId: Horror_Hollow_Creek_IV
+    displayName: Hollow Creek IV
+    genre: 2
+    rarity: 0
+    sagaId: hollow_creek
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek_IV.asset
+    assetGuid: 7b31e00e52c4aab4f8313accc5a6cc6e
+    posterColorHex: 0
+    posterFile: HollowCreekIV.png
+    tagline: The creek remembers every body it took.
+  - catalogId: Horror_Hollow_Creek_V
+    displayName: Hollow Creek V
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek_V.asset
+    assetGuid: 102798145ce276d46894ab3aa71f628e
+    posterColorHex: 0
+    posterFile: HollowCreekV.png
+    tagline: Five films. One creek. No escape.
+  - catalogId: Horror_Hollow_Creek_VI
+    displayName: Hollow Creek VI
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_Creek_VI.asset
+    assetGuid: 1f34655b8809c4744b5bf8a0331c1954
+    posterColorHex: 0
+    posterFile: HollowCreekVI.png
+    tagline: Return to the source of every nightmare.
+  - catalogId: Horror_Hollow_End
+    displayName: Hollow End
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Hollow_End.asset
+    assetGuid: 3b09334a8b9ad4a4f9005eb8b311db3a
+    posterColorHex: 0
+    posterFile: HollowEnd.png
+    tagline: The creek meets the sea and waits.
+  - catalogId: Horror_Last_Rites
+    displayName: Red Creek
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Last_Rites.asset
+    assetGuid: f54fe7d0f7b786e4d9aeb4cd6225d8e4
+    posterColorHex: 0
+    posterFile: RedCreek.png
+    tagline: Funeral rites that refuse to end.
+  - catalogId: Horror_Legendary
+    displayName: The Hollow House
+    genre: 2
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Horror_Legendary.asset
+    assetGuid: d2bfa8cdc37e24c44aa9a3300652ecaf
+    posterColorHex: 1
+    posterFile: TheHollowHouse.png
+    tagline: Every room remembers the scream that never left the walls.
+  - catalogId: Horror_Mirror_Sleep
+    displayName: Mirror Sleep
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Mirror_Sleep.asset
+    assetGuid: 55ff0e13757493e4c857a3b5812eca5a
+    posterColorHex: 0
+    posterFile: MirrorSleep.png
+    tagline: Do not sleep facing a mirror in this house.
+  - catalogId: Horror_Moth_Parish
+    displayName: The Bellbene At H The L A Ke
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Moth_Parish.asset
+    assetGuid: 89e3dc0fb2642764fad13c677626ac3b
+    posterColorHex: 0
+    posterFile: TheBellbeneAtHTheLAKe.png
+    tagline: Wings beat against every window at once.
+  - catalogId: Horror_Night_Garden
+    displayName: Bene At H A Sh Hill
+    genre: 2
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Night_Garden.asset
+    assetGuid: 11f83bc57b5061e4d96b0536efd4871e
+    posterColorHex: 0
+    posterFile: BeneAtHAShHill.png
+    tagline: Plants grow toward sleeping faces.
+  - catalogId: Horror_Night_Parish
+    displayName: Night Parish
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Night_Parish.asset
+    assetGuid: 95082c4ae64735d40b95aec1fa9d96ca
+    posterColorHex: 0
+    posterFile: NightParish.png
+    tagline: A church that only opens after midnight.
+  - catalogId: Horror_Pale_Door
+    displayName: The Empty Ch A Pel
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Pale_Door.asset
+    assetGuid: 2dec257236728f24a9f6555a01e01356
+    posterColorHex: 0
+    posterFile: TheEmptyChAPel.png
+    tagline: A door appears where a wall should be solid.
+  - catalogId: Horror_Pale_Harvest
+    displayName: Pale Harvest
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Pale_Harvest.asset
+    assetGuid: 521e8524b9c40214188185a02293f80e
+    posterColorHex: 0
+    posterFile: PaleHarvest.png
+    tagline: Crops grow wrong after the meteor shower.
+  - catalogId: Horror_Pale_Signal
+    displayName: Pale Signal
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Pale_Signal.asset
+    assetGuid: 10562a370e8b31b4082a2854a51c7a23
+    posterColorHex: 0
+    posterFile: PaleSignal.png
+    tagline: Emergency broadcast repeats a personal message.
+  - catalogId: Horror_Red_Nursery
+    displayName: The Forgotten Well
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Red_Nursery.asset
+    assetGuid: 4378f7d415a847c489232b57345f2d23
+    posterColorHex: 0
+    posterFile: TheForgottenWell.png
+    tagline: A child's room painted in a color that moves.
+  - catalogId: Horror_Silent_Hive
+    displayName: The Last Bo A Dc A St
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Silent_Hive.asset
+    assetGuid: 9ac0bff6cd22f3640ba21093b675f83f
+    posterColorHex: 0
+    posterFile: TheLastBoADcASt.png
+    tagline: Bees stop buzzing. Then people stop speaking.
+  - catalogId: Horror_Skinwalker_Line
+    displayName: The Vill A Ge With Out N A Mes
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Skinwalker_Line.asset
+    assetGuid: 0527b379fbca3144eac2b5ea82b40cbf
+    posterColorHex: 0
+    posterFile: TheVillAGeWithOutNAMes.png
+    tagline: Tracks in the snow that change mid-stride.
+  - catalogId: Horror_Static_Room
+    displayName: Static Room
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Static_Room.asset
+    assetGuid: 177a9ca154086024aa4f5da05d98b0f8
+    posterColorHex: 0
+    posterFile: StaticRoom.png
+    tagline: Televisions tune to channels from the dead.
+  - catalogId: Horror_The_Last_Knock
+    displayName: The Last Knock
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_The_Last_Knock.asset
+    assetGuid: 2fe781a0bf4d6d94f8417882167a95cb
+    posterColorHex: 0
+    posterFile: TheLastKnock.png
+    tagline: Three knocks. Always three. Never more.
+  - catalogId: Horror_The_Unmarked
+    displayName: The Unmarked
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_The_Unmarked.asset
+    assetGuid: 7dae2d02066565346b7a03832c1776ed
+    posterColorHex: 0
+    posterFile: TheUnmarked.png
+    tagline: Graves without names fill overnight.
+  - catalogId: Horror_The_Veil_Thin
+    displayName: The Watcher In Room12
+    genre: 2
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_The_Veil_Thin.asset
+    assetGuid: 21d6153909fac2248bec72cba208f069
+    posterColorHex: 0
+    posterFile: TheWatcherInRoom12.png
+    tagline: Boundaries between worlds wear thin at solstice.
+  - catalogId: Horror_Under_the_Bed
+    displayName: Under the Bed
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Under_the_Bed.asset
+    assetGuid: 483d03df1f9a73d4c96c6d0ad606501b
+    posterColorHex: 0
+    posterFile: UndertheBed.png
+    tagline: Childhood fear returns with adult teeth.
+  - catalogId: Horror_Whisper_Floor
+    displayName: Whisper Floor
+    genre: 2
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Horror_Whisper_Floor.asset
+    assetGuid: 3135841e492fafe47b3c4294536105b3
+    posterColorHex: 0
+    posterFile: WhisperFloor.png
+    tagline: Footsteps above an empty apartment.
+  - catalogId: Romance_A_Sky_for_Two_II
+    displayName: Horizons Apart
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_A_Sky_for_Two_II.asset
+    assetGuid: c07baf1ae4c572847ae91d5a8aaaa7a4
+    posterColorHex: 0
+    posterFile: ASkyforTwoII.png
+    tagline: Same sky. Different cities. Same pull.
+  - catalogId: Romance_Beneath_the_Summer_Sky
+    displayName: Beneath the Summer Sky
+    genre: 4
+    rarity: 0
+    sagaId: beneath_the_summer_sky
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Beneath_the_Summer_Sky.asset
+    assetGuid: e454fc64cfefdc045a6ef03bd09f249c
+    posterColorHex: 0
+    posterFile: BeneaththeSummerSky.png
+    tagline: Love blooms under endless summer light.
+  - catalogId: Romance_Beneath_the_Summer_Sky_II
+    displayName: Beneath the Summer Sky II
+    genre: 4
+    rarity: 0
+    sagaId: beneath_the_summer_sky
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Beneath_the_Summer_Sky_II.asset
+    assetGuid: dff55234a1adcc443a149cf8fef3c682
+    posterColorHex: 0
+    posterFile: BeneaththeSummerSkyII.png
+    tagline: Summer ends. Feelings do not.
+  - catalogId: Romance_Beneath_the_Summer_Sky_III
+    displayName: A Utumnpromise
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Beneath_the_Summer_Sky_III.asset
+    assetGuid: 0662cac4f628c474b9dbe13d1277fd93
+    posterColorHex: 0
+    posterFile: AUtumnpromise.png
+    tagline: Return to the place where it started.
+  - catalogId: Romance_Coffee_at_Dawn
+    displayName: The Book Of Us
+    genre: 4
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Coffee_at_Dawn.asset
+    assetGuid: b8544aaf8378b074e8465afb39d36f40
+    posterColorHex: 0
+    posterFile: TheBookOfUs.png
+    tagline: Daily coffee becomes daily devotion.
+  - catalogId: Romance_Crossed_Lines
+    displayName: The Last T Rain To P A Ris
+    genre: 4
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Crossed_Lines.asset
+    assetGuid: ae866e3402c234c4184725e98a2947b0
+    posterColorHex: 0
+    posterFile: TheLastTRainToPARis.png
+    tagline: Phone wrong number. Right person.
+  - catalogId: Romance_Golden_Hour
+    displayName: Be For E Sun Rise
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Golden_Hour.asset
+    assetGuid: 70b3b36a20f21184c8e19214b32194ac
+    posterColorHex: 0
+    posterFile: BeForESunRise.png
+    tagline: Photographers capture more than light.
+  - catalogId: Romance_Harbor_Lights
+    displayName: The Light Betweenus
+    genre: 4
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Harbor_Lights.asset
+    assetGuid: 0ef472c6132d31b419cd6cea4e0b79db
+    posterColorHex: 0
+    posterFile: TheLightBetweenus.png
+    tagline: Fishermen and poets share the same pier.
+  - catalogId: Romance_Legendary
+    displayName: A Sky for Two
+    genre: 4
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Romance_Legendary.asset
+    assetGuid: 2c6581a914f6eb94f88fd60aaf3c2e91
+    posterColorHex: 1
+    posterFile: ASkyforTwo.png
+    tagline: Two strangers share one horizon and one impossible choice.
+  - catalogId: Romance_Letters_in_Rain
+    displayName: "The Winter C A F\xE9"
+    genre: 4
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Letters_in_Rain.asset
+    assetGuid: 0adff744085b99f429070aeaf85950c7
+    posterColorHex: 0
+    posterFile: TheWinterCAF.png
+    tagline: Love letters survive a stormy season.
+  - catalogId: Romance_Love_in_Minor_Key
+    displayName: Love in Minor Key
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Love_in_Minor_Key.asset
+    assetGuid: d52a02cfffe101f439c1c98df3c14841
+    posterColorHex: 0
+    posterFile: LoveinMinorKey.png
+    tagline: Musicians compose a shared life.
+  - catalogId: Romance_Midnight_Train
+    displayName: Letters A Cross The Sea
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Midnight_Train.asset
+    assetGuid: d680083248085f0409df80ced8cc820b
+    posterColorHex: 0
+    posterFile: LettersACrossTheSea.png
+    tagline: Share a compartment. Share a future.
+  - catalogId: Romance_Paper_Hearts
+    displayName: Mid Night In Ver On A
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Paper_Hearts.asset
+    assetGuid: e811cd0fa4fa19341833dd5a5e075263
+    posterColorHex: 0
+    posterFile: MidNightInVerOnA.png
+    tagline: Origami notes left on park benches.
+  - catalogId: Romance_Paris_Delay
+    displayName: Where  The   Ocean  Meets  The   Sky
+    genre: 4
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Paris_Delay.asset
+    assetGuid: d69a8ba6b55cf9949bb0d20664eaee85
+    posterColorHex: 0
+    posterFile: WhereTheOceanMeetsTheSky.png
+    tagline: Missed flight. Found connection.
+  - catalogId: Romance_Quiet_Harbor
+    displayName: On Emore Summer
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Quiet_Harbor.asset
+    assetGuid: 3447968881bf6e94e94975deb5036db7
+    posterColorHex: 0
+    posterFile: OnEmoreSummer.png
+    tagline: Small town. Big feelings. Gentle pace.
+  - catalogId: Romance_Rain_on_Sunday
+    displayName: Rain on Sunday
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Rain_on_Sunday.asset
+    assetGuid: be79049cf46c83243b3868e046dc8af2
+    posterColorHex: 0
+    posterFile: RainonSunday.png
+    tagline: Stay in. Fall in love. Repeat.
+  - catalogId: Romance_Second_Chance_Waltz
+    displayName: Second Chance Waltz
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Second_Chance_Waltz.asset
+    assetGuid: ecd461051dd11f241984256a0b075f14
+    posterColorHex: 0
+    posterFile: SecondChanceWaltz.png
+    tagline: Former lovers meet at a charity ball.
+  - catalogId: Romance_Slow_Dance
+    displayName: Slow Dance
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Slow_Dance.asset
+    assetGuid: 8c427950b29a4fe479bb8eed3d9fb83e
+    posterColorHex: 0
+    posterFile: SlowDance.png
+    tagline: Patience wears the shape of love.
+  - catalogId: Romance_Starlight_Pact
+    displayName: Starlight Pact
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Starlight_Pact.asset
+    assetGuid: 84f54093e39f18643a93f627e6b2ab3a
+    posterColorHex: 0
+    posterFile: StarlightPact.png
+    tagline: Make a wish on the same star twice.
+  - catalogId: Romance_Sunset_Clause
+    displayName: Sunset Clause
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Sunset_Clause.asset
+    assetGuid: 815058a8a07263e4fa6e3e64e1a5474c
+    posterColorHex: 0
+    posterFile: SunsetClause.png
+    tagline: Contract romance with real feelings.
+  - catalogId: Romance_The_Last_Dance
+    displayName: The Last Dance
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_The_Last_Dance.asset
+    assetGuid: 2db9d92823bb2dd488e2d476dcc09c5e
+    posterColorHex: 0
+    posterFile: TheLastDance.png
+    tagline: Ballroom closes. Romance opens.
+  - catalogId: Romance_The_Long_Hello
+    displayName: Summer On Willowstreet
+    genre: 4
+    rarity: 2
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_The_Long_Hello.asset
+    assetGuid: db63b1f9f29d43643be912c55e0a3c2c
+    posterColorHex: 0
+    posterFile: SummerOnWillowstreet.png
+    tagline: Goodbye took years. Hello takes courage.
+  - catalogId: Romance_The_Matchbook
+    displayName: The Matchbook
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_The_Matchbook.asset
+    assetGuid: e22038843e651394b9cf601dddc2ad2f
+    posterColorHex: 0
+    posterFile: TheMatchbook.png
+    tagline: A matchbook from Paris starts everything.
+  - catalogId: Romance_Two_Tickets
+    displayName: Two Tickets
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Two_Tickets.asset
+    assetGuid: a811db3f0b4cd0c42862906302ae3e80
+    posterColorHex: 0
+    posterFile: TwoTickets.png
+    tagline: Extra ticket. Unexpected companion.
+  - catalogId: Romance_Winter_Bloom
+    displayName: Winter Bloom
+    genre: 4
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Romance_Winter_Bloom.asset
+    assetGuid: 840d47f5bb00920498c8daba25ac4916
+    posterColorHex: 0
+    posterFile: WinterBloom.png
+    tagline: Flowers in snow. Hearts thaw slowly.
+  - catalogId: SciFi_Atlas_Signal
+    displayName: The Drift
+    genre: 5
+    rarity: 1
+    sagaId: atlas_signal
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Atlas_Signal.asset
+    assetGuid: d84b9bbbea05cd94b8e331abc3f60c0d
+    posterColorHex: 0
+    posterFile: TheDrift.png
+    tagline: A deep-space beacon wakes after centuries of silence.
+  - catalogId: SciFi_Binary_Sun
+    displayName: Binary Sun
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Binary_Sun.asset
+    assetGuid: 75ef6feed0dac5749bb89007192127e5
+    posterColorHex: 0
+    posterFile: BinarySun.png
+    tagline: Two stars. One habitable world. Many lies.
+  - catalogId: SciFi_Chrono_Debt
+    displayName: Chrono Debt
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Chrono_Debt.asset
+    assetGuid: 0507873f455bbae439ef43460890c848
+    posterColorHex: 0
+    posterFile: ChronoDebt.png
+    tagline: Borrow time today. Pay with years tomorrow.
+  - catalogId: SciFi_Circuit_Prophecy
+    displayName: Circuit Prophecy
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Circuit_Prophecy.asset
+    assetGuid: 69199d66c8eab7547ac1df27beb0509a
+    posterColorHex: 0
+    posterFile: CircuitProphecy.png
+    tagline: Old code predicts events before they happen.
+  - catalogId: SciFi_Code_Genesis
+    displayName: Ghost S Of Europa
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 6
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Code_Genesis.asset
+    assetGuid: 323628fd764e5574cbc44fa03b0de57e
+    posterColorHex: 0
+    posterFile: GhostSOfEuropa.png
+    tagline: Who wrote the first line of sentient software.
+  - catalogId: SciFi_Core_Breach
+    displayName: Beyond Helios
+    genre: 5
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Core_Breach.asset
+    assetGuid: c0d1732981edb004caef4f185c701249
+    posterColorHex: 0
+    posterFile: BeyondHelios.png
+    tagline: Drill too deep and something drills back.
+  - catalogId: SciFi_Cryo_Wake
+    displayName: Signal From Below
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Cryo_Wake.asset
+    assetGuid: 8554a40a3205639459d094582dabf825
+    posterColorHex: 0
+    posterFile: SignalFromBelow.png
+    tagline: Sleepers awaken to a world that forgot them.
+  - catalogId: SciFi_Dark_Matter_Run
+    displayName: Dark Matter Run
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Dark_Matter_Run.asset
+    assetGuid: 86df91df264ce2d43aa35361459ff08b
+    posterColorHex: 0
+    posterFile: DarkMatterRun.png
+    tagline: Smugglers haul cargo that bends light itself.
+  - catalogId: SciFi_Deep_Archive
+    displayName: The Empty Colony
+    genre: 5
+    rarity: 1
+    sagaId: atlas_signal
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Deep_Archive.asset
+    assetGuid: f9077c7dac078864e89263bbbefe6421
+    posterColorHex: 0
+    posterFile: TheEmptyColony.png
+    tagline: Human history stored in a bunker on the moon.
+  - catalogId: SciFi_Echo_Chamber
+    displayName: Echo Chamber
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Echo_Chamber.asset
+    assetGuid: 7178b00671c11d2498d36acccedad5a2
+    posterColorHex: 0
+    posterFile: EchoChamber.png
+    tagline: An AI learns emotion from archived voices.
+  - catalogId: SciFi_Event_Horizon_Job
+    displayName: Event Horizon Job
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Event_Horizon_Job.asset
+    assetGuid: 4674b98956c471d45a83601c2f5f1780
+    posterColorHex: 0
+    posterFile: EventHorizonJob.png
+    tagline: Salvage a ship that crossed the line once.
+  - catalogId: SciFi_Glass_Orbit
+    displayName: Glass Orbit
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Glass_Orbit.asset
+    assetGuid: d9e906a89eaa86a42b4b2fde260a020a
+    posterColorHex: 0
+    posterFile: GlassOrbit.png
+    tagline: A transparent station hides opaque motives.
+  - catalogId: SciFi_Gravity_Well
+    displayName: Silent Orbit
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Gravity_Well.asset
+    assetGuid: 9699b8f0a556c6a4db5a399744e5d09e
+    posterColorHex: 0
+    posterFile: SilentOrbit.png
+    tagline: Rescue a probe trapped near a black hole.
+  - catalogId: SciFi_Helios_Gate
+    displayName: Helios Gate
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Helios_Gate.asset
+    assetGuid: 95c4f58099463db499ded7e08beef9e7
+    posterColorHex: 0
+    posterFile: HeliosGate.png
+    tagline: A portal to the sun's corona opens trade routes.
+  - catalogId: SciFi_Ion_Storm
+    displayName: The Final Horizon
+    genre: 5
+    rarity: 1
+    sagaId: atlas_signal
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Ion_Storm.asset
+    assetGuid: 1b1527cc4a6d7e24a8bc49398fb2ec4a
+    posterColorHex: 0
+    posterFile: TheFinalHorizon.png
+    tagline: Navigation fails. Instinct must succeed.
+  - catalogId: SciFi_Legendary
+    displayName: Echoes of Titan
+    genre: 5
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/SciFi_Legendary.asset
+    assetGuid: 17fe78e96af7c4e499bfdfd19378f963
+    posterColorHex: 1
+    posterFile: EchoesofTitan.png
+    tagline: Humanity's farthest signal returns with a warning no one wants to hear.
+  - catalogId: SciFi_Machine_Psalm
+    displayName: The Last Beacon
+    genre: 5
+    rarity: 1
+    sagaId: dominion
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Machine_Psalm.asset
+    assetGuid: 869e73344ad50834c969c85f20e3b06f
+    posterColorHex: 0
+    posterFile: TheLastBeacon.png
+    tagline: Religion spreads among self-aware drones.
+  - catalogId: SciFi_Neon_Drift
+    displayName: Neon Drift
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Neon_Drift.asset
+    assetGuid: 3ddd896d78be30a4aa01853488d38a20
+    posterColorHex: 0
+    posterFile: NeonDrift.png
+    tagline: Two runners chase truth through a neon megacity.
+  - catalogId: SciFi_Neural_Ghost
+    displayName: The Silent Galaxy
+    genre: 5
+    rarity: 1
+    sagaId: dominion
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Neural_Ghost.asset
+    assetGuid: 97dae5532a8eb8d40b3c821d2da0ed4f
+    posterColorHex: 0
+    posterFile: TheSilentGalaxy.png
+    tagline: A dead pilot still flies through the network.
+  - catalogId: SciFi_Neural_Tide
+    displayName: Neural Tide
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Neural_Tide.asset
+    assetGuid: a69884c00d922a64bb2facb19e767925
+    posterColorHex: 0
+    posterFile: NeuralTide.png
+    tagline: Thoughts spread like a virus across the net.
+  - catalogId: SciFi_Null_Gravity
+    displayName: Null Gravity
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Null_Gravity.asset
+    assetGuid: b8de7fafbdf9ecc409ea467ce8eb72ab
+    posterColorHex: 0
+    posterFile: NullGravity.png
+    tagline: Zero-g heist aboard a luxury liner.
+  - catalogId: SciFi_Orbital_Decay
+    displayName: Orbital Decay
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Orbital_Decay.asset
+    assetGuid: b14a38ccaf4e0da40a34f3bbb143ad95
+    posterColorHex: 0
+    posterFile: OrbitalDecay.png
+    tagline: A station falls. A crew must choose who leaves.
+  - catalogId: SciFi_Orbital_Ransom
+    displayName: Station Eos
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 5
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Orbital_Ransom.asset
+    assetGuid: 6ce1f6b91a3b8394bb4c15390e910d9a
+    posterColorHex: 0
+    posterFile: StationEos.png
+    tagline: Hold a station hostage from the inside.
+  - catalogId: SciFi_Parallel_Earth
+    displayName: Parallel Earth
+    genre: 5
+    rarity: 0
+    sagaId: dominion
+    sagaOrder: 6
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Parallel_Earth.asset
+    assetGuid: 802542d905925054aab45717f99f8648
+    posterColorHex: 0
+    posterFile: ParallelEarth.png
+    tagline: Visitors claim they are from a better timeline.
+  - catalogId: SciFi_Phase_Shift
+    displayName: Dark Matter Protocol
+    genre: 5
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Phase_Shift.asset
+    assetGuid: 341a34f669fc6744bb6d7bc343156d75
+    posterColorHex: 0
+    posterFile: DarkMatterProtocol.png
+    tagline: A city flickers between dimensions at midnight.
+  - catalogId: SciFi_Project_Helix
+    displayName: Project Helix
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Project_Helix.asset
+    assetGuid: f358f73b722df504fab86b57165206f2
+    posterColorHex: 0
+    posterFile: ProjectHelix.png
+    tagline: Genetic upgrades come with hidden clauses.
+  - catalogId: SciFi_Proxy_War
+    displayName: Proxy War
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Proxy_War.asset
+    assetGuid: 05ad6e62b822fbe419f8d8c1e0fe12a2
+    posterColorHex: 0
+    posterFile: ProxyWar.png
+    tagline: Humans fight while AIs negotiate peace.
+  - catalogId: SciFi_Pulse_Drive
+    displayName: Pulse Drive
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Pulse_Drive.asset
+    assetGuid: 5696f2f613ce63a4cb9878c2428016ff
+    posterColorHex: 0
+    posterFile: PulseDrive.png
+    tagline: Faster-than-light travel breaks more than physics.
+  - catalogId: SciFi_Quantum_Fault
+    displayName: Quantum Fault
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Quantum_Fault.asset
+    assetGuid: 0f91cc9a58ccb9c4fb114abe5148b9d9
+    posterColorHex: 0
+    posterFile: QuantumFault.png
+    tagline: Reality fractures along a single bad equation.
+  - catalogId: SciFi_Redshift
+    displayName: Redshift
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Redshift.asset
+    assetGuid: a17f173f23dd50742907b4ba37cf60b2
+    posterColorHex: 0
+    posterFile: Redshift.png
+    tagline: The universe is expanding faster than expected.
+  - catalogId: SciFi_Signal_Lost
+    displayName: Signal Lost
+    genre: 5
+    rarity: 0
+    sagaId: dominion
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Signal_Lost.asset
+    assetGuid: 16dc345eba39a9145ac91c2259a19f44
+    posterColorHex: 0
+    posterFile: SignalLost.png
+    tagline: Contact with Mars ends without explanation.
+  - catalogId: SciFi_Solar_Exodus
+    displayName: Solar Exodus
+    genre: 5
+    rarity: 0
+    sagaId: dominion
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Solar_Exodus.asset
+    assetGuid: ce628c67c247ef146a0b4608097198f8
+    posterColorHex: 0
+    posterFile: SolarExodus.png
+    tagline: Earth's last ark leaves with secrets aboard.
+  - catalogId: SciFi_Starfall_Treaty
+    displayName: Starfall Treaty
+    genre: 5
+    rarity: 0
+    sagaId: dominion
+    sagaOrder: 5
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Starfall_Treaty.asset
+    assetGuid: a4302c4d4621d9b4a98ac8528d79bd31
+    posterColorHex: 0
+    posterFile: StarfallTreaty.png
+    tagline: Aliens arrive the day peace is finally signed.
+  - catalogId: SciFi_Stellar_Cartel
+    displayName: Event Horizon A Rr A Y
+    genre: 5
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Stellar_Cartel.asset
+    assetGuid: 22087f78427be61488071a0bffdd9836
+    posterColorHex: 0
+    posterFile: EventHorizonARrAY.png
+    tagline: Crime syndicates rule the asteroid belt.
+  - catalogId: SciFi_Synthetic_Dawn
+    displayName: Synthetic Dawn
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Synthetic_Dawn.asset
+    assetGuid: 58434b542c0fcf94888a99ac46b067a5
+    posterColorHex: 0
+    posterFile: SyntheticDawn.png
+    tagline: Machines claim personhood in open court.
+  - catalogId: SciFi_Synthetic_Eden
+    displayName: Synthetic Eden
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Synthetic_Eden.asset
+    assetGuid: 5783519aac60e14418dfe2f6ea98561e
+    posterColorHex: 0
+    posterFile: SyntheticEden.png
+    tagline: Paradise engineered for perfect obedience.
+  - catalogId: SciFi_Terraformers
+    displayName: The Aether Collapse
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Terraformers.asset
+    assetGuid: fe6502fe23c9db84db6d39aa16996a99
+    posterColorHex: 0
+    posterFile: TheAetherCollapse.png
+    tagline: Make a world livable. Unmake the old one.
+  - catalogId: SciFi_The_Last_Colony
+    displayName: The At L A S Paradox
+    genre: 5
+    rarity: 1
+    sagaId: the_last_colony
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_The_Last_Colony.asset
+    assetGuid: feee01381ce546748893a728a814d228
+    posterColorHex: 0
+    posterFile: TheAtLASParadox.png
+    tagline: Humanity's farthest settlement sends a distress call.
+  - catalogId: SciFi_The_Long_Signal
+    displayName: The Long Signal
+    genre: 5
+    rarity: 0
+    sagaId: atlas_signal
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_The_Long_Signal.asset
+    assetGuid: 8d427c16c7d4b7344a3accfc780993bf
+    posterColorHex: 0
+    posterFile: TheLongSignal.png
+    tagline: A message from outside the galaxy arrives incomplete.
+  - catalogId: SciFi_Void_Cartographer
+    displayName: Void Cartographer
+    genre: 5
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/SciFi_Void_Cartographer.asset
+    assetGuid: 7fc5faa40c14895429a4ecaa684245f0
+    posterColorHex: 0
+    posterFile: VoidCartographer.png
+    tagline: Maps of space that should not exist.
+  - catalogId: Thriller_Blackwater
+    displayName: Blackwater
+    genre: 7
+    rarity: 0
+    sagaId: blackwater
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Blackwater.asset
+    assetGuid: 718d74a4751fd63488d1bc077f1b81f7
+    posterColorHex: 0
+    posterFile: Blackwater.png
+    tagline: A town's water hides corporate sins.
+  - catalogId: Thriller_Blackwater_II
+    displayName: Blackwater II
+    genre: 7
+    rarity: 0
+    sagaId: blackwater
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Blackwater_II.asset
+    assetGuid: 8f5c118d42cf61a44aedc61921ac37df
+    posterColorHex: 0
+    posterFile: BlackwaterII.png
+    tagline: Upstream crimes surface downstream bodies.
+  - catalogId: Thriller_Blackwater_III
+    displayName: Blackwater III
+    genre: 7
+    rarity: 0
+    sagaId: blackwater
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Blackwater_III.asset
+    assetGuid: a01d0d65256e0d04db76cde7253a8f97
+    posterColorHex: 0
+    posterFile: BlackwaterIII.png
+    tagline: Water tests clean. People do not.
+  - catalogId: Thriller_Cold_Case_Heat
+    displayName: Black A Rchive
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Cold_Case_Heat.asset
+    assetGuid: 45fb009534b23bf49899c91bd717a0b7
+    posterColorHex: 0
+    posterFile: BlackARchive.png
+    tagline: Old evidence burns new trails.
+  - catalogId: Thriller_Dead_Drop
+    displayName: Dead Drop
+    genre: 7
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Dead_Drop.asset
+    assetGuid: 3df83393c2bb9e74e80d89b4d8548451
+    posterColorHex: 0
+    posterFile: DeadDrop.png
+    tagline: Package exchange. Wrong package. Right danger.
+  - catalogId: Thriller_Glass_Witness
+    displayName: C A Se114
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Glass_Witness.asset
+    assetGuid: fadabe41fa4a6704989be4e680964c68
+    posterColorHex: 0
+    posterFile: CASe114.png
+    tagline: Testimony recorded in a mirror maze.
+  - catalogId: Thriller_Legendary
+    displayName: Red File 27
+    genre: 7
+    rarity: 3
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 1
+    assetPath: Assets/Data/Movies/Thriller_Legendary.asset
+    assetGuid: 653777c2b14c38749b65f7f9da43b301
+    posterColorHex: 1
+    posterFile: RedFile27.png
+    tagline: Case closed does not mean case finished.
+  - catalogId: Thriller_Night_Ledger
+    displayName: Dead Letter Of F Ice
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Night_Ledger.asset
+    assetGuid: d0327c5ed4d3d164cb18bfaf4ed836cf
+    posterColorHex: 0
+    posterFile: DeadLetterOfFIce.png
+    tagline: Crimes booked after midnight never close.
+  - catalogId: Thriller_Proxy_Kill
+    displayName: Projectl A Z A Rus
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Proxy_Kill.asset
+    assetGuid: 1f7f4d194af706f46a7ada1b9a86102f
+    posterColorHex: 0
+    posterFile: ProjectlAZARus.png
+    tagline: Assassin hired through layers of deniability.
+  - catalogId: Thriller_Red_File_12
+    displayName: Silenceevidence
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Red_File_12.asset
+    assetGuid: 6ae18666dbbc9a74c8fcf75bfa5ce92b
+    posterColorHex: 0
+    posterFile: Silenceevidence.png
+    tagline: Earlier file. Same handler. Worse secrets.
+  - catalogId: Thriller_Red_File_27_II
+    displayName: The Dep A Rtmentbelow
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Red_File_27_II.asset
+    assetGuid: d431a00aa8d9e9c41959cd215351a797
+    posterColorHex: 0
+    posterFile: TheDepARtmentbelow.png
+    tagline: The file reopens without authorization.
+  - catalogId: Thriller_Red_File_27_III
+    displayName: The Forgotten C A Se
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Red_File_27_III.asset
+    assetGuid: 785c50ef8aa0aee4d8eb97cf1ececc0f
+    posterColorHex: 0
+    posterFile: TheForgottenCASe.png
+    tagline: Case number changes. Truth does not.
+  - catalogId: Thriller_Red_Horizon
+    displayName: The Last Record In G
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Red_Horizon.asset
+    assetGuid: adb3f031724157f4bb9add4f6d091564
+    posterColorHex: 0
+    posterFile: TheLastRecordInG.png
+    tagline: Sunset industry hides dawn crimes.
+  - catalogId: Thriller_Shadow_Trigger
+    displayName: Shadow Trigger
+    genre: 7
+    rarity: 0
+    sagaId: shadow_trigger
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Shadow_Trigger.asset
+    assetGuid: 7735f60b5e8e37c4c95b28ae995ff4ba
+    posterColorHex: 0
+    posterFile: ShadowTrigger.png
+    tagline: One event triggers a cascade of conspiracies.
+  - catalogId: Thriller_Shadow_Trigger_II
+    displayName: Shadow Trigger II
+    genre: 7
+    rarity: 0
+    sagaId: shadow_trigger
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Shadow_Trigger_II.asset
+    assetGuid: 3dacc123cea6cd34da6a3d07a4b5875d
+    posterColorHex: 0
+    posterFile: ShadowTriggerII.png
+    tagline: Second trigger. Bigger fallout.
+  - catalogId: Thriller_Shadow_Trigger_III
+    displayName: The Miss In Gwitness
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Shadow_Trigger_III.asset
+    assetGuid: 67cf7899a84cfa04c8ecc9dba8c1b085
+    posterColorHex: 0
+    posterFile: TheMissInGwitness.png
+    tagline: Conspiracy outlives its architects.
+  - catalogId: Thriller_Silent_Contract
+    displayName: The N In Thfloor
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Silent_Contract.asset
+    assetGuid: c2f3dd0999a1efc4ca7baf1f90bcdee7
+    posterColorHex: 0
+    posterFile: TheNInThfloor.png
+    tagline: Sign or disappear quietly.
+  - catalogId: Thriller_Silent_Witness
+    displayName: Silent Witness
+    genre: 7
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Silent_Witness.asset
+    assetGuid: b7ac5fa1b559d76459dcb807dc16ce4f
+    posterColorHex: 0
+    posterFile: SilentWitness.png
+    tagline: She saw everything. She says nothing.
+  - catalogId: Thriller_The_Black_Ledger
+    displayName: The Black Ledger
+    genre: 7
+    rarity: 0
+    sagaId: the_black_ledger
+    sagaOrder: 1
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_The_Black_Ledger.asset
+    assetGuid: 96ed683a52e64a643a572e5f5d9698b6
+    posterColorHex: 0
+    posterFile: TheBlackLedger.png
+    tagline: Numbers that kill when audited.
+  - catalogId: Thriller_The_Black_Ledger_II
+    displayName: The Black Ledger II
+    genre: 7
+    rarity: 0
+    sagaId: the_black_ledger
+    sagaOrder: 2
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_The_Black_Ledger_II.asset
+    assetGuid: 5e4272e08e92c254cb7b6a4f696da511
+    posterColorHex: 0
+    posterFile: TheBlackLedgerII.png
+    tagline: Follow the money into the dark.
+  - catalogId: Thriller_The_Black_Ledger_III
+    displayName: The Black Ledger III
+    genre: 7
+    rarity: 0
+    sagaId: the_black_ledger
+    sagaOrder: 3
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_The_Black_Ledger_III.asset
+    assetGuid: e1570c477be23a744808200fabded70f
+    posterColorHex: 0
+    posterFile: TheBlackLedgerIII.png
+    tagline: Auditors become targets become hunters.
+  - catalogId: Thriller_The_Black_Ledger_IV
+    displayName: The Black Ledger IV
+    genre: 7
+    rarity: 0
+    sagaId: the_black_ledger
+    sagaOrder: 4
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_The_Black_Ledger_IV.asset
+    assetGuid: e0837d657536b434eac6a5e44b99da9d
+    posterColorHex: 0
+    posterFile: TheBlackLedgerIV.png
+    tagline: Final account balanced in blood.
+  - catalogId: Thriller_The_Black_Ledger_V
+    displayName: The Shadow Network
+    genre: 7
+    rarity: 1
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_The_Black_Ledger_V.asset
+    assetGuid: 7a60fc94785d18a4e8e25425a0db2145
+    posterColorHex: 0
+    posterFile: TheShadowNetwork.png
+    tagline: Ledger closed. Lives are not.
+  - catalogId: Thriller_Undercover_Line
+    displayName: Undercover Line
+    genre: 7
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Undercover_Line.asset
+    assetGuid: ded90b08d6837d04ba635ddab61402ab
+    posterColorHex: 0
+    posterFile: UndercoverLine.png
+    tagline: Deep cover erases the person inside.
+  - catalogId: Thriller_Wiretap
+    displayName: Wiretap
+    genre: 7
+    rarity: 0
+    sagaId: 
+    sagaOrder: 0
+    isLegendary: 0
+    assetPath: Assets/Data/Movies/Thriller_Wiretap.asset
+    assetGuid: f734f9456d895c9499a0b587ef1c0bd2
+    posterColorHex: 0
+    posterFile: Wiretap.png
+    tagline: Every conversation is evidence or bait.
+  lastAudit:
+    totalEntries: 300
+    targetCount: 300
+    slotsRemaining: 0
+    genreCounts:
+    - genre: 0
+      count: 44
+      expectedPerGenre: 45
+    - genre: 5
+      count: 40
+      expectedPerGenre: 40
+    - genre: 1
+      count: 35
+      expectedPerGenre: 35
+    - genre: 2
+      count: 35
+      expectedPerGenre: 35
+    - genre: 3
+      count: 35
+      expectedPerGenre: 35
+    - genre: 6
+      count: 30
+      expectedPerGenre: 30
+    - genre: 4
+      count: 25
+      expectedPerGenre: 25
+    - genre: 7
+      count: 25
+      expectedPerGenre: 25
+    - genre: 8
+      count: 20
+      expectedPerGenre: 20
+    - genre: 9
+      count: 11
+      expectedPerGenre: 10
+    rarityCounts:
+    - rarity: 0
+      count: 170
+    - rarity: 1
+      count: 100
+    - rarity: 2
+      count: 20
+    - rarity: 3
+      count: 10
+    exactDuplicateNames: []
+    similarTitles: []
+    overusedWords: []
+    sagas:
+    - sagaId: atlas_signal
+      displayName: Atlas Signal
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - SciFi_Atlas_Signal
+      - SciFi_The_Long_Signal
+      - SciFi_Deep_Archive
+      - SciFi_Ion_Storm
+    - sagaId: beneath_the_summer_sky
+      displayName: Beneath the Summer Sky
+      expectedSize: 2
+      assignedCount: 2
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Romance_Beneath_the_Summer_Sky
+      - Romance_Beneath_the_Summer_Sky_II
+    - sagaId: blackwater
+      displayName: Blackwater
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Horror_Blackwater_Echo
+      - Thriller_Blackwater
+      - Thriller_Blackwater_II
+      - Thriller_Blackwater_III
+    - sagaId: dominion
+      displayName: Dominion
+      expectedSize: 6
+      assignedCount: 6
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - SciFi_Solar_Exodus
+      - SciFi_Neural_Ghost
+      - SciFi_Signal_Lost
+      - SciFi_Machine_Psalm
+      - SciFi_Starfall_Treaty
+      - SciFi_Parallel_Earth
+    - sagaId: hollow_creek
+      displayName: Hollow Creek
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Horror_Hollow_Creek
+      - Horror_Hollow_Creek_II
+      - Horror_Hollow_Creek_III
+      - Horror_Hollow_Creek_IV
+    - sagaId: moonkeeper
+      displayName: Moonkeeper
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Fantasy_Moonkeeper
+      - Fantasy_Moonkeeper_II
+      - Fantasy_Moonkeeper_III
+      - Fantasy_Moonkeeper_IV
+    - sagaId: project_avalanche
+      displayName: Project Avalanche
+      expectedSize: 6
+      assignedCount: 6
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Action_Steel_Horizon
+      - Action_Broken_Protocol
+      - Action_Urban_Siege
+      - Action_Zero_Hour_Convoy
+      - Action_Iron_Descent
+      - Action_Warpath
+    - sagaId: shadow_trigger
+      displayName: Shadow Trigger
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Thriller_Shadow_Trigger
+      - Thriller_Shadow_Trigger_II
+      - Action_Nightfall_Protocol
+      - Action_Frontline_Ghost
+    - sagaId: the_black_ledger
+      displayName: The Black Ledger
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Thriller_The_Black_Ledger
+      - Thriller_The_Black_Ledger_II
+      - Thriller_The_Black_Ledger_III
+      - Thriller_The_Black_Ledger_IV
+    - sagaId: the_glass_forest
+      displayName: The Glass Forest
+      expectedSize: 2
+      assignedCount: 2
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Fantasy_The_Glass_Forest
+      - Fantasy_The_Glass_Forest_II
+    - sagaId: the_hidden_crown
+      displayName: The Hidden Crown
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Fantasy_The_Hidden_Crown
+      - Fantasy_The_Hidden_Crown_II
+      - Fantasy_The_Hidden_Crown_III
+      - Fantasy_The_Hidden_Crown_IV
+    - sagaId: the_last_colony
+      displayName: The Last Colony
+      expectedSize: 6
+      assignedCount: 6
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - SciFi_The_Last_Colony
+      - SciFi_Cryo_Wake
+      - SciFi_Terraformers
+      - SciFi_Gravity_Well
+      - SciFi_Orbital_Ransom
+      - SciFi_Code_Genesis
+    - sagaId: the_long_road
+      displayName: The Long Road
+      expectedSize: 4
+      assignedCount: 4
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Drama_The_Long_Road
+      - Drama_Homeward
+      - Drama_Northbound
+      - Drama_The_Long_Road_II
+    - sagaId: uncle_gary
+      displayName: Uncle Gary
+      expectedSize: 2
+      assignedCount: 2
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Comedy_Uncle_Gary
+      - Comedy_Uncle_Gary_II
+    - sagaId: winter_letters
+      displayName: Winter Letters
+      expectedSize: 2
+      assignedCount: 2
+      missingIndices: 
+      duplicateIndices: 
+      orphanCatalogIds: []
+      memberCatalogIds:
+      - Drama_Winter_Letters
+      - Drama_Winter_Letters_II
+    legendaries:
+    - genre: 0
+      count: 1
+      catalogIds:
+      - Action_Legendary
+    - genre: 5
+      count: 1
+      catalogIds:
+      - SciFi_Legendary
+    - genre: 1
+      count: 1
+      catalogIds:
+      - Drama_Legendary
+    - genre: 2
+      count: 1
+      catalogIds:
+      - Horror_Legendary
+    - genre: 3
+      count: 1
+      catalogIds:
+      - Comedy_Legendary
+    - genre: 6
+      count: 1
+      catalogIds:
+      - Fantasy_Legendary
+    - genre: 4
+      count: 1
+      catalogIds:
+      - Romance_Legendary
+    - genre: 7
+      count: 1
+      catalogIds:
+      - Thriller_Legendary
+    - genre: 8
+      count: 1
+      catalogIds:
+      - Animation_Legendary
+    - genre: 9
+      count: 1
+      catalogIds:
+      - Documentary_Legendary
+    warnings:
+    - 'Genre Action: 44 entries (expected 45).'
+    - 'Genre Documentary: 11 entries (expected 10).'
+    - Similar title scan skipped while structural catalog slots ([TBD] / _Slot_)
+      are present.
+    - Overused-word scan skipped while structural catalog slots are present.
+    errors: []

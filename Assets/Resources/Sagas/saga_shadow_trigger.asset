@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SagaDefinition
   sagaId: shadow_trigger
   displayName: Shadow Trigger
-  description: "Saga de acci\xF3n original del estudio. Entregas escalonadas por
-    Ciudad."
+  description: 
   sizeClass: 4
   expectedEntryCount: 4
-  firstEntryCity: 1
+  firstEntryCity: 2

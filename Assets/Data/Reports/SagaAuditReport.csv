@@ -1,0 +1,12 @@
+catalogId,movieName,genre,sagaId,sagaOrder,issueType,severity,detail
+Comedy_Parent_Trap_2_0,Parent Trap 2.0,Comedy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Comedy_Uncle_Gary_III,Uncle Gary III,Comedy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Comedy_Uncle_Gary_V,Uncle Gary V,Comedy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Drama_Winter_Letters_III,Winter Letters III,Drama,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Fantasy_Glass_Crown,Whisperw In D V A Lley,Fantasy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Fantasy_Moonkeeper_V,Moonkeeper V,Fantasy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Fantasy_The_Glass_Forest_IV,The Glass Forest IV,Fantasy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Fantasy_The_Hidden_Crown_V,The Hidden Crown V,Fantasy,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Horror_Hollow_Creek_V,Hollow Creek V,Horror,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Horror_Hollow_Creek_VI,Hollow Creek VI,Horror,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty
+Thriller_Legendary,Red File 27,Thriller,,0,Numbered Without Saga,Minor,Title suggests sequel numbering but sagaId is empty

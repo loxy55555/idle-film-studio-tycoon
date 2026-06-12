@@ -9,6 +9,11 @@ public class ProductionHudShell : MonoBehaviour
     public MovieTabUI movieTab;
     public Button newProductionButton;
 
+    void OnEnable()
+    {
+        ApplyLocalizedButtonLabel();
+    }
+
     public void Configure(RectTransform activeProductionRoot, MovieTabUI movieTab, Button newProductionButton)
     {
         this.activeProductionRoot = activeProductionRoot;
@@ -20,6 +25,18 @@ public class ProductionHudShell : MonoBehaviour
             this.newProductionButton.onClick.RemoveListener(OnNewProductionClicked);
             this.newProductionButton.onClick.AddListener(OnNewProductionClicked);
         }
+
+        ApplyLocalizedButtonLabel();
+    }
+
+    void ApplyLocalizedButtonLabel()
+    {
+        if (newProductionButton == null) return;
+
+        var label = newProductionButton.transform.Find("Label")?.GetComponent<TextMeshProUGUI>()
+                 ?? newProductionButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (label != null)
+            label.text = Loc.Get(LocKeys.ProdNewProduction);
     }
 
     void OnNewProductionClicked()

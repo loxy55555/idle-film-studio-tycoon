@@ -117,6 +117,15 @@ public static class HudSkinProvider
         else UITabSkin.ApplyFallback(background, label, active, variant);
     }
 
+    public static void ApplyTabIndicator(Image indicator, bool active)
+    {
+        if (indicator == null) return;
+
+        var skin = Active?.tabSkin;
+        if (skin != null) skin.ApplyIndicator(indicator, active);
+        else UITabSkin.ApplyIndicatorFallback(indicator, active);
+    }
+
     public static HudPanelVariant ResolvePanelVariant(Color color)
     {
         if (ColorsClose(color, Color.clear)) return HudPanelVariant.Clear;

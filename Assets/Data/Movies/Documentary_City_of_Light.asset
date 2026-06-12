@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Documentary_City_of_Light
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Giants Of The Deep
+  genre: 9
+  tagline: Paris artisans keep ancient crafts alive.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 8
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: GiantsOfTheDeep.png
+  posterSprite: {fileID: 4850693195000695426, guid: 43843eec424b185418eaae100e6e128d, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

@@ -1,0 +1,111 @@
+﻿=== MOVIE CATALOG AUDIT ===
+Schema v2 — 10 genres, 10 legendaries
+Entries: 300 / 300 (remaining 0)
+
+-- Genre distribution --
+  Action: 30 (expected 30)
+  SciFi: 30 (expected 30)
+  Drama: 30 (expected 30)
+  Horror: 30 (expected 30)
+  Comedy: 30 (expected 30)
+  Fantasy: 30 (expected 30)
+  Romance: 30 (expected 30)
+  Thriller: 30 (expected 30)
+  Animation: 30 (expected 30)
+  Documentary: 30 (expected 30)
+
+-- Rarity distribution --
+  Common: 296
+  Rare: 0
+  Epic: 0
+  Legendary: 4
+
+-- Exact duplicate titles (0) --
+
+-- Similar titles (1624, threshold 82 %) --
+  94 %  "[TBD Documentary 28]"  ~  "[TBD Documentary 29]"  [Documentary_Slot_28 / Documentary_Slot_29]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 11]"  [Documentary_Slot_10 / Documentary_Slot_11]
+  94 %  "[TBD Documentary 09]"  ~  "[TBD Documentary 29]"  [Documentary_Slot_09 / Documentary_Slot_29]
+  94 %  "[TBD Documentary 09]"  ~  "[TBD Documentary 19]"  [Documentary_Slot_09 / Documentary_Slot_19]
+  94 %  "[TBD Documentary 08]"  ~  "[TBD Documentary 28]"  [Documentary_Slot_08 / Documentary_Slot_28]
+  94 %  "[TBD Documentary 08]"  ~  "[TBD Documentary 18]"  [Documentary_Slot_08 / Documentary_Slot_18]
+  94 %  "[TBD Documentary 08]"  ~  "[TBD Documentary 09]"  [Documentary_Slot_08 / Documentary_Slot_09]
+  94 %  "[TBD Documentary 07]"  ~  "[TBD Documentary 27]"  [Documentary_Slot_07 / Documentary_Slot_27]
+  94 %  "[TBD Documentary 07]"  ~  "[TBD Documentary 17]"  [Documentary_Slot_07 / Documentary_Slot_17]
+  94 %  "[TBD Documentary 07]"  ~  "[TBD Documentary 09]"  [Documentary_Slot_07 / Documentary_Slot_09]
+  94 %  "[TBD Documentary 07]"  ~  "[TBD Documentary 08]"  [Documentary_Slot_07 / Documentary_Slot_08]
+  94 %  "[TBD Documentary 06]"  ~  "[TBD Documentary 26]"  [Documentary_Slot_06 / Documentary_Slot_26]
+  94 %  "[TBD Documentary 06]"  ~  "[TBD Documentary 16]"  [Documentary_Slot_06 / Documentary_Slot_16]
+  94 %  "[TBD Documentary 06]"  ~  "[TBD Documentary 09]"  [Documentary_Slot_06 / Documentary_Slot_09]
+  94 %  "[TBD Documentary 06]"  ~  "[TBD Documentary 08]"  [Documentary_Slot_06 / Documentary_Slot_08]
+  94 %  "[TBD Documentary 06]"  ~  "[TBD Documentary 07]"  [Documentary_Slot_06 / Documentary_Slot_07]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 12]"  [Documentary_Slot_10 / Documentary_Slot_12]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 13]"  [Documentary_Slot_10 / Documentary_Slot_13]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 14]"  [Documentary_Slot_10 / Documentary_Slot_14]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 15]"  [Documentary_Slot_10 / Documentary_Slot_15]
+  94 %  "[TBD Documentary 12]"  ~  "[TBD Documentary 14]"  [Documentary_Slot_12 / Documentary_Slot_14]
+  94 %  "[TBD Documentary 12]"  ~  "[TBD Documentary 13]"  [Documentary_Slot_12 / Documentary_Slot_13]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 21]"  [Documentary_Slot_11 / Documentary_Slot_21]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 19]"  [Documentary_Slot_11 / Documentary_Slot_19]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 18]"  [Documentary_Slot_11 / Documentary_Slot_18]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 17]"  [Documentary_Slot_11 / Documentary_Slot_17]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 16]"  [Documentary_Slot_11 / Documentary_Slot_16]
+  94 %  "[TBD Documentary 05]"  ~  "[TBD Documentary 25]"  [Documentary_Slot_05 / Documentary_Slot_25]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 15]"  [Documentary_Slot_11 / Documentary_Slot_15]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 13]"  [Documentary_Slot_11 / Documentary_Slot_13]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 12]"  [Documentary_Slot_11 / Documentary_Slot_12]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 20]"  [Documentary_Slot_10 / Documentary_Slot_20]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 19]"  [Documentary_Slot_10 / Documentary_Slot_19]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 18]"  [Documentary_Slot_10 / Documentary_Slot_18]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 17]"  [Documentary_Slot_10 / Documentary_Slot_17]
+  94 %  "[TBD Documentary 10]"  ~  "[TBD Documentary 16]"  [Documentary_Slot_10 / Documentary_Slot_16]
+  94 %  "[TBD Documentary 11]"  ~  "[TBD Documentary 14]"  [Documentary_Slot_11 / Documentary_Slot_14]
+  94 %  "[TBD Documentary 12]"  ~  "[TBD Documentary 15]"  [Documentary_Slot_12 / Documentary_Slot_15]
+  94 %  "[TBD Documentary 05]"  ~  "[TBD Documentary 15]"  [Documentary_Slot_05 / Documentary_Slot_15]
+  94 %  "[TBD Documentary 05]"  ~  "[TBD Documentary 08]"  [Documentary_Slot_05 / Documentary_Slot_08]
+  ... and 1584 more
+
+-- Overused words (>=5 titles) --
+  tbd: 120 titles (e.g. [TBD Legendary Animation]; [TBD Animation 01])
+  animation: 30 titles (e.g. [TBD Legendary Animation]; [TBD Animation 01])
+  documentary: 30 titles (e.g. [TBD Legendary Documentary]; [TBD Documentary 01])
+  fantasy: 30 titles (e.g. [TBD Legendary Fantasy]; [TBD Fantasy 01])
+  thriller: 30 titles (e.g. [TBD Legendary Thriller]; [TBD Thriller 01])
+  ultimo: 5 titles (e.g. El Último Bastión; El Último Cómico)
+  gran: 5 titles (e.g. La Gran Ofensiva; El Gran Malentendido)
+  amor: 5 titles (e.g. Amor en Cuarentena; Amor Sin Fin)
+
+-- Sagas --
+  iron_circuit (Circuito de Hierro): 6/6
+  last_signal (La Última Señal): 1/1
+  neon_drift (Neon Drift): 2/2
+  shadow_trigger (Shadow Trigger): 3/4
+    missing indices: 4
+
+-- Legendaries (1 per genre) --
+  Action: 0 []
+  SciFi: 0 []
+  Drama: 0 []
+  Horror: 0 []
+  Comedy: 0 []
+  Fantasy: 1 [Fantasy_Legendary]
+  Romance: 0 []
+  Thriller: 1 [Thriller_Legendary]
+  Animation: 1 [Animation_Legendary]
+  Documentary: 1 [Documentary_Legendary]
+
+-- WARNINGS (11) --
+  - Found 1624 highly similar title pairs (>= 82 %).
+  - Found 8 overused words appearing in >=5 titles.
+  - Saga shadow_trigger: 3 assigned, expected 4.
+  - Saga shadow_trigger: missing entry indices 4.
+  - Genre Action: 0 legendary (expected 1).
+  - Genre SciFi: 0 legendary (expected 1).
+  - Genre Drama: 0 legendary (expected 1).
+  - Genre Horror: 0 legendary (expected 1).
+  - Genre Comedy: 0 legendary (expected 1).
+  - Genre Romance: 0 legendary (expected 1).
+  - Catalog has 4 legendaries (expected 10).
+
+-- ERRORS (0) --
+  (none)

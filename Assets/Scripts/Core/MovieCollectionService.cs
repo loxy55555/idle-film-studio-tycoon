@@ -37,11 +37,7 @@ public static class MovieCollectionService
         public string lastDiscoveredTitle;
     }
 
-    static readonly MovieGenre[] AllGenres =
-    {
-        MovieGenre.Action, MovieGenre.Drama, MovieGenre.Horror,
-        MovieGenre.Comedy, MovieGenre.Romance, MovieGenre.SciFi,
-    };
+    static MovieGenre[] AllGenres => CollectionGenreOrder.DisplayOrder;
 
     public static bool IsDiscovered(MovieConfig cfg, IReadOnlyCollection<string> completedKeys)
     {
@@ -254,16 +250,7 @@ public static class MovieCollectionService
         return sample?.movieName ?? sagaId;
     }
 
-    public static string GenreLabel(MovieGenre g) => g switch
-    {
-        MovieGenre.Action  => "Acción",
-        MovieGenre.Drama   => "Drama",
-        MovieGenre.Horror  => "Terror",
-        MovieGenre.Comedy  => "Comedia",
-        MovieGenre.Romance => "Romance",
-        MovieGenre.SciFi   => "SciFi",
-        _                  => g.ToString(),
-    };
+    public static string GenreLabel(MovieGenre g) => GenreLoc.GetLabel(g);
 
     public static string TierLabel(MovieCatalogTier tier) => tier switch
     {

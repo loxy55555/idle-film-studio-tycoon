@@ -88,14 +88,7 @@ public class GameFeelUI : MonoBehaviour
 
     void OnMovieCompleted(MovieCompletePayload p)
     {
-        if (p.isFirstDiscovery && p.config != null)
-        {
-            ShowMovieDiscovery(p);
-        }
-        else
-        {
-            EnqueueCompletionPanel(p);
-        }
+        PremiereSequenceController.TryPresent(p);
 
         if (productionWidget != null)
         {
@@ -103,65 +96,6 @@ public class GameFeelUI : MonoBehaviour
             productionWidget.localScale = Vector3.one;
             productionWidget.DOPunchScale(Vector3.one * 0.08f, 0.35f, 8, 0.5f).SetUpdate(true);
         }
-    }
-
-    void EnqueueCompletionPanel(MovieCompletePayload p)
-    {
-        var lines = new List<string>();
-        var colors = new List<Color>();
-
-        lines.Add("+$" + p.moneyReward.ToString("N0"));
-        colors.Add(moneyColor);
-        lines.Add("+" + p.repGain.ToString("0.0") + " REP");
-        colors.Add(repColor);
-        if (p.xpGain > 0f)
-        {
-            lines.Add("+" + p.xpGain.ToString("0") + " XP");
-            colors.Add(xpColor);
-        }
-        if (p.varietyBonusPercent > 0f)
-        {
-            lines.Add("Bonus variedad +" + p.varietyBonusPercent.ToString("0") + "%");
-            colors.Add(repColor);
-        }
-
-        EnqueuePanel(new PanelRequest
-        {
-            title      = "PELÍCULA COMPLETADA",
-            subtitle   = p.movieName,
-            lines      = lines.ToArray(),
-            lineColors = colors.ToArray(),
-            prominent  = false,
-        });
-    }
-
-    public void ShowMovieDiscovery(MovieCompletePayload p)
-    {
-        if (p.config == null) return;
-
-        var lines = new List<string>();
-        var colors = new List<Color>();
-        lines.Add("+$" + p.moneyReward.ToString("N0"));
-        colors.Add(moneyColor);
-        lines.Add("+" + p.repGain.ToString("0.0") + " REP");
-        colors.Add(repColor);
-        if (p.xpGain > 0f)
-        {
-            lines.Add("+" + p.xpGain.ToString("0") + " XP");
-            colors.Add(xpColor);
-        }
-
-        EnqueuePanel(new PanelRequest
-        {
-            title          = "NUEVA PELÍCULA DESCUBIERTA",
-            subtitle       = p.config.movieName,
-            lines          = lines.ToArray(),
-            lineColors     = colors.ToArray(),
-            prominent      = true,
-            requireDismiss = true,
-            posterSprite   = p.config.posterSprite,
-            posterColorHex = p.config.posterColorHex,
-        });
     }
 
     void OnContractClaimed(ContractConfig contract)

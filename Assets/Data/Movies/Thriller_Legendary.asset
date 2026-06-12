@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Thriller_Legendary
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Red File 27
+  genre: 7
+  tagline: Case closed does not mean case finished.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 8
+  unlockReputation: 0
+  rarity: 3
+  posterColorHex: 1
+  genreIconKey: 
+  posterFile: RedFile27.png
+  posterSprite: {fileID: -3207370719157827385, guid: 8ccf5b9d6b96a1346ac6c4456f4d3a22, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

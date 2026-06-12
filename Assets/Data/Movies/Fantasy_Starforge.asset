@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Fantasy_Starforge
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: The Hidden Grove
+  genre: 6
+  tagline: Weapons forged from fallen stars decide a war.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 5
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: TheHiddenGrove.png
+  posterSprite: {fileID: -2341167038805716593, guid: 740ef59cda76107409e4baa3d3923356, type: 3}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

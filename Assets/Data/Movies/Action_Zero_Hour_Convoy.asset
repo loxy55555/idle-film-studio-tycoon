@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Action_Zero_Hour_Convoy
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Kingdom Of Dust
+  genre: 0
+  tagline: Supplies must reach the front before dawn.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 2
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: KingdomOfDust.png
+  posterSprite: {fileID: -1438551025538954969, guid: 03827f1dbd6a7e74ab0089c58eee436f, type: 3}
+  catalogTier: 1
+  contentKind: 4
+  sagaId: project_avalanche
+  sagaEntryIndex: 4
+  sagaDisplayName: 

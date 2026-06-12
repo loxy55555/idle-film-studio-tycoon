@@ -97,7 +97,11 @@ public class GameHub : MonoBehaviour
         if (city        == null) city        = FindAnyObjectByType<CitySystem>();
         if (city        == null) city        = gameObject.AddComponent<CitySystem>();
 
+        if (GetComponent<FtueController>() == null)
+            gameObject.AddComponent<FtueController>();
 
+        if (GetComponent<PremiereSequenceController>() == null)
+            gameObject.AddComponent<PremiereSequenceController>();
 
         if (studio      == null) Debug.LogError("GameHub: StudioManager not found!");
 

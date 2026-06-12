@@ -310,7 +310,7 @@ public static class StudioUIBuilder
 
         // Department mini-bar (moved to sub-tab at runtime)
         var deptBar = BuildDeptMiniBar(panel);
-        LE(deptBar, 180);
+        LE(deptBar, 250);
         deptBar.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
 
         // Split: MEJORAS (full height) | PRODUCCIÓN + CONTRATOS
@@ -464,43 +464,21 @@ public static class StudioUIBuilder
     static void BuildMiniCard(RectTransform parent, DepartmentType deptType, string deptName, string hexColor)
     {
         var card = MakePanel(parent, "MiniCard_" + deptName, BG_CARD);
-        var cardLE = card.gameObject.AddComponent<LayoutElement>();
-        cardLE.preferredWidth  = 154;
-        cardLE.preferredHeight = 148;
-        cardLE.minHeight       = 148;
-        SetRounded(card, 10);
+        var wire = DepartmentMiniCardLayoutBuilder.Build(card, Hex(hexColor));
 
-        var vlg = card.gameObject.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(8, 8, 6, 6);
-        vlg.spacing = 2;
-        vlg.childAlignment = TextAnchor.UpperCenter;
-        vlg.childControlWidth = vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true;
-        vlg.childForceExpandHeight = false;
-
-        var badge = MakePanel(card, "Badge", Hex(hexColor));
-        var badgeLE = badge.gameObject.AddComponent<LayoutElement>();
-        badgeLE.preferredWidth = badgeLE.preferredHeight = 34;
-        SetRounded(badge, 6);
-
-        var nameTxt = MakeText(card, "DeptName", deptName, 18, TEXT_PRI, TextAlignmentOptions.Center);
-        nameTxt.fontStyle = FontStyles.Bold;
-        nameTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 22;
-
-        var lvlTxt = MakeText(card, "LevelText", "Nv.0", 17, ACCENT_GREEN, TextAlignmentOptions.Center);
-        lvlTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 18;
-
-        var effectTxt = MakeText(card, "EffectText", "Calidad\n+0.15/nv", 12, ACCENT_BLUE, TextAlignmentOptions.Center);
-        effectTxt.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        effectTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 36;
-
-        var miniUI = card.gameObject.AddComponent<DepartmentMiniCardUI>();
+        var miniUI = card.gameObject.GetComponent<DepartmentMiniCardUI>() ?? card.gameObject.AddComponent<DepartmentMiniCardUI>();
         var so = new SerializedObject(miniUI);
-        so.FindProperty("deptType")     .enumValueIndex      = (int)deptType;
-        so.FindProperty("categoryBadge").objectReferenceValue = badge.GetComponent<Image>();
-        so.FindProperty("deptNameText")  .objectReferenceValue = nameTxt;
-        so.FindProperty("levelText")     .objectReferenceValue = lvlTxt;
-        so.FindProperty("effectText")    .objectReferenceValue = effectTxt;
+        so.FindProperty("deptType").enumValueIndex = (int)deptType;
+        so.FindProperty("categoryBadge").objectReferenceValue = wire.categoryBadge;
+        so.FindProperty("deptNameText").objectReferenceValue = wire.deptNameText;
+        so.FindProperty("levelText").objectReferenceValue = wire.levelText;
+        so.FindProperty("effectText").objectReferenceValue = wire.effectText;
+        so.FindProperty("levelProgressBar").objectReferenceValue = wire.levelProgressBar;
+        so.FindProperty("upgradeButton").objectReferenceValue = wire.upgradeButton;
+        so.FindProperty("upgradeLabelText").objectReferenceValue = wire.upgradeLabelText;
+        so.FindProperty("upgradeCostText").objectReferenceValue = wire.upgradeCostText;
+        so.FindProperty("themeBackdrop").objectReferenceValue = wire.themeBackdrop;
+        so.FindProperty("themeVisual").objectReferenceValue = wire.themeVisual;
         so.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(miniUI);
     }
@@ -517,7 +495,7 @@ public static class StudioUIBuilder
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        var hdr = MakeText(panel, "Hdr", "PRODUCCIÓN", 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
+        var hdr = MakeText(panel, "Hdr", Loc.Get(LocKeys.ProdTabTitle), 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
         hdr.fontStyle = FontStyles.Bold;
         LE(hdr.GetComponent<RectTransform>(), 22);
 
@@ -545,7 +523,7 @@ public static class StudioUIBuilder
         var newBtnLE = newBtnGo.AddComponent<LayoutElement>();
         newBtnLE.preferredHeight = 44f;
         newBtnGo.AddComponent<UIButtonScale>();
-        var newBtnLabel = MakeText(newBtnGo.GetComponent<RectTransform>(), "Lbl", "NUEVA PRODUCCIÓN", 16, TEXT_PRI, TextAlignmentOptions.Center);
+        var newBtnLabel = MakeText(newBtnGo.GetComponent<RectTransform>(), "Lbl", Loc.Get(LocKeys.ProdNewProduction), 16, TEXT_PRI, TextAlignmentOptions.Center);
         newBtnLabel.fontStyle = FontStyles.Bold;
         Stretch(newBtnLabel.GetComponent<RectTransform>());
         var newBtn = newBtnGo.GetComponent<Button>();

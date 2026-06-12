@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public class GameSaveData
 {
-    public int version = 3;
+    public int version = 4;
 
     // Economy
     public long   money;
@@ -37,6 +37,10 @@ public class GameSaveData
     public MovieHistorySaveEntry[] movieHistory;
     public string[]                recentProductionKeys;
     public string[]                completedMovieKeys;
+
+    // v4 — FTUE
+    public bool ftueCompleted;
+    public int  ftueStep;
 }
 
 [Serializable]
@@ -106,7 +110,7 @@ public class SaveSystem : MonoBehaviour
 
         var data = new GameSaveData
         {
-            version = 3,
+            version = 4,
             money      = hub.studio.Money,
             moneyExact = hub.studio.MoneyExact,
             reputation = hub.studio.reputation,
@@ -140,12 +144,14 @@ public class SaveSystem : MonoBehaviour
             movieHistory       = hub.studio?.GetMovieHistorySaveData(),
             recentProductionKeys = hub.studio?.GetRecentProductionSaveData(),
             completedMovieKeys   = hub.studio?.GetCompletedMovieSaveData(),
+            ftueCompleted        = FtueState.Completed,
+            ftueStep             = (int)FtueState.Step,
         };
 
         try
         {
             File.WriteAllText(SavePath, JsonUtility.ToJson(data, true));
-            Debug.Log("[SaveSystem] Saved v3 → " + SavePath);
+            Debug.Log("[SaveSystem] Saved v4 → " + SavePath);
         }
         catch (Exception e) { Debug.LogError("[SaveSystem] Save failed: " + e.Message); }
     }
@@ -222,7 +228,14 @@ public class SaveSystem : MonoBehaviour
             hub.studio.ApplyOfflinePassiveIncome(offlineSeconds);
             hub.studio.ResumeProductions(data.activeProductions, offlineSeconds);
 
-            Debug.Log($"[SaveSystem] Loaded v{data.version} from {Path.GetFileName(path)}");
+            if (data.version >= 4)
+                FtueState.ApplySave(data.ftueCompleted, data.ftueStep);
+            else if (data.completedMovieKeys != null && data.completedMovieKeys.Length > 0)
+                FtueState.ApplySave(true, (int)FtueStep.Done);
+            else
+                FtueState.ApplySave(false, (int)FtueStep.Welcome);
+
+            Debug.Log($"[SaveSystem] Loaded v{data.version} from {Path.GetFileName(path)} | ftueCompleted={FtueState.Completed} ftueStep={FtueState.Step}");
             return true;
         }
         catch (Exception e)

@@ -1,0 +1,171 @@
+catalogId,movieName,genre,rarity,cityUnlock,sagaId,sagaOrder,isLegendary,posterFile,tagline
+Action_Convoy_Seven,Convoy Seven,Action,Common,1,,0,0,ConvoySeven.png,Seventh convoy through the deadliest road on earth.
+Action_Crash_Vector,Crash Vector,Action,Common,1,,0,0,CrashVector.png,A pilot must land a failing jet in hostile territory.
+Action_Crossfire_Alley,Crossfire Alley,Action,Common,1,,0,0,CrossfireAlley.png,Every alley is an ambush waiting to happen.
+Action_Extraction_Point,Extraction Point,Action,Common,1,,0,0,ExtractionPoint.png,Get them out before the perimeter collapses.
+Action_Final_Vector,Final Vector,Action,Common,1,,0,0,FinalVector.png,Intercept the missile or lose a capital.
+Action_Fireline,Fireline,Action,Common,1,,0,0,Fireline.png,Firefighters battle flames and a hidden conspiracy.
+Action_Frontline_Echo,Frontline Echo,Action,Common,1,,0,0,FrontlineEcho.png,Veterans return to the only war that still matters.
+Action_Ghost_Company,Ghost Company,Action,Common,1,,0,0,GhostCompany.png,A unit erased from every roster except the enemy's.
+Action_Hammer_Strike,Hammer Strike,Action,Common,1,,0,0,HammerStrike.png,A blunt force operation with surgical precision.
+Action_Hardline_Justice,Hardline Justice,Action,Common,1,,0,0,HardlineJustice.png,A cop crosses every line to stop a syndicate.
+Action_Hostile_Air,Hostile Air,Action,Common,1,,0,0,HostileAir.png,Friendly skies turn hostile in seconds.
+Action_Iron_Gate,Iron Gate,Action,Common,1,,0,0,IronGate.png,Storm the gate or lose the hostages.
+Action_Last_Stand_Bridge,Last Stand Bridge,Action,Common,1,,0,0,LastStandBridge.png,Hold the bridge until reinforcements arrive.
+Action_Midnight_Extraction,Midnight Extraction,Action,Common,1,,0,0,MidnightExtraction.png,A hostage rescue with no extraction window.
+Action_Night_Raid,Night Raid,Action,Common,1,,0,0,NightRaid.png,Special forces enter a fortress in darkness.
+Action_Outrider,Outrider,Action,Common,1,,0,0,Outrider.png,One scout against an advancing army.
+Action_Overwatch_Down,Overwatch Down,Action,Common,1,,0,0,OverwatchDown.png,A sniper team loses eyes in the sky.
+Action_Pressure_Point,Pressure Point,Action,Common,1,,0,0,PressurePoint.png,One warehouse. One bomb. One chance.
+Action_Rapid_Fire,Rapid Fire,Action,Common,1,,0,0,RapidFire.png,"Bullets, debts, and revenge move at the same speed."
+Action_Rapid_Thunder,Rapid Thunder,Action,Common,1,,0,0,RapidThunder.png,Lightning war in a city that never sleeps.
+Action_Red_Sector,Red Sector,Action,Common,1,,0,0,RedSector.png,A quarantined district hides a military secret.
+Action_Resolute,Resolute,Action,Common,1,,0,0,Resolute.png,One soldier refuses to abandon the mission.
+Action_Rogue_Squadron,Rogue Squadron,Action,Common,1,,0,0,RogueSquadron.png,Pilots who answer to no flag save the day.
+Action_Shockwave,Shockwave,Action,Common,1,,0,0,Shockwave.png,One explosion rewrites the city's power map.
+Action_Steel_Covenant,Steel Covenant,Action,Common,1,,0,0,SteelCovenant.png,Allies forged in combat must trust or die.
+Action_Steel_Veil,Steel Veil,Action,Common,1,,0,0,SteelVeil.png,A covert war fought without uniforms.
+Action_Strike_Package,Strike Package,Action,Common,1,,0,0,StrikePackage.png,Every asset in the theater on one target.
+Action_Tactical_Silence,Tactical Silence,Action,Common,1,,0,0,TacticalSilence.png,No comms. No backup. No mistakes.
+Action_Terminal_Velocity,Terminal Velocity,Action,Common,1,,0,0,TerminalVelocity.png,Falling is the easy part. Landing is not.
+Animation_Paint_the_Wind,Paint the Wind,Animation,Common,7,,0,0,PainttheWind.png,Colors move with the breeze magically.
+Animation_Paper_Kingdom,Paper Kingdom,Animation,Common,7,,0,0,PaperKingdom.png,Origami citizens defend their realm.
+Animation_Star_Pup,Star Pup,Animation,Common,7,,0,0,StarPup.png,A stray dog maps constellations for kids.
+Animation_The_Last_Kite,The Last Kite,Animation,Common,7,,0,0,TheLastKite.png,One kite carries a village's hope aloft.
+Animation_Tiny_Titans,Tiny Titans,Animation,Common,7,,0,0,TinyTitans.png,Miniature gods argue over a sandbox world.
+Animation_Little_Giants_II,Big Trouble Club,Animation,Common,8,,0,0,LittleGiantsII.png,Giants return. Problems grew too.
+Animation_Magic_Pencil,Magic Pencil,Animation,Common,8,,0,0,MagicPencil.png,Draw something. It comes alive briefly.
+Animation_Penguin_Express,Penguin Express,Animation,Common,8,,0,0,PenguinExpress.png,Express delivery across ice continents.
+Comedy_Uncle_Gary,Uncle Gary,Comedy,Common,3,uncle_gary,1,0,UncleGary.png,Gary means well. Chaos follows anyway.
+Comedy_Uncle_Gary_II,Uncle Gary II,Comedy,Common,3,uncle_gary,2,0,UncleGaryII.png,Gary babysits. Parents reconsider life choices.
+Comedy_Bad_Advice_Hotline,Bad Advice Hotline,Comedy,Common,4,,0,0,BadAdviceHotline.png,Call for help. Receive catastrophe.
+Comedy_Cooking_Catastrophe,Cooking Catastrophe,Comedy,Common,4,,0,0,CookingCatastrophe.png,Celebrity chef meets reality TV reality.
+Comedy_Dog_Mayor,Dog Mayor,Comedy,Common,4,,0,0,DogMayor.png,A town elects a dog. Bureaucracy adapts reluctantly.
+Comedy_Ghost_Roommate,Ghost Roommate,Comedy,Common,4,,0,0,GhostRoommate.png,Haunting with chores and rent disputes.
+Comedy_Late_Shift_Laughs,Late Shift Laughs,Comedy,Common,4,,0,0,LateShiftLaughs.png,Retail workers versus the universe.
+Comedy_Love_in_Transit,Love in Transit,Comedy,Common,4,,0,0,LoveinTransit.png,Commuters fall in love on the wrong train.
+Comedy_Mismatched_Pair,Mismatched Pair,Comedy,Common,4,,0,0,MismatchedPair.png,Odd couple detectives solve absurd crimes.
+Comedy_Office_Panic,Office Panic,Comedy,Common,4,,0,0,OfficePanic.png,Corporate retreat becomes survival comedy.
+Comedy_Parent_Trap_2_0,Parent Trap 2.0,Comedy,Common,4,,0,0,ParentTrap20.png,Kids reverse-engineer adult relationships.
+Comedy_Roommate_Protocol,Roommate Protocol,Comedy,Common,4,,0,0,RoommateProtocol.png,Three strangers. One lease. Infinite rules.
+Comedy_Startup_Chaos,Startup Chaos,Comedy,Common,4,,0,0,StartupChaos.png,Pitch deck. Product missing. Funding anyway.
+Comedy_Sushi_Disaster,Sushi Disaster,Comedy,Common,4,,0,0,SushiDisaster.png,One roll destroys a chef's reputation.
+Comedy_The_Backup_Plan,The Backup Plan,Comedy,Common,4,,0,0,TheBackupPlan.png,Plan B becomes Plan A through incompetence.
+Comedy_The_Heist_That_Wasn_t,The Heist That Wasn't,Comedy,Common,4,,0,0,TheHeistThatWasnt.png,Amateurs steal the wrong safe. Twice.
+Comedy_The_Wrong_Speech,The Wrong Speech,Comedy,Common,4,,0,0,TheWrongSpeech.png,Best man reads the wrong notes. Twice.
+Comedy_Uncle_Gary_III,Uncle Gary III,Comedy,Common,4,,0,0,UncleGaryIII.png,Family reunion. Gary brings fireworks. Literally.
+Comedy_Wedding_Crashers_Anonymous,Wedding Crashers Anonymous,Comedy,Common,4,,0,0,WeddingCrashersAnonymous.png,They quit crashing. Weddings find them.
+Comedy_Boss_of_None,Boss of None,Comedy,Common,5,,0,0,BossofNone.png,Promoted by mistake. Promoted again anyway.
+Comedy_Laugh_Track,Laugh Track,Comedy,Common,5,,0,0,LaughTrack.png,Sitcom laugh track follows one man in real life.
+Comedy_Uncle_Gary_V,Uncle Gary V,Comedy,Common,5,,0,0,UncleGaryV.png,Gary opens a food truck. Health code weeps.
+Drama_Borrowed_Time,Borrowed Time,Drama,Common,2,,0,0,BorrowedTime.png,A diagnosis reorders every priority.
+Drama_Broken_Choir,Broken Choir,Drama,Common,2,,0,0,BrokenChoir.png,A church choir reunites after scandal.
+Drama_Crosswind,Crosswind,Drama,Common,2,,0,0,Crosswind.png,Sibling pilots face the same storm differently.
+Drama_Glass_Harbor,Glass Harbor,Drama,Common,2,,0,0,GlassHarbor.png,A port town mourns a ship that never returned.
+Drama_Harvest_Moon,Harvest Moon,Drama,Common,2,,0,0,HarvestMoon.png,One last season on the family farm.
+Drama_Homeward,Homeward,Drama,Common,2,the_long_road,2,0,Homeward.png,Return to the place that never felt like home.
+Drama_Northbound,Northbound,Drama,Common,2,the_long_road,3,0,Northbound.png,A bus ride north becomes a reckoning.
+Drama_Painted_Sky,Painted Sky,Drama,Common,2,,0,0,PaintedSky.png,An artist paints the sky before going blind.
+Drama_Paper_House,Paper House,Drama,Common,2,,0,0,PaperHouse.png,Wealth built on documents that may be forged.
+Drama_Quiet_Mercy,Quiet Mercy,Drama,Common,2,,0,0,QuietMercy.png,A nurse chooses compassion over policy.
+Drama_River_s_End,River's End,Drama,Common,2,,0,0,RiversEnd.png,A town disappears when the dam is built.
+Drama_Small_Mercies,Small Mercies,Drama,Common,2,,0,0,SmallMercies.png,Kindness becomes rebellion in a rigid town.
+Drama_Still_Waters,Still Waters,Drama,Common,2,,0,0,StillWaters.png,Calm surfaces hide generations of silence.
+Drama_The_Last_Lesson,The Last Lesson,Drama,Common,2,,0,0,TheLastLesson.png,A teacher's final year changes every student.
+Drama_The_Long_Road,The Long Road,Drama,Common,2,the_long_road,1,0,TheLongRoad.png,A father walks home across a divided country.
+Drama_The_Long_Road_II,The Long Road II,Drama,Common,2,the_long_road,4,0,TheLongRoadII.png,The road home is longer the second time.
+Drama_The_Weight_of_Rain,The Weight of Rain,Drama,Common,2,,0,0,TheWeightofRain.png,Floods wash up truths buried for decades.
+Drama_Winter_Letters_II,Winter Letters II,Drama,Common,2,winter_letters,2,0,WinterLettersII.png,Return to the house the letters never left.
+Drama_Paper_Cranes,Paper Cranes,Drama,Common,3,,0,0,PaperCranes.png,Origami left on graves becomes a movement.
+Drama_Salt_Line,Salt Line,Drama,Common,3,,0,0,SaltLine.png,Coastal erosion mirrors a failing marriage.
+Drama_The_Goodbye_Room,The Goodbye Room,Drama,Common,3,,0,0,TheGoodbyeRoom.png,A hospice where every door is a farewell.
+Drama_Winter_Letters_III,Winter Letters III,Drama,Common,3,,0,0,WinterLettersIII.png,The final letter arrives without a stamp.
+Fantasy_Moonkeeper,Moonkeeper,Fantasy,Common,4,moonkeeper,1,0,Moonkeeper.png,One guardian tends the door between worlds.
+Fantasy_Moonkeeper_II,Moonkeeper II,Fantasy,Common,4,moonkeeper,2,0,MoonkeeperII.png,The door opens wider each full moon.
+Fantasy_Moonkeeper_III,Moonkeeper III,Fantasy,Common,4,moonkeeper,3,0,MoonkeeperIII.png,Guardian becomes prisoner of the threshold.
+Fantasy_Moonkeeper_IV,Moonkeeper IV,Fantasy,Common,4,moonkeeper,4,0,MoonkeeperIV.png,Final vigil before the door falls forever.
+Fantasy_The_Glass_Forest,The Glass Forest,Fantasy,Common,4,the_glass_forest,1,0,TheGlassForest.png,Trees of crystal sing when the moon is full.
+Fantasy_The_Glass_Forest_II,The Glass Forest II,Fantasy,Common,4,the_glass_forest,2,0,TheGlassForestII.png,Crystal roots reach toward a dying sun.
+Fantasy_The_Hidden_Crown,The Hidden Crown,Fantasy,Common,5,the_hidden_crown,1,0,TheHiddenCrown.png,A crown hidden in plain sight chooses its heir.
+Fantasy_The_Hidden_Crown_II,The Hidden Crown II,Fantasy,Common,5,the_hidden_crown,2,0,TheHiddenCrownII.png,Rebellion wears the crown's shadow.
+Fantasy_The_Hidden_Crown_III,The Hidden Crown III,Fantasy,Common,5,the_hidden_crown,3,0,TheHiddenCrownIII.png,Three kingdoms. One crown. Zero peace.
+Fantasy_The_Hidden_Crown_IV,The Hidden Crown IV,Fantasy,Common,5,the_hidden_crown,4,0,TheHiddenCrownIV.png,Coronation day. Assassins RSVP yes.
+Fantasy_Moonkeeper_V,Moonkeeper V,Fantasy,Common,6,,0,0,MoonkeeperV.png,Last moon. Last keeper. Last chance.
+Fantasy_Oathbound,Oathbound,Fantasy,Common,6,,0,0,Oathbound.png,Swear an oath. Lose the option to leave.
+Fantasy_Realmfall,Realmfall,Fantasy,Common,6,,0,0,Realmfall.png,"When magic fails, kingdoms fall like cards."
+Fantasy_Spellwright,Spellwright,Fantasy,Common,6,,0,0,Spellwright.png,Write magic into law. Watch law fight back.
+Fantasy_The_Glass_Forest_IV,The Glass Forest IV,Fantasy,Common,6,,0,0,TheGlassForestIV.png,Crystal shards cut more than flesh.
+Fantasy_The_Hidden_Crown_V,The Hidden Crown V,Fantasy,Common,6,,0,0,TheHiddenCrownV.png,Peace treaty signed in dragon blood.
+Horror_Black_Mirror_Lake,Black Mirror Lake,Horror,Common,3,,0,0,BlackMirrorLake.png,Reflections show what should not be there.
+Horror_Bone_Lantern,Bone Lantern,Horror,Common,3,,0,0,BoneLantern.png,Light made from things that should stay buried.
+Horror_Cold_Threshold,Cold Threshold,Horror,Common,3,,0,0,ColdThreshold.png,Do not open the door when it is cold inside.
+Horror_Grinning_Dark,Grinning Dark,Horror,Common,3,,0,0,GrinningDark.png,Darkness wears a familiar smile.
+Horror_Hollow_Creek,Hollow Creek,Horror,Common,3,hollow_creek,1,0,HollowCreek.png,Something in the creek keeps calling names.
+Horror_Hollow_Creek_II,Hollow Creek II,Horror,Common,3,hollow_creek,2,0,HollowCreekII.png,The creek runs backward after the flood.
+Horror_Hollow_Creek_III,Hollow Creek III,Horror,Common,3,hollow_creek,3,0,HollowCreekIII.png,Names carved into trees that were never cut.
+Horror_Hollow_Creek_IV,Hollow Creek IV,Horror,Common,3,hollow_creek,4,0,HollowCreekIV.png,The creek remembers every body it took.
+Horror_Night_Parish,Night Parish,Horror,Common,3,,0,0,NightParish.png,A church that only opens after midnight.
+Horror_Pale_Harvest,Pale Harvest,Horror,Common,3,,0,0,PaleHarvest.png,Crops grow wrong after the meteor shower.
+Horror_Static_Room,Static Room,Horror,Common,3,,0,0,StaticRoom.png,Televisions tune to channels from the dead.
+Horror_Whisper_Floor,Whisper Floor,Horror,Common,3,,0,0,WhisperFloor.png,Footsteps above an empty apartment.
+Horror_Cold_Communion,Cold Communion,Horror,Common,4,,0,0,ColdCommunion.png,Communion wine tastes like river water.
+Horror_Fever_House,Fever House,Horror,Common,4,,0,0,FeverHouse.png,Quarantine becomes possession.
+Horror_Hollow_Creek_V,Hollow Creek V,Horror,Common,4,,0,0,HollowCreekV.png,Five films. One creek. No escape.
+Horror_Hollow_Creek_VI,Hollow Creek VI,Horror,Common,4,,0,0,HollowCreekVI.png,Return to the source of every nightmare.
+Horror_Hollow_End,Hollow End,Horror,Common,4,,0,0,HollowEnd.png,The creek meets the sea and waits.
+Horror_Mirror_Sleep,Mirror Sleep,Horror,Common,4,,0,0,MirrorSleep.png,Do not sleep facing a mirror in this house.
+Horror_Pale_Signal,Pale Signal,Horror,Common,4,,0,0,PaleSignal.png,Emergency broadcast repeats a personal message.
+Horror_The_Last_Knock,The Last Knock,Horror,Common,4,,0,0,TheLastKnock.png,Three knocks. Always three. Never more.
+Horror_The_Unmarked,The Unmarked,Horror,Common,4,,0,0,TheUnmarked.png,Graves without names fill overnight.
+Horror_Under_the_Bed,Under the Bed,Horror,Common,4,,0,0,UndertheBed.png,Childhood fear returns with adult teeth.
+Romance_Beneath_the_Summer_Sky,Beneath the Summer Sky,Romance,Common,3,beneath_the_summer_sky,1,0,BeneaththeSummerSky.png,Love blooms under endless summer light.
+Romance_Beneath_the_Summer_Sky_II,Beneath the Summer Sky II,Romance,Common,3,beneath_the_summer_sky,2,0,BeneaththeSummerSkyII.png,Summer ends. Feelings do not.
+Romance_Rain_on_Sunday,Rain on Sunday,Romance,Common,6,,0,0,RainonSunday.png,Stay in. Fall in love. Repeat.
+Romance_Second_Chance_Waltz,Second Chance Waltz,Romance,Common,6,,0,0,SecondChanceWaltz.png,Former lovers meet at a charity ball.
+Romance_Slow_Dance,Slow Dance,Romance,Common,6,,0,0,SlowDance.png,Patience wears the shape of love.
+Romance_Starlight_Pact,Starlight Pact,Romance,Common,6,,0,0,StarlightPact.png,Make a wish on the same star twice.
+Romance_Sunset_Clause,Sunset Clause,Romance,Common,6,,0,0,SunsetClause.png,Contract romance with real feelings.
+Romance_The_Last_Dance,The Last Dance,Romance,Common,6,,0,0,TheLastDance.png,Ballroom closes. Romance opens.
+Romance_The_Matchbook,The Matchbook,Romance,Common,6,,0,0,TheMatchbook.png,A matchbook from Paris starts everything.
+Romance_Two_Tickets,Two Tickets,Romance,Common,6,,0,0,TwoTickets.png,Extra ticket. Unexpected companion.
+Romance_Winter_Bloom,Winter Bloom,Romance,Common,6,,0,0,WinterBloom.png,Flowers in snow. Hearts thaw slowly.
+Romance_A_Sky_for_Two_II,Horizons Apart,Romance,Common,7,,0,0,ASkyforTwoII.png,Same sky. Different cities. Same pull.
+Romance_Love_in_Minor_Key,Love in Minor Key,Romance,Common,7,,0,0,LoveinMinorKey.png,Musicians compose a shared life.
+SciFi_Binary_Sun,Binary Sun,SciFi,Common,1,,0,0,BinarySun.png,Two stars. One habitable world. Many lies.
+SciFi_Chrono_Debt,Chrono Debt,SciFi,Common,1,,0,0,ChronoDebt.png,Borrow time today. Pay with years tomorrow.
+SciFi_Dark_Matter_Run,Dark Matter Run,SciFi,Common,1,,0,0,DarkMatterRun.png,Smugglers haul cargo that bends light itself.
+SciFi_Echo_Chamber,Echo Chamber,SciFi,Common,1,,0,0,EchoChamber.png,An AI learns emotion from archived voices.
+SciFi_Neon_Drift,Neon Drift,SciFi,Common,1,,0,0,NeonDrift.png,Two runners chase truth through a neon megacity.
+SciFi_Neural_Tide,Neural Tide,SciFi,Common,1,,0,0,NeuralTide.png,Thoughts spread like a virus across the net.
+SciFi_Orbital_Decay,Orbital Decay,SciFi,Common,1,,0,0,OrbitalDecay.png,A station falls. A crew must choose who leaves.
+SciFi_Project_Helix,Project Helix,SciFi,Common,1,,0,0,ProjectHelix.png,Genetic upgrades come with hidden clauses.
+SciFi_Quantum_Fault,Quantum Fault,SciFi,Common,1,,0,0,QuantumFault.png,Reality fractures along a single bad equation.
+SciFi_Synthetic_Dawn,Synthetic Dawn,SciFi,Common,1,,0,0,SyntheticDawn.png,Machines claim personhood in open court.
+SciFi_Void_Cartographer,Void Cartographer,SciFi,Common,1,,0,0,VoidCartographer.png,Maps of space that should not exist.
+SciFi_Circuit_Prophecy,Circuit Prophecy,SciFi,Common,2,,0,0,CircuitProphecy.png,Old code predicts events before they happen.
+SciFi_Event_Horizon_Job,Event Horizon Job,SciFi,Common,2,,0,0,EventHorizonJob.png,Salvage a ship that crossed the line once.
+SciFi_Glass_Orbit,Glass Orbit,SciFi,Common,2,,0,0,GlassOrbit.png,A transparent station hides opaque motives.
+SciFi_Helios_Gate,Helios Gate,SciFi,Common,2,,0,0,HeliosGate.png,A portal to the sun's corona opens trade routes.
+SciFi_Null_Gravity,Null Gravity,SciFi,Common,2,,0,0,NullGravity.png,Zero-g heist aboard a luxury liner.
+SciFi_Proxy_War,Proxy War,SciFi,Common,2,,0,0,ProxyWar.png,Humans fight while AIs negotiate peace.
+SciFi_Pulse_Drive,Pulse Drive,SciFi,Common,2,,0,0,PulseDrive.png,Faster-than-light travel breaks more than physics.
+SciFi_Redshift,Redshift,SciFi,Common,2,,0,0,Redshift.png,The universe is expanding faster than expected.
+SciFi_Synthetic_Eden,Synthetic Eden,SciFi,Common,2,,0,0,SyntheticEden.png,Paradise engineered for perfect obedience.
+SciFi_Parallel_Earth,Parallel Earth,SciFi,Common,3,dominion,6,0,ParallelEarth.png,Visitors claim they are from a better timeline.
+SciFi_Signal_Lost,Signal Lost,SciFi,Common,3,dominion,3,0,SignalLost.png,Contact with Mars ends without explanation.
+SciFi_Solar_Exodus,Solar Exodus,SciFi,Common,3,dominion,1,0,SolarExodus.png,Earth's last ark leaves with secrets aboard.
+SciFi_Starfall_Treaty,Starfall Treaty,SciFi,Common,3,dominion,5,0,StarfallTreaty.png,Aliens arrive the day peace is finally signed.
+SciFi_The_Long_Signal,The Long Signal,SciFi,Common,3,atlas_signal,2,0,TheLongSignal.png,A message from outside the galaxy arrives incomplete.
+Thriller_Shadow_Trigger,Shadow Trigger,Thriller,Common,2,shadow_trigger,1,0,ShadowTrigger.png,One event triggers a cascade of conspiracies.
+Thriller_Shadow_Trigger_II,Shadow Trigger II,Thriller,Common,2,shadow_trigger,2,0,ShadowTriggerII.png,Second trigger. Bigger fallout.
+Thriller_Blackwater,Blackwater,Thriller,Common,4,blackwater,2,0,Blackwater.png,A town's water hides corporate sins.
+Thriller_Blackwater_II,Blackwater II,Thriller,Common,4,blackwater,3,0,BlackwaterII.png,Upstream crimes surface downstream bodies.
+Thriller_Blackwater_III,Blackwater III,Thriller,Common,4,blackwater,4,0,BlackwaterIII.png,Water tests clean. People do not.
+Thriller_The_Black_Ledger,The Black Ledger,Thriller,Common,5,the_black_ledger,1,0,TheBlackLedger.png,Numbers that kill when audited.
+Thriller_The_Black_Ledger_II,The Black Ledger II,Thriller,Common,5,the_black_ledger,2,0,TheBlackLedgerII.png,Follow the money into the dark.
+Thriller_The_Black_Ledger_III,The Black Ledger III,Thriller,Common,5,the_black_ledger,3,0,TheBlackLedgerIII.png,Auditors become targets become hunters.
+Thriller_The_Black_Ledger_IV,The Black Ledger IV,Thriller,Common,5,the_black_ledger,4,0,TheBlackLedgerIV.png,Final account balanced in blood.
+Thriller_Dead_Drop,Dead Drop,Thriller,Common,7,,0,0,DeadDrop.png,Package exchange. Wrong package. Right danger.
+Thriller_Silent_Witness,Silent Witness,Thriller,Common,7,,0,0,SilentWitness.png,She saw everything. She says nothing.
+Thriller_Undercover_Line,Undercover Line,Thriller,Common,7,,0,0,UndercoverLine.png,Deep cover erases the person inside.
+Thriller_Wiretap,Wiretap,Thriller,Common,7,,0,0,Wiretap.png,Every conversation is evidence or bait.

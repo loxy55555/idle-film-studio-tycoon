@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
+  m_Name: Action_Steel_Horizon
+  m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
+  movieName: Dead Frequency
+  genre: 0
+  tagline: Fleet commanders gamble everything on one offensive.
+  cost: 1
+  baseReward: 1
+  baseRep: 0.1
+  duration: 6
+  quality: 1
+  unlockStudioLevel: 1
+  unlockCityLevel: 2
+  unlockReputation: 0
+  rarity: 1
+  posterColorHex: 0
+  genreIconKey: 
+  posterFile: DeadFrequency.png
+  posterSprite: {fileID: -5986353991653224663, guid: 6fa9cc373ed5abf418bf8935c8be6b58, type: 3}
+  catalogTier: 1
+  contentKind: 4
+  sagaId: project_avalanche
+  sagaEntryIndex: 1
+  sagaDisplayName: 

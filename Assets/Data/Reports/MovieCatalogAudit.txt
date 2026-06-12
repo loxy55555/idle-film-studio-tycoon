@@ -1,0 +1,43 @@
+=== MOVIE CATALOG AUDIT ===
+Entries: 180 / 300 (remaining 120)
+
+-- Genre distribution --
+  Action: 30 (expected 30)
+  SciFi: 30 (expected 30)
+  Drama: 30 (expected 30)
+  Horror: 30 (expected 30)
+  Comedy: 30 (expected 30)
+  Romance: 30 (expected 30)
+
+-- Rarity distribution --
+  Common: 180
+  Rare: 0
+  Epic: 0
+  Legendary: 0
+
+-- Exact duplicate titles (0) --
+
+-- Similar titles (0, threshold 82 %) --
+
+-- Overused words (>=5 titles) --
+  ultimo: 5 titles (e.g. El Último Bastión; El Último Cómico)
+  gran: 5 titles (e.g. La Gran Ofensiva; El Gran Malentendido)
+  amor: 5 titles (e.g. Amor en Cuarentena; Amor Sin Fin)
+
+-- Sagas --
+  iron_circuit (Circuito de Hierro): 6/6
+  last_signal (La Última Señal): 1/1
+  neon_drift (Neon Drift): 2/2
+  shadow_trigger (Shadow Trigger): 3/4
+    missing indices: 4
+
+-- WARNINGS (6) --
+  - Catalog has 180 entries; target is 300 (120 slots remaining).
+  - All entries use rarity Common — rarity distribution not assigned yet.
+  - Found 3 overused words appearing in >=5 titles.
+  - Saga shadow_trigger: 3 assigned, expected 4.
+  - Saga shadow_trigger: missing entry indices 4.
+  - No Legendary rarity entries assigned yet.
+
+-- ERRORS (0) --
+  (none)

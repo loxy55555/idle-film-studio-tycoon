@@ -93,4 +93,14 @@ public class UITabSkin : ScriptableObject
                 break;
         }
     }
+
+    public static void ApplyIndicatorFallback(Image indicator, bool active)
+    {
+        if (indicator == null) return;
+
+        indicator.gameObject.SetActive(active);
+        if (!active) return;
+
+        HudSkinUtil.ApplySpriteOrColor(indicator, null, HudSkinDefaults.BTN_SUCCESS);
+    }
 }
