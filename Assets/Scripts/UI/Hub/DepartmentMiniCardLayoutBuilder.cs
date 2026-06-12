@@ -7,7 +7,7 @@ public static class DepartmentMiniCardLayoutBuilder
 {
     public const string LayoutMarkerName = "DeptCardLayout_v3";
     public const float CardWidth  = 172f;
-    public const float CardHeight = 192f; // Phase 8.6A: compact card — recovers vertical space for the stage
+    public const float CardHeight = 140f; // Phase ESTUDIO-TUNING: compact card — recovers vertical space for the stage
 
     static readonly Color TextPrimary = Color.white;
     static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);

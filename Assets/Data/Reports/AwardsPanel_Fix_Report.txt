@@ -1,0 +1,117 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM — AWARDS PANEL FIX REPORT
+Fecha: 2026-06-12
+Fase: Corrección layout ScrollRect (sin rediseño)
+══════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════
+CAUSA CORREGIDA
+══════════════════════════════════════════════════════════════════════
+
+Problema:
+  PremiosPanel hereda VerticalLayoutGroup del editor con
+  childForceExpandHeight = false.
+  El hijo Scroll creado por AwardsPanelUI.EnsureBuilt() no tenía
+  LayoutElement → el VLG le asignaba altura 0px.
+  Viewport (stretch dentro de Scroll) heredaba height=0.
+  RectMask2D recortaba los 782px de contenido → panel vacío.
+
+Corrección aplicada (AwardsPanelUI.cs, EnsureBuilt):
+  Añadido LayoutElement al GameObject Scroll:
+    flexibleWidth  = 1f
+    flexibleHeight = 1f
+
+  Comentario en código documenta la interacción con el VLG padre.
+
+Archivos modificados:
+  Assets/Scripts/UI/Hub/AwardsPanelUI.cs  (3 líneas añadidas)
+
+Archivos NO modificados:
+  Visuales, secciones, estrellas, lógica de refresh, GameHub, escena.
+
+══════════════════════════════════════════════════════════════════════
+TAMAÑOS FINALES (Play Mode, tab Premios activo)
+══════════════════════════════════════════════════════════════════════
+
+                    ANTES FIX        DESPUÉS FIX
+PremiosPanel        1080 × 1700      1080 × 1700  (sin cambio)
+Scroll              1040 × 0         1040 × 1660  ✓
+Viewport            1040 × 0         1040 × 1660  ✓
+Content             1040 × 782       1040 × 782   (sin cambio)
+
+Scroll LayoutElement:
+  ANTES:  MISSING
+  DESPUÉS: flexH=1, flexW=1
+
+Nota: Scroll height 1660 = espacio disponible tras padding VLG padre
+(20px × 2). Content 782px cabe dentro del viewport y es scrollable.
+
+══════════════════════════════════════════════════════════════════════
+VALIDACIÓN VISUAL / RUNTIME
+══════════════════════════════════════════════════════════════════════
+
+Método: Play Mode + ShowTab(2) + LayoutRebuilder.ForceRebuildLayoutImmediate
+
+Estrellas totales construidas:     28
+Estrellas visibles (rect.height>0): 28
+Filas de vitrina:                   4
+Secciones en Content:               5
+
+Secciones visibles (active + height>0):
+  Header:                 yes
+  VitrinaFrame:           yes
+  ProgressSection:        yes
+  NextObjectiveSection:   yes
+  StudioProgressSection:  yes
+
+Compilación: sin errores tras domain reload.
+
+══════════════════════════════════════════════════════════════════════
+JERARQUÍA RUNTIME (captura técnica post-fix)
+══════════════════════════════════════════════════════════════════════
+
+PremiosPanel [1080×1700] active=True
+└── Scroll [1040×1660] active=True
+    │   LayoutElement: flexW=1 flexH=1
+    │   ScrollRect: vertical=true
+    └── Viewport [1040×1660] active=True
+        │   RectMask2D: presente
+        │   Stretch: anchor (0,0)-(1,1)
+        └── Content [1040×782] active=True
+            │   VerticalLayoutGroup + ContentSizeFitter
+            ├── Header [1008×62]
+            ├── VitrinaFrame [1008×316]
+            │   └── VitrinaInner
+            │       ├── GlassShine
+            │       ├── Row0 [7 estrellas Star_0..Star_6]
+            │       ├── Row1 [7 estrellas]
+            │       ├── Row2 [7 estrellas]
+            │       ├── Row3 [7 estrellas]
+            │       └── GlassOverlay
+            ├── ProgressSection [1008×68]
+            ├── NextObjectiveSection [1008×112]
+            └── StudioProgressSection [1008×130]
+
+══════════════════════════════════════════════════════════════════════
+COMPATIBILIDAD CON VerticalLayoutGroup EXISTENTE
+══════════════════════════════════════════════════════════════════════
+
+PremiosPanel VerticalLayoutGroup (heredado, sin tocar):
+  childForceExpandHeight: false  (sin cambio)
+  childForceExpandWidth:  true
+  padding: (20, 20, 20, 20)
+
+Scroll participa correctamente vía LayoutElement.flexibleHeight=1
+sin modificar el VLG padre — mismo patrón que StorePanelUI.StoreRoot.
+
+══════════════════════════════════════════════════════════════════════
+RESULTADO
+══════════════════════════════════════════════════════════════════════
+
+La vitrina completa (28 estrellas, 4 filas, barra de progreso,
+objetivo siguiente, progreso del estudio) es visible en pantalla.
+
+Diseño implementado en Phase 8.6B preservado intacto.
+Solo corregido el colapso de layout del ScrollRect.
+
+══════════════════════════════════════════════════════════════════════

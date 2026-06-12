@@ -1,0 +1,189 @@
+================================================================================
+  FASE ESTUDIO-TUNING — TEST ANTES / DESPUÉS
+  Fecha: 2026-06-12  |  Resolución: 1080×1920  |  Escena: bakeada (MainGame)
+================================================================================
+
+CAMBIOS APLICADOS EN CÓDIGO (sin rediseño, sin nuevos componentes)
+--------------------------------------------------------------------
+1. DepartmentMiniCardLayoutBuilder.cs
+     CardHeight (preferredHeight / minHeight de card) : 192 → 140
+
+2. DepartmentMiniCardLayoutBuilder.NormalizeParentRowHeight()
+     rowLE.preferredHeight (usa CardHeight)           : 192 → 140
+
+3. HudLayoutConstants.cs → StudioVisualStage.ApplyLayout()
+     StudioVisualFixedHeight                          : 100 → 150
+
+4. DefinitiveHudBootstrap.PatchStudioSubTabs()
+     barLE.preferredHeight                            :  52 →  64
+
+================================================================================
+TABLA 1 — VALORES DE CÓDIGO / CONSTANTES
+================================================================================
+
+┌─────────────────────────────────────┬─────────┬─────────┬──────────┐
+│ Constante / valor en código         │ ANTES   │ DESPUÉS │ Δ        │
+├─────────────────────────────────────┼─────────┼─────────┼──────────┤
+│ CardHeight                          │ 192     │ 140     │ -52      │
+│ card LE.preferredHeight (Build)     │ 192     │ 140     │ -52      │
+│ card LE.minHeight (Build)           │ 192     │ 140     │ -52      │
+│ row LE.preferredHeight (Normalize)  │ 192     │ 140     │ -52      │
+│ StudioVisualFixedHeight             │ 100     │ 150     │ +50      │
+│ PatchStudioSubTabs barLE.prefH      │  52     │  64     │ +12      │
+└─────────────────────────────────────┴─────────┴─────────┴──────────┘
+
+================================================================================
+TABLA 2 — VALORES MEDIDOS EN PLAY MODE (rect real + LayoutElement)
+================================================================================
+
+Medición ANTES  → Studio_Diagnostics.txt (Play Mode previo)
+Medición DESPUÉS → Play Mode post-recompilación (2026-06-12)
+
+── 1. DEPARTMENT CARDS ──────────────────────────────────────────────────────
+
+┌──────────────────────────────┬─────────┬─────────┬──────────┬─────────────┐
+│ Métrica                      │ ANTES   │ DESPUÉS │ Δ        │ ¿Aplicado?  │
+├──────────────────────────────┼─────────┼─────────┼──────────┼─────────────┤
+│ CardHeight constante (code)  │ 192     │ 140     │ -52      │ SÍ          │
+│ Card LE.preferredHeight      │ 192     │ 192     │   0      │ NO (baked)  │
+│ Card LE.minHeight            │ 192     │ 192     │   0      │ NO (baked)  │
+│ Card rect.height             │ 192     │ 192     │   0      │ NO (baked)  │
+│ Card rect.width              │ 526     │ 526     │   0      │ sin cambio  │
+└──────────────────────────────┴─────────┴─────────┴──────────┴─────────────┘
+
+Motivo de no-aplicación:
+  La escena bakeada ya tiene el marcador "DeptCardLayout_v3".
+  DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded() llama WireExisting()
+  y NO invoca Build() ni NormalizeParentRowHeight().
+  Los LE de 192 px persisten en la escena serializada.
+
+── 2. FILAS DE DEPARTAMENTOS ────────────────────────────────────────────────
+
+┌──────────────────────────────┬─────────┬─────────┬──────────┬─────────────┐
+│ Métrica                      │ ANTES   │ DESPUÉS │ Δ        │ ¿Aplicado?  │
+├──────────────────────────────┼─────────┼─────────┼──────────┼─────────────┤
+│ Row LE.preferredHeight       │ 192     │ 192     │   0      │ NO (baked)  │
+│ Row rect.height              │ 192     │ 192     │   0      │ NO (baked)  │
+│ Content scroll total height  │ 1208    │ 1208    │   0      │ sin cambio  │
+│ Número de filas              │ 6       │ 6       │   0      │ sin cambio  │
+└──────────────────────────────┴─────────┴─────────┴──────────┴─────────────┘
+
+Cálculo teórico si las filas pasaran a 140 px:
+  6×140 + 5×8 + pad(16) = 896 px  (ahorro scroll: -312 px vs 1208)
+
+── 3. SUB-TABS ───────────────────────────────────────────────────────────────
+
+┌──────────────────────────────┬─────────┬─────────┬──────────┬─────────────┐
+│ Métrica                      │ ANTES   │ DESPUÉS │ Δ        │ ¿Aplicado?  │
+├──────────────────────────────┼─────────┼─────────┼──────────┼─────────────┤
+│ StudioSubTabBar LE.prefH     │  52     │  64     │ +12      │ SÍ          │
+│ StudioSubTabBar rect.height  │  52     │  64     │ +12      │ SÍ          │
+│ Tab individual rect.height   │  52     │  64     │ +12      │ SÍ          │
+│ Tab individual rect.width    │ 360     │ 360     │   0      │ sin cambio  │
+│ Label fontSize               │  13     │  13     │   0      │ sin cambio  │
+└──────────────────────────────┴─────────┴─────────┴──────────┴─────────────┘
+
+Sistema ganador: DefinitiveHudBootstrap.PatchStudioSubTabs() (AfterSceneLoad).
+
+── 4. FONDO CINEMATOGRÁFICO (StudioVisualStage) ─────────────────────────────
+
+┌──────────────────────────────┬─────────┬─────────┬──────────┬─────────────┐
+│ Métrica                      │ ANTES   │ DESPUÉS │ Δ        │ ¿Aplicado?  │
+├──────────────────────────────┼─────────┼─────────┼──────────┼─────────────┤
+│ LE.preferredHeight           │ 100     │ 150     │ +50      │ SÍ          │
+│ LE.minHeight                 │  80     │  80     │   0      │ sin cambio  │
+│ rect.height                  │ 100     │ 150     │ +50      │ SÍ          │
+│ Posición y (desde top panel) │ 64–164  │ 64–214  │ +50 band │ SÍ          │
+│ BottomFadeOverlay height     │  55     │  83     │ +28*     │ proporcional│
+└──────────────────────────────┴─────────┴─────────┴──────────┴─────────────┘
+
+* BottomFadeOverlay anchor y=(0, 0.55) → 55 % de 150 = 82.5 px (antes 55 % de 100 = 55 px)
+
+Sistema ganador: StudioVisualStage.ApplyLayout() en Awake (lee HudLayoutConstants).
+
+── 5. BOTÓN DE AJUSTES ──────────────────────────────────────────────────────
+
+Sin cambios en esta fase (no solicitado).
+SettingsBtn: 56×104 px, extremo derecho TopBar — idéntico a diagnóstico previo.
+
+── 6. DISTRIBUCIÓN VERTICAL TOTAL (EstudioPanel = 1700 px) ──────────────────
+
+┌──────────────────────────────┬─────────┬─────────┬──────────┐
+│ Elemento                     │ ANTES   │ DESPUÉS │ Δ        │
+├──────────────────────────────┼─────────┼─────────┼──────────┤
+│ StudioHeader                 │  64     │  64     │   0      │
+│ StudioVisualStage            │ 100     │ 150     │ +50      │
+│ StudioSubTabBar              │  52     │  64     │ +12      │
+│ StudioSubContent (flex)      │ 1412    │ 1350    │ -62      │
+│ BonificationsBar             │  72     │  72     │   0      │
+├──────────────────────────────┼─────────┼─────────┼──────────┤
+│ Suma fija (excl. flex)       │  288    │  350    │ +62      │
+│ TOTAL                        │ 1700    │ 1700    │   0      │
+└──────────────────────────────┴─────────┴─────────┴──────────┘
+
+Viewport scroll departamentos (StudioSubContent interior):
+  ANTES  : 1412 px viewport / 1208 px content → 204 px margen libre en scroll
+  DESPUÉS: 1350 px viewport / 1208 px content → 142 px margen libre en scroll
+  Δ viewport: -62 px  |  Δ content: 0 px  |  Δ margen scroll: -62 px
+
+================================================================================
+RESUMEN — ¿CUÁNTO ESPACIO RECUPERA ESTUDIO?
+================================================================================
+
+EFECTO REAL MEDIDO (solo cambios que llegaron al layout en escena bakeada):
+
+  StudioSubContent viewport  : 1412 → 1350 px  =  PIERDE 62 px
+  Scroll content (dept cards): 1208 → 1208 px  =  sin cambio
+  Margen libre dentro scroll :  204 →  142 px  =  PIERDE 62 px
+
+  Balance neto del panel: NO hay recuperación de espacio.
+  El aumento de stage (+50) y sub-tabs (+12) consume 62 px del área flexible.
+
+EFECTO NO APLICADO (cards/filas — valores bakeados en escena):
+
+  Si CardHeight=140 se aplicara a cards y filas existentes:
+    Scroll content bajaría de 1208 → 896 px  (-312 px de contenido scrollable)
+    Pero StudioSubContent viewport seguiría en 1350 px (no crece al encoger cards).
+    Beneficio: menos scroll / cards más compactas, NO más viewport.
+
+ESCENARIO TEÓRICO SI TODOS LOS CAMBIOS SE APLICARAN:
+
+  Suponiendo cards=140 y stage=150, tabs=64:
+    Fixed sum     = 64 + 150 + 64 + 72 = 350 px
+    Viewport flex = 1700 - 350 = 1350 px
+    Scroll content = 896 px
+    Margen scroll  = 1350 - 896 = 454 px (vs 204 px antes)
+
+  Comparado con ANTES (288 fixed, 1412 viewport, 1208 content, 204 margen):
+    Viewport     : -62 px  (peor — stage/tabs más altos)
+    Content      : -312 px (mejor — cards más bajas, si se aplicaran)
+    Margen scroll: +250 px neto teórico (454 vs 204) solo si cards se aplican
+
+CONCLUSIÓN:
+
+  Con los 4 cambios de código en escena bakeada, solo 2 surten efecto runtime:
+    ✓ StudioVisualStage  (+50 px fijos)
+    ✓ StudioSubTabBar    (+12 px fijos)
+
+  Los 2 cambios de cards/filas NO surten efecto porque la escena ya tiene
+  LayoutElements serializados a 192 px y WireExisting() no los actualiza.
+
+  Resultado neto inmediato: el área de departamentos (StudioSubContent) es
+  62 px MÁS PEQUEÑA, no más grande.
+
+  Para recuperar espacio real en el viewport habría que:
+    a) Reducir stage/tabs en lugar de aumentarlos, O
+    b) Aplicar CardHeight=140 a los LE bakeados (requiere re-ejecutar Build()
+       o patch runtime mínimo — fuera del alcance de este tuning de constantes).
+
+================================================================================
+ARCHIVOS MODIFICADOS
+================================================================================
+
+  Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs  (CardHeight 192→140)
+  Assets/Scripts/UI/Hub/Hud/HudLayoutConstants.cs           (StudioVisualFixedHeight 100→150)
+  Assets/Scripts/UI/Hub/Hud/DefinitiveHudBootstrap.cs       (barLE.prefH 52→64)
+
+================================================================================
+FIN DEL INFORME
+================================================================================

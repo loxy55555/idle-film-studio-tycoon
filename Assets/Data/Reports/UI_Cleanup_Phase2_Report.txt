@@ -1,0 +1,193 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM — UI Cleanup Phase 2 Report
+Fecha: 2026-06-12
+Candidatos analizados: CollectionNavController.cs, GenreSelectionUI.cs
+Pregunta: ¿Son completamente redundantes respecto a MovieCollectionUI?
+══════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════
+ANÁLISIS: GenreSelectionUI
+══════════════════════════════════════════════════════════════════════
+
+Ruta:  Assets/Scripts/UI/Hub/GenreSelectionUI.cs
+GUID:  cda39e4bd1bbcf84f9c1b0ebb220fe46
+Tamaño: 11.146 bytes (261 líneas)
+
+Responsabilidad declarada:
+  "Collection L1 screen — 2-column grid of large genre cards."
+  Construye un scroll con 10 portadas de género (2 columnas).
+  Al pulsar una tarjeta: dispara OnGenreSelected?.Invoke(genre).
+
+Responsabilidad en MovieCollectionUI:
+  MovieCollectionUI.BuildL1GenreGrid() construye exactamente la misma
+  estructura: scroll, viewport, content VLG, 5 filas de 2 columnas,
+  tarjetas de género con portada de color, info strip, progress bar.
+  El click de cada tarjeta llama directamente ShowMovieGrid(genre).
+
+Diferencias funcionales: NINGUNA.
+  GenreSelectionUI → 2-col grid, clicks → OnGenreSelected evento
+  MovieCollectionUI.BuildL1GenreGrid → 2-col grid, clicks → ShowMovieGrid (interno)
+
+──────────────────────────────────────────────────────────────────────
+VERIFICACIÓN DE REFERENCIAS — GenreSelectionUI
+──────────────────────────────────────────────────────────────────────
+
+1. Referencias en código (archivos .cs):
+   ─ Assets/Scripts/UI/Hub/GenreSelectionUI.cs (propio)
+   ─ Assets/Scripts/UI/Hub/CollectionNavController.cs
+       → campo privado: GenreSelectionUI _genreUI;
+       → GetComponentInChildren<GenreSelectionUI>
+       → _genreUI.OnGenreSelected = OnGenreChosen
+       → _genreUI.RefreshProgress()
+   ─ Assets/Scripts/Editor/StudioUIBuilder.cs
+       → SOLO en comentarios (línea 819):
+         "// Tab 0: COLECCIÓN (MovieCollectionUI + our GenreSelectionUI + ...)"
+       → CERO líneas de código vivo que la referencien.
+
+2. GUIDs en Assets/Scenes/*.unity:       0 HITS
+3. GUIDs en Assets/Prefabs/*.prefab:     0 HITS
+4. AddComponent<GenreSelectionUI>:       0 HITS en todo el código
+5. Instantiate + tipo GenreSelectionUI:  0 HITS
+6. GetComponent<GenreSelectionUI>:       0 HITS fuera de CollectionNavController
+
+Instanciada en runtime (baked path): NUNCA.
+  MovieTabShellBootstrap (eliminado en Fase 1) era el único punto de
+  creación — y era NO-OP en escena baked.
+
+Veredicto: COMPLETAMENTE REDUNDANTE. MovieCollectionUI reimplementa
+  y supera su funcionalidad. Nunca se instancia en el juego actual.
+
+══════════════════════════════════════════════════════════════════════
+ANÁLISIS: CollectionNavController
+══════════════════════════════════════════════════════════════════════
+
+Ruta:  Assets/Scripts/UI/Hub/CollectionNavController.cs
+GUID:  a002181efb5fd8e4ebb3b17de0d65f22
+Tamaño: 3.129 bytes (109 líneas)
+
+Responsabilidad declarada:
+  "Manages 3-level collection navigation: L1 Genres → L2 Movie Grid → L3 Popup."
+  Wires GenreSelectionUI to MovieCollectionUI. Navigation only.
+  Métodos: ShowGenres(), ShowMovies(genre), OnGenreChosen(genre?)
+
+Responsabilidad en MovieCollectionUI:
+  MovieCollectionUI tiene navegación interna completa:
+  ─ ShowGenreGrid()  → L1 visible, L2/L3 ocultos
+  ─ ShowMovieGrid()  → L2 visible, L1/L3 ocultos, PopulateMovieGrid()
+  ─ ClosePopup()     → L3 oculto
+  Todo wired internamente — no requiere coordinador externo.
+
+Diferencias funcionales: NINGUNA.
+
+──────────────────────────────────────────────────────────────────────
+VERIFICACIÓN DE REFERENCIAS — CollectionNavController
+──────────────────────────────────────────────────────────────────────
+
+1. Referencias en código (archivos .cs):
+   ─ Assets/Scripts/UI/Hub/CollectionNavController.cs (propio)
+   ─ Assets/Scripts/Editor/StudioUIBuilder.cs
+       → SOLO en comentarios (líneas 819, 823):
+         "// Tab 0: COLECCIÓN (...CollectionNavController)"
+         "// The CollectionNavController is wired by CollectionHudShell at runtime."
+       → CERO líneas de código vivo que la referencien.
+
+2. Verificación del comentario en StudioUIBuilder (línea 823):
+   "The CollectionNavController is wired by CollectionHudShell at runtime."
+   → FALSO. CollectionHudShell.cs leído en su totalidad (42 líneas):
+     - No existe ninguna llamada a CollectionNavController
+     - Su OnEnable() solo activa collectionUI si está inactivo
+     - Docstring propio: "shell is a thin wrapper only"
+   → Este comentario era documentación de una intención ANTIGUA que
+     nunca se implementó. Es un relic comment.
+
+3. GUIDs en Assets/Scenes/*.unity:       0 HITS
+4. GUIDs en Assets/Prefabs/*.prefab:     0 HITS
+5. AddComponent<CollectionNavController>: 0 HITS en todo el código
+6. GetComponent<CollectionNavController>: 0 HITS fuera del propio archivo
+
+Instanciada en runtime (baked path): NUNCA.
+
+Veredicto: COMPLETAMENTE REDUNDANTE. Su responsabilidad (navegación
+  L1→L2→L3) está absorta íntegramente en MovieCollectionUI.
+  Nunca se instancia en el juego actual.
+  El comentario que la mencionaba en CollectionHudShell era incorrecto.
+
+══════════════════════════════════════════════════════════════════════
+MOTIVO DE ELIMINACIÓN CONJUNTA
+══════════════════════════════════════════════════════════════════════
+CollectionNavController dependía de GenreSelectionUI
+(referenciaba _genreUI, wirable OnGenreSelected).
+Al eliminar GenreSelectionUI, CollectionNavController queda sin su
+dependencia principal y sin ningún uso posible.
+Ambas se eliminan simultáneamente — eliminación coherente y completa.
+
+══════════════════════════════════════════════════════════════════════
+ACCIÓN REALIZADA
+══════════════════════════════════════════════════════════════════════
+Scripts eliminados:
+  GenreSelectionUI.cs + .meta     (11.205 bytes total)
+  CollectionNavController.cs + .meta (3.188 bytes total)
+
+Comentarios actualizados en StudioUIBuilder.cs:
+  Líneas 819-823 — eliminadas las referencias a GenreSelectionUI y
+  CollectionNavController del comentario del método BuildColeccionPanel().
+  El comentario ahora refleja la realidad actual.
+
+══════════════════════════════════════════════════════════════════════
+RESULTADO DE COMPILACIÓN
+══════════════════════════════════════════════════════════════════════
+Refresh forzado: force, scope=all, compile=request
+Estado tras compilación: idle (listo)
+Errores de compilación: 0
+Warnings de compilación: 0
+Consola Unity tras compilar: 0 entradas
+
+RESULTADO: COMPILACIÓN LIMPIA ✓
+
+══════════════════════════════════════════════════════════════════════
+RESULTADO PLAY MODE
+══════════════════════════════════════════════════════════════════════
+Play Mode: entrado y salido correctamente.
+Errores en runtime: 0
+
+Verificaciones en runtime:
+  GenreSelectionUI (by_component):      0 instancias ✓
+  CollectionNavController (by_component): 0 instancias ✓
+  MovieCollectionUI (by_component):     1 instancia activa ✓
+  ColeccionPanel (by_name, include_inactive): presente ✓
+  ColeccionPanel (by_name, active_only):  0 — inactivo (correcto)
+
+Nota sobre L1_GenreGrid = 0 instancias:
+  ColeccionPanel está INACTIVO al inicio (tab por defecto = Estudio).
+  MovieCollectionUI.Awake() solo ejecuta cuando el panel se activa.
+  Al pulsar el tab de Colección, Awake() dispara EnsureBuilt() →
+  BuildAllLevels() → L1/L2/L3 se construyen desde cero.
+  Este es el comportamiento correcto y esperado.
+
+══════════════════════════════════════════════════════════════════════
+IMPACTO VISUAL
+══════════════════════════════════════════════════════════════════════
+Impacto visual: NINGUNO.
+
+GenreSelectionUI nunca se renderizaba en el juego actual.
+CollectionNavController nunca se ejecutaba en el juego actual.
+MovieCollectionUI ya era el único sistema que construía y mostraba
+la pantalla de Colección desde Phase 8.5C.
+
+La pantalla de Colección es IDÉNTICA antes y después de la limpieza.
+
+══════════════════════════════════════════════════════════════════════
+ESTADO TRAS PHASE 2
+══════════════════════════════════════════════════════════════════════
+Scripts eliminados en fases 1+2: 5 scripts (10 archivos con .meta)
+  Fase 1: MovieTabShellBootstrap, HudLayoutPassBootstrap, DepartmentBarUI
+  Fase 2: GenreSelectionUI, CollectionNavController
+
+Candidatos pendientes (requieren aprobación explícita para Fase 3):
+  GarageStudioVisualBuilder.cs (confianza MEDIO)
+  MultiProductionPanelUI.cs (confianza MEDIO)
+  MovieGridUI.cs (confianza BAJO — actualizar builder primero)
+  HudHierarchySetup.cs (editor tool — añadir [Obsolete])
+
+NO se continuará con Fase 3 sin instrucción explícita.
+══════════════════════════════════════════════════════════════════════

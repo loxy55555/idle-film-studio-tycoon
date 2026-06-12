@@ -1,0 +1,365 @@
+================================================================================
+  FASE ESTUDIO-BAKE-DIAGNOSTICS — INFORME TÉCNICO
+  Origen de los 192 px en Department Cards y Department Rows
+  Fecha: 2026-06-12
+================================================================================
+
+================================================================================
+RESPUESTAS DIRECTAS
+================================================================================
+
+¿Las cards visibles provienen del bake?
+  SÍ. Todos los GameObjects MiniCard_* y DeptRow_* con sus LayoutElements
+  están serializados en Assets/Scenes/MainGame.unity.
+  Los valores 192 se leen directamente del archivo .unity en disco.
+
+¿Se reconstruyen alguna vez en runtime?
+  NO. DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded() detecta el marcador
+  "DeptCardLayout_v3" (bakeado) y llama WireExisting(), que solo lee referencias
+  de componentes existentes. Build() y NormalizeParentRowHeight() nunca se
+  ejecutan durante el ciclo de vida normal de una escena bakeada.
+
+¿Existe actualmente un camino para regenerarlas?
+  SÍ, pero requiere una acción explícita del editor. Ver Sección 6.
+
+¿Qué script es la única fuente de verdad real?
+  DepartmentMiniCardLayoutBuilder.cs (CardHeight = 140 actualmente).
+  Es la única fuente que controla los valores que se serializan cuando se bake,
+  y los únicos valores que Build() aplica a la escena. El archivo .unity es
+  una "fotografía congelada" del momento del último bake.
+
+================================================================================
+SECCIÓN 1 — QUIÉN ESCRIBIÓ ORIGINALMENTE LOS 192 px
+================================================================================
+
+Script original: DepartmentMiniCardLayoutBuilder.cs
+
+Método responsable: Build(RectTransform card, Color badgeColor)
+  Líneas críticas (con CardHeight = 192 en el momento del bake):
+    cardLE.preferredWidth  = CardWidth;    // 172
+    cardLE.preferredHeight = CardHeight;   // 192  ← serializado en .unity
+    cardLE.minHeight       = CardHeight;   // 192  ← serializado en .unity
+    NormalizeParentRowHeight(card);        // rowLE.preferredHeight = 192
+
+Método secundario: NormalizeParentRowHeight(RectTransform card)
+  Busca el LayoutElement del padre (la fila DeptRow_N) y escribe:
+    rowLE.preferredHeight = CardHeight;    // 192  ← serializado en .unity
+    rowLE.minHeight = CardHeight si > CardHeight  (no aplica aquí)
+
+Llamado desde: StudioUIBuilder.BuildMiniCard()
+  Cuando el editor ejecutó "IdleFilm / Build Studio UI" por última vez.
+
+================================================================================
+SECCIÓN 2 — MOMENTO DE SERIALIZACIÓN EN EL PIPELINE
+================================================================================
+
+La cadena exacta de llamadas cuando se ejecutó el builder la última vez:
+
+  1. EDITOR: IdleFilm > Build Studio UI  (menú Unity)
+     → StudioUIBuilder.Build()
+         → BuildEstudioPanel(switcher)
+             → BuildDeptGrid(panel)
+                 → for cada dept (11 depts, 6 filas de 2):
+                     BuildMiniCard(row, deptType, name, hex)
+                         → DepartmentMiniCardLayoutBuilder.Build(card, color)
+                             → cardLE.preferredHeight = 192   [CardHeight en ese momento]
+                             → cardLE.minHeight       = 192
+                             → NormalizeParentRowHeight(card) → rowLE.preferredHeight = 192
+                         → Añade marcador "DeptCardLayout_v3" como hijo vacío
+         → HudDefinitiveSceneBaker.Bake(switcher, mainHubUI)
+             → HudDefinitiveStructureBuilder.Apply(...)
+                 → ApplyEstudioLayout(estudio)
+                     → (StudioSubTabBar y StudioHeader layout, no tocan cards)
+     → EditorSceneManager.SaveScene(scene)  ← PUNTO DE SERIALIZACIÓN FINAL
+
+  2. Unity serializa el estado completo del grafo de escena a MainGame.unity.
+     Cada LayoutElement queda como un componente separado en el YAML.
+
+  3. Desde ese momento, los valores 192 viven en el archivo .unity y no en
+     ninguna variable en memoria hasta que se carga la escena.
+
+================================================================================
+SECCIÓN 3 — OBJETOS DE ESCENA QUE CONTIENEN LOS LAYOUTELEMENTS CON 192 px
+================================================================================
+
+Confirmado por grep en Assets/Scenes/MainGame.unity:
+
+  Total instancias m_PreferredHeight: 192 = 17
+  Total instancias m_MinHeight: 192       = 11
+
+  Distribución por tipo de objeto:
+
+  A) CARD LayoutElements  (m_PreferredWidth: 172 + m_PreferredHeight: 192 + m_MinHeight: 192)
+     Conteo = 11  (uno por cada MiniCard_*)
+     Líneas de escena (muestra): 11634–11644, 25771–25781, 27044–27054,
+                                  35022–35032, 46930–46940, 82773–82783,
+                                  86338–86348, 103587–103597, 105862–105872,
+                                  110813–110823, 120837–120847
+
+  B) ROW LayoutElements (m_PreferredWidth: -1, m_PreferredHeight: 192, m_MinHeight: -1)
+     Conteo = 6   (uno por cada DeptRow_N: 0, 2, 4, 6, 8, 10)
+     Líneas de escena (muestra): 9018–9027, 14239–14248, 36266–36275,
+                                  63929–63938, 72940–72949, 75126–75135
+
+  Formato en .unity de un card LE:
+    m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+    m_IgnoreLayout: 0
+    m_MinWidth: -1
+    m_MinHeight: 192            ← hardcoded en el bake
+    m_PreferredWidth: 172
+    m_PreferredHeight: 192      ← hardcoded en el bake
+    m_FlexibleWidth: -1
+    m_FlexibleHeight: -1
+
+  Formato en .unity de un row LE:
+    m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+    m_IgnoreLayout: 0
+    m_MinWidth: -1
+    m_MinHeight: -1             ← no tiene min fijado
+    m_PreferredWidth: -1
+    m_PreferredHeight: 192      ← hardcoded en el bake
+    m_FlexibleWidth: -1
+    m_FlexibleHeight: -1
+
+  Nótese que el marcador de versión "DeptCardLayout_v3" también está presente:
+    11 instancias en el .unity  (confirmado por grep, count=11)
+
+================================================================================
+SECCIÓN 4 — SI EL VALOR 192 EXISTE FÍSICAMENTE EN LA ESCENA BAKEADA
+================================================================================
+
+  SÍ, existe físicamente en el archivo .unity:
+    Ruta: Assets/Scenes/MainGame.unity
+    Tipo de archivo: YAML serializado de Unity (texto)
+    Instancias de m_PreferredHeight: 192 → 17
+    Instancias de m_MinHeight: 192       → 11
+
+  Estas son propiedades de componentes MonoBehaviour (LayoutElement) y se
+  almacenan como valores float literales en el YAML, completamente independientes
+  del código C#. Cambiar CardHeight en código NO modifica el archivo .unity.
+
+================================================================================
+SECCIÓN 5 — SI EXISTE ALGÚN SISTEMA RUNTIME QUE VUELVA A APLICAR 192 px
+================================================================================
+
+SISTEMA 1: DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded()
+  Llamado en: Awake() y OnGameReady()
+  Flujo con escena bakeada:
+    1. HasPremiumLayout(transform) → comprueba transform.Find("DeptCardLayout_v3")
+    2. El marcador EXISTE en escena → devuelve TRUE
+    3. LLAMADA: WireExisting(transform) — solo lee referencias existentes
+    4. NO llama: DepartmentMiniCardLayoutBuilder.Build() ni NormalizeParentRowHeight()
+    5. RESULTADO: los LE bakeados (192) no se tocan
+
+  Flujo SIN escena bakeada (si el marcador no existiera):
+    1. HasPremiumLayout() → FALSE
+    2. Comprueba si existe HorizontalLayoutGroup (guard para layouts legacy)
+    3. Si no existe: llama DepartmentMiniCardLayoutBuilder.Ensure(this, color)
+       → Ensure() → Build()  →  APLICA CardHeight=140 a los LE  →  crea marcador
+    4. RESULTADO: los LE se crearían/actualizarían al nuevo CardHeight
+
+SISTEMA 2: DepartmentContentSorter.SortNow()
+  Definido en: Assets/Scripts/UI/Hub/ContentSortBootstrap.cs
+  Instalado por: ContentSortBootstrap.Install() (AfterSceneLoad)
+  Hace: reordena cards por índice de sibling (unlocked primero)
+  NO modifica ningún LayoutElement. No toca tamaños.
+
+SISTEMA 3: NormalizeParentRowHeight() (dentro de Build)
+  Flujo: solo se llama si Build() se llama.
+  En escena bakeada: NUNCA se ejecuta.
+  Contiene una condición extra: solo sobreescribe si rowLE.preferredHeight > CardHeight.
+  Con CardHeight=140 actual: si la fila tiene 192, 192>140 → sí sobreescribiría.
+  PERO solo si Build() se dispara, lo cual no ocurre con el marcador presente.
+
+SISTEMA 4: HudLayoutPass.ApplyEstudioLayout() + EnsureStudioVisualStage()
+  No tocan cards ni filas. Solo stage, header, tabBar, subContent.
+
+SISTEMA 5: DefinitiveHudBootstrap.PatchStudioSubTabs()
+  No toca cards ni filas. Solo el StudioSubTabBar.
+
+CONCLUSIÓN: No existe ningún sistema runtime que re-aplique ni mantenga
+los 192 px. Son valores inertes que viven en el .unity y se cargan en memoria
+en el momento de LoadScene. No hay código que los proteja activamente.
+
+================================================================================
+SECCIÓN 6 — QUÉ MÉTODO HABRÍA QUE EJECUTAR PARA RECONSTRUIR CON NUEVOS VALORES
+================================================================================
+
+La reconstrucción puede hacerse por tres caminos:
+
+─── CAMINO A: Re-bake completo del Editor ───────────────────────────────────
+
+  Ejecutar en Unity Editor (sin Play Mode):
+    Menú: IdleFilm > Build Studio UI
+
+  Esto llama StudioUIBuilder.Build() que:
+    1. Destruye toda la jerarquía de escena existente
+    2. Reconstruye todo desde cero con CardHeight=140 actual
+    3. Serializa el .unity con los nuevos valores
+    4. Guarda la escena
+
+  Resultado: TODOS los LayoutElements se actualizan a los valores actuales
+  del código. Es el único método con garantía de estado limpio.
+
+─── CAMINO B: Re-bake selectivo del Editor ──────────────────────────────────
+
+  No existe un menú "Rebuild only dept cards". Habría que:
+    1. Seleccionar manualmente los 11 MiniCard_* en el Hierarchy
+    2. Ejecutar un editor script que llame DepartmentMiniCardLayoutBuilder.Build()
+       para cada card seleccionada
+    3. Guardar la escena
+
+─── CAMINO C: Patch runtime (requiere modificación de código) ────────────────
+
+  Para aplicar los nuevos valores sin re-bake, habría que añadir un patch
+  en DefinitiveHudBootstrap.ApplyBakedSceneVisualPatches() que itere
+  sobre los cards/filas y actualice sus LayoutElements directamente:
+
+    Ejemplo conceptual (NO aplicado — solo diagnóstico):
+      foreach (var card in Object.FindObjectsByType<DepartmentMiniCardUI>(...))
+      {
+          var le = card.GetComponent<LayoutElement>();
+          if (le != null)
+          {
+              le.preferredHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
+              le.minHeight       = DepartmentMiniCardLayoutBuilder.CardHeight;
+          }
+          var rowLE = (card.transform.parent as RectTransform)?.GetComponent<LayoutElement>();
+          if (rowLE != null) rowLE.preferredHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
+      }
+      LayoutRebuilder.ForceRebuildLayoutImmediate(contentRT);
+
+  Sin este patch o sin re-bake, CardHeight=140 en código no tiene ningún
+  efecto en runtime mientras el marcador "DeptCardLayout_v3" exista.
+
+─── CAMINO D: Eliminar el marcador del bake (fuerza WireExisting→Build) ──────
+
+  Si se eliminara el GameObject "DeptCardLayout_v3" de cada card en la escena
+  (Editor o runtime), HasPremiumLayout() devolvería false, y la próxima vez
+  que DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded() se llamara, ejecutaría
+  DepartmentMiniCardLayoutBuilder.Ensure() → Build() con CardHeight=140.
+  Este camino es frágil porque el marcador también sirve para evitar rebuilds
+  duplicados.
+
+================================================================================
+SECCIÓN 7 — DIAGRAMA DEL PIPELINE COMPLETO
+================================================================================
+
+  EDITOR TIME
+  ─────────────────────────────────────────────────────────────
+  CardHeight = 192 (en el momento del bake)
+      │
+      ▼
+  StudioUIBuilder.Build()
+      │
+      └─→ BuildDeptGrid()
+              │
+              └─→ BuildMiniCard()  ×11 cards
+                      │
+                      └─→ DepartmentMiniCardLayoutBuilder.Build(card, color)
+                              │
+                              ├─→ cardLE.preferredHeight = 192  ┐
+                              ├─→ cardLE.minHeight       = 192  │ SERIALIZADO
+                              ├─→ rowLE.preferredHeight  = 192  │ EN .unity
+                              └─→ crea hijo "DeptCardLayout_v3" ┘
+      │
+      ▼
+  EditorSceneManager.SaveScene()  ←── .unity guardado con 192
+
+  RUNTIME
+  ─────────────────────────────────────────────────────────────
+  Scene.Load()
+      │
+      ├─→ deserializa 11 LE de cards con prefH=192, minH=192
+      ├─→ deserializa 6 LE de filas con prefH=192
+      └─→ deserializa 11 marcadores "DeptCardLayout_v3"
+                              │
+                              ▼
+  DepartmentMiniCardUI.Awake() / OnGameReady()
+      │
+      └─→ EnsurePremiumLayoutIfNeeded()
+              │
+              └─→ HasPremiumLayout() → TRUE (marcador existe)
+                      │
+                      └─→ WireExisting() ← solo lee refs
+                              │
+                              ╳  Build() no se llama
+                              ╳  NormalizeParentRowHeight() no se llama
+                              ╳  CardHeight=140 no tiene efecto
+
+  CÓDIGO HOY
+  ─────────────────────────────────────────────────────────────
+  CardHeight = 140  (en código actual)
+      │
+      ╳  No se usa en escenas bakeadas mientras el marcador exista
+      │
+      ✓  Sería efectivo en el siguiente bake de escena (Camino A)
+      ✓  Sería efectivo si se añade un patch runtime (Camino C)
+
+================================================================================
+SECCIÓN 8 — TABLA RESUMEN FINAL
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PREGUNTA                          │ RESPUESTA                               │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Qué script escribió los 192 px?  │ DepartmentMiniCardLayoutBuilder.Build() │
+│                                   │ vía StudioUIBuilder.BuildMiniCard()     │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Cuándo se serializaron?          │ Cuando se ejecutó IdleFilm > Build      │
+│                                   │ Studio UI en el Editor, seguido de      │
+│                                   │ SaveScene()                             │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Dónde viven físicamente?         │ Assets/Scenes/MainGame.unity (YAML)     │
+│                                   │ 17 instancias m_PreferredHeight: 192    │
+│                                   │ 11 instancias m_MinHeight: 192          │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Hay sistema runtime que los      │ NO. Una vez deserializados desde .unity │
+│ re-aplique o los proteja?         │ no hay código que los sobreescriba.     │
+│                                   │ DepartmentContentSorter solo reordena.  │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Se puede actuar con solo cambiar │ NO. Build() no se llama con marcador.   │
+│ CardHeight en código?             │ WireExisting() no modifica LE.          │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Qué método aplica los nuevos     │ OPCIÓN A: Re-bake completo vía          │
+│ valores a las cards existentes?   │   IdleFilm > Build Studio UI (Editor)   │
+│                                   │ OPCIÓN C: Patch runtime en              │
+│                                   │   DefinitiveHudBootstrap iterando       │
+│                                   │   DepartmentMiniCardUI y actualizando   │
+│                                   │   sus LayoutElements manualmente        │
+├───────────────────────────────────┼─────────────────────────────────────────┤
+│ ¿Cuál es la única fuente de       │ DepartmentMiniCardLayoutBuilder.cs      │
+│ verdad real?                      │ (CardHeight = 140)                      │
+│                                   │ El .unity es una snapshot del último    │
+│                                   │ bake, no la fuente de verdad.           │
+└───────────────────────────────────┴─────────────────────────────────────────┘
+
+================================================================================
+ARCHIVOS RELEVANTES IDENTIFICADOS
+================================================================================
+
+  Assets/Scenes/MainGame.unity
+    → 17 LayoutElements con m_PreferredHeight: 192 serializados
+
+  Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs
+    → CardHeight constante (actualmente 140)
+    → Build(): escribe LE de cards y filas
+    → NormalizeParentRowHeight(): escribe LE de filas
+
+  Assets/Scripts/Editor/StudioUIBuilder.cs  (Editor-only, #if UNITY_EDITOR)
+    → BuildDeptGrid() → BuildMiniCard() → llama DepartmentMiniCardLayoutBuilder.Build()
+    → Punto de entrada del bake: menú IdleFilm > Build Studio UI
+
+  Assets/Scripts/Editor/HudDefinitiveSceneBaker.cs  (Editor-only)
+    → No toca cards. Solo estructura de sub-tabs, stage y header.
+
+  Assets/Scripts/UI/Hub/DepartmentMiniCardUI.cs
+    → EnsurePremiumLayoutIfNeeded(): toma el camino WireExisting() en escenas bakeadas
+    → NO modifica LayoutElements si "DeptCardLayout_v3" existe
+
+  Assets/Scripts/UI/Hub/ContentSortBootstrap.cs
+    → DepartmentContentSorter: reordena cards, NO modifica tamaños
+
+================================================================================
+FIN DEL INFORME
+================================================================================

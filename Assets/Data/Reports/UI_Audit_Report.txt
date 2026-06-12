@@ -1,0 +1,529 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM STUDIO TYCOON — UI ARCHITECTURE AUDIT
+FASE UI-AUDIT: Limpieza y Consolidación Completa
+Fecha: 2026-06-12
+══════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════
+MODELO ARQUITECTÓNICO GENERAL
+══════════════════════════════════════════════════════════════════════
+El HUD usa un modelo de "escena baked-first":
+
+  [EDITOR] StudioUIBuilder.Build()
+         ↓
+  [EDITOR] HudDefinitiveSceneBaker.Bake()
+         ↓  (sets DefinitiveHudShell.appliedMigrationVersion = 3+)
+  [SCENE]  MainGame.unity contiene jerarquía baked
+
+  Al pulsar Play:
+  [RUNTIME] DefinitiveHudBootstrap.Install()
+    → HudBakedSceneRules.IsBaked()? = true
+    → NO restructuración. Solo patches visuales.
+
+  Si la escena NO está baked (ruta legacy):
+  [RUNTIME] HudDefinitiveStructureBuilder.Apply()
+    → Restructura los 5 paneles.
+    → HudLayoutPass.Apply()
+    → Baked in-memory — hasta que se use el editor builder.
+
+══════════════════════════════════════════════════════════════════════
+A) SISTEMAS ACTIVOS — FUENTES DE VERDAD DEFINITIVAS
+══════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────
+ESTUDIO (tab 0)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     EstudioPanel (en ContentSwitcher)
+Constructor:     StudioUIBuilder.BuildEstudioPanel()
+  → Crea: StudioHeader, StudioVisualStage, StudioSubTabBar,
+          StudioSubContent con sub-tabs DEPARTAMENTOS / MEJORAS / CONTRATOS
+  → Añade: StudioHudShell, BonificationsBarUI (si es baked)
+
+Builders secundarios (runtime, todos activos):
+  ├─ StudioVisualStage.Awake()
+  │    → Layout fijo (100px), BottomFadeOverlay, layers, ThemeController
+  ├─ StudioVisualStageLayers.EnsureHierarchy()
+  │    → Crea 6 layers: Background, Set, Character, Equipment, Effects, Overlay
+  ├─ StudioVisualThemeController → City1GarageTheme.Apply()
+  │    → Añade fondos, nodos de mobiliario, luces según ciudad
+  ├─ BonificationsBarUI.EnsureBuilt()
+  │    → Si SpeedVal et al. no encontrados: auto-construye 6 celdas
+  ├─ DepartmentMiniCardLayoutBuilder.Ensure() [por cada DepartmentMiniCardUI]
+  │    → Marcador v3 — reconstruye tarjeta si es v2 o sin marcador
+  └─ ContentSortBootstrap + DepartmentContentSorter
+       → Reordena tarjetas de departamento
+
+Patchers runtime (baked path):
+  ├─ DefinitiveHudBootstrap.PatchStudioSubTabs()
+  │    → childForceExpandWidth=true, height=52px, font=13px bold
+  └─ DefinitiveHudBootstrap.EnsureBonificationsBar()
+       → Inyecta componente si falta en EstudioPanel
+
+Objetos de escena:
+  StudioHeader, DeptBar row-containers, ManagementSplit (oculto)
+
+Objetos creados en runtime:
+  StudioVisualStage layers (6), theme nodes, BonificationsBar cells,
+  DepartmentMiniCards (reconstruidas), BottomFadeOverlay
+
+Fuente de verdad: StudioUIBuilder + DepartmentMiniCardLayoutBuilder (v3)
+Conflicto conocido: HudLayoutPass.CompactSubTabBar() pone font=11px/56px;
+  PatchStudioSubTabs() lo override a 13px/52px — wins porque bootstrap
+  corre después en escena baked.
+
+────────────────────────────────────────────────────────────────────
+PRODUCCIÓN (tab 1)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     ProduccionPanel (en ContentSwitcher)
+Constructor:     StudioUIBuilder.BuildPeliculasMainPanel()
+  → Crea: ProductionWidget, MovieSlotsRow (HLG + SquareTileRowLayout),
+          NewProductionBtn, MovieTabUI, ProductionHudShell
+
+Builders secundarios (runtime, todos activos):
+  ├─ ProductionHudShell.UpgradeProductionLayout() [Start/OnEnable]
+  │    → DestroyImmediate(SquareTileRowLayout) + DestroyImmediate(HLG)
+  │    → Añade VerticalLayoutGroup → tarjetas tall full-width
+  │    → ConstrainHistorySection() → scrollRect historial 120px
+  ├─ MovieTabUI.CreateSlotCard() [por cada oferta]
+  │    → Llama MovieOfferCardLayoutBuilder.Build() → tarjeta 320px
+  └─ MovieOfferCardLayoutBuilder.Build()
+       → Poster 160px, GenreStrip, RarityPill, rewards, 52px button
+
+Patchers runtime:
+  ├─ HudLayoutPass.ApplyProductionLayout()
+  │    → MovieSlotsRow preferredHeight=400px, action=52px
+  └─ ProductionHudShell.ConstrainHistorySection()
+       → historial ScrollRect preferredHeight=120px
+
+Conflicto de layout (no destructivo):
+  HudLayoutPass pone preferredHeight=400px en MovieSlotsRow;
+  ProductionHudShell pone flexibleHeight=2 en el mismo row.
+  Los dos aplican — el LayoutGroup resultante usa flexibleHeight.
+  El preferredHeight de 400px no tiene efecto cuando flexibleHeight>0.
+  → Resultado: la slot row crece, funciona correctamente.
+
+Fuente de verdad: ProductionHudShell + MovieOfferCardLayoutBuilder
+
+────────────────────────────────────────────────────────────────────
+COLECCIÓN (tab 3)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     ColeccionPanel (en ContentSwitcher)
+Constructor:     StudioUIBuilder.BuildColeccionPanel()
+  → Crea: panel vacío + CollectionHudShell
+
+Sub-tabs (bake-time):
+  HudDefinitiveStructureBuilder.RestructureCollectionPanel()
+  → Tab 0: COLECCIÓN (MovieCollectionUI, GenreSelectionUI, CollectionNavController)
+  → Tab 1: SAGAS
+  → Tab 2: LEGENDARIAS
+
+Constructor UI principal (runtime, activo):
+  MovieCollectionUI.EnsureBuilt() → BuildAllLevels()
+  → DESTRUYE todos los hijos (incluyendo GenreSelectionUI baked)
+  → Reconstruye L1 (portadas género), L2 (grid 3 cols), L3 (popup)
+  → Progreso desde studio.CompletedMovieKeys
+  → Películas ordenadas por rareza (Legendary→Common)
+
+Estado real al pulsar Play:
+  Los GameObjects de GenreSelectionUI y CollectionNavController
+  (si los hubiera en escena) son DESTRUIDOS por BuildAllLevels().
+  La navegación L1/L2/L3 es 100% MovieCollectionUI.
+
+Fuente de verdad: MovieCollectionUI (único constructor efectivo)
+
+Nota: CollectionHudShell ya no llama EnsureGenreNav() — correcto.
+
+────────────────────────────────────────────────────────────────────
+PREMIOS (tab 2)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     PremiosPanel (en ContentSwitcher)
+Constructor:     StudioUIBuilder.BuildPremiosPanel()
+  → Crea: OscarsCard, ThresholdCard + AwardsPanelUI
+
+Sub-tabs (bake-time):
+  HudDefinitiveStructureBuilder.RestructurePremiosPanel()
+  → 4 sub-tabs: ESTRELLAS, INSTALACIONES, SAGAS, LOGROS
+
+Constructor UI principal (runtime, activo):
+  AwardsPanelUI.EnsureBuilt()
+  → DESTRUYE todos los hijos heredados (OscarsCard, ThresholdCard etc.)
+  → Construye Golden Stars Showcase: Header, Vitrina 4×7, ProgressBar,
+    NextObjective, StudioProgression
+  → Suscribe prestige.OnOscarGained
+
+CityPanelUI:
+  → Sub-tab INSTALACIONES; construye layout propio
+  → NO conflicta con AwardsPanelUI (sub-tab diferente)
+
+Fuente de verdad: AwardsPanelUI (primer sub-tab ESTRELLAS)
+
+────────────────────────────────────────────────────────────────────
+TIENDA (tab 4 — MenuPanel/TiendaPanel)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     TiendaPanel (en ContentSwitcher)
+Constructor:     StudioUIBuilder.BuildMenuPanel()
+  → Crea: TiendaPanel vacío + MenuHudShell (guard)
+  → Placeholder shop cards
+
+Runtime ensure (baked path):
+  DefinitiveHudBootstrap.EnsureStorePanel()
+  → Ancla RectTransform (stretch 0→1)
+  → Añade StorePanelUI si ausente
+  → SendMessage("EnsureBuilt") si panel activo
+
+Constructor UI principal (runtime, activo):
+  StorePanelUI.EnsureBuilt() → BuildStore()
+  → Oculta hijos legados (placeholder cards)
+  → Construye StoreRoot con scroll:
+    Banner featured, 3× Diamantes, 2× Packs, 2× Boosts, Premium banner
+
+Protección anti-sobreescritura:
+  HudDefinitiveStructureBuilder.RestructureMenuPanel() hace early-exit
+  si MenuHudShell.settingsSection != null — el guard evita que el
+  restructurer vacíe el contenido de Tienda.
+
+Fuente de verdad: StorePanelUI
+
+────────────────────────────────────────────────────────────────────
+CONTRATOS (sub-tab de Estudio)
+────────────────────────────────────────────────────────────────────
+Objeto raíz:     ContratosPanel (bajo StudioSubContent/panel 2)
+Constructor:     StudioUIBuilder.BuildContratosPanel()
+  → Crea: contenedor + ContractsPanelUI
+
+Constructor UI (runtime, activo):
+  ContractsPanelUI.Rebuild()
+  → Crea tarjetas de candidato (ContractCardFactory.Create())
+  → Crea tarjeta activa (ContractCardUI.Bind())
+  → Altura de slot = 200px (FixedSlotHeightPublic)
+  → Botones 42px
+
+MissionObjectiveUI:
+  → En el header del Estudio (MissionCard)
+  → Muestra resumen del contrato activo
+  → No es el sistema de contratos — es solo un indicador
+
+Fuente de verdad: ContractsPanelUI
+
+══════════════════════════════════════════════════════════════════════
+B) SISTEMAS LEGACY — PRESENTES PERO SUPERADOS
+══════════════════════════════════════════════════════════════════════
+
+1. GenreSelectionUI.cs
+   Ruta: Assets/Scripts/UI/Hub/GenreSelectionUI.cs
+   Estado: SUPERSEDIDO por MovieCollectionUI.BuildL1GenreGrid()
+   Evidencia: MovieCollectionUI.BuildAllLevels() destruye todos los
+     hijos — incluyendo cualquier GenreSelectionUI del panel.
+   Referencia activa: StudioUIBuilder (comentario solo) + CollectionNavController.
+   Actualmente inerte en runtime.
+
+2. CollectionNavController.cs
+   Ruta: Assets/Scripts/UI/Hub/CollectionNavController.cs
+   Estado: SUPERSEDIDO por MovieCollectionUI (navegación interna L1/L2/L3)
+   Evidencia: CollectionHudShell ya no llama EnsureGenreNav();
+     BuildAllLevels() destruye su wiring.
+   Actualmente inerte en runtime.
+
+3. MovieGridUI.cs
+   Ruta: Assets/Scripts/UI/Hub/MovieGridUI.cs
+   Estado: SUPERSEDIDO por MovieCollectionUI
+   Evidencia: StudioUIBuilder añade MovieGridUI en BuildColeccionPanel()
+     pero la escena baked nunca lo activa para producir contenido visible.
+     Su Awake/Refresh puede ejecutarse pero el parent panel es destruido
+     por MovieCollectionUI.BuildAllLevels().
+   Referencia activa: StudioUIBuilder (AddComponent), MovieCatalogSceneSyncTools.
+
+4. MovieTabShellBootstrap.cs
+   Ruta: Assets/Scripts/UI/Hub/MovieTabShellBootstrap.cs
+   Estado: NO-OP en escena baked
+   Evidencia: primeras líneas del Install():
+     if (Object.FindAnyObjectByType<DefinitiveHudShell>() != null) return;
+   En escena baked siempre existe DefinitiveHudShell → el bootstrap
+   retorna inmediatamente cada sesión.
+
+5. HudLayoutPassBootstrap.cs
+   Ruta: Assets/Scripts/UI/Hub/Hud/HudLayoutPassBootstrap.cs
+   Estado: NO-OP en escena baked
+   Evidencia: Run() hace IsBaked()? return. Nunca ejecuta HudLayoutPass.
+   Útil solo para migración de escenas sin bake.
+
+6. HudHierarchySetup.cs
+   Ruta: Assets/Scripts/Editor/HudHierarchySetup.cs
+   Estado: Editor tool superado por StudioUIBuilder
+   Evidencia: Crea jerarquía 3-panel (ProductionPanel/DepartmentPanel)
+   incompatible con estructura 5-tab definitiva.
+   Ejecutarlo destruiría la escena baked.
+
+7. DepartmentBarUI.cs
+   Ruta: Assets/Scripts/UI/Hub/DepartmentBarUI.cs
+   Estado: SUPERSEDIDO por DepartmentMiniCardLayoutBuilder
+   Evidencia: Usa patrón prefab (miniCardPrefab) no usado por el builder.
+   StudioUIBuilder.BuildDeptGrid() no lo instancia.
+
+8. GarageStudioVisualBuilder.cs
+   Ruta: Assets/Scripts/UI/Hub/Hud/GarageStudioVisualBuilder.cs
+   Estado: DELEGADOR (wrapper de City1GarageTheme)
+   Evidencia: Comentario "Legacy entry point — delegates to City1GarageTheme".
+   StudioVisualThemeController no lo referencia directamente.
+   City1GarageTheme existe y es el constructor real.
+
+9. UIManager.cs + MovieUIManager.cs + BottomBarUI.cs
+   Ruta: Assets/Scripts/UI/
+   Estado: PRE-HUB system (pre-Phase 6)
+   Evidencia: StudioUIBuilder.DestroyLegacySceneRoots() los destruye:
+     foreach (var name in new[] { "MovieUIManager", "UIManager" })
+   Son reliquias que pueden existir en escena antes del Build.
+
+10. CurrentProductionPanelUI.cs
+    Ruta: Assets/Scripts/UI/CurrentProductionPanelUI.cs
+    Estado: Pre-ProductionHudShell (monopanel antiguo)
+    Evidencia: No referenciado por ningún builder o shell activo.
+
+11. MultiProductionPanelUI.cs
+    Ruta: Assets/Scripts/UI/Hub/MultiProductionPanelUI.cs
+    Estado: REEMPLAZADO por ProductionHudShell + MovieTabUI
+    Evidencia: HudDefinitiveStructureBuilder no lo referencia.
+    Tiene HideLegacyLayout() que lo sugiere.
+
+12. ProductionStatusUI.cs
+    Ruta: Assets/Scripts/UI/Hub/ProductionStatusUI.cs
+    Estado: ACTIVO (via StudioUIBuilder.BuildProductionWidget())
+    Nota: NO es legacy — se usa actualmente.
+
+══════════════════════════════════════════════════════════════════════
+C) SISTEMAS DUPLICADOS — DOS SISTEMAS CON LA MISMA RESPONSABILIDAD
+══════════════════════════════════════════════════════════════════════
+
+DUP-01: Sub-tab font/height — DOS patchers en conflicto
+  Sistema A: HudLayoutPass.CompactSubTabBar()
+    → font=11px, height=56px — apply en unbaked path (HudLayoutPassBootstrap)
+  Sistema B: DefinitiveHudBootstrap.PatchStudioSubTabs()
+    → font=13px bold, height=52px — apply en baked path
+
+  VEREDICTO:
+  En escena baked: solo B ejecuta → 13px bold, 52px. ✓
+  En escena unbaked: A ejecuta, B no. → 11px, 56px. (diferente aspecto)
+  Son paths mutuamente excluyentes → no hay conflicto real en ejecución,
+  pero producen resultados distintos. Fuente de verdad BAKED = B (PatchStudioSubTabs).
+
+DUP-02: GenreSelectionUI vs MovieCollectionUI.BuildL1GenreGrid()
+  Sistema A (legacy): GenreSelectionUI — 10 portadas de género, scroll
+  Sistema B (activo): MovieCollectionUI.BuildL1GenreGrid() — misma función
+
+  VEREDICTO: B ha absorbido completamente a A.
+  A es destruido en runtime por BuildAllLevels(). Fuente de verdad = B.
+
+DUP-03: CollectionNavController vs MovieCollectionUI (nav interno)
+  Sistema A (legacy): CollectionNavController — show/hide L1/L2
+  Sistema B (activo): MovieCollectionUI ShowGenreGrid/ShowMovieGrid/ClosePopup
+
+  VEREDICTO: B ha absorbido completamente a A. Fuente de verdad = B.
+
+DUP-04: MovieGridUI vs MovieCollectionUI.BuildL2MovieGrid()
+  Sistema A (legacy): MovieGridUI — grid procedural
+  Sistema B (activo): MovieCollectionUI L2 — grid 3 cols + rarity sort
+
+  VEREDICTO: B ha absorbido completamente a A. Fuente de verdad = B.
+
+DUP-05: HudLayoutPass.EnsureStudioVisualStage() vs StudioVisualStage.Awake()
+  Sistema A: HudLayoutPass (unbaked) — crea o renombra legacy "StudioScene"
+  Sistema B: StudioVisualStage.Awake() — aplica layout, layers, fade overlay
+
+  VEREDICTO: A prepara el objeto; B siempre ejecuta y aplica el estado real.
+  No hay conflicto — A garantiza que el GO exista, B lo configura.
+  En escena baked A no ejecuta, B aplica todo. ✓
+
+DUP-06: BonificationsBarUI (editor-built vs self-built)
+  Sistema A (editor): StudioUIBuilder crea labels SpeedVal, QualityVal etc.
+  Sistema B (self-build): BonificationsBarUI.EnsureBuilt() detecta
+    si los labels no están y construye sus propias celdas.
+
+  VEREDICTO: si el builder corrió, A existe y B no construye nada nuevo.
+  Si el builder no corrió (escena sin bake), B se auto-construye.
+  Son complementarios. Fuente de verdad = las celdas en escena si existen;
+  fallback = self-build.
+
+══════════════════════════════════════════════════════════════════════
+D) SISTEMAS OBSOLETOS — PUEDEN ELIMINARSE CON SEGURIDAD ALTA
+══════════════════════════════════════════════════════════════════════
+Ver UI_Removal_Candidates.txt para detalles y nivel de confianza.
+
+Candidatos confirmados:
+  - MovieTabShellBootstrap.cs (confianza ALTA)
+  - HudLayoutPassBootstrap.cs (confianza ALTA — solo útil para migración)
+  - CollectionNavController.cs (confianza ALTA)
+  - GenreSelectionUI.cs (confianza MEDIA-ALTA — comentarios en builder)
+  - DepartmentBarUI.cs (confianza ALTA)
+  - GarageStudioVisualBuilder.cs (confianza MEDIA — wrapper delegador)
+  - MultiProductionPanelUI.cs (confianza MEDIA)
+
+No candidatos confirmados (referencias activas):
+  - MovieGridUI.cs: referenciado por StudioUIBuilder y MovieCatalogSceneSyncTools
+    → NO eliminar hasta actualizar el builder
+  - HudHierarchySetup.cs: editor tool — no causa daño en runtime
+    → Deprecar con mensaje, no eliminar
+  - UIManager.cs / MovieUIManager.cs: destruidos por builder pero aún
+    pueden existir en prefabs o escenas no actualizadas
+
+══════════════════════════════════════════════════════════════════════
+E) SISTEMAS QUE PUEDEN ELIMINARSE (resumen ejecutivo)
+══════════════════════════════════════════════════════════════════════
+Prioridad 1 — No referencias activas en runtime:
+  1. MovieTabShellBootstrap.cs — NO-OP garantizado, 0 referencias externas
+  2. CollectionNavController.cs — destruido en runtime, solo en si mismo
+  3. DepartmentBarUI.cs — patrón prefab no usado, 0 referencias externas
+
+Prioridad 2 — Referencias en comentarios o editor obsoleto:
+  4. GenreSelectionUI.cs — comentario en builder, destruida en runtime
+  5. HudLayoutPassBootstrap.cs — NO-OP en baked, útil solo legacy
+  6. GarageStudioVisualBuilder.cs — wrapper que ya no se llama
+
+Prioridad 3 — Revisión adicional requerida:
+  7. MovieGridUI.cs — referenciado por StudioUIBuilder + sync tools
+  8. MultiProductionPanelUI.cs — ProductionStatusUI lo menciona
+  9. HudHierarchySetup.cs — herramienta editor, puede corromper escena
+
+══════════════════════════════════════════════════════════════════════
+MAPA DE CONSTRUCCIÓN POR PANTALLA
+══════════════════════════════════════════════════════════════════════
+
+ESTUDIO
+  └─ EstudioPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildEstudioPanel()
+       ├─ [RUNTIME] StudioVisualStage.Awake() → layers + fade
+       ├─ [RUNTIME] BonificationsBarUI.EnsureBuilt()
+       ├─ [RUNTIME] DepartmentMiniCardUI × 10 → DepartmentMiniCardLayoutBuilder.Ensure()
+       └─ [PATCH]   DefinitiveHudBootstrap.PatchStudioSubTabs()
+
+PRODUCCIÓN
+  └─ ProduccionPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildPeliculasMainPanel()
+       ├─ [RUNTIME] ProductionHudShell.UpgradeProductionLayout() → VLG
+       └─ [RUNTIME] MovieTabUI.CreateSlotCard() → MovieOfferCardLayoutBuilder.Build()
+
+COLECCIÓN
+  └─ ColeccionPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildColeccionPanel() → panel vacío
+       ├─ [BAKE]    HudDefinitiveStructureBuilder → sub-tabs + refs
+       └─ [RUNTIME] MovieCollectionUI.BuildAllLevels() → L1/L2/L3
+                    (destruye hijos previos, reconstruye desde cero)
+
+PREMIOS
+  └─ PremiosPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildPremiosPanel() → OscarsCard etc.
+       ├─ [BAKE]    HudDefinitiveStructureBuilder → sub-tabs
+       ├─ [RUNTIME] AwardsPanelUI.EnsureBuilt() → vitrina 4×7 (destruye hijos)
+       └─ [RUNTIME] CityPanelUI.BuildLayout() → INSTALACIONES sub-tab
+
+TIENDA
+  └─ TiendaPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildMenuPanel() → placeholder + guard
+       ├─ [PATCH]   DefinitiveHudBootstrap.EnsureStorePanel() → stretch + component
+       └─ [RUNTIME] StorePanelUI.EnsureBuilt() → storefront scroll
+
+CONTRATOS (sub-tab Estudio)
+  └─ ContratosPanel
+       ├─ [EDITOR]  StudioUIBuilder.BuildContratosPanel()
+       └─ [RUNTIME] ContractsPanelUI.Rebuild() → candidate + active cards
+
+══════════════════════════════════════════════════════════════════════
+DIAGNÓSTICO: POR QUÉ ALGUNAS MODIFICACIONES NO APARECEN
+══════════════════════════════════════════════════════════════════════
+
+1. "Cambié el sub-tab font y no veo cambio"
+   → El builder fijó 11px. Pero PatchStudioSubTabs() corre después
+     en escena baked y lo sobreescribe a 13px. Para cambiar la fuente
+     de sub-tabs en baked scene: modificar PatchStudioSubTabs() o
+     la constante en HudLayoutConstants.
+
+2. "El fondo del Premios sigue siendo el antiguo"
+   → AwardsPanelUI.EnsureBuilt() destruye TODO el contenido de escena
+     en el primer Awake. Si ves el fondo antiguo, el componente no se
+     está ejecutando (panel inactivo). En cuanto abres la pestaña el
+     viejo contenido es destruido.
+
+3. "La colección sigue mostrando la versión antigua"
+   → Si el panel tiene hijos legacy (GenreSelectionUI, botones de filtro),
+     son destruidos por BuildAllLevels() al primer OnEnable.
+     Si siguen visibles: MovieCollectionUI._built está en true pero no
+     llegó a limpiar por algún error anterior — solución: restart Play.
+
+4. "La tienda aparece vacía"
+   → EnsureStorePanel() añade el componente pero el panel puede estar
+     inactivo cuando AddComponent ejecuta (tab no visible).
+     StorePanelUI.Start() y Awake() son los triggers de respaldo.
+     Si el panel nunca se activa, la tienda no se construye.
+
+5. "Los departamentos siguen con tarjetas pequeñas"
+   → El marcador de layout era v2. DepartmentMiniCardLayoutBuilder usa
+     v3 desde 8.6A — las tarjetas se reconstruyen en runtime.
+     Si no se ven cambios: DepartmentMiniCardUI no está en escena,
+     o el componente no llama EnsurePremiumLayoutIfNeeded.
+
+══════════════════════════════════════════════════════════════════════
+ORDEN DE EJECUCIÓN AL PULSAR PLAY (escena baked)
+══════════════════════════════════════════════════════════════════════
+Nota: [DefaultExecutionOrder] no tiene efecto en static bootstraps
+(RuntimeInitializeOnLoadMethod). El orden entre bootstraps es indefinido.
+
+1. BeforeSceneLoad (static)
+   └── MovieCatalogRuntime — carga catálogo de películas
+
+2. AfterSceneLoad (static, orden indefinido)
+   ├── StudioUIShellLayout.Bootstrap() — ancla TopBar/BottomNav
+   ├── DefinitiveHudBootstrap.Install() — patches visuales baked
+   │     ├── PatchBottomNavLabels() — "TIENDA" etc.
+   │     ├── PatchTopBarSettingsButton() — "⚙"
+   │     ├── EnsureBonificationsBar() — inyecta componente
+   │     ├── EnsureStorePanel() — inyecta StorePanelUI
+   │     ├── PatchStudioSubTabs() — 13px, 52px, expand
+   │     └── HudNavigationCleanup.NormalizeBottomNav()
+   ├── HudLayoutPassBootstrap.Run() — IsBaked=true → NO-OP
+   ├── MovieTabShellBootstrap.Install() — DefinitiveHudShell existe → NO-OP
+   ├── CityPanelUI.Bootstrap() — añade CityPanelUI si necesario
+   ├── ContentSortBootstrap.Install() — sorters de dept/upgrades
+   ├── MissionObjectiveUI.Bootstrap() — attach a MissionCard
+   └── UiSafeCleanup.Run() — oculta placeholders
+
+3. Awake (MonoBehaviour, por DefaultExecutionOrder)
+   -200: StudioUIShellLayout.Awake() — anclas shell
+   -155: CityPanelUI.Awake() — hide placeholder, BuildLayout
+   -100: GameHub.Awake() — init systems
+      0: HudSkinBootstrap.Awake() — skins
+      0: StudioVisualStage.Awake() — layers, fade, theme
+      0: BonificationsBarUI.Awake() — subscribe + EnsureBuilt
+      0: StorePanelUI.Awake() — EnsureBuilt (if active)
+      0: AwardsPanelUI.Awake() — EnsureBuilt (if active)
+      0: MovieCollectionUI.Awake() — EnsureBuilt (if active)
+      0: ProductionHudShell.Awake() — WireRefreshButton
+      0: ContractsPanelUI.Awake() — AutoWire
+      0: DepartmentMiniCardUI.Awake() × 10 — EnsurePremiumLayout
+      0: MovieTabUI.Awake() — subscribe events
+      0: TopBarUI.Awake() — AutoWire
+
+4. Start
+      0: StudioHubUI.Start() — wire tab buttons, ShowTab(0) [Estudio]
+      0: ProductionHudShell.Start() — UpgradeProductionLayout()
+      0: Todos los paneles: Bind → Refresh
+
+5. GameHub.OnGameReady (después de Start)
+   └── Todos los paneles: Bind, Refresh datos desde sistemas
+
+══════════════════════════════════════════════════════════════════════
+RESUMEN EJECUTIVO
+══════════════════════════════════════════════════════════════════════
+Para CADA pantalla existe HOY un único constructor efectivo:
+
+  Estudio:    StudioUIBuilder (escena) + DepartmentMiniCardLayoutBuilder (runtime)
+  Producción: StudioUIBuilder (escena) + ProductionHudShell + MovieOfferCardLayoutBuilder
+  Colección:  MovieCollectionUI.BuildAllLevels() (100% runtime)
+  Premios:    AwardsPanelUI.EnsureBuilt() (100% runtime)
+  Tienda:     StorePanelUI.EnsureBuilt() (100% runtime)
+  Contratos:  StudioUIBuilder (escena) + ContractsPanelUI (runtime cards)
+
+Para MODIFICAR una pantalla: SOLO editar su constructor principal.
+Los patchers (DefinitiveHudBootstrap) se pueden simplificar cuando
+las pantallas ya construyen correctamente su propio layout.
+
+Ver UI_Removal_Candidates.txt para la lista de scripts a eliminar.
+══════════════════════════════════════════════════════════════════════

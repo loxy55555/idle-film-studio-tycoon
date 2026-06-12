@@ -148,6 +148,10 @@ public class AwardsPanelUI : MonoBehaviour
         scroll.transform.SetParent(transform, false);
         Stretch(scroll.GetComponent<RectTransform>());
         scroll.GetComponent<Image>().color = Color.clear;
+        // Parent PremiosPanel has VLG with childForceExpandHeight=false — must claim space explicitly.
+        var scrollLE = scroll.AddComponent<LayoutElement>();
+        scrollLE.flexibleWidth = 1f;
+        scrollLE.flexibleHeight = 1f;
         var sr = scroll.GetComponent<ScrollRect>();
         sr.horizontal = false; sr.vertical = true;
         sr.scrollSensitivity = 36f; sr.inertia = true; sr.decelerationRate = 0.135f;

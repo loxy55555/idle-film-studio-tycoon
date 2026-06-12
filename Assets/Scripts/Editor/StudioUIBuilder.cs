@@ -816,11 +816,10 @@ public static class StudioUIBuilder
     static RectTransform BuildColeccionPanel(RectTransform parent)
     {
         // The baker (HudDefinitiveStructureBuilder) adds sub-tabs:
-        //   Tab 0: COLECCIÓN (MovieCollectionUI + our GenreSelectionUI + CollectionNavController)
+        //   Tab 0: COLECCIÓN — MovieCollectionUI handles L1/L2/L3 internally
         //   Tab 1: SAGAS
         //   Tab 2: LEGENDARIAS
         // We just create the panel; the baker populates tab structure at bake time.
-        // The CollectionNavController is wired by CollectionHudShell at runtime.
         var panel = MakePanel(parent, "ColeccionPanel", BG_DEEP);
         panel.gameObject.AddComponent<CollectionHudShell>();
         return panel;

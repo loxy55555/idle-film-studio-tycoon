@@ -1,0 +1,484 @@
+================================================================================
+  FASE ESTUDIO-DIAGNOSTICS — INFORME TÉCNICO COMPLETO
+  Pantalla: EstudioPanel  |  Fecha: 2026-06-12  |  Resolución medida: 1080×1920
+================================================================================
+
+METODOLOGÍA
+-----------
+Diagnóstico realizado en Play Mode.  Los valores de rect se obtuvieron llamando
+a execute_code sobre la jerarquía activa.  Los valores de LayoutElement y Layout-
+Group se leen directamente de los componentes en tiempo de ejecución.
+NO se modificó ningún script ni prefab.
+
+================================================================================
+SECCIÓN 0 — JERARQUÍA DE CONTENEDOR RAÍZ
+================================================================================
+
+  Canvas (ScreenSpaceOverlay)
+    pixelRect : 1080×1920
+    CanvasScaler : ScaleWithScreenSize
+      referenceResolution = (1080, 1920)
+      matchWidthOrHeight  = 0.5  (balance entre ancho y alto)
+
+  HubRoot  [StudioUIShellLayout, DefaultExecutionOrder=-200]
+    rect : 1080×1920
+
+    ├── TopBar          anchor=(0,1)→(1,1)  sizeDelta.y=120   rect=1080×120
+    ├── MainContent     anchor=(0,0)→(1,1)  offsetMin=(0,110)  offsetMax=(0,-110)
+    │                                        rect=1080×1700
+    │   └── ContentSwitcher  [stretch]  rect=1080×1700
+    │       ├── EstudioPanel    ← PANEL ACTIVO  rect=1080×1700
+    │       ├── ProduccionPanel (inactivo)
+    │       ├── PremiosPanel    (inactivo)
+    │       ├── ColeccionPanel  (inactivo)
+    │       └── TiendaPanel     (inactivo)
+    └── BottomNav       anchor=(0,0)→(1,0)  sizeDelta.y=100   rect=1080×100
+
+  NOTA sobre offsets de MainContent:
+    StudioUIShellLayout.AnchorFill() debería aplicar offsetMin=(0,100) y
+    offsetMax=(0,-120) según TopBarHeight=120 / BottomNavHeight=100.
+    El valor medido (110 / -110) es el que persiste en la escena bakeada.
+    El total es idéntico: 110+110 = 120+100 = 220 px reservados.
+    Altura neta de MainContent: 1920 - 220 = 1700 px. ✓
+
+================================================================================
+SECCIÓN 1 — DISTRIBUCIÓN VERTICAL TOTAL DEL PANEL (EstudioPanel 1700 px)
+================================================================================
+
+EstudioPanel
+  Componentes  : VerticalLayoutGroup, LayoutElement, StudioHubUI, StudioHudShell
+  LayoutElement: preferredW=-1  preferredH=-1  flexibleW=1  flexibleH=1
+                 (el VLG del parent/ContentSwitcher lo estira a 1700 px)
+
+  VerticalLayoutGroup (propio):
+    spacing            = 0
+    padding            = 0,0,0,0  (T,B,L,R)
+    childControlHeight = True
+    childForceExpandHeight = False   ← los hijos usan su preferredHeight
+    childControlWidth  = True
+    childForceExpandWidth  = True
+
+  ┌────────────────────────────────────────────────────────────┬──────────────┐
+  │ Hijo (sibling idx)              Altura final  Fuente       │  Flex/Tipo   │
+  ├────────────────────────────────────────────────────────────┼──────────────┤
+  │ [0] StudioHeader                   64 px      LE.pref=64   │  flex=0      │
+  │ [1] StudioVisualStage             100 px      LE.pref=100  │  flex=0      │
+  │ [2] StudioSubTabBar                52 px      LE.pref=52   │  flex=0      │
+  │ [3] StudioSubContent             1412 px      LE.flex=1    │  flexible    │
+  │ [4] BonificationsBar               72 px      LE.pref=72   │  flex=0      │
+  │ [5] ManagementSplit                 0 px      inactive     │  ignorado    │
+  ├────────────────────────────────────────────────────────────┼──────────────┤
+  │ TOTAL                            1700 px                   │              │
+  └────────────────────────────────────────────────────────────┴──────────────┘
+
+  Cálculo del espacio flexible:
+    Espacio fijo consumido = 64 + 100 + 52 + 72 = 288 px
+    Espacio sobrante       = 1700 - 288 = 1412 px → StudioSubContent (único flex=1)
+
+  SISTEMA GANADOR: EstudioPanel.VerticalLayoutGroup controla la distribución
+  vertical. childForceExpandHeight=False significa que cada elemento fijo recibe
+  exactamente su preferredHeight; StudioSubContent recibe todo el resto via
+  flexibleHeight=1.
+
+================================================================================
+SECCIÓN 2 — ALTURA FINAL DE LAS DEPARTMENT CARDS
+================================================================================
+
+Jerarquía de card:
+  Content (VLG) → DeptRow_N (HLG) → MiniCard_X (LayoutElement + DepartmentMiniCardUI)
+
+Valores medidos en MiniCard_Director (representativa):
+  rect real         : 526 × 192 px
+  LayoutElement     : preferredWidth=172  preferredHeight=192
+                      minWidth=-1         minHeight=192
+                      flexibleWidth=-1    flexibleHeight=-1
+
+Script responsable del LE:
+  DepartmentMiniCardLayoutBuilder.Build()  (Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs)
+  Constantes: CardWidth=172  CardHeight=192  (Phase 8.6A)
+  Código relevante:
+    cardLE.preferredWidth  = CardWidth;   // 172
+    cardLE.preferredHeight = CardHeight;  // 192
+    cardLE.minHeight       = CardHeight;  // 192
+
+Cuándo se llama:
+  DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded()  →  Awake() y OnGameReady()
+  Si el marcador "DeptCardLayout_v3" NO existe, llama DepartmentMiniCardLayoutBuilder.Ensure()
+  → que llama Build().
+
+LayoutGroup responsable de la altura final (192 px):
+  DeptRow_N → HorizontalLayoutGroup
+    childControlHeight   = True
+    childForceExpandHeight = True   ← los hijos rellenan la altura total de la fila
+  La fila tiene LE.preferredHeight=192 (ver Sección 3), así que la card recibe 192 px.
+
+LayoutGroup responsable del ANCHO (526 px, no 172 px):
+  DeptRow_N → HorizontalLayoutGroup
+    childControlWidth    = True
+    childForceExpandWidth  = True   ← SOBREESCRIBE el preferredWidth=172 de la card
+  Cálculo real:
+    Content width          = 1080 - padL(10) - padR(10) = 1060 px
+    Cards por fila         = 2
+    Card width             = (1060 - spacing(8) × (2-1)) / 2 = 526 px
+
+SISTEMA GANADOR:
+  • Altura: LE.minHeight=192 y LE.preferredHeight=192 (DepartmentMiniCardLayoutBuilder)
+    + HLG.childForceExpandHeight propagan 192 px de la fila.
+  • Ancho : HLG.childForceExpandWidth=True GANA sobre LE.preferredWidth=172.
+    Ancho real = 526 px (distribución equitativa entre 2 cards).
+
+================================================================================
+SECCIÓN 3 — ALTURA FINAL DE LAS FILAS DE DEPARTAMENTOS
+================================================================================
+
+Estructura del scroll de departamentos:
+  StudioSubContent → StudioPanel_DEPARTAMENTOS → DeptBar → DeptScroll (ScrollRect)
+    → Viewport (RectMask2D) → Content (VLG + ContentSizeFitter) → DeptRow_N
+
+DeptScroll
+  rect              : 1080 × 1412 px  (anchor min=(0,0) max=(1,1), stretch completo)
+  ScrollRect        : vertical=True, horizontal=False
+  viewport rect     : 1080 × 1412 px
+  content rect      : 1080 × 1208 px  (calculado por ContentSizeFitter)
+
+Content
+  VLG:
+    spacing            = 8
+    padding            = T8  B8  L10  R10
+    childControlHeight = True
+    childForceExpandHeight = False   ← cada fila recibe su preferredHeight
+    childControlWidth  = True
+    childForceExpandWidth  = True
+  ContentSizeFitter:
+    horizontalFit = Unconstrained
+    verticalFit   = PreferredSize   ← el Content crece para envolver todas las filas
+
+DeptRow_N (6 filas, índices 0/2/4/6/8/10)
+  rect real         : 1060 × 192 px
+  LayoutElement     : preferredWidth=-1  preferredHeight=192
+                      minWidth=-1        minHeight=-1
+                      flexibleWidth=-1   flexibleHeight=-1
+  HorizontalLayoutGroup:
+    spacing=8  childControlWidth=True  childForceExpandWidth=True
+               childControlHeight=True childForceExpandHeight=True
+
+Script que configura la fila:
+  DepartmentMiniCardLayoutBuilder.NormalizeParentRowHeight()
+  Se llama automáticamente desde Build() cuando se construye cada card.
+  Código relevante:
+    rowLE.preferredHeight = CardHeight; // = 192
+    if (rowLE.minHeight > CardHeight) rowLE.minHeight = CardHeight;
+
+Cálculo del Content total (1208 px):
+  6 filas × 192 px = 1152
+  5 espacios × 8 px =   40
+  paddingTop + paddingBottom = 8 + 8 = 16
+  TOTAL = 1152 + 40 + 16 = 1208 px ✓
+
+SISTEMA GANADOR:
+  LE.preferredHeight=192 en la fila (DepartmentMiniCardLayoutBuilder.NormalizeParentRowHeight)
+  + Content VLG con childForceExpandHeight=False → la fila siempre mide 192 px.
+  El ContentSizeFitter.vertical=PreferredSize hace que el Content total sea 1208 px,
+  habilitando el scroll vertical.
+
+================================================================================
+SECCIÓN 4 — TAMAÑO FINAL DE LOS SUB-TABS
+================================================================================
+
+StudioSubTabBar
+  rect real         : 1080 × 52 px
+  LayoutElement     : preferredWidth=-1  preferredHeight=52
+                      minWidth=-1        minHeight=48
+                      flexibleWidth=-1   flexibleHeight=0
+  HorizontalLayoutGroup:
+    spacing=0  padL=0  padR=0  padT=0  padB=0
+    childForceExpandWidth=True   ← tabs igualan ancho
+    childForceExpandHeight=True  ← tabs rellenan altura de la barra
+
+Tabs individuales (3 tabs: DEPARTAMENTOS / MEJORAS / CONTRATOS)
+  rect real         : 360 × 52 px
+  LayoutElement     : preferredWidth=-1  preferredHeight=-1
+                      flexibleWidth=1    flexibleHeight=-1
+  Label TMP         : fontSize=13  fontStyle=Bold  autoSizing=False
+
+Ancho de tab: 1080 / 3 = 360 px (childForceExpandWidth + flexibleWidth=1)
+Altura de tab: 52 px (childForceExpandHeight rellena la barra)
+
+Scripts y orden de ejecución (para escena bakeada):
+
+  1. HudLayoutPass.CompactSubTabBar()  [NO se ejecuta en escena bakeada]
+     Habría establecido: preferredHeight=56 (HudLayoutConstants.SubTabBarHeight)
+                         minHeight=56
+                         labels.fontSize=11
+
+  2. DefinitiveHudBootstrap.PatchStudioSubTabs()  [SÍ se ejecuta — AfterSceneLoad]
+     Establece en TIEMPO DE EJECUCIÓN (baked scene path):
+       barLE.preferredHeight = 52f   ← VALOR GANADOR
+       barLE.minHeight       = 48f
+       barLE.flexibleHeight  = 0f
+       hlg.childForceExpandWidth  = True
+       hlg.childForceExpandHeight = True
+       hlg.padding = RectOffset(0,0,0,0)
+       hlg.spacing = 0
+       labels.fontSize = 13f  (Bold, autoSizing=False)
+       cada tab.LE.flexibleWidth = 1f  /  preferredWidth = -1f
+
+SISTEMA GANADOR:
+  DefinitiveHudBootstrap.PatchStudioSubTabs() (AfterSceneLoad).
+  HudLayoutPass no corre para escenas bakeadas.
+  Altura final = 52 px.  Fuente de verdad: DefinitiveHudBootstrap.cs línea 74.
+
+================================================================================
+SECCIÓN 5 — POSICIÓN FINAL DEL FONDO CINEMATOGRÁFICO (StudioVisualStage)
+================================================================================
+
+StudioVisualStage
+  rect real         : 1080 × 100 px
+  anchorMin         : (0, 1)  anchorMax: (0, 1)   [punto de pivote top-left]
+  anchoredPosition  : (540, -114)
+  sizeDelta         : (1080, 100)
+  LayoutElement     : preferredWidth=-1   preferredHeight=100
+                      minWidth=-1         minHeight=80
+                      flexibleWidth=0     flexibleHeight=0
+  Componentes adicionales: StudioVisualStage, StudioVisualManager,
+                            StudioVisualThemeController, Image
+
+Posición en el flujo del VLG de EstudioPanel:
+  Sibling index = 1  (justo después de StudioHeader a 64 px desde el tope)
+  Offset vertical desde el borde superior de EstudioPanel = 64 px (header)
+
+Capas internas (todas con anchor stretch 0→1, 0→1):
+  BackgroundLayer    rect=1080×100
+  SetLayer           rect=1080×100
+  CharacterLayer     rect=1080×100
+  EquipmentLayer     rect=1080×100
+  EffectsLayer       rect=1080×100
+  OverlayLayer       rect=1080×100
+  BottomFadeOverlay  rect=1080×55  anchor y=(0, 0.55)  [cubre 55 % inferior]
+
+Scripts responsables:
+
+  1. StudioVisualStage.ApplyLayout()  llamado desde Awake():
+       le.preferredHeight = HudLayoutConstants.StudioVisualFixedHeight;  // 100
+       le.minHeight       = HudLayoutConstants.StudioVisualMinHeight;     //  80
+       le.flexibleHeight  = 0f;   ← VALOR GANADOR (sin crecimiento flexible)
+       le.flexibleWidth   = 0f;
+
+  2. HudLayoutPass.EnsureStudioVisualStage()  [solo en escenas NO bakeadas]
+     Habría añadido el componente si faltaba, y llamado ApplyLayout().
+     En escena bakeada: StudioVisualStage ya existe → NO se invoca este método.
+
+  3. StudioVisualStage.EnsureBottomFade()  llamado desde Awake (via HideLegacyPlaceholderText):
+     Crea BottomFadeOverlay con anchor y=(0, 0.55), color oscuro semiopaco.
+
+Posición absoluta en pantalla (desde top del EstudioPanel):
+  0 – 64 px       : StudioHeader
+  64 – 164 px     : StudioVisualStage  ← fondo cinematográfico
+
+SISTEMA GANADOR:
+  StudioVisualStage.ApplyLayout() (Awake) → preferredHeight=100, flex=0.
+  El VLG de EstudioPanel respeta este valor fijo porque childForceExpandHeight=False.
+  Posición determinada por el sibling index 1 dentro del VLG.
+
+================================================================================
+SECCIÓN 6 — POSICIÓN FINAL DEL BOTÓN DE AJUSTES (SettingsBtn)
+================================================================================
+
+SettingsBtn
+  rect real         : 56 × 104 px
+  anchoredPosition  : (664, -60)
+  anchorMin/Max     : (0,1) / (0,1)   [top-left, esquina superior]
+  pivot             : (0.5, 0.5)
+  LayoutElement     : preferredWidth=56  preferredHeight=56
+                      flexibleWidth=0    flexibleHeight=-1  (sin flex de ancho)
+
+Contenedor padre: TopBar
+  rect              : 1080 × 120 px
+  anchor            : min=(0,1) max=(1,1)  — fijado al borde superior de HubRoot
+  HorizontalLayoutGroup:
+    padding         L=16  R=16  T=8  B=8
+    spacing         = 0
+    childForceExpandWidth  = False   ← los hijos usan preferredWidth
+    childForceExpandHeight = True    ← los hijos rellenan el alto (120-8-8=104 px)
+
+Siblings de TopBar (en orden):
+  [0] MoneyBlock     rect=280×104  (flexible restante)
+  [1] StatsBlock     rect=340×104  (flexible restante)
+  [2] TopBarSpacer   rect=372×104  (flexibleWidth=1 — empuja el botón a la derecha)
+  [3] SettingsBtn    rect= 56×104  (LE.pref=56, flex=0 — ancho fijo)
+
+Cálculo de posición horizontal del botón:
+  TopBar width total = 1080
+  padL+padR = 16+16 = 32 → área HLG = 1048 px
+  MoneyBlock(280) + StatsBlock(340) + SettingsBtn(56) = 676 px fijo
+  TopBarSpacer flexible = 1048 - 676 = 372 px
+  SettingsBtn left edge = padL(16) + MoneyBlock(280) + StatsBlock(340) + Spacer(372) = 1008 px
+  SettingsBtn center x  = 1008 + 56/2 = 1036 px desde el borde izquierdo de TopBar
+
+Scripts responsables:
+
+  1. StudioUIShellLayout.AnchorTop() (Awake + AfterSceneLoad):
+       Ancla TopBar al borde superior, altura=120 px.
+
+  2. DefinitiveHudBootstrap.PatchTopBarSettingsButton()  (AfterSceneLoad):
+       Llama TopBarUI.PatchSettingsIcon()
+       Garantiza que el icono del botón sea correcto y que el botón esté activo.
+       NO modifica el LayoutElement ni los anchors.
+
+  3. Escena bakeada (HubDefinitiveSceneBaker / StudioUIBuilder):
+       TopBar HLG y el LE del SettingsBtn fueron establecidos en tiempo de edición
+       y persisten en la escena sin modificación runtime.
+
+Fuente de altura del botón (104 px en lugar del pref=56):
+  HLG.childForceExpandHeight=True GANA sobre LE.preferredHeight=56.
+  Altura real = TopBar.height - padT(8) - padB(8) = 120 - 16 = 104 px.
+
+SISTEMA GANADOR:
+  • Posición horizontal: TopBar HLG + TopBarSpacer.flexibleWidth=1 empuja al extremo derecho.
+  • Ancho (56 px): LE.preferredWidth=56 + flex=0 (HLG.childForceExpandWidth=False no lo expande).
+  • Altura (104 px): HLG.childForceExpandHeight=True SOBREESCRIBE LE.preferredHeight=56.
+  • Posición vertical: TopBar anclado al borde superior por StudioUIShellLayout.
+
+================================================================================
+SECCIÓN 7 — ORDEN DE EJECUCIÓN COMPLETO
+================================================================================
+
+Fase 1 — Awake (en orden DefaultExecutionOrder):
+  [-200] StudioUIShellLayout.Awake()
+           → Llama Apply(): ancla TopBar/BottomNav/MainContent, ForceRebuildLayout
+
+  [default] StudioVisualStage.Awake()
+           → ApplyLayout(): le.pref=100, min=80, flex=0
+           → StudioVisualStageLayers.EnsureHierarchy()
+           → HideLegacyPlaceholderText() → EnsureBottomFade()
+
+  [default] DepartmentMiniCardUI.Awake()  (×11 cards)
+           → EnsurePremiumLayoutIfNeeded()
+             Si "DeptCardLayout_v3" ya existe → WireExisting() (escena bakeada: YA existe)
+             Si no → DepartmentMiniCardLayoutBuilder.Build() → crea LE.pref=172×192
+
+  [default] BonificationsBarUI.OnEnable()
+           → AutoWire(): si los hijos existen, carga refs (escena bakeada: SÍ existen)
+           → EnsureBuilt(): si _speedVal != null retorna sin modificar LE
+                             (en escena bakeada NO reescribe el LE.pref=78)
+
+Fase 2 — RuntimeInitializeOnLoadMethod(AfterSceneLoad):
+  [sin orden garantizado entre sí]
+
+  StudioUIShellLayout.Bootstrap()
+           → Apply() de nuevo (idem Fase 1 pero post-Awake)
+
+  DefinitiveHudBootstrap.Install()
+           → HudBakedSceneRules.IsBaked() == true → rama bakeada
+           → ApplyBakedSceneVisualPatches():
+               PatchBottomNavLabels()
+               PatchTopBarSettingsButton()   → TopBarUI.PatchSettingsIcon()
+               EnsureBonificationsBar()      → solo añade comp si no existe; ya existe
+               EnsureStorePanel()            → adds StorePanelUI a TiendaPanel
+               PatchStudioSubTabs()          → ESCRIBE barLE.pref=52, min=48; font=13
+
+  HudLayoutPass.Apply()  [NO SE LLAMA para escena bakeada]
+
+Fase 3 — Start():
+  DepartmentMiniCardUI.Start()
+           → si GameHub.Instance != null → OnGameReady() → Refresh()
+
+Fase 4 — OnEnable (de objetos activados post-Play):
+  Ningún impacto adicional en el layout del Studio en este frame.
+
+================================================================================
+SECCIÓN 8 — TABLA RESUMEN DE SISTEMAS GANADORES
+================================================================================
+
+┌─────────────────────────────┬──────────────────────────────┬──────────────────────────────────────────────────────┐
+│ Elemento                    │ Valor final medido            │ Sistema ganador                                     │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Altura Department Card      │ 192 px                        │ DepartmentMiniCardLayoutBuilder.Build()             │
+│                             │                               │ LE.preferredHeight=192, LE.minHeight=192            │
+│                             │                               │ Amplificado por HLG.childForceExpandHeight=True     │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Ancho Department Card       │ 526 px (override de 172)      │ DeptRow HLG.childForceExpandWidth=True              │
+│                             │                               │ Cálculo: (1060 - 8×1) / 2 = 526 px                 │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Altura fila departamentos   │ 192 px                        │ DepartmentMiniCardLayoutBuilder.NormalizeParentRow  │
+│                             │                               │ LE.preferredHeight=192                              │
+│                             │                               │ Content VLG.childForceExpandHeight=False respeta    │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Altura total del scroll     │ 1208 px (6 filas)             │ ContentSizeFitter.vertical=PreferredSize            │
+│ de departamentos            │                               │ 6×192 + 5×8 + 8+8 = 1208 px                        │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Altura sub-tabs             │ 52 px                         │ DefinitiveHudBootstrap.PatchStudioSubTabs()         │
+│                             │                               │ AfterSceneLoad → barLE.preferredHeight=52           │
+│                             │                               │ (HudLayoutPass no corre para baked scenes)          │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Ancho de cada tab           │ 360 px                        │ HLG.childForceExpandWidth + tab LE.flexibleWidth=1  │
+│                             │                               │ 1080 / 3 = 360 px                                   │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Posición fondo cinema       │ y=64–164 px desde top         │ StudioVisualStage.ApplyLayout() (Awake)             │
+│ StudioVisualStage           │ rect=1080×100                 │ LE.preferredHeight=100, flex=0                      │
+│                             │                               │ Sibling index 1 en EstudioPanel VLG                 │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ BottomFadeOverlay           │ 55 px (55 % de 100)           │ StudioVisualStage.EnsureBottomFade() (Awake)         │
+│ (degradado cinema)          │                               │ anchor y=(0, 0.55)                                  │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Posición botón ajustes      │ extremo derecho TopBar        │ TopBar HLG + TopBarSpacer.flexibleWidth=1           │
+│ SettingsBtn                 │ width=56 px, height=104 px    │ Ancho: LE.preferredWidth=56 (flex=0 — inamovible)   │
+│                             │                               │ Alto: HLG.childForceExpandHeight GANA sobre pref=56 │
+├─────────────────────────────┼──────────────────────────────┼──────────────────────────────────────────────────────┤
+│ Distribución vertical total │ 1700 px                       │ EstudioPanel VLG (childForceExpandHeight=False)     │
+│ EstudioPanel                │ 64+100+52+1412+72 = 1700 ✓   │ Espacios fijos por LE.pref; resto a StudioSubContent │
+└─────────────────────────────┴──────────────────────────────┴──────────────────────────────────────────────────────┘
+
+================================================================================
+SECCIÓN 9 — CONFLICTOS Y OBSERVACIONES
+================================================================================
+
+CONFLICTO 1: Sub-tab height — HudLayoutPass vs DefinitiveHudBootstrap
+  HudLayoutPass.CompactSubTabBar() establece pref=56 (SubTabBarHeight)
+  DefinitiveHudBootstrap.PatchStudioSubTabs() establece pref=52 (valor hardcoded)
+  Para escenas bakeadas, HudLayoutPass NO se llama → DefinitiveHudBootstrap GANA.
+  Si la escena fuera no-bakeada, ambos correrían; el último en AfterSceneLoad ganaría.
+  Recomendación futura: unificar la constante en HudLayoutConstants.
+
+CONFLICTO 2: BonificationsBar height — código vs baked
+  BonificationsBarUI.EnsureBuilt() intentaría setear pref=78 en self-build.
+  Sin embargo, la escena bakeada ya tiene los hijos construidos → AutoWire() detecta
+  _speedVal != null → EnsureBuilt() retorna inmediatamente.
+  El LE de la barra refleja el valor bakeado: preferredHeight=72 (no 78).
+  La barra tiene altura real=72 (menos que el código runtime esperaría: 78).
+
+CONFLICTO 3: Card preferredWidth ignorado
+  DepartmentMiniCardLayoutBuilder establece LE.preferredWidth=172 por tarjeta.
+  Sin embargo, el HLG de la fila tiene childForceExpandWidth=True, lo cual ignora
+  preferredWidth y distribuye el espacio disponible por igual.
+  Resultado: las cards miden 526 px de ancho real vs. 172 px de preferencia.
+  Esto es intencional (las cards llenan la fila) pero el 172 en el LE es inerte.
+
+CONFLICTO 4: MainContent offsets asimétricos vs. constantes del código
+  StudioUIShellLayout.AnchorFill debería producir offsetMin=(0,100), offsetMax=(0,-120).
+  Los valores medidos son offsetMin=(0,110), offsetMax=(0,-110).
+  El resultado (1700 px de alto) es idéntico: ambos dan 1920-220=1700 px.
+  La asimetría 110/110 proviene del valor bakeado en la escena que no fue sobreescrito.
+
+================================================================================
+SECCIÓN 10 — CONSTANTES DE REFERENCIA (HudLayoutConstants.cs)
+================================================================================
+
+  SubTabBarHeight          =  56f  (target original; PatchStudioSubTabs usa 52 hardcoded)
+  SubTabFontSize           =  11f  (PatchStudioSubTabs sobreescribe a 13f)
+  StudioHeaderHeight       =  64f  ✓ coincide con medida
+  StudioVisualShare        =   0.12f  (share proporcional — no usado actualmente)
+  StudioVisualMinHeight    =  80f   ✓ LE.minHeight medido
+  StudioVisualFixedHeight  = 100f  ✓ LE.preferredHeight medido
+  SectionHeaderHeight      =  18f
+  ProductionWidgetHeight   = 160f
+  ProductionSlotsHeight    = 400f
+  ProductionActionHeight   =  52f
+
+  DepartmentMiniCardLayoutBuilder:
+  CardWidth                = 172f  (preferredWidth — inerte por HLG forceExpand)
+  CardHeight               = 192f  ✓ altura real medida
+
+================================================================================
+FIN DEL INFORME
+================================================================================

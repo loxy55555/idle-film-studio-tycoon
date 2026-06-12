@@ -1,0 +1,304 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM — AWARDS PANEL DIAGNOSTICS
+Fecha: 2026-06-12
+Objetivo: Diagnosticar por qué Premios aparece vacío
+Modo: SOLO DIAGNÓSTICO — sin cambios de código ni visuales
+══════════════════════════════════════════════════════════════════════
+
+CONCLUSIÓN FINAL: F) OTRO MOTIVO IDENTIFICADO
+──────────────────────────────────────────────────────────────────────
+La UI SÍ se construye correctamente (28 estrellas, 5 secciones, 782px
+de contenido), pero el ScrollRect queda con altura 0px por un conflicto
+de layout entre:
+  • VerticalLayoutGroup en PremiosPanel (childForceExpandHeight = false)
+  • Scroll sin LayoutElement (sin preferredHeight ni flexibleHeight)
+
+Resultado: viewport = 0px → todo el showcase queda recortado/invisible.
+El usuario ve solo el fondo oscuro del panel (BG_DEEP).
+
+No es A (no se construye), B (no se destruye después), C (off-screen),
+D (detrás de otro panel), ni E (datos inválidos — GameHub/prestige OK).
+
+══════════════════════════════════════════════════════════════════════
+1. AWARDSPANELUI — EnsureBuilt()
+══════════════════════════════════════════════════════════════════════
+
+Ubicación del componente:
+  GameObject: PremiosPanel (raíz del tab Premios, index 2 bottom nav)
+  Script:     AwardsPanelUI.cs
+
+Puntos de llamada a EnsureBuilt() en código:
+  • Awake()    → EnsureBuilt()
+  • Start()    → EnsureBuilt()
+  • OnEnable() → EnsureBuilt()
+
+Guard interno:
+  if (_built) return;
+  _built = true;
+
+¿Se ejecuta EnsureBuilt()?
+  SÍ — confirmado en Play Mode vía reflexión:
+  AwardsPanelUI._built = True
+
+¿Cuántas veces se construye realmente?
+  UNA sola vez.
+  Awake/Start/OnEnable pueden llamar EnsureBuilt() hasta 3 veces,
+  pero el flag _built impide reconstrucciones posteriores.
+
+¿En qué momento?
+  Al activar PremiosPanel por primera vez (primera vez que corre Awake).
+  Antes de abrir el tab: PremiosPanel.activeSelf = False → Awake no ha corrido.
+  Tras ShowTab(2): PremiosPanel.activeSelf = True → Awake/OnEnable disparan build.
+
+Secuencia observada:
+  1. Juego arranca en tab Estudio (PremiosPanel inactivo)
+  2. Usuario pulsa tab PREMIOS
+  3. PremiosPanel se activa
+  4. AwardsPanelUI.Awake() → EnsureBuilt() (primera y única construcción)
+  5. AwardsPanelUI.Start/OnEnable → EnsureBuilt() (no-op, _built=true)
+
+══════════════════════════════════════════════════════════════════════
+2. CONSTRUCCIÓN — REGISTRO
+══════════════════════════════════════════════════════════════════════
+
+Estado ANTES de EnsureBuilt() (inferido de escena baked):
+  PremiosPanel childCount esperado: 2
+    • PremiosSubContent  (4 sub-panels)
+    • PremiosSubTabBar   (4 botones sub-tab)
+  Contenido legacy movido a sub-panel "ESTRELLAS DE ORO":
+    • OscarsCard, ThresholdCard (del editor BuildPremiosPanel)
+
+Acción de EnsureBuilt() al inicio:
+  for (i = childCount-1; i >= 0; i--)
+      DestroyImmediate(transform.GetChild(i).gameObject);
+  → ELIMINA PremiosSubContent y PremiosSubTabBar completos.
+
+Estado DESPUÉS de EnsureBuilt() (medido en Play Mode):
+  PremiosPanel childCount: 1
+    • Scroll (único hijo directo)
+
+Contenido construido bajo Scroll/Viewport/Content:
+  Secciones creadas:     5
+    1. Header
+    2. VitrinaFrame → VitrinaInner
+    3. ProgressSection
+    4. NextObjectiveSection
+    5. StudioProgressSection
+
+  Filas de estrellas:    4  (Row0..Row3 bajo VitrinaInner)
+  Estrellas creadas:     28 (Star_0..Star_27, 7 cols × 4 rows)
+  Altura total content:  782 px (medida en runtime)
+
+Evidencia runtime:
+  Stars found: 28
+  Rows found:  4
+  Content childCount: 5
+  Content rect: (width=1040, height=782)
+
+══════════════════════════════════════════════════════════════════════
+3. JERARQUÍA Y LAYOUT
+══════════════════════════════════════════════════════════════════════
+
+Parent real utilizado:
+  AwardsPanelUI.transform = PremiosPanel (NO el sub-panel ESTRELLAS DE ORO)
+
+Jerarquía final medida en Play Mode (con tab Premios activo):
+
+PremiosPanel [1080x1700] active=True
+├── Scroll [1040x0] active=True          ← ALTURA CERO (ROOT CAUSE)
+│   └── Viewport [1040x0] active=True    ← ALTURA CERO
+│       └── Content [1040x782] active=True
+│           ├── Header [1008x62] prefH=62
+│           ├── VitrinaFrame [1008x316] prefH=316
+│           │   └── VitrinaInner
+│           │       ├── GlassShine
+│           │       ├── Row0..Row3 (4 filas)
+│           │       │   └── Star_0..Star_6 (7 estrellas/fila)
+│           │       └── GlassOverlay
+│           ├── ProgressSection [1008x68] prefH=68
+│           ├── NextObjectiveSection [1008x112] prefH=112
+│           └── StudioProgressSection [1008x130] prefH=130
+
+PremiosPanel RectTransform:
+  anchorMin: (0, 0)
+  anchorMax: (1, 1)
+  pivot: (0.5, 0.5)
+  sizeDelta: stretch (full parent)
+  rect medido: (x=-540, y=-850, width=1080, height=1700)
+  localScale: (1, 1, 1)
+
+Scroll RectTransform:
+  anchorMin: (0, 0)
+  anchorMax: (1, 1)
+  pivot: (0.5, 0.5)
+  Stretch() aplicado en EnsureBuilt()
+  rect medido: (width=1040, height=0)    ← PROBLEMA
+  LayoutElement en Scroll: MISSING
+
+PremiosPanel VerticalLayoutGroup (heredado de StudioUIBuilder):
+  padding: (20, 20, 20, 20)
+  spacing: 16
+  childForceExpandWidth: true
+  childForceExpandHeight: false           ← PROBLEMA
+  childControlHeight: true
+
+PremiosPanel LayoutElement:
+  preferredHeight: -1 (no fijada)
+  flexibleHeight: 1 (panel sí ocupa espacio disponible)
+
+══════════════════════════════════════════════════════════════════════
+4. VISIBILIDAD
+══════════════════════════════════════════════════════════════════════
+
+PremiosPanel:
+  activeSelf:           True (tras abrir tab)
+  activeInHierarchy:    True
+  CanvasGroup alpha:    1.0
+  Image color:          RGBA(0.04, 0.04, 0.08, 1.0) — fondo oscuro visible
+  localScale:           (1, 1, 1)
+
+Scroll / Viewport:
+  activeInHierarchy:    True
+  rect.height:          0 px → viewport recorta todo el contenido
+  Image alpha:          0 (Color.clear) — transparente pero irrelevante
+
+Content (782px de UI real):
+  activeInHierarchy:    True
+  Secciones con preferredHeight correctos
+  TMP alpha en Star_0:  1.0 (texto "★" visible si hubiera viewport)
+  Star colors:          STAR_DIMFG / STAR_DARK (no son alpha=0)
+
+Mask:
+  RectMask2D en Viewport: presente
+  Con viewport height=0, enmascara el 100% del contenido
+
+ScrollRect:
+  vertical: true, horizontal: false
+  content height 782px > viewport height 0px → nada visible
+
+LayoutElement en Scroll: AUSENTE
+  → VLG padre asigna altura 0 al hijo Scroll
+
+══════════════════════════════════════════════════════════════════════
+5. RUNTIME — CHECKLIST DIAGNÓSTICO
+══════════════════════════════════════════════════════════════════════
+
+¿La UI existe?
+  SÍ — Scroll/Content con 5 secciones, 28 estrellas, textos, botones.
+
+¿La UI se construye?
+  SÍ — _built=true, childCount=1 (Scroll), content height=782px.
+
+¿Queda fuera de pantalla?
+  NO exactamente — el Scroll tiene width=1040 correcto pero height=0.
+  El contenido existe pero el viewport no tiene área visible.
+
+¿Queda detrás de otro panel?
+  NO — único sibling activo en ContentSwitcher: PremiosPanel.
+  CanvasGroup alpha=1, no hay overlay encima.
+
+¿Es destruida posteriormente?
+  NO — la jerarquía Scroll/Content persiste tras activación.
+  SÍ se destruyen los hijos PREVIOS (sub-tabs) al INICIO de EnsureBuilt(),
+  no después del build.
+
+¿Nunca llega a generarse?
+  NO — se genera en el primer Awake al abrir el tab.
+
+¿Datos de juego impiden render?
+  NO — GameHub.Instance presente, prestige NOT null, studio NOT null.
+  RefreshAll() puede ejecutarse; incluso sin refresh las estrellas
+  muestran "★" con alpha=1 (estado dim por defecto).
+
+══════════════════════════════════════════════════════════════════════
+6. HALLAZGOS SECUNDARIOS (contribuyen al vacío percibido)
+══════════════════════════════════════════════════════════════════════
+
+HALLAZGO S1 — Destrucción de sub-tabs al construir
+  EnsureBuilt() hace DestroyImmediate de TODOS los hijos de PremiosPanel,
+  incluyendo PremiosSubTabBar y PremiosSubContent.
+  Consecuencia:
+    • Sub-tab navigation eliminada en runtime
+    • StudioHubUI.tabPanels[0..3] = NULL/DESTROYED (refs colgantes)
+    • Sub-tab por defecto "NOMINACIONES" (placeholder vacío) ya no existe
+      tras el primer Awake — el problema pasa a ser solo el Scroll height=0
+
+HALLAZGO S2 — Conflicto arquitectónico de placement
+  AwardsPanelUI está en PremiosPanel raíz, pero la auditoría asumía
+  showcase en sub-tab "ESTRELLAS DE ORO".
+  EnsureBuilt() construye en raíz y destruye la estructura de sub-tabs.
+  El diseño baked y el self-builder compiten en el mismo GameObject.
+
+HALLAZGO S3 — DestroyImmediate en Play Mode
+  EnsureBuilt() usa DestroyImmediate (no Destroy) para limpiar hijos.
+  Funciona en Awake, pero es agresivo y elimina estructura baked
+  irreversiblemente en esa sesión.
+
+HALLAZGO S4 — Antes del primer Awake (edge case)
+  Si PremiosPanel estuviera visible antes de que AwardsPanelUI.Awake corra,
+  el usuario vería sub-tab "NOMINACIONES" activo por defecto (index 0),
+  que es un Section_ placeholder vacío (36px header only).
+  Legacy OscarsCard/ThresholdCard estarían en sub-tab ESTRELLAS DE ORO (index 2),
+  no visible por defecto.
+  En la práctica actual: al abrir tab, Awake destruye sub-tabs inmediatamente.
+
+══════════════════════════════════════════════════════════════════════
+7. CAUSA RAÍZ — CADENA CAUSAL
+══════════════════════════════════════════════════════════════════════
+
+StudioUIBuilder.BuildPremiosPanel()
+  → añade VerticalLayoutGroup con childForceExpandHeight=false
+  → añade AwardsPanelUI en PremiosPanel raíz
+
+HudDefinitiveStructureBuilder.RestructurePremiosPanel()
+  → crea sub-tabs (NOMINACIONES, PRESENTACIONES, ESTRELLAS DE ORO, INSTALACIONES)
+  → mueve legacy cards a sub-tab ESTRELLAS DE ORO
+  → AwardsPanelUI permanece en raíz (no se mueve)
+
+Usuario abre tab PREMIOS
+  → AwardsPanelUI.Awake() → EnsureBuilt()
+  → DestroyImmediate: elimina PremiosSubTabBar + PremiosSubContent
+  → Crea Scroll como único hijo de PremiosPanel
+  → Scroll NO tiene LayoutElement.flexibleHeight
+  → VLG padre (childForceExpandHeight=false) calcula altura del Scroll = 0
+  → Viewport height = 0 → RectMask2D oculta los 782px de contenido
+  → Usuario ve panel vacío (solo fondo BG_DEEP)
+
+══════════════════════════════════════════════════════════════════════
+8. RESPUESTA A OPCIONES A–F
+══════════════════════════════════════════════════════════════════════
+
+A) No se construye                    → DESCARTADO (_built=true, 28 stars)
+B) Se construye y se destruye          → DESCARTADO (Content persiste)
+C) Se construye fuera de pantalla     → PARCIAL (viewport 0px, no off-screen)
+D) Se construye detrás de otro panel  → DESCARTADO (único panel activo)
+E) Datos inválidos                    → DESCARTADO (prestige/studio OK)
+F) Otro motivo identificado             → CONFIRMADO
+
+Motivo exacto (F):
+  COLAPSO DE LAYOUT — ScrollRect con altura 0px por conflicto entre
+  VerticalLayoutGroup del panel padre y ausencia de LayoutElement
+  en el hijo Scroll.
+
+══════════════════════════════════════════════════════════════════════
+9. EVIDENCIA RUNTIME (Play Mode, tab Premios activo)
+══════════════════════════════════════════════════════════════════════
+
+AwardsPanelUI present:     True
+_built:                    True
+PremiosPanel childCount:   1
+Scroll rect:               1040 x 0
+Viewport rect:             1040 x 0
+Content rect:              1040 x 782
+Stars:                     28
+Rows:                      4
+Sections:                  5
+Scroll LayoutElement:      MISSING
+VLG childForceExpandHeight: False
+PremiosPanel CanvasGroup alpha: 1
+GameHub prestige null:     False
+SubTab refs after build:   ALL NULL/DESTROYED
+
+══════════════════════════════════════════════════════════════════════
+FIN DEL DIAGNÓSTICO — SIN CAMBIOS APLICADOS
+══════════════════════════════════════════════════════════════════════

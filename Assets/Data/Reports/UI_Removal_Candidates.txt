@@ -1,0 +1,284 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM — UI_Removal_Candidates.txt
+Candidatos a Eliminación — FASE UI-AUDIT
+Fecha: 2026-06-12
+══════════════════════════════════════════════════════════════════════
+REGLAS:
+  NO se elimina nada aquí sin verificación de referencias.
+  Cada entrada indica nivel de confianza ALTO / MEDIO / BAJO.
+  Solo eliminar los marcados ALTO sin revisión manual adicional.
+══════════════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 01
+──────────────────────────────────────────────────────────────────────
+Nombre:          MovieTabShellBootstrap
+Ruta completa:   Assets/Scripts/UI/Hub/MovieTabShellBootstrap.cs
+Tipo:            Static bootstrap class (RuntimeInitializeOnLoadMethod)
+
+Motivo de eliminación:
+  Su método Install() comienza con:
+    if (Object.FindAnyObjectByType<DefinitiveHudShell>() != null) return;
+  Desde Phase 7+ TODAS las sesiones de juego tienen DefinitiveHudShell en escena.
+  El código real de Restructure() NUNCA se ejecuta en producción.
+  Es dead code garantizado en escena baked.
+
+Referencias encontradas:
+  - Ningún script externo importa ni llama a MovieTabShellBootstrap directamente.
+  - El propio archivo es autónomo (RuntimeInitializeOnLoadMethod).
+  - StudioUIBuilder NO lo referencia.
+  - HudDefinitiveStructureBuilder NO lo referencia.
+
+¿Aparece en escena?: NO (static class, no MonoBehaviour)
+¿Instanciado en runtime?: Solo por IL2CPP runtime loader — pero es NO-OP.
+¿Usado por prefab?: NO
+
+Nivel de confianza: ALTO
+Acción recomendada: ELIMINAR
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 02
+──────────────────────────────────────────────────────────────────────
+Nombre:          HudLayoutPassBootstrap
+Ruta completa:   Assets/Scripts/UI/Hub/Hud/HudLayoutPassBootstrap.cs
+Tipo:            Static bootstrap class (RuntimeInitializeOnLoadMethod)
+
+Motivo de eliminación:
+  Su método Run() comienza con:
+    if (HudBakedSceneRules.IsBaked(switcher)) return;
+  En escena baked es NO-OP absoluto. Solo tiene valor si alguien abre
+  una escena pre-Phase-7 sin bakear — un caso que ya no existe.
+  El docstring incluso lo dice: "Legacy layout pass for unmigrated scenes."
+
+Referencias encontradas:
+  - Ningún script externo referencia HudLayoutPassBootstrap.
+  - HudBakedSceneRules, HudLayoutPass, DefinitiveHudBootstrap: no lo invocan.
+  - Solo el propio archivo se registra como RuntimeInitializeOnLoadMethod.
+
+¿Aparece en escena?: NO (static class)
+¿Instanciado en runtime?: Es NO-OP en escena baked.
+¿Usado por prefab?: NO
+
+Nivel de confianza: ALTO
+Acción recomendada: ELIMINAR
+  (Alternativa conservadora: mantener pero mover a carpeta Archive/)
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 03
+──────────────────────────────────────────────────────────────────────
+Nombre:          CollectionNavController
+Ruta completa:   Assets/Scripts/UI/Hub/CollectionNavController.cs
+Tipo:            MonoBehaviour
+
+Motivo de eliminación:
+  MovieCollectionUI.BuildAllLevels() destruye TODOS los hijos del panel
+  incluyendo cualquier CollectionNavController en escena.
+  La navegación L1→L2→L3 está completamente implementada dentro de
+  MovieCollectionUI (ShowGenreGrid / ShowMovieGrid / ClosePopup).
+  CollectionNavController referencia GenreSelectionUI (también obsoleto).
+
+Referencias encontradas:
+  - StudioUIBuilder línea 823 (comentario únicamente):
+    "// The CollectionNavController is wired by CollectionHudShell at runtime."
+  - CollectionHudShell: NO llama EnsureGenreNav() ni añade CollectionNavController.
+  - HudDefinitiveStructureBuilder: NO lo añade.
+  - Solo CollectionNavController.cs lo usa internamente.
+
+¿Aparece en escena?: Puede existir si la escena fue baked con versión antigua.
+  Si existe, MovieCollectionUI.BuildAllLevels() lo destruye en Awake.
+¿Instanciado en runtime?: Solo por MovieTabShellBootstrap (también candidato 01).
+¿Usado por prefab?: NO (prefab pattern no usado en colección)
+
+Nivel de confianza: ALTO
+Acción recomendada: ELIMINAR
+  Paso previo: buscar en .unity file y prefabs antes de eliminar.
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 04
+──────────────────────────────────────────────────────────────────────
+Nombre:          DepartmentBarUI
+Ruta completa:   Assets/Scripts/UI/Hub/DepartmentBarUI.cs
+Tipo:            MonoBehaviour
+
+Motivo de eliminación:
+  Usa patrón de prefab (campo público miniCardPrefab) que no existe en
+  el flujo actual. StudioUIBuilder.BuildDeptGrid() crea tarjetas via
+  DepartmentMiniCardLayoutBuilder directamente — no instancia ningún prefab.
+  DepartmentBarUI nunca es referenciado ni añadido por el sistema activo.
+
+Referencias encontradas:
+  - Ningún script la invoca ni la AddComponent.
+  - StudioUIBuilder NO la añade ni la referencia.
+  - HudDefinitiveStructureBuilder NO la usa.
+  - No aparece en búsqueda de scene/prefab (archivo .unity no modificado).
+
+¿Aparece en escena?: Posiblemente en escenas legacy pre-Phase-6. NO en baked.
+¿Instanciado en runtime?: NO
+¿Usado por prefab?: NO (miniCardPrefab en Resources no confirmado)
+
+Nivel de confianza: ALTO
+Acción recomendada: ELIMINAR
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 05
+──────────────────────────────────────────────────────────────────────
+Nombre:          GenreSelectionUI
+Ruta completa:   Assets/Scripts/UI/Hub/GenreSelectionUI.cs
+Tipo:            MonoBehaviour
+
+Motivo de eliminación:
+  MovieCollectionUI.BuildAllLevels() destruye todos los hijos del
+  ColeccionPanel en su Awake(), incluyendo cualquier GenreSelectionUI.
+  La funcionalidad de L1 (grid de géneros con portadas) está duplicada
+  dentro de MovieCollectionUI.BuildL1GenreGrid() con mejor estilo visual.
+  GenreSelectionUI.OnGenreSelected nunca es suscrito en el flujo actual.
+
+Referencias encontradas:
+  - StudioUIBuilder línea 819 (comentario):
+    "// Tab 0: COLECCIÓN (MovieCollectionUI + our GenreSelectionUI + CollectionNavController)"
+    Este comentario describe una intención pre-8.6A que ya no se implementa.
+  - CollectionNavController referencia GenreSelectionUI — pero CollectionNavController
+    también es candidato a eliminación (Candidato 03).
+  - HudDefinitiveStructureBuilder NO la instancia.
+  - CollectionHudShell NO la referencia.
+
+¿Aparece en escena?: Solo si CollectionNavController la colocó (ya no ocurre).
+  Si existe, es destruida por MovieCollectionUI.BuildAllLevels().
+¿Instanciado en runtime?: NO en ruta baked activa.
+¿Usado por prefab?: NO
+
+Nivel de confianza: MEDIO-ALTO
+  (Confianza media porque el comentario en StudioUIBuilder menciona intención
+  original. Verificar que no haya prefabs que la referencien antes de eliminar.)
+Acción recomendada: ELIMINAR (después de confirmar prefabs)
+  Paso previo: buscar "GenreSelectionUI" en archivos .prefab y .unity.
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 06
+──────────────────────────────────────────────────────────────────────
+Nombre:          GarageStudioVisualBuilder
+Ruta completa:   Assets/Scripts/UI/Hub/Hud/GarageStudioVisualBuilder.cs
+Tipo:            Static class (no MonoBehaviour)
+
+Motivo de eliminación:
+  Es un wrapper vacío que delega a City1GarageTheme. Su docstring dice:
+  "Legacy entry point — delegates to City1GarageTheme via StudioVisualThemeController."
+  StudioVisualThemeController.cs NO referencia GarageStudioVisualBuilder —
+  invoca City1GarageTheme directamente.
+  La constante BuiltMarkerName = City1GarageTheme.BackgroundMarker es
+  accesible directamente desde City1GarageTheme.
+
+Referencias encontradas:
+  - NO aparece en ningún otro script (grep de todo Assets/Scripts: 0 hits externos).
+  - Solo el archivo propio.
+
+¿Aparece en escena?: NO (static class)
+¿Instanciado en runtime?: NO
+¿Usado por prefab?: NO
+
+Nivel de confianza: MEDIO
+  (Confianza media porque podría ser el punto de entrada de herramientas
+  de editor externas o integraciones futuras que no aparecen en el código.)
+Acción recomendada: ELIMINAR
+  Paso previo: confirmar que ningún archivo .asmdef o Assembly externo lo usa.
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 07
+──────────────────────────────────────────────────────────────────────
+Nombre:          MultiProductionPanelUI
+Ruta completa:   Assets/Scripts/UI/Hub/MultiProductionPanelUI.cs
+Tipo:            MonoBehaviour (Singleton con Instance)
+
+Motivo de eliminación:
+  Tiene método HideLegacyLayout() que sugiere transición a flujo nuevo.
+  ProductionHudShell ha reemplazado su responsabilidad de gestionar
+  múltiples slots de producción. HudDefinitiveStructureBuilder NO lo añade.
+  ProductionStatusUI (también en escena) no lo referencia.
+
+Referencias encontradas:
+  - ProductionStatusUI.cs: no lo referencia.
+  - ProductionHudShell.cs: no lo referencia.
+  - StudioUIBuilder: NO lo instancia.
+  - HudDefinitiveStructureBuilder: NO lo instancia.
+  - Solo MultiProductionPanelUI.cs usa Instance.
+
+¿Aparece en escena?: Posiblemente en escena legacy. En baked NO existe.
+¿Instanciado en runtime?: NO en ruta baked.
+¿Usado por prefab?: INCIERTO
+
+Nivel de confianza: MEDIO
+Acción recomendada: DEPRECAR primero (buscar en escena y prefabs),
+  luego eliminar si no hay hits.
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 08 — NO ELIMINAR (revisión adicional)
+──────────────────────────────────────────────────────────────────────
+Nombre:          MovieGridUI
+Ruta completa:   Assets/Scripts/UI/Hub/MovieGridUI.cs
+Tipo:            MonoBehaviour
+
+Por qué NO eliminar aún:
+  StudioUIBuilder.BuildColeccionPanel() hace AddComponent<MovieGridUI>()
+  y configura allMovies, showAllGenres, etc. vía SerializedObject.
+  MovieCatalogSceneSyncTools también lo usa para asignar arrays de películas.
+  Si se elimina sin actualizar el builder, el build de escena fallará.
+
+Acción recomendada: Actualizar StudioUIBuilder para NO añadir MovieGridUI
+  y actualizar MovieCatalogSceneSyncTools. Luego sí eliminar.
+  Marcar TODO en StudioUIBuilder línea 982-996.
+
+──────────────────────────────────────────────────────────────────────
+CANDIDATO 09 — NO ELIMINAR (herramienta editor)
+──────────────────────────────────────────────────────────────────────
+Nombre:          HudHierarchySetup
+Ruta completa:   Assets/Scripts/Editor/HudHierarchySetup.cs
+Tipo:            Editor tool (EditorWindow o menu item)
+
+Por qué NO eliminar aún:
+  Aunque está superado por StudioUIBuilder, es una herramienta de editor
+  que no ejecuta en runtime. Ejecutarlo sería un error del usuario,
+  no una interferencia automática. Su eliminación es cosmética.
+  Acción sugerida: Añadir [Obsolete] y mensaje de advertencia antes de eliminar.
+
+──────────────────────────────────────────────────────────────────────
+RESUMEN TABLA DE CANDIDATOS
+──────────────────────────────────────────────────────────────────────
+
+#  Nombre                     Confianza  Acción
+01 MovieTabShellBootstrap      ALTO       ELIMINAR
+02 HudLayoutPassBootstrap      ALTO       ELIMINAR
+03 CollectionNavController     ALTO       ELIMINAR (verificar .unity/.prefab)
+04 DepartmentBarUI             ALTO       ELIMINAR
+05 GenreSelectionUI            MEDIO-ALTO ELIMINAR (verificar .unity/.prefab)
+06 GarageStudioVisualBuilder   MEDIO      ELIMINAR (verificar .asmdef)
+07 MultiProductionPanelUI      MEDIO      DEPRECAR → eliminar
+08 MovieGridUI                 BAJO       NO eliminar (actualizar builder primero)
+09 HudHierarchySetup           BAJO       NO eliminar (añadir [Obsolete])
+
+──────────────────────────────────────────────────────────────────────
+PROCEDIMIENTO DE ELIMINACIÓN SEGURA
+──────────────────────────────────────────────────────────────────────
+Fase 1 (Confianza ALTO — sin dependencias runtime):
+  a. Eliminar MovieTabShellBootstrap.cs + .meta
+  b. Eliminar HudLayoutPassBootstrap.cs + .meta
+  c. Eliminar DepartmentBarUI.cs + .meta
+  d. Verificar compilación — 0 errores esperados.
+
+Fase 2 (verificar escena y prefabs primero):
+  a. Buscar "CollectionNavController" en MainGame.unity → si no aparece: eliminar
+  b. Buscar "GenreSelectionUI" en MainGame.unity y Assets/**/*.prefab
+  c. Eliminar CollectionNavController.cs + .meta
+  d. Eliminar GenreSelectionUI.cs + .meta (si sin referencias en .unity/.prefab)
+  e. Verificar compilación — 0 errores esperados.
+
+Fase 3 (limpieza delegadores):
+  a. Confirmar GarageStudioVisualBuilder: grep en .asmdef y Editor scripts
+  b. Eliminar si 0 referencias externas.
+
+Fase 4 (preparación para MovieGridUI):
+  a. Editar StudioUIBuilder: quitar AddComponent<MovieGridUI>() en BuildColeccionPanel()
+  b. Editar MovieCatalogSceneSyncTools: quitar referencia a MovieGridUI
+  c. Re-bake escena
+  d. Eliminar MovieGridUI.cs + .meta
+
+══════════════════════════════════════════════════════════════════════

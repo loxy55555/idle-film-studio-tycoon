@@ -1,0 +1,177 @@
+══════════════════════════════════════════════════════════════════════
+IDLE FILM — UI Cleanup Phase 1 Report
+Fecha: 2026-06-12
+Fase: UI-AUDIT — Limpieza Confianza ALTO (3 scripts)
+══════════════════════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════════════════════
+A) SCRIPTS ELIMINADOS
+══════════════════════════════════════════════════════════════════════
+
+Script 1: MovieTabShellBootstrap
+  Ruta:    Assets/Scripts/UI/Hub/MovieTabShellBootstrap.cs (+.meta)
+  Tamaño:  4.913 bytes (111 líneas)
+  GUID:    b547893386e1d8240ad54689899cbd2d
+  Motivo:  NO-OP garantizado en escena baked.
+           Install() retorna en la primera línea si DefinitiveHudShell
+           está presente (siempre es true en escena baked Phase 7+).
+  Estado:  ELIMINADO ✓
+
+Script 2: HudLayoutPassBootstrap
+  Ruta:    Assets/Scripts/UI/Hub/Hud/HudLayoutPassBootstrap.cs (+.meta)
+  Tamaño:  1.110 bytes (35 líneas)
+  GUID:    d4d984c2471e5e8479473bb5125edfd0
+  Motivo:  NO-OP garantizado en escena baked.
+           Run() retorna si HudBakedSceneRules.IsBaked() = true (siempre
+           en la escena actual). Docstring del archivo: "Legacy layout pass
+           for unmigrated scenes."
+  Estado:  ELIMINADO ✓
+
+Script 3: DepartmentBarUI
+  Ruta:    Assets/Scripts/UI/Hub/DepartmentBarUI.cs (+.meta)
+  Tamaño:  1.690 bytes
+  GUID:    8acdd9b3dc399764b93f29048efae146
+  Motivo:  Patrón de prefab (miniCardPrefab) no utilizado por ningún
+           builder o sistema activo. DepartmentMiniCardLayoutBuilder
+           reemplaza completamente su responsabilidad.
+  Estado:  ELIMINADO ✓
+
+Total: 3 scripts + 3 .meta eliminados (7.713 bytes en total)
+
+══════════════════════════════════════════════════════════════════════
+B) REFERENCIAS VERIFICADAS ANTES DE ELIMINAR
+══════════════════════════════════════════════════════════════════════
+
+MovieTabShellBootstrap
+  Scripts que la referencian:        0
+  GUIDs en Assets/Scenes/*.unity:    0
+  GUIDs en Assets/**/*.prefab:       0
+  Resultado: SIN REFERENCIAS EXTERNAS ✓
+
+HudLayoutPassBootstrap
+  Scripts que la referencian:        0
+  GUIDs en Assets/Scenes/*.unity:    0
+  GUIDs en Assets/**/*.prefab:       0
+  Resultado: SIN REFERENCIAS EXTERNAS ✓
+
+DepartmentBarUI
+  Scripts que la referencian:        0
+  GUIDs en Assets/Scenes/*.unity:    0
+  GUIDs en Assets/**/*.prefab:       0
+  Resultado: SIN REFERENCIAS EXTERNAS ✓
+
+Nota: ninguno de los tres scripts tenía referencias inesperadas.
+  No fue necesario detener ninguna eliminación.
+
+══════════════════════════════════════════════════════════════════════
+C) RESULTADO DE COMPILACIÓN
+══════════════════════════════════════════════════════════════════════
+
+Compilación solicitada: refresh_unity (force, compile=request)
+Resultado del domain reload: IDLE (listo)
+Errores de compilación: 0
+Warnings de compilación: 0
+Consola Unity tras compilar: 0 entradas
+
+RESULTADO: COMPILACIÓN LIMPIA ✓
+
+══════════════════════════════════════════════════════════════════════
+D) RESULTADO DE VALIDACIÓN VISUAL (Play Mode)
+══════════════════════════════════════════════════════════════════════
+
+Entrado en Play Mode: ✓
+Errores en runtime: 0
+
+Paneles presentes en jerarquía (Play Mode):
+  EstudioPanel:      ✓ (instanceID -465498)
+  ProduccionPanel:   ✓ (instanceID -478490)
+  ColeccionPanel:    ✓ (instanceID -478888)
+  PremiosPanel:      ✓ (instanceID -478768)
+  TiendaPanel:       ✓ (instanceID -478906)
+  ContratosPanel:    ✓ (instanceID -478330)
+
+Constructores runtime activos (confirmados vía FindComponent):
+  MovieCollectionUI:  ✓ presente y activo
+  StorePanelUI:       ✓ presente y activo
+  AwardsPanelUI:      ✓ presente y activo
+  ContractsPanelUI:   ✓ presente y activo
+  BonificationsBarUI: ✓ presente y activo
+  ProductionHudShell: ✓ presente y activo
+
+DefinitiveHudShell: ✓ presente (escena baked confirmada)
+
+Scripts eliminados — instancias en runtime:
+  MovieTabShellBootstrap (by_component): 0 ✓
+  HudLayoutPassBootstrap (by_component): 0 ✓
+  DepartmentBarUI (by_component):        0 ✓
+
+Validación por pantalla:
+  ESTUDIO:     Componentes activos (StudioVisualStage, BonificationsBarUI,
+               DepartmentMiniCardUI × n). Sin errores.
+  PRODUCCIÓN:  ProductionHudShell activo. MovieTabUI presente.
+               Sin errores.
+  COLECCIÓN:   MovieCollectionUI presente. Sin errores.
+  PREMIOS:     AwardsPanelUI presente. Sin errores.
+  TIENDA:      StorePanelUI presente. Sin errores.
+  CONTRATOS:   ContractsPanelUI presente (dentro de ContratosPanel). Sin errores.
+
+══════════════════════════════════════════════════════════════════════
+E) PROBLEMAS DETECTADOS TRAS LA LIMPIEZA
+══════════════════════════════════════════════════════════════════════
+
+NINGUNO.
+
+No se detectaron:
+  - Errores de compilación
+  - Errores en runtime
+  - Missing script references
+  - Paneles ausentes o vacíos
+  - Regressions visuales
+  - Excepciones de NullReference relacionadas con scripts eliminados
+
+══════════════════════════════════════════════════════════════════════
+COMPARACIÓN ANTES/DESPUÉS
+══════════════════════════════════════════════════════════════════════
+
+Los tres scripts eliminados cumplían las siguientes condiciones:
+
+  MovieTabShellBootstrap:
+    ANTES: se cargaba en runtime (RuntimeInitializeOnLoadMethod)
+           pero retornaba en la primera línea sin ejecutar código real.
+    DESPUÉS: ya no se carga.
+    Diferencia de comportamiento: NINGUNA.
+
+  HudLayoutPassBootstrap:
+    ANTES: se cargaba en runtime y ejecutaba HudBakedSceneRules.IsBaked()
+           que retornaba true, terminando inmediatamente.
+    DESPUÉS: ya no se carga.
+    Diferencia de comportamiento: NINGUNA.
+
+  DepartmentBarUI:
+    ANTES: existía como tipo C# pero ningún script lo instanciaba.
+    DESPUÉS: ya no existe como tipo.
+    Diferencia de comportamiento: NINGUNA.
+
+VEREDICTO: El comportamiento del juego es IDÉNTICO antes y después
+de la limpieza. La Phase 1 es una reducción de ruido arquitectónico
+puro sin ningún impacto funcional.
+
+══════════════════════════════════════════════════════════════════════
+ESTADO DE CANDIDATOS PENDIENTES (Phases 2-4)
+══════════════════════════════════════════════════════════════════════
+Esta fase NO ha realizado consolidaciones adicionales.
+Los siguientes candidatos permanecen sin tocar hasta aprobación explícita:
+
+  Fase 2 (verificar escena y prefabs):
+    - CollectionNavController.cs (confianza ALTO, pendiente búsqueda .unity)
+    - GenreSelectionUI.cs (confianza MEDIO-ALTO, pendiente búsqueda prefabs)
+
+  Fase 3 (delegadores):
+    - GarageStudioVisualBuilder.cs (confianza MEDIO)
+
+  Fase 4 (requiere actualización de builder primero):
+    - MovieGridUI.cs (confianza BAJO — referenciado por StudioUIBuilder)
+
+  No proceder a Phase 2 sin instrucción explícita.
+
+══════════════════════════════════════════════════════════════════════

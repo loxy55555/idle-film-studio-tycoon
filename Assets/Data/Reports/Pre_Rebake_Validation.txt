@@ -1,0 +1,396 @@
+================================================================================
+  FASE PRE-REBAKE VALIDATION
+  Escena objetivo: Assets/Scenes/MainGame.unity
+  Fecha: 2026-06-12
+  Acción evaluada: IdleFilm > Build Studio UI  (NO EJECUTADO)
+================================================================================
+
+RESUMEN EJECUTIVO
+─────────────────
+Build Studio UI es un rebuild DESTRUCTIVO de toda la jerarquía Canvas. Es el
+único camino que serializará CardHeight=140 en las Department Cards y filas.
+
+Los sistemas Premios / Tienda / Colección NO dependen del bake para su UI final:
+se reconstruyen en runtime vía self-build. El rebake los mantiene funcionales
+siempre que los componentes correctos queden cableados (ver Sección 5).
+
+HALLAZGOS CRÍTICOS antes de rebake:
+  ✓ Cards y filas pasarán a 140 px en el .unity
+  ✓ StudioVisualStage pasará a 150 px (ApplyLayout durante bake)
+  ⚠ Sub-tabs se serializarán a 56 px (no 64) — el 64 px solo existe en runtime patch
+  ⚠ Contenido legacy (OscarsCard, ManagementSplit, placeholders Tienda) volverá a
+    serializarse aunque quede inactivo u oculto en Play Mode
+  ⚠ AwardsPanelUI destruye la estructura de sub-tabs de Premios al primer Play
+    (comportamiento actual — la vitrina sigue funcionando)
+
+================================================================================
+SECCIÓN 1 — SISTEMAS QUE ESCRIBEN EN MainGame.unity
+================================================================================
+
+─── 1A. ESCRITURA COMPLETA + SaveScene (destructiva) ────────────────────────
+
+  IdleFilm > Build Studio UI
+    Script : StudioUIBuilder.cs
+    Acción :
+      • Abre Assets/Scenes/MainGame.unity
+      • DESTRUYE todos los hijos del Canvas
+      • Reconstruye HubRoot, TopBar, BottomNav, 5 paneles, GameHub, overlays
+      • Llama HudDefinitiveSceneBaker.Bake() → HudDefinitiveStructureBuilder.Apply()
+        → HudLayoutPass.Apply()
+      • WireGameSystems(), WireGameFeel()
+      • EditorSceneManager.SaveScene()  ← GUARDA .unity
+
+  Impacto: reemplaza el 100 % de la jerarquía UI serializada.
+
+─── 1B. ESCRITURA PARCIAL + SaveScene ───────────────────────────────────────
+
+  IdleFilm > Bake Studio Visual Stage Layers
+  IdleFilm > Bake Garage Studio Visual
+  IdleFilm > Bake City Visual Theme (City 1)
+    Script : StudioVisualStageLayerBaker.cs
+    Acción : stage.ApplyLayout(), capas, tema → SaveScene()
+    Impacto: solo StudioVisualStage y sus capas (NO cards, NO premios)
+
+  IdleFilm > Catalog > Rebuild Scene Movie References
+    Script : MovieCatalogSceneSyncTools.cs
+    Acción : actualiza allMovies[] en MovieTabUI, MovieCollectionUI, MovieGridUI
+             → SaveOpenScenes() si hay cambios
+    Impacto: referencias ScriptableObject, NO layout
+
+─── 1C. ESCRITURA PARCIAL sin SaveScene automático ──────────────────────────
+
+  IdleFilm > Bake Definitive HUD (Current Scene)
+    Script : HudDefinitiveSceneBaker.cs
+    Acción : HudDefinitiveStructureBuilder.Apply() + MarkSceneDirty
+    Impacto: reestructura sub-tabs/shells SIN destruir canvas
+    NOTA CRÍTICA: si la escena YA está bakeada (IsBaked=true), Apply() es NO-OP.
+                 Este menú NO actualizaría CardHeight 192→140 en escena actual.
+
+  IdleFilm > Setup HUD Hierarchy
+    Script : HudHierarchySetup.cs
+    Acción : legacy HUD setup + MarkSceneDirty (NO SaveScene)
+    Impacto: estructura legacy incompatible con HUD definitivo — NO usar.
+
+─── 1D. Sistemas que NO escriben MainGame.unity ─────────────────────────────
+
+  DefinitiveHudBootstrap          → runtime only (AfterSceneLoad patches)
+  DepartmentMiniCardUI            → runtime WireExisting (no modifica LE bakeados)
+  AwardsPanelUI.EnsureBuilt()     → runtime only
+  StorePanelUI.EnsureBuilt()      → runtime only
+  MovieCollectionUI.BuildAllLevels() → runtime only
+  ContentSortBootstrap            → runtime only (añade sorters)
+  StudioUIShellLayout             → runtime only (anchors TopBar/MainContent)
+  Generadores de DB / Reports / Catalog migration → assets, no escena UI
+
+================================================================================
+SECCIÓN 2 — VALORES APROBADOS vs CÓDIGO ACTUAL
+================================================================================
+
+Valores aprobados (FASE ESTUDIO-TUNING, 2026-06-12):
+  CardHeight / card LE               = 140 px
+  row LE.preferredHeight             = 140 px
+  StudioVisualFixedHeight            = 150 px
+  PatchStudioSubTabs barLE.prefH     =  64 px  (runtime patch)
+
+─── 2A. DepartmentMiniCardLayoutBuilder ─────────────────────────────────────
+
+  Archivo  : Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs
+  CardHeight = 140f                                    ✓ APROBADO
+  Build() escribe:
+    cardLE.preferredHeight = 140
+    cardLE.minHeight       = 140
+  NormalizeParentRowHeight() escribe:
+    rowLE.preferredHeight  = 140  (si row > CardHeight)
+
+  Escena actual (.unity): 17× m_PreferredHeight:192, 0× m_PreferredHeight:140
+  Tras rebake: serializará 140 en cards y filas.
+
+─── 2B. StudioVisualStage ────────────────────────────────────────────────────
+
+  Archivo runtime : Assets/Scripts/UI/Hub/Hud/StudioVisualStage.cs
+  Constante       : HudLayoutConstants.StudioVisualFixedHeight = 150f  ✓ APROBADO
+  ApplyLayout()   : preferredHeight=150, minHeight=80, flex=0
+
+  Conflicto en StudioUIBuilder.BuildEstudioPanel() (editor):
+    stageLE.preferredHeight = 160f   ← legacy hardcoded
+    stageLE.minHeight       = 120f   ← legacy hardcoded
+
+  Resolución durante Build Studio UI:
+    HudDefinitiveStructureBuilder.Apply()
+      → HudLayoutPass.ApplyEstudioLayout()
+        → EnsureStudioVisualStage()
+          → StudioVisualStage.ApplyLayout()   ← SOBREESCRIBE a 150/80
+
+  Escena actual: stage LE prefH=100 (runtime patch previo), también hay 160 en .unity
+  Tras rebake: serializará 150 px  ✓
+
+─── 2C. Collection (MovieCollectionUI) ───────────────────────────────────────
+
+  Archivo : Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+  Modelo  : RUNTIME SELF-BUILD (no constantes de layout en HudLayoutConstants)
+
+  EnsureBuilt() → BuildAllLevels():
+    • Destruye hijos legacy del panel álbum
+    • Construye L1 (genre grid 2 col), L2 (movie grid 3 col), L3 (popup)
+    • Paleta y dimensiones internas hardcoded en el script (Phase 8.6A/B)
+
+  En escena actual: MovieCollectionUI presente (1 instancia en .unity)
+  En rebake:
+    HudDefinitiveStructureBuilder.RestructureCollectionPanel()
+      → añade MovieCollectionUI al panel COLECCIÓN si no existe
+      → copia allMovies desde MovieTabUI de ProduccionPanel
+
+  Valores aprobados: código actual Phase 8.6A/B  ✓ (self-build, no bake de layout)
+  Funcionalidad post-rebake: ✓ (si MovieTabUI.allMovies se cablea en builder)
+
+─── 2D. Awards (AwardsPanelUI) ─────────────────────────────────────────────
+
+  Archivo : Assets/Scripts/UI/Hub/AwardsPanelUI.cs
+  Modelo  : RUNTIME SELF-BUILD (Golden Stars Showcase, Phase 8.6B)
+
+  EnsureBuilt():
+    • Destruye TODOS los hijos de PremiosPanel (DestroyImmediate)
+    • Construye Scroll + vitrina 4×7 + progress + objective + progression
+    • Scroll LayoutElement: flexibleWidth=1, flexibleHeight=1  (fix layout collapse)
+
+  En escena actual: AwardsPanelUI presente en PremiosPanel
+  En rebake:
+    StudioUIBuilder.BuildPremiosPanel() crea legacy OscarsCard + ThresholdCard
+    RestructurePremiosPanel() mueve esos hijos al sub-tab "ESTRELLAS DE ORO"
+    AwardsPanelUI component permanece en PremiosPanel root
+
+  Valores aprobados: código AwardsPanelUI actual  ✓
+  Comportamiento Play Mode:
+    EnsureBuilt() destruye sub-tabs Premios + legacy cards → construye vitrina
+    (mismo comportamiento que escena actual post-fix — vitrina funcional)
+
+─── 2E. Store (StorePanelUI) ────────────────────────────────────────────────
+
+  Archivo : Assets/Scripts/UI/Hub/StorePanelUI.cs
+  Modelo  : RUNTIME SELF-BUILD (Phase 8.6A/B commercial store)
+
+  EnsureBuilt():
+    • Oculta hijos legacy (placeholders Tienda del builder)
+    • Construye StoreRoot + Scroll (LE flex=1) + secciones comerciales
+
+  En escena actual: StorePanelUI NO está en .unity (0 instancias)
+    → inyectado en runtime por DefinitiveHudBootstrap.EnsureStorePanel()
+
+  En rebake:
+    StudioUIBuilder.BuildMenuPanel() crea TiendaPanel con placeholders + MenuHudShell
+    RestructureMenuPanel() hace early-exit (settingsSection != null) → preserva Tienda
+    StorePanelUI NO se añade al bake — sigue siendo runtime injection
+
+  Valores aprobados: código StorePanelUI actual  ✓
+  Funcionalidad post-rebake: ✓ (DefinitiveHudBootstrap añade StorePanelUI en Play)
+
+================================================================================
+SECCIÓN 3 — VALORES LEGACY QUE VOLVERÍAN A SERIALIZARSE
+================================================================================
+
+Estos valores/contenidos se escribirían de nuevo en MainGame.unity durante
+Build Studio UI aunque queden ocultos, inactivos o destruidos en Play Mode:
+
+┌──────────────────────────────┬─────────────┬──────────────────────────────────┐
+│ Elemento legacy              │ Valor bake  │ Destino en Play Mode             │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ StudioUIBuilder stage LE     │ prefH=160   │ SOBREESCRITO a 150 por           │
+│ (antes de HudLayoutPass)     │ minH=120    │ ApplyLayout() durante bake       │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ ManagementSplit              │ prefH=280   │ SetActive(false) — oculto        │
+│                              │ minH=220    │ dead weight en .unity            │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ OscarsCard + ThresholdCard   │ cards 130px │ Movidos a sub-tab Premios;       │
+│ (BuildPremiosPanel)          │             │ destruidos por AwardsPanelUI     │
+│                              │             │ .EnsureBuilt() al primer Play    │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ TiendaPanel placeholders     │ 5 ShopCards │ Ocultos por StorePanelUI         │
+│ (BuildMenuPanel)             │ 84px c/u    │ .EnsureBuilt() — store runtime   │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ BonificationsBar (builder)   │ LE pref=72  │ UI completa bakeada;             │
+│                              │             │ BonificationsBarUI self-build      │
+│                              │             │ usa pref=78 solo si no hay hijos   │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ StudioSubTabBar (HudLayoutPass)│ prefH=56  │ PatchStudioSubTabs() → 64 px   │
+│                              │             │ en runtime (AfterSceneLoad)      │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ DeptBar container LE         │ minH=310    │ CardHeight*2+30 = 140*2+30       │
+│                              │             │ (constraint del scroll container)│
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ PremiosSubTabBar + 4 panels  │ estructura  │ AwardsPanelUI destruye hijos     │
+│ (RestructurePremiosPanel)    │ completa    │ de PremiosPanel al Play          │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ Collection SAGAS/LEGENDARIAS │ Section_*   │ Placeholders Section_ (36px)     │
+│ sub-tabs                     │ 36px headers│ sin contenido funcional          │
+├──────────────────────────────┼─────────────┼──────────────────────────────────┤
+│ Constantes muertas en        │ DEPT_BAR_H  │ No usadas en BuildDeptGrid       │
+│ StudioUIBuilder              │ =190,       │ (CardHeight usado en su lugar)   │
+│                              │ STUDIO_SCENE│                                  │
+│                              │ _H=280      │                                  │
+└──────────────────────────────┴─────────────┴──────────────────────────────────┘
+
+DISCREPANCIA APROBADA vs BAKE para Sub-tabs:
+  Código aprobado (runtime): DefinitiveHudBootstrap barLE.prefH = 64
+  Valor serializado en bake : HudLayoutPass.CompactSubTabBar = 56
+  (HudLayoutConstants.SubTabBarHeight)
+  → Tras rebake, primer Play Mode aplicará patch 56→64 igual que ahora.
+
+================================================================================
+SECCIÓN 4 — PIPELINE EXACTO DE Build Studio UI (orden de ejecución)
+================================================================================
+
+  1. OpenScene(MainGame.unity)
+  2. Destroy ALL canvas children
+  3. Build HubRoot + TopBar + BottomNav + ContentSwitcher + 5 panels
+  4. BuildEstudioPanel:
+       StudioHeader (64)
+       StudioVisualStage (LE 160/120 — temporal)
+       BonificationsBar (LE 72, UI completa)
+       DeptBar → DeptScroll → 6 rows × 2 cards
+         BuildMiniCard → DepartmentMiniCardLayoutBuilder.Build()
+           cardLE = 140, rowLE = 140, marker DeptCardLayout_v3
+       ManagementSplit (280, inactive después)
+  5. BuildPremiosPanel (legacy Oscars + AwardsPanelUI component)
+  6. BuildColeccionPanel (CollectionHudShell vacío)
+  7. BuildMenuPanel / TiendaPanel (placeholders + MenuHudShell guard)
+  8. HudDefinitiveSceneBaker.Bake():
+       HudDefinitiveStructureBuilder.Apply()  [IsBaked=false en escena nueva]
+         RestructureProductionPanel
+         RestructureStudioPanel → sub-tabs DEPARTAMENTOS/MEJORAS/CONTRATOS
+         RestructurePremiosPanel → 4 sub-tabs Premios
+         RestructureCollectionPanel → MovieCollectionUI + sub-tabs
+         RestructureMenuPanel → early exit (Tienda preservada)
+         DefinitiveHudShell.appliedMigrationVersion = 3
+       HudLayoutPass.Apply()
+         ApplyEstudioLayout → stage ApplyLayout (150), sub-tabs Compact (56)
+         ApplyProductionLayout, ApplyPlaceholderSections
+  9. WireGameSystems (GameHub + systems serializados)
+  10. SaveScene(MainGame.unity)
+
+================================================================================
+SECCIÓN 5 — CONFIRMACIÓN: ¿QUÉ HARÁ EL NUEVO BAKE?
+================================================================================
+
+┌────────────────────────────────────┬──────────┬─────────────────────────────┐
+│ Pregunta                           │ Resultado│ Evidencia                   │
+├────────────────────────────────────┼──────────┼─────────────────────────────┤
+│ ¿Reducirá Department Cards a 140?  │ SÍ ✓     │ BuildMiniCard →             │
+│                                    │          │ DepartmentMiniCardLayout    │
+│                                    │          │ Builder.Build() CardHeight  │
+│                                    │          │ =140 serializado en .unity  │
+├────────────────────────────────────┼──────────┼─────────────────────────────┤
+│ ¿Reducirá filas a 140?             │ SÍ ✓     │ rowLE.preferredHeight =     │
+│                                    │          │ CardHeight (140) en         │
+│                                    │          │ BuildDeptGrid línea 450     │
+├────────────────────────────────────┼──────────┼─────────────────────────────┤
+│ ¿Mantendrá vitrina Premios         │ SÍ ✓     │ AwardsPanelUI component   │
+│ funcional?                         │          │ en PremiosPanel;            │
+│                                    │          │ EnsureBuilt() reconstruye   │
+│                                    │          │ vitrina con Scroll LE fix   │
+│                                    │          │ al entrar en Play Mode      │
+│                                    │          │ NOTA: sub-tabs Premios se   │
+│                                    │          │ destruyen al Play (actual)  │
+├────────────────────────────────────┼──────────┼─────────────────────────────┤
+│ ¿Mantendrá Tienda funcional?       │ SÍ ✓     │ TiendaPanel preservado;     │
+│                                    │          │ DefinitiveHudBootstrap      │
+│                                    │          │ .EnsureStorePanel() añade   │
+│                                    │          │ StorePanelUI en runtime;    │
+│                                    │          │ oculta placeholders         │
+├────────────────────────────────────┼──────────┼─────────────────────────────┤
+│ ¿Mantendrá Colección funcional?   │ SÍ ✓     │ RestructureCollectionPanel  │
+│                                    │          │ añade MovieCollectionUI;    │
+│                                    │          │ allMovies cableado desde    │
+│                                    │          │ MovieTabUI; BuildAllLevels  │
+│                                    │          │ en Play reconstruye L1/L2/L3│
+└────────────────────────────────────┴──────────┴─────────────────────────────┘
+
+Cálculos de layout esperados tras rebake + Play:
+
+  Scroll content departamentos:
+    6 filas × 140 + 5 gaps × 8 + padding 16 = 896 px
+    (vs 1208 px actual con filas de 192)
+
+  EstudioPanel distribución vertical (1700 px, sin cambio en stage/tabs runtime):
+    Fijos: 64 + 150 + 56* + 72 = 342 px  (*56 en bake, 64 tras patch runtime)
+    StudioSubContent flex: 1700 - 342 = 1358 px
+    (vs 1412 actual con cards 192; viewport crece ~54 px si tabs=56,
+     o ~46 px menos si tabs parcheados a 64)
+
+================================================================================
+SECCIÓN 6 — ESTADO ACTUAL vs POST-REBAKE (MainGame.unity)
+================================================================================
+
+┌─────────────────────────────┬─────────────────┬─────────────────────────────┐
+│ Métrica                     │ Escena ACTUAL   │ Tras Build Studio UI        │
+├─────────────────────────────┼─────────────────┼─────────────────────────────┤
+│ Card LE prefH               │ 192 (17 inst.)  │ 140 (11 cards + 6 rows)     │
+│ Card LE minH                │ 192 (11 inst.)  │ 140                         │
+│ Row LE prefH                │ 192 (6 rows)    │ 140                         │
+│ DeptCardLayout_v3 markers   │ 11              │ 11 (recreados)              │
+│ StudioVisualStage LE prefH  │ 100 (runtime)   │ 150 (ApplyLayout en bake)   │
+│ StudioSubTabBar LE prefH    │ 52→64 runtime   │ 56 bake → 64 runtime patch  │
+│ StorePanelUI en escena      │ NO              │ NO (runtime injection)      │
+│ AwardsPanelUI en escena     │ SÍ              │ SÍ                          │
+│ MovieCollectionUI en escena │ SÍ              │ SÍ (re-cableado)            │
+│ ManagementSplit             │ inactive 280    │ inactive 280 (re-creado)    │
+│ m_PreferredHeight:192 count │ 17              │ 0                           │
+│ m_PreferredHeight:140 count │ 0               │ ~17                         │
+└─────────────────────────────┴─────────────────┴─────────────────────────────┘
+
+================================================================================
+SECCIÓN 7 — RIESGOS Y PRECAUCIONES ANTES DE REBAKE
+================================================================================
+
+  ALTO — Destrucción total del Canvas
+    Build Studio UI elimina TODA la jerarquía UI actual antes de reconstruir.
+    Cualquier ajuste manual en el Inspector se perderá.
+
+  MEDIO — GameHub y referencias serializadas
+    WireGameSystems() repuebla GameHub desde cero. Verificar que systems y
+    arrays de upgrades/contratos/movies queden correctos post-build.
+
+  MEDIO — Sub-tabs Premios destruidos en Play
+    AwardsPanelUI.EnsureBuilt() elimina PremiosSubTabBar al entrar en Play.
+    La vitrina funciona; los 4 sub-tabs internos de Premios NO sobreviven Play.
+    (Comportamiento idéntico al estado actual funcional post-fix.)
+
+  BAJO — Sub-tab height 56 vs 64
+    Se corrige automáticamente en AfterSceneLoad vía DefinitiveHudBootstrap.
+
+  BAJO — Legacy serializado innecesario
+    ManagementSplit, OscarsCard, Tienda placeholders ocupan espacio en .unity
+    pero no afectan funcionalidad en Play Mode.
+
+  INFO — "Bake Definitive HUD" NO sustituye a Build Studio UI
+    Si la escena ya está bakeada, ese menú es NO-OP y NO actualizaría cards.
+
+================================================================================
+SECCIÓN 8 — VEREDICTO FINAL
+================================================================================
+
+  ¿Es seguro proceder con Build Studio UI para aplicar CardHeight=140?
+    SÍ — es el único camino que serializa 140 px en cards y filas.
+
+  ¿Los valores aprobados de ESTUDIO-TUNING se reflejarán en el bake?
+    CardHeight 140        → SÍ (serializado)
+    Row height 140        → SÍ (serializado)
+    StudioVisualStage 150 → SÍ (ApplyLayout durante HudLayoutPass)
+    Sub-tabs 64           → NO en bake; SÍ tras primer Play (runtime patch)
+
+  ¿Premios / Tienda / Colección seguirán funcionando?
+    SÍ — los tres usan self-build runtime con el código actual aprobado.
+    No dependen de layout bakeado para su UI final.
+
+  Recomendación:
+    Proceder con Build Studio UI cuando se desee aplicar 140 px de forma
+    permanente en escena. Hacer backup de MainGame.unity o commit git previo.
+    Tras el bake, verificar en Play Mode:
+      1. Cards rect.height = 140
+      2. Scroll content height ≈ 896 px
+      3. Premios vitrina visible (28 estrellas)
+      4. Tienda StoreRoot visible
+      5. Colección L1 genre grid visible
+
+================================================================================
+FIN DEL INFORME — Build Studio UI NO EJECUTADO
+================================================================================

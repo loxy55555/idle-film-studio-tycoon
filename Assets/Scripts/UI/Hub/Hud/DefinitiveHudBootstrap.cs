@@ -71,7 +71,7 @@ public static class DefinitiveHudBootstrap
 
             // Update LayoutElement
             var barLE = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
-            barLE.preferredHeight = 52f;   // 8.6B: taller tabs (was SubTabFontSize-height ~40)
+            barLE.preferredHeight = 64f;   // ESTUDIO-TUNING: taller tabs (was 52)
             barLE.minHeight       = 48f;
             barLE.flexibleHeight  = 0f;
 

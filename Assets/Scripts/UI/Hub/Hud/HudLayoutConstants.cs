@@ -10,7 +10,7 @@ public static class HudLayoutConstants
     // the bonus bar visible beneath it.
     public const float StudioVisualShare    = 0.12f;
     public const float StudioVisualMinHeight = 80f;
-    public const float StudioVisualFixedHeight = 100f;
+    public const float StudioVisualFixedHeight = 150f;
 
     public const float SectionHeaderHeight = 18f;
 
