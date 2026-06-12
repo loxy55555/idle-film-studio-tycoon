@@ -1,0 +1,159 @@
+FASE 6.7 — Collection Border Audit Report
+==========================================
+Date: 2026-06-10
+Mode: READ-ONLY (no fixes applied)
+
+PROBLEM STATEMENT
+-----------------
+In some genres, multiple movies show yellow/gold borders.
+User needs to know: what each color means, when applied, and why duplicates occur.
+
+SUMMARY
+-------
+Collection poster borders are colored ONLY by MovieRarity tier (and legendary lock tint).
+Multiple Epic movies in the same genre ALL receive identical EpicGold yellow borders.
+This is BY DESIGN in current code — not a per-movie state bug.
+Discovery, saga, selection, and genre do NOT affect border color.
+
+BORDER COLOR MEANINGS
+---------------------
+
+Collection (CollectionMovieCardView + MovieRarityVisual + CollectionLegendaryVisual):
+
+| Color              | RGB (approx)              | Meaning                          | Source                        |
+|--------------------|---------------------------|----------------------------------|-------------------------------|
+| Dark blue          | (0.12, 0.22, 0.42) @ 55%  | Common rarity frame              | MovieRarityVisual.CommonBlue  |
+| Purple             | (0.45, 0.22, 0.72) @ 55%  | Rare rarity frame                | MovieRarityVisual.RarePurple  |
+| Yellow / gold      | (0.72, 0.58, 0.18) @ 55%  | Epic rarity frame                | MovieRarityVisual.EpicGold    |
+| Bright gold        | (0.92, 0.76, 0.18) @ 95%  | Legendary frame (unlocked)       | CollectionLegendaryVisual     |
+| Dim gold           | (0.62, 0.48, 0.14) @ 85%  | Legendary frame (locked)         | CollectionLegendaryVisual     |
+
+Related colors (NOT poster borders — often confused):
+
+| Color              | Used for                                      |
+|--------------------|-----------------------------------------------|
+| Green (0.18,0.80,0.44) | Legendary "Discovered" label text         |
+| Red (0.95,0.45,0.35)   | Legendary "BLOQUEADA" label text          |
+| Dark silhouette        | Undiscovered non-legendary POSTER fill    |
+| Yellow header text     | Legendary section header in genre accordion |
+| Green progress bars    | Genre/global collection completion          |
+
+Production tab (MovieButtonUI):
+  Same MovieRarityVisual palette; Legendary uses LegendaryDim (0.55, 0.38, 0.12)
+  File: Assets/Scripts/UI/Production/MovieRarityVisual.cs
+
+MoviePosterVisual:
+  Poster sprite/color ONLY — no border logic
+  File: Assets/Scripts/UI/Production/MoviePosterVisual.cs
+
+WHEN EACH BORDER IS APPLIED
+---------------------------
+
+Rendering pipeline:
+  MovieCollectionUI.Refresh()
+    → CollectionCatalogModel.Build()
+    → CollectionGenreSectionView.Create() per genre
+      → BuildRaritySection() per rarity tier
+        → CollectionMovieCardView.Build() per movie
+
+Frame assignment (CollectionMovieCardView.cs L43-48):
+  if (isLegendary)
+    CollectionLegendaryVisual.ApplyLegendaryFrame(frame, entry.legendaryLocked)
+  else
+    MovieRarityVisual.ApplyFrame(frame, cfg.rarity)
+
+Conditions affecting border:
+
+| State                        | Affects frame? | What changes instead                |
+|------------------------------|----------------|-------------------------------------|
+| cfg.rarity                   | YES — sole driver for non-legendary | —                    |
+| entry.discovered             | NO             | Poster (silhouette vs real), title  |
+| entry.legendaryLocked        | YES (legendary only) | Bright vs dim gold frame    |
+| Saga membership              | NO             | No saga border code in Collection/  |
+| Selection / highlight        | NO             | Collection cards not selectable     |
+| Genre grouping               | NO             | Groups cards; does not tint frames  |
+
+Discovery logic (poster only, NOT frame):
+  CollectionMovieCardView.cs L62-72 — silhouette when !discovered
+
+WHY MULTIPLE YELLOW BORDERS IN ONE GENRE
+----------------------------------------
+Three reinforcing causes:
+
+1. Frame color = rarity tier, NOT movie identity
+   Every Epic card calls MovieRarityVisual.ApplyFrame(..., Epic) → same EpicGold.
+
+2. Epic AND Legendary both read as yellow/gold
+   Epic → EpicGold yellow
+   Legendary → FrameGoldBright / FrameGoldLocked (also gold)
+   One genre accordion can show many gold-framed cards across Epic + Legendary sections.
+
+3. Catalog data: multiple Epic entries per genre
+   Example — Documentary genre:
+     Documentary_Border_Seeds          (Epic)
+     Documentary_The_Glassblower       (Epic)
+     Documentary_The_Archivist         (Epic)
+     Documentary_Voices_of_the_Deep_II (Epic)
+     Documentary_Legendary             (Legendary)
+   → 5 gold/yellow-framed cards in one genre section.
+
+   Comedy: 2 Epic + 1 Legendary = 3 gold-looking cards.
+
+Discovery does NOT differentiate frames:
+  Undiscovered Epic still gets same yellow border as discovered Epic in genre.
+
+COMPONENT AUDIT
+---------------
+
+MovieButtonUI (production, not collection):
+  MovieRarityVisual.ApplyFrame(rarityFrame, movieConfig.rarity) every RefreshUI
+  Lock state toggles overlay — does NOT change frame color
+  File: Assets/Scripts/UI/MovieButtonUI.cs L118-119
+
+MoviePosterVisual:
+  No border/frame logic
+
+CollectionGenreSectionView:
+  Yellow text on Legendary section HEADER only (L130) — not card borders
+  File: Assets/Scripts/UI/Collection/CollectionGenreSectionView.cs
+
+CollectionCatalogModel:
+  Passes cfg.rarity unchanged into entries — no per-movie border variant
+  File: Assets/Scripts/UI/Collection/CollectionCatalogModel.cs L92-97
+
+ROOT CAUSE (exact)
+------------------
+CollectionMovieCardView assigns RarityFrame color from cfg.rarity ONLY,
+independent of discovery, saga, or selection.
+Multiple movies sharing a rarity tier in one genre MUST share identical borders.
+
+Primary evidence:
+  CollectionMovieCardView.cs L45-48 — frame from rarity / legendary lock only
+  MovieRarityVisual.cs L10, L24, L38-42 — Epic → shared EpicGold
+  CollectionLegendaryVisual.cs L7-15 — separate gold path for legendaries
+  CollectionMovieCardView.cs L62-72 vs L45-48 — discovery affects poster, not frame
+
+NOT A BUG (current design):
+  Multiple yellow borders in one genre = multiple Epic/Legendary movies correctly
+  rendered with tier-based coloring.
+
+NOT IMPLEMENTED (would require new design):
+  • Unique border per movie within genre
+  • Green border = discovered / red = locked (non-legendary)
+  • Saga-progress border states
+  • Selection highlight in collection
+
+ANSWERS TO REQUIRED QUESTIONS
+-----------------------------
+Q: ¿Qué significa cada color de borde?
+A: Blue=Common, Purple=Rare, Yellow=Epic, Gold=Legendary (bright=unlocked, dim=locked)
+
+Q: ¿Cuándo se aplica?
+A: At card build time from cfg.rarity; legendaries also use legendaryLocked for tint
+
+Q: ¿Por qué varias películas reciben el mismo estado?
+A: Same rarity tier → same border color by design; genres group multiple Epic/Legendary
+
+STATUS: ROOT CAUSE IDENTIFIED — rarity-tier coloring (expected behavior)
+
+NOTE: No code changes applied (audit only).

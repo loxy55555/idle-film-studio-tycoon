@@ -1,0 +1,11 @@
+CONTRACT CANDIDATE LAYOUT FIX REPORT (Phase 8.2)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Root cause (Phase 8.1B) ---
+FixedSlotHeightPublic = 110px; content ~148px → select button clipped.
+
+--- Fix ---
+FixedSlotHeightPublic = 148f
+Visible: title, description, objective, reward, select button

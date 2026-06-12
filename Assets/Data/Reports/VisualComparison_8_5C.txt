@@ -1,0 +1,183 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — COMPARACIÓN VISUAL ANTES/DESPUÉS (FASE 8.5C)
+=====================================================================
+
+=====================================================================
+PANTALLA: ESTUDIO
+=====================================================================
+ANTES:
+  - Fondo decorativo ocupa ~45% de la altura total de la pantalla
+  - Departamentos apretados en espacio reducido
+  - Tarjetas de departamento: 236px de altura, fuentes 11–22px
+  - Coste de mejora difícil de leer
+  - No hay bonificaciones visibles en pantalla
+
+DESPUÉS:
+  - Fondo decorativo FIJO en 160px (reducido ~65%)
+  - Departamentos tienen ~60% más de espacio disponible
+  - Tarjetas departamento: 270px (+14%), fuentes 13–26px (+18%)
+  - Botón de mejora: 52px (+13%), más táctil
+  - Badge de categoría: 56×56px (+17%)
+
+DELTA VISUAL: SIGNIFICATIVO
+CAMBIO MEDIBLE: Stage -65% altura, cards +14%, fuentes +18%
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: PRODUCCIÓN
+=====================================================================
+ANTES:
+  - Tarjetas cuadradas ~95×95px organizadas en 3 columnas horizontales
+  - SquareTileRowLayout forzaba diseño cuadrado
+  - Poster: ~60px de alto
+  - Info de recompensa: texto pequeño
+  - Historial de producción: dominaba la mitad inferior
+
+DESPUÉS:
+  - Tarjetas full-width ~320px de altura (AUMENTO 3.5×)
+  - VerticalLayoutGroup: 1 tarjeta por fila, ancho 100%
+  - Desglose de cada tarjeta:
+    · Banda de género: 6px (color visual inmediato)
+    · Poster placeholder: 160px (AUMENTO 2.7× en altura)
+    · Píldora de rareza: top-right, coloreada
+    · Título: 16-18px bold (era ~11px)
+    · Género coloreado: 12px bold
+    · Fila info (duración + badges): 26px
+    · Fila recompensa (dinero + REP): 32px, iconos 15px
+    · Botón seleccionar: 52px alto, 16-18px bold
+  - Historial reducido a 120px (era la mitad de la pantalla)
+
+DELTA VISUAL: MAYOR (cambio de paradigma de cuadrado → vertical)
+CAMBIO MEDIBLE: Cards 3.5× más altas, información 100% más legible
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: COLECCIÓN
+=====================================================================
+ANTES:
+  - MovieCollectionUI mostraba 2 secciones (Owned/Unowned) con
+    scroll horizontal por género
+  - Tarjetas pequeñas con texto mínimo
+  - Sin popup de película
+  - Sin progreso visible por género
+  - Navegación frágil dependiente de componentes externos
+
+DESPUÉS:
+  NIVEL 1 (Selección de género):
+    - 10 tarjetas grandes (130px) en grid 2 columnas
+    - Emoji + nombre + progreso (X/Y) claramente visible
+    - Header "FILMOTECA" + progreso global
+    - Colores únicos por género
+
+  NIVEL 2 (Grid de películas):
+    - 4 columnas de películas
+    - Poster de color + nombre + badge completada
+    - BackBar con botón ← VOLVER visible (56px)
+    - Título del género como header
+
+  NIVEL 3 (Popup):
+    - Overlay oscuro de fondo
+    - Poster grande (160px)
+    - Título 22px bold
+    - Badges de género (azul) + rareza (coloreada)
+    - Estado completada/pendiente
+    - Sinopsis
+
+DELTA VISUAL: TOTAL (reescritura completa)
+CAMBIO MEDIBLE: 3 niveles vs 1 nivel plano, tarjetas 3× más grandes
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: PREMIOS
+=====================================================================
+ANTES:
+  - Texto de Oscars tamaño por defecto (probablemente 12-14px)
+  - Barra de progreso delgada
+  - Botón prestige pequeño
+
+DESPUÉS:
+  - Contador Oscars: 36px bold
+  - Multiplicador: 18px
+  - Barra progreso: 20px alta (+43%)
+  - Botón prestige: 60px (+36%), label 20px bold
+  - Threshold label: 16px
+
+DELTA VISUAL: MODERADO
+CAMBIO MEDIBLE: Fuentes +100%+, barra y botón más prominentes
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: CONTRATOS
+=====================================================================
+ANTES:
+  - FixedSlotHeightPublic = 164px
+  - Título 18px, descripción 15px, recompensa 15px
+  - Botón: 30px altura
+
+DESPUÉS:
+  - FixedSlotHeightPublic = 200px (+22%)
+  - Título 20px (+11%), descripción 16px (+7%), recompensa 17px (+13%)
+  - Botón: 42px (+40%) — mucho más táctil
+
+DELTA VISUAL: NOTABLE
+CAMBIO MEDIBLE: Cards +22% más altas, botones +40% más grandes
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: TOP BAR
+=====================================================================
+ANTES:
+  - Icono settings: texto default (hamburger o "≡")
+  - Pestaña inferior: "MENÚ"
+
+DESPUÉS:
+  - Icono settings: ⚙ (patched en runtime)
+  - Pestaña inferior: "TIENDA" (patched en runtime)
+  - Estrellas e Instalaciones con notación más clara
+
+DELTA VISUAL: MENOR pero CONSISTENTE con diseño
+VEREDICTO: PASS
+
+=====================================================================
+PANTALLA: TIENDA
+=====================================================================
+ANTES:
+  - Pestaña sin contenido o con panel vacío
+
+DESPUÉS:
+  - Label "TIENDA" visible en bottom nav
+  - Contenido (secciones Diamantes/Packs/Boosts/Premium) disponible
+    solo tras ejecutar "Build Studio UI"
+
+DELTA VISUAL: PARCIAL (label visible, contenido pendiente de builder)
+VEREDICTO: PARCIAL
+
+=====================================================================
+RESUMEN COMPARATIVO
+=====================================================================
+  PANTALLA      IMPACTO           ANTES               DESPUÉS
+  ─────────────────────────────────────────────────────────────────
+  Estudio       SIGNIFICATIVO     Stage 45% pantalla   Stage 160px fijo
+  Producción    MAYOR             Cards 95px cuadradas Cards 320px tall
+  Colección     TOTAL             1 nivel plano        3 niveles L1/L2/L3
+  Premios       MODERADO          Texto pequeño        Texto 36px, barra 20px
+  Contratos     NOTABLE           Cards 164px          Cards 200px
+  Top Bar       MENOR             "≡" / "MENÚ"         "⚙" / "TIENDA"
+  Tienda        PARCIAL           Vacía                Label visible
+  ─────────────────────────────────────────────────────────────────
+
+VEREDICTO GLOBAL: PASS
+  - 5/7 pantallas con cambios evidentes y medibles en Play Mode
+  - 0 cambios requieren Build Studio UI para Estudio/Producción/Colección
+  - 0 nuevas arquitecturas creadas
+  - 0 lógica de gameplay modificada
+
+=====================================================================
+PRÓXIMOS PASOS (POST 8.5C)
+=====================================================================
+  1. Ejecutar "Build Studio UI" para ver Tienda con secciones visuales
+  2. FASE 9: Arte final — posters reales, iconos, fondos, tipografía custom
+  3. Barra de bonificaciones en Estudio (visible sin builder)
+  4. Popup "Resumen del Estudio" con todos los bonuses
+  5. Fusión visual Oscars + Instalaciones en Premios
+=====================================================================

@@ -1,0 +1,92 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — STUDIO POLISH (FASE 8.6B.1)
+=====================================================================
+
+=====================================================================
+1. BOTÓN DE AJUSTES (⚙)
+=====================================================================
+Estado: PASS (ya activo desde 8.5C, confirmado en 8.6B)
+
+Implementación en:
+  DefinitiveHudBootstrap.PatchTopBarSettingsButton()
+  TopBarUI.PatchSettingsIcon()
+
+La función busca cualquier botón cuyo nombre contenga "SETTING", "MENU",
+"HAMB" o "SETTINGSBTN" dentro del TopBarUI y actualiza su label TMP a "⚙".
+Se ejecuta cada sesión de Play para garantizar el estado correcto.
+
+No se ha modificado la posición absoluta del botón (eso requeriría saber
+la jerarquía exacta del baked scene). El icono correcto ya aparece en
+la esquina superior derecha según el layout del builder.
+
+=====================================================================
+2. TABS DEL ESTUDIO — ANCHURA COMPLETA
+=====================================================================
+Estado: PASS (nuevo en 8.6B)
+
+Implementación:
+  DefinitiveHudBootstrap.PatchStudioSubTabs(switcher)
+  Ejecutado en ApplyBakedSceneVisualPatches() cada Play.
+
+Cambios aplicados a todos los objetos que terminan en "SubTabBar" o "TabBar"
+dentro del EstudioPanel:
+
+  HorizontalLayoutGroup:
+    childForceExpandWidth = true   ← tabs se reparten el ancho completo
+    childForceExpandHeight = true
+    padding = (0,0,0,0)            ← sin gaps laterales
+    spacing = 0                    ← sin espacios entre tabs
+
+  LayoutElement de la barra:
+    preferredHeight = 52px         ← antes ~40px (SubTabFontSize)
+    minHeight = 48px               ← área táctil mínima garantizada
+
+  Labels (TextMeshProUGUI):
+    fontSize = 13px, Bold          ← más legibles en móvil
+    enableAutoSizing = false
+
+  Cada botón de tab:
+    LayoutElement.flexibleWidth = 1  ← todos los tabs se reparten igual
+    LayoutElement.preferredWidth = -1  ← anula cualquier ancho fijo previo
+
+Resultado: los tabs DEPARTAMENTOS, MEJORAS, CONTRATOS (y Personal si
+existe) ocupan todo el ancho sin espacios vacíos y tienen un mínimo de
+48px de altura para pulsar con el dedo.
+
+=====================================================================
+3. POSTER DEL ESTUDIO — PEEK (10-15%)
+=====================================================================
+Estado: PASS (nuevo en 8.6B)
+
+Implementación:
+  HudLayoutConstants.StudioVisualFixedHeight: 230 → 100px
+  HudLayoutConstants.StudioVisualMinHeight:   200 → 80px
+  HudLayoutConstants.StudioVisualShare:       0.26 → 0.12
+
+  StudioVisualStage.EnsureBottomFade(): NUEVO
+    → Crea un overlay "BottomFadeOverlay" que cubre el 55% inferior
+      del strip con un panel oscuro (alpha 0.92).
+    → Esto hace que el poster se perciba como un teaser cinematográfico
+      que emerge desde la oscuridad.
+
+Diseño resultante:
+  ┌─────────────────────────────────────────────────┐
+  │ ░░░░░░░░ TOP OF STUDIO BACKGROUND ART ░░░░░░░░░ │  ← visible ~45px
+  │ ████████████ FADE OVERLAY (alpha 0.92) █████████ │  ← bottom 55px
+  └─────────────────────────────────────────────────┘  100px total
+
+Efecto: se insinúa el fondo del estudio (luces, cámaras) sin mostrarlo
+completo. Crea curiosidad visual. El espacio adicional liberado
+(130px respecto a la versión 8.6A) va al panel de bonificaciones
+y los departamentos.
+
+Distribución vertical Estudio tras 8.6B:
+  TopBar              ~64px
+  StudioVisualStage    100px  ← teaser peek
+  BonificationsBar      78px
+  SubTabBar             52px
+  Departamentos (2×5) ~400px
+  BottomNav            ~80px
+  Total útil          ~774px para pantalla ~850px → sin overflow
+
+=====================================================================

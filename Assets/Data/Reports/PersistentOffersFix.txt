@@ -1,0 +1,19 @@
+﻿FASE 7.3 — Persistent Movie Offers Fix
+Generated: 2026-06-12
+STATUS: PASS
+
+FIX
+  MovieOfferState — persistent 3-slot offer keys
+  Save v5 field: currentOffers[]
+  MovieTabUI.RefreshOfferDisplay — render only, no random reroll on tab switch
+
+REGENERATION RULES
+  ✓ Initial load when no offers saved
+  ✓ Consume offer + refill (production start)
+  ✓ ForceRegenerateAll (future reroll hook)
+  ✗ Tab switch / OnEnable — NO reroll
+
+FILES
+  Assets/Scripts/Core/MovieOfferState.cs
+  Assets/Scripts/SaveSystem.cs (v5)
+  Assets/Scripts/UI/Hub/MovieTabUI.cs

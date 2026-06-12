@@ -3,29 +3,31 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Displays a single contract card (active or history).
+/// Displays a single contract card (active, candidate, or history).
 /// </summary>
 public class ContractCardUI : MonoBehaviour
 {
     public ContractConfig contract;
     public bool isHistoryMode;
+    public bool isCandidateMode;
 
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI descText;
+    public TextMeshProUGUI objectiveText;
     public TextMeshProUGUI rewardText;
     public TextMeshProUGUI progressText;
     public Slider          progressBar;
     public Button          claimButton;
+    public Button          selectButton;
     public GameObject      completedBadge;
 
-    private ContractSystem    _contracts;
-    private StudioManager     _studio;
-    private StudioLevelSystem _studioLevel;
-    private SmoothProgressBar _smoothBar;
-    private bool              _eventsBound;
-    private bool              _buttonsWired;
+    ContractSystem    _contracts;
+    StudioManager     _studio;
+    StudioLevelSystem _studioLevel;
+    SmoothProgressBar _smoothBar;
+    bool              _eventsBound;
 
-    private void Awake()
+    void Awake()
     {
         GameHub.OnGameReady += Bind;
         WireButtons();
@@ -33,28 +35,30 @@ public class ContractCardUI : MonoBehaviour
             _smoothBar = progressBar.gameObject.AddComponent<SmoothProgressBar>();
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
         if (GameHub.Instance != null)
             Bind();
     }
 
-    private void Start()
+    void Start()
     {
         if (GameHub.Instance != null)
             Bind();
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
         GameHub.OnGameReady -= Bind;
         UnbindContractEvents();
         if (claimButton != null)
             claimButton.onClick.RemoveListener(OnClaimClicked);
+        if (selectButton != null)
+            selectButton.onClick.RemoveListener(OnSelectClicked);
     }
 
-    private void OnContractsUpdated() => RefreshUI();
-    private void OnContractDone(ContractConfig _) => RefreshUI();
+    void OnContractsUpdated() => RefreshUI();
+    void OnContractDone(ContractConfig _) => RefreshUI();
 
     public void Bind()
     {
@@ -75,13 +79,21 @@ public class ContractCardUI : MonoBehaviour
 
     void WireButtons()
     {
-        if (_buttonsWired || claimButton == null) return;
-        claimButton.onClick.RemoveListener(OnClaimClicked);
-        claimButton.onClick.AddListener(OnClaimClicked);
-        _buttonsWired = true;
+        // Always rewire — buttons are assigned by the factory after Awake(), so the
+        // first call (from Awake) finds nulls and the guard must NOT block later calls.
+        if (claimButton != null)
+        {
+            claimButton.onClick.RemoveListener(OnClaimClicked);
+            claimButton.onClick.AddListener(OnClaimClicked);
+        }
+        if (selectButton != null)
+        {
+            selectButton.onClick.RemoveListener(OnSelectClicked);
+            selectButton.onClick.AddListener(OnSelectClicked);
+        }
     }
 
-    private void BindContractEvents()
+    void BindContractEvents()
     {
         if (_contracts == null || _eventsBound) return;
         _contracts.OnContractUpdated   += OnContractsUpdated;
@@ -89,7 +101,7 @@ public class ContractCardUI : MonoBehaviour
         _eventsBound = true;
     }
 
-    private void UnbindContractEvents()
+    void UnbindContractEvents()
     {
         if (_contracts == null || !_eventsBound) return;
         _contracts.OnContractUpdated   -= OnContractsUpdated;
@@ -113,19 +125,43 @@ public class ContractCardUI : MonoBehaviour
             if (_contracts == null) return;
         }
 
+        if (descText != null) descText.text = contract.description;
+        if (objectiveText != null)
+            objectiveText.text = Loc.Format(LocKeys.ContractActiveObjective, ContractSystem.BuildObjectiveLabel(contract));
+        if (rewardText != null) rewardText.text = BuildRewardString();
+
+        if (isCandidateMode)
+        {
+            if (progressText != null) progressText.gameObject.SetActive(false);
+            if (progressBar != null) progressBar.gameObject.SetActive(false);
+            if (claimButton != null) claimButton.gameObject.SetActive(false);
+            if (selectButton != null)
+            {
+                selectButton.gameObject.SetActive(true);
+                selectButton.interactable = _contracts.IsCandidate(contract);
+            }
+            return;
+        }
+
         float progress = _contracts.GetProgress(contract);
         bool  ready    = _contracts.IsReadyToClaim(contract);
 
-        if (descText != null) descText.text = contract.description;
-        if (rewardText != null) rewardText.text = BuildRewardString();
-        if (progressText != null) progressText.text = $"{progress:0}/{contract.goalAmount:0}";
-
-        if (_smoothBar != null)
-            _smoothBar.SetTarget(progress, contract.goalAmount);
-        else if (progressBar != null)
+        if (progressText != null)
         {
-            progressBar.maxValue = contract.goalAmount;
-            progressBar.value = progress;
+            progressText.gameObject.SetActive(true);
+            progressText.text = $"{progress:0}/{contract.goalAmount:0}";
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.gameObject.SetActive(true);
+            if (_smoothBar != null)
+                _smoothBar.SetTarget(progress, contract.goalAmount);
+            else
+            {
+                progressBar.maxValue = contract.goalAmount;
+                progressBar.value = progress;
+            }
         }
 
         if (completedBadge != null) completedBadge.SetActive(ready);
@@ -135,9 +171,12 @@ public class ContractCardUI : MonoBehaviour
             claimButton.gameObject.SetActive(ready);
             claimButton.interactable = ready;
         }
+
+        if (selectButton != null)
+            selectButton.gameObject.SetActive(false);
     }
 
-    private string BuildRewardString()
+    string BuildRewardString()
     {
         var parts = new System.Collections.Generic.List<string>();
         if (contract.rewardMoney > 0) parts.Add(AnimatedMoneyText.FormatMoney(contract.rewardMoney));
@@ -147,9 +186,15 @@ public class ContractCardUI : MonoBehaviour
         return string.Join("  ", parts);
     }
 
-    private void OnClaimClicked()
+    void OnClaimClicked()
     {
         if (contract == null || _contracts == null) return;
         _contracts.ClaimReward(contract, _studio, _studioLevel);
+    }
+
+    void OnSelectClicked()
+    {
+        if (contract == null || _contracts == null) return;
+        _contracts.SelectCandidate(contract);
     }
 }

@@ -1,0 +1,18 @@
+﻿FASE 7.3 — FTUE Completion Fix
+Generated: 2026-06-12
+STATUS: PASS
+
+FIX
+  New step: FtueStep.AwaitCompletion
+  FTUE completes ONLY via OnFinalFtueConfirm when:
+    - First movie completed (CompletedMovieKeys >= 1)
+    - Studio upgrade purchased (any upgrade level > 0)
+    - User clicks final Continue button
+
+  Premiere dismiss / fallback → EnterAwaitCompletion (NOT CompleteFtue)
+  Skip button still completes FTUE (softlock escape)
+
+FILES
+  Assets/Scripts/FTUE/FtueController.cs
+  Assets/Scripts/FTUE/FtueState.cs
+  Assets/Scripts/Localization/LocKeys.cs (FtueCompleteBody)

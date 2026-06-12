@@ -156,7 +156,7 @@ public class CityPanelUI : MonoBehaviour
         Stretch(_cityNameText.rectTransform);
 
         var oscCard = MakeCard(content.transform, "OscarCard", 0);
-        AddCardHeader(oscCard, "PROGRESO DE CIUDAD");
+        AddCardHeader(oscCard, Loc.Get(LocKeys.InstProgressScreen));
         _oscarText = AddCardBody(oscCard, "0 / 1 OSC", 18, ACCENT_GOLD);
 
         var barGo = new GameObject("ProgressBar", typeof(RectTransform), typeof(Image), typeof(Slider));
@@ -179,7 +179,7 @@ public class CityPanelUI : MonoBehaviour
         _unlockSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 72;
 
         var nextCard = MakeCard(content.transform, "NextCard", 0);
-        AddCardHeader(nextCard, "PRÓXIMO NIVEL");
+        AddCardHeader(nextCard, Loc.Get(LocKeys.InstNextLevel));
         _nextPreviewText = AddCardBody(nextCard, "—", 16, TEXT_DIM);
         _nextPreviewText.textWrappingMode = TextWrappingModes.Normal;
         _nextPreviewText.gameObject.AddComponent<LayoutElement>().preferredHeight = 72;
@@ -192,7 +192,7 @@ public class CityPanelUI : MonoBehaviour
         _upgradeButton = btnGo.GetComponent<Button>();
         _upgradeButton.onClick.AddListener(OnUpgradeClicked);
 
-        var btnLabel = RuntimeTmpText.Create(btnGo.transform, "MEJORAR ESTUDIO", 18, TEXT_PRI, FontStyles.Bold,
+        var btnLabel = RuntimeTmpText.Create(btnGo.transform, Loc.Get(LocKeys.InstUpgrade), 18, TEXT_PRI, FontStyles.Bold,
             TextAlignmentOptions.Center);
         Stretch(btnLabel.rectTransform);
     }

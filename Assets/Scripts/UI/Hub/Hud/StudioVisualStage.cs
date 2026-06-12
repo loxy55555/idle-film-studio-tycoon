@@ -48,10 +48,11 @@ public class StudioVisualStage : MonoBehaviour
     public void ApplyLayout()
     {
         var le = GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
-        le.flexibleHeight   = HudLayoutConstants.StudioVisualShare;
-        le.flexibleWidth    = 0f;
+        // Phase 8.5C: fixed height — stage is decorative, not dominant
+        le.preferredHeight  = HudLayoutConstants.StudioVisualFixedHeight;
         le.minHeight        = HudLayoutConstants.StudioVisualMinHeight;
-        le.preferredHeight  = 0f;
+        le.flexibleHeight   = 0f;
+        le.flexibleWidth    = 0f;
 
         var image = GetComponent<Image>() ?? gameObject.AddComponent<Image>();
         HudSkinProvider.ApplyPanel(image, HudPanelVariant.Stage);
@@ -94,5 +95,30 @@ public class StudioVisualStage : MonoBehaviour
         var border = transform.Find("SceneBorder");
         if (border != null)
             border.gameObject.SetActive(false);
+
+        EnsureBottomFade();
+    }
+
+    /// <summary>
+    /// Phase 8.6B: gradient fade at the bottom edge of the poster peek strip so it looks
+    /// intentional (teaser) rather than abruptly cropped.
+    /// </summary>
+    void EnsureBottomFade()
+    {
+        const string FadeName = "BottomFadeOverlay";
+        if (transform.Find(FadeName) != null) return;
+
+        var fade = new GameObject(FadeName, typeof(RectTransform), typeof(Image));
+        fade.transform.SetParent(transform, false);
+
+        var rt = fade.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0f, 0f);
+        rt.anchorMax = new Vector2(1f, 0.55f); // covers bottom 55% of the stage strip
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+        // Opaque-at-bottom dark overlay — simulates the poster fading into darkness
+        var img = fade.GetComponent<Image>();
+        img.color = new Color(0.04f, 0.04f, 0.08f, 0.92f);
+        img.raycastTarget = false;
     }
 }

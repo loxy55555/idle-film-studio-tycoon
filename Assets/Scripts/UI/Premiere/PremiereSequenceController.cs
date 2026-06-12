@@ -78,6 +78,7 @@ public class PremiereSequenceController : MonoBehaviour
         {
             _queue.Clear();
             _isPresenting = false;
+            OnPremiereDismissed?.Invoke();
             return;
         }
 

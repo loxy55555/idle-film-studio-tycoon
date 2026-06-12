@@ -3,61 +3,150 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Manages the 2-5 minute session loop through short-term contracts.
+/// Player-chosen contracts: 3 candidates OR 1 active contract (Phase 8.0).
 /// </summary>
 public class ContractSystem : MonoBehaviour
 {
     const string AllGenresContractId = "c_all_genres";
+    public const int CandidateSlotCount = 3;
+    public const int MaxActiveContracts = 1;
 
     [Header("Contract Database")]
     public ContractConfig[] allContracts;
 
-    [Tooltip("Maximum active contracts at once")]
-    public int maxActiveContracts = 3;
+    [Tooltip("Legacy inspector field — always 1 active contract in Phase 8.0")]
+    public int maxActiveContracts = MaxActiveContracts;
 
     public event Action OnContractUpdated;
     public event Action<ContractConfig> OnContractCompleted;
     public event Action<ContractConfig> OnContractClaimed;
+    public event Action<ContractConfig> OnContractSelected;
 
-    private readonly List<ContractConfig>      _active          = new();
-    private readonly Dictionary<string, float> _progress        = new();
-    private readonly Dictionary<string, int>   _genreMask       = new();
-    private readonly HashSet<string>           _readyToClaim    = new();
-    private readonly HashSet<string>           _permanentlyDone = new();
-    private readonly List<ContractConfig>      _history         = new();
+    readonly List<ContractConfig>      _active          = new();
+    readonly List<ContractConfig>      _candidates      = new();
+    readonly Dictionary<string, float> _progress        = new();
+    readonly Dictionary<string, int>   _genreMask       = new();
+    readonly HashSet<string>           _readyToClaim    = new();
+    readonly HashSet<string>           _permanentlyDone = new();
+    readonly List<ContractConfig>      _history         = new();
 
-    public IReadOnlyList<ContractConfig> ActiveContracts  => _active;
-    public IReadOnlyList<ContractConfig> HistoryContracts => _history;
+    public IReadOnlyList<ContractConfig> ActiveContracts    => _active;
+    public IReadOnlyList<ContractConfig> CandidateContracts => _candidates;
+    public IReadOnlyList<ContractConfig> HistoryContracts  => _history;
+
+    public bool HasActiveContract => _active.Count > 0;
+    public bool IsSelectionMode   => !HasActiveContract && _candidates.Count > 0;
+
+    public struct RecoverySnapshot
+    {
+        public bool triggered;
+        public string trigger;
+        public int activeBefore;
+        public int activeAfter;
+        public int maxActive;
+    }
+
+    public static RecoverySnapshot LastRecovery { get; private set; }
+
+    public int ActiveCount => _active.Count;
 
     public void Init(int studioLevel)
     {
         _active.Clear();
+        _candidates.Clear();
         _progress.Clear();
         _genreMask.Clear();
         _readyToClaim.Clear();
         _history.Clear();
-        RefreshContracts(studioLevel);
+        GenerateCandidates(studioLevel);
     }
 
-    public void RefreshContracts(int studioLevel)
+    public RecoverySnapshot EnsureActiveContracts(int studioLevel)
     {
-        if (allContracts == null) return;
+        int before = HasActiveContract ? 1 : _candidates.Count;
+        bool triggered = false;
+        string trigger = "None";
 
-        foreach (var c in allContracts)
+        if (HasActiveContract)
         {
-            if (_active.Count >= maxActiveContracts) break;
-            if (_active.Contains(c)) continue;
-            if (!c.repeatable && _permanentlyDone.Contains(c.id)) continue;
-            if (_readyToClaim.Contains(c.id)) continue;
-            if (studioLevel < c.unlockStudioLevel) continue;
-            if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsContractUnlocked(c)) continue;
-
-            _active.Add(c);
-            if (!_progress.ContainsKey(c.id))
-                _progress[c.id] = 0f;
+            trigger = "ActiveLocked";
+        }
+        else if (_candidates.Count == 0)
+        {
+            GenerateCandidates(studioLevel);
+            triggered = true;
+            trigger = "EmptyCandidates";
+        }
+        else if (_candidates.Count < CandidateSlotCount)
+        {
+            TopUpCandidates(studioLevel);
+            triggered = true;
+            trigger = "TopUpCandidates";
         }
 
+        int after = HasActiveContract ? 1 : _candidates.Count;
+        var snapshot = new RecoverySnapshot
+        {
+            activeBefore = before,
+            activeAfter = after,
+            maxActive = MaxActiveContracts,
+            triggered = triggered,
+            trigger = trigger,
+        };
+        LastRecovery = snapshot;
+
+        if (triggered && after > before)
+        {
+            Debug.Log(
+                $"[ContractSystem] Contract recovery — {before} → {after} " +
+                $"(mode={(HasActiveContract ? "active" : "selection")}, trigger={trigger}).");
+        }
+        else if (triggered && after == 0 && !HasActiveContract)
+        {
+            Debug.LogWarning(
+                $"[ContractSystem] Contract recovery found 0 eligible candidates at studio level {studioLevel}.");
+        }
+
+        return snapshot;
+    }
+
+    /// <summary>Legacy entry point — tops up candidate pool when no active contract.</summary>
+    public void RefreshContracts(int studioLevel)
+    {
+        if (HasActiveContract) return;
+
+        if (_candidates.Count == 0)
+            GenerateCandidates(studioLevel);
+        else
+            TopUpCandidates(studioLevel);
+
         OnContractUpdated?.Invoke();
+    }
+
+    public void ForceRefreshCandidates(int studioLevel)
+    {
+        if (HasActiveContract) return;
+
+        _candidates.Clear();
+        GenerateCandidates(studioLevel);
+        OnContractUpdated?.Invoke();
+    }
+
+    public bool SelectCandidate(ContractConfig contract)
+    {
+        if (contract == null || HasActiveContract) return false;
+        if (!_candidates.Contains(contract)) return false;
+
+        _candidates.Clear();
+        _active.Add(contract);
+        if (!_progress.ContainsKey(contract.id))
+            _progress[contract.id] = 0f;
+
+        Debug.Log($"[ContractSystem] Selected contract: {contract.contractTitle}");
+        OnContractSelected?.Invoke(contract);
+        OnContractUpdated?.Invoke();
+        GameHub.Instance?.save?.Save("ContractSelected");
+        return true;
     }
 
     public float GetProgress(ContractConfig c) =>
@@ -69,8 +158,56 @@ public class ContractSystem : MonoBehaviour
     public bool IsActive(ContractConfig c) =>
         c != null && _active.Contains(c);
 
+    public bool IsCandidate(ContractConfig c) =>
+        c != null && _candidates.Contains(c);
+
+    public bool DoesMovieHelpActiveContract(MovieConfig movie, DepartmentSystem depts = null)
+    {
+        if (movie == null || !HasActiveContract) return false;
+
+        var c = _active[0];
+        if (_readyToClaim.Contains(c.id)) return false;
+
+        switch (c.goalType)
+        {
+            case ContractGoalType.ProduceMovies:
+            case ContractGoalType.EarnMoney:
+                return true;
+            case ContractGoalType.ProduceMoviesByGenre:
+                return movie.genre == c.targetGenre;
+            case ContractGoalType.ReachQuality:
+                if (depts == null) return true;
+                return movie.quality * depts.CalculateQuality() >= c.goalAmount;
+            case ContractGoalType.ProduceMoviesUnderTime:
+                if (depts == null) return true;
+                return (movie.duration / Mathf.Max(0.01f, depts.CalculateSpeed())) <= c.goalAmount;
+            default:
+                return false;
+        }
+    }
+
+    public static string BuildObjectiveLabel(ContractConfig c)
+    {
+        if (c == null) return string.Empty;
+
+        return c.goalType switch
+        {
+            ContractGoalType.ProduceMovies          => Loc.Format(LocKeys.ContractObjProduceMovies, c.goalAmount),
+            ContractGoalType.ProduceMoviesByGenre   => Loc.Format(LocKeys.ContractObjProduceGenre, c.goalAmount, GenreLoc.GetLabel(c.targetGenre)),
+            ContractGoalType.ReachReputation        => Loc.Format(LocKeys.ContractObjReachRep, c.goalAmount),
+            ContractGoalType.ReachQuality           => Loc.Format(LocKeys.ContractObjReachQuality, c.goalAmount),
+            ContractGoalType.EarnMoney              => Loc.Format(LocKeys.ContractObjEarnMoney, c.goalAmount),
+            ContractGoalType.SpendOnUpgrades        => Loc.Format(LocKeys.ContractObjSpendUpgrades, c.goalAmount),
+            ContractGoalType.ReachStudioLevel       => Loc.Format(LocKeys.ContractObjReachLevel, c.goalAmount),
+            ContractGoalType.ProduceMoviesUnderTime => Loc.Format(LocKeys.ContractObjUnderTime, c.goalAmount),
+            _                                       => c.description,
+        };
+    }
+
     public void OnMovieCompleted(MovieConfig movie, float quality, float duration, long movieReward)
     {
+        if (!HasActiveContract) return;
+
         bool anyUpdated = false;
         foreach (var c in _active)
         {
@@ -137,6 +274,8 @@ public class ContractSystem : MonoBehaviour
 
     public void OnReputationChanged(float rep)
     {
+        if (!HasActiveContract) return;
+
         foreach (var c in _active)
         {
             if (c.goalType != ContractGoalType.ReachReputation) continue;
@@ -152,6 +291,8 @@ public class ContractSystem : MonoBehaviour
 
     public void OnMoneySpentOnUpgrade(long amount)
     {
+        if (!HasActiveContract) return;
+
         foreach (var c in _active)
         {
             if (c.goalType != ContractGoalType.SpendOnUpgrades) continue;
@@ -163,6 +304,8 @@ public class ContractSystem : MonoBehaviour
 
     public void OnStudioLevelUp(int newLevel)
     {
+        if (!HasActiveContract) return;
+
         foreach (var c in _active)
         {
             if (c.goalType != ContractGoalType.ReachStudioLevel) continue;
@@ -199,8 +342,9 @@ public class ContractSystem : MonoBehaviour
         if (_history.Count > 10) _history.RemoveAt(_history.Count - 1);
 
         OnContractClaimed?.Invoke(contract);
+        GenerateCandidates(studioLevel?.Level ?? 1);
         OnContractUpdated?.Invoke();
-        RefreshContracts(studioLevel?.Level ?? 1);
+        GameHub.Instance?.save?.Save("ContractClaimed");
         return true;
     }
 
@@ -231,16 +375,33 @@ public class ContractSystem : MonoBehaviour
     public ContractSaveEntry[] GetSaveData()
     {
         var list = new List<ContractSaveEntry>();
-        foreach (var c in _active)
+
+        if (HasActiveContract)
+        {
+            var c = _active[0];
+            list.Add(new ContractSaveEntry
+            {
+                id               = c.id,
+                progress         = GetProgress(c),
+                readyToClaim     = _readyToClaim.Contains(c.id),
+                genreMask        = _genreMask.TryGetValue(c.id, out var mask) ? mask : 0,
+                isActiveContract = true,
+            });
+            return list.ToArray();
+        }
+
+        foreach (var c in _candidates)
         {
             list.Add(new ContractSaveEntry
             {
-                id           = c.id,
-                progress     = GetProgress(c),
-                readyToClaim = _readyToClaim.Contains(c.id),
-                genreMask    = _genreMask.TryGetValue(c.id, out var mask) ? mask : 0,
+                id               = c.id,
+                progress         = 0f,
+                readyToClaim     = false,
+                genreMask        = 0,
+                isActiveContract = false,
             });
         }
+
         return list.ToArray();
     }
 
@@ -255,10 +416,14 @@ public class ContractSystem : MonoBehaviour
     public void LoadFromSave(ContractSaveEntry[] states, string[] historyIds)
     {
         _active.Clear();
+        _candidates.Clear();
         _progress.Clear();
         _genreMask.Clear();
         _readyToClaim.Clear();
         _history.Clear();
+
+        var loadedActive = new List<(ContractConfig cfg, ContractSaveEntry state)>();
+        var loadedCandidates = new List<ContractConfig>();
 
         if (states != null)
         {
@@ -268,13 +433,39 @@ public class ContractSystem : MonoBehaviour
                 var c = FindContract(s.id);
                 if (c == null) continue;
 
-                _active.Add(c);
-                _progress[s.id] = s.progress;
-                if (s.genreMask != 0)
-                    _genreMask[s.id] = s.genreMask;
-                if (s.readyToClaim)
-                    _readyToClaim.Add(s.id);
+                // isActiveContract is the canonical flag (set in GetSaveData since Phase 8.1).
+                // Fall back to progress/readyToClaim for saves written by Phase 8.0 that lack the flag.
+                bool isActive = s.isActiveContract || s.progress > 0f || s.readyToClaim;
+                if (isActive)
+                    loadedActive.Add((c, s));
+                else
+                    loadedCandidates.Add(c);
             }
+        }
+
+        if (loadedActive.Count > 0)
+        {
+            // Pick the most-progressed entry (or the ready-to-claim one).
+            var best = loadedActive[0];
+            foreach (var item in loadedActive)
+            {
+                if (item.state.readyToClaim && !best.state.readyToClaim)
+                    best = item;
+                else if (item.state.progress > best.state.progress)
+                    best = item;
+            }
+
+            _active.Add(best.cfg);
+            _progress[best.cfg.id] = best.state.progress;
+            if (best.state.genreMask != 0)
+                _genreMask[best.cfg.id] = best.state.genreMask;
+            if (best.state.readyToClaim)
+                _readyToClaim.Add(best.cfg.id);
+        }
+        else
+        {
+            for (int i = 0; i < loadedCandidates.Count && i < CandidateSlotCount; i++)
+                _candidates.Add(loadedCandidates[i]);
         }
 
         if (historyIds != null)
@@ -287,6 +478,62 @@ public class ContractSystem : MonoBehaviour
         }
 
         OnContractUpdated?.Invoke();
+    }
+
+    public void RecoverAfterLoad(int studioLevel) => EnsureActiveContracts(studioLevel);
+
+    void GenerateCandidates(int studioLevel)
+    {
+        _candidates.Clear();
+        FillCandidateSlots(studioLevel, CandidateSlotCount);
+    }
+
+    void TopUpCandidates(int studioLevel)
+    {
+        int missing = CandidateSlotCount - _candidates.Count;
+        if (missing <= 0) return;
+        FillCandidateSlots(studioLevel, missing);
+    }
+
+    void FillCandidateSlots(int studioLevel, int count)
+    {
+        var exclude = BuildCandidateExcludeSet();
+        var eligible = BuildEligiblePool(studioLevel, exclude);
+
+        for (int i = 0; i < count && eligible.Count > 0; i++)
+        {
+            int idx = UnityEngine.Random.Range(0, eligible.Count);
+            var pick = eligible[idx];
+            _candidates.Add(pick);
+            exclude.Add(pick.id);
+            eligible.RemoveAt(idx);
+        }
+    }
+
+    HashSet<string> BuildCandidateExcludeSet()
+    {
+        var exclude = new HashSet<string>(_permanentlyDone);
+        foreach (var c in _active) exclude.Add(c.id);
+        foreach (var c in _candidates) exclude.Add(c.id);
+        foreach (var id in _readyToClaim) exclude.Add(id);
+        return exclude;
+    }
+
+    List<ContractConfig> BuildEligiblePool(int studioLevel, HashSet<string> exclude)
+    {
+        var eligible = new List<ContractConfig>();
+        if (allContracts == null) return eligible;
+
+        foreach (var c in allContracts)
+        {
+            if (c == null || exclude.Contains(c.id)) continue;
+            if (!c.repeatable && _permanentlyDone.Contains(c.id)) continue;
+            if (studioLevel < c.unlockStudioLevel) continue;
+            if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsContractUnlocked(c)) continue;
+            eligible.Add(c);
+        }
+
+        return eligible;
     }
 
     ContractConfig FindContract(string id)

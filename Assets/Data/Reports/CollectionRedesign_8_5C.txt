@@ -1,0 +1,114 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — COLECCIÓN REDISEÑO COMPLETO (FASE 8.5C)
+=====================================================================
+
+=====================================================================
+PROBLEMA (ESTADO ANTERIOR)
+=====================================================================
+  - MovieCollectionUI mostraba secciones por género con tarjetas pequeñas
+  - CollectionHudShell.EnsureGenreNav() inyectaba GenreSelectionUI
+    pero dependía de albumPanel serializado (inestable)
+  - CollectionNavController añadido en 8.5B era externo y frágil
+  - Resultado: navegación confusa, tarjetas pequeñas, sin popup de película
+
+=====================================================================
+SOLUCIÓN (FASE 8.5C)
+=====================================================================
+  MovieCollectionUI reescrito completamente como componente autocontenido.
+  Todo el flujo L1/L2/L3 se construye en BuildAllLevels() en Awake().
+
+=====================================================================
+NIVEL 1 — SELECCIÓN DE GÉNERO (pantalla por defecto)
+=====================================================================
+  Estructura visual:
+    ScrollRect vertical
+    └─ Content (VerticalLayoutGroup, padding 12px)
+        ├─ Header "FILMOTECA" (24px bold) + progreso global
+        └─ 5 rows × 2 columnas = 10 tarjetas de género
+
+  Cada tarjeta de género (130px altura):
+    ├─ Stripe superior (5px, color del género)
+    ├─ Emoji (36px)
+    ├─ Nombre del género (15px bold, blanco)
+    └─ Progreso "X / Y" (12px, color del género)
+
+  Géneros implementados:
+    Acción 💥 (rojo), Drama 🎭 (azul), Terror 💀 (morado),
+    Comedia 😂 (amarillo), Romance ❤️ (rosa), Sci-Fi 🚀 (verde),
+    Fantasía ✨ (violeta), Thriller 🔪 (naranja),
+    Animación 🎨 (turquesa), Documental 📽️ (gris)
+
+  Al pulsar género → NIVEL 2
+
+=====================================================================
+NIVEL 2 — GRID DE PELÍCULAS
+=====================================================================
+  Estructura:
+    BackBar (56px) ← VOLVER | Nombre del Género
+    ScrollRect vertical
+    └─ Content (VerticalLayoutGroup)
+        └─ Rows (4 películas/fila, altura 96px)
+
+  Cada celda de película (96px):
+    ├─ Poster (60px, color del posterColorHex)
+    ├─ Nombre (9px bold, max 2 líneas)
+    └─ Badge ✔ verde (si completada)
+
+  Al pulsar película → NIVEL 3
+
+=====================================================================
+NIVEL 3 — POPUP DE PELÍCULA
+=====================================================================
+  Overlay oscuro (80% opacidad) — tocar fuera cierra el popup
+
+  Panel central (90% ancho, 82% alto):
+    ├─ Fila cierre (botón ✕)
+    ├─ Poster grande (160px, color del cfg)
+    ├─ Título (22px bold, centrado)
+    ├─ Fila de badges: [GÉNERO] [RAREZA]
+    ├─ Estado: ✔ COMPLETADA / ○ PENDIENTE
+    └─ Sinopsis (tagline o info generada)
+
+  Colores de rareza para el badge:
+    COMÚN → gris oscuro
+    RARA → azul
+    ÉPICA → morado
+    LEGENDARIA → dorado
+
+=====================================================================
+NAVEGACIÓN
+=====================================================================
+  L1 → L2: tap en tarjeta de género
+  L2 → L1: botón "← VOLVER"
+  L2 → L3: tap en tarjeta de película
+  L3 → L2: tap en ✕ o en el backdrop oscuro
+
+  El componente se resetea a L1 en OnEnable() si no hay género seleccionado.
+
+=====================================================================
+DATOS EN TIEMPO REAL
+=====================================================================
+  - Progreso de géneros: calculado desde studio.CompletedMovieKeys
+    y MovieCatalogRuntime.AllMovies
+  - Estado completada/pendiente: studio.CompletedMovieKeys
+  - Sinopsis: cfg.tagline si existe, sino info generada (género + duración)
+
+=====================================================================
+COMPATIBILIDAD
+=====================================================================
+  - FilterGenre property: mantenida para compatibilidad con código existente
+  - allMovies, gridContent: mantenidos como HideInInspector para compatibilidad
+  - CollectionHudShell: simplificado, ya no llama EnsureGenreNav()
+  - GenreSelectionUI y CollectionNavController: siguen existiendo como
+    scripts independientes (no eliminados) pero ya no se usan en runtime
+
+=====================================================================
+RESULTADO
+=====================================================================
+  ANTES: Grid técnico de géneros con películas pequeñas, sin popup,
+         navegación inestable
+  AHORA: Experiencia visual de 3 niveles, género → película → detalle,
+         con información clara, progreso visible y popup de detalle
+
+  ESTADO: PASS
+=====================================================================

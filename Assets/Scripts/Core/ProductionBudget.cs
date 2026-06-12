@@ -28,11 +28,38 @@ public static class ProductionBudgetRules
 {
     public static ProductionBudgetModifiers GetModifiers(ProductionBudget budget) => budget switch
     {
-        ProductionBudget.Cheap    => ProductionBudgetModifiers.Identity,
+        ProductionBudget.Cheap    => new ProductionBudgetModifiers
+        {
+            durationMultiplier   = 0.8f,
+            moneyMultiplier      = 0.8f,
+            reputationMultiplier = 0.8f,
+        },
         ProductionBudget.Standard => ProductionBudgetModifiers.Identity,
-        ProductionBudget.Premium  => ProductionBudgetModifiers.Identity,
+        ProductionBudget.Premium  => new ProductionBudgetModifiers
+        {
+            durationMultiplier   = 1.5f,
+            moneyMultiplier      = 1.5f,
+            reputationMultiplier = 1.5f,
+        },
         _                         => ProductionBudgetModifiers.Identity,
     };
+
+    public static string FormatPercentDelta(float multiplier)
+    {
+        float pct = (multiplier - 1f) * 100f;
+        if (Mathf.Approximately(pct, 0f)) return "0%";
+        return (pct > 0f ? "+" : string.Empty) + pct.ToString("0") + "%";
+    }
+
+    public static string FormatStatBlock(ProductionBudget budget)
+    {
+        var mod = GetModifiers(budget);
+        return Loc.Format(
+            LocKeys.ProdBudgetStatBlock,
+            FormatPercentDelta(mod.durationMultiplier),
+            FormatPercentDelta(mod.moneyMultiplier),
+            FormatPercentDelta(mod.reputationMultiplier));
+    }
 
     public static void Apply(ref float duration, ref long reward, ref float reputation, ProductionBudget budget)
     {

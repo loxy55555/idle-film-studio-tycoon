@@ -1,0 +1,14 @@
+OFFER DECISION SYSTEM AUDIT (Phase 8.3)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Part A: Full offer regeneration ---
+Design: A B C → select B → D E F (all offers discarded)
+NotifyProductionStarted → RegenerateAll (clear + 3 new picks)
+Excludes: completed movies, active productions, city/rarity rules
+
+--- Part B: Refresh validation ---
+Logs: RefreshClicked, RefreshConfirmed, RefreshConsumed, RefreshGenerated
+Flow: button → dialog → ad/diamonds → ForceRegenerateAll → OnOffersChanged
+ProductionHudShell: WireRefreshButton in Awake + OnEnable

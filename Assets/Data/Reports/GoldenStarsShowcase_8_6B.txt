@@ -1,0 +1,137 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — GOLDEN STARS SHOWCASE (FASE 8.6B)
+=====================================================================
+
+=====================================================================
+OBJETIVO
+=====================================================================
+Reemplazar la pantalla de Premios (lista técnica con barra de progreso
+genérica) por una vitrina premium de estrellas de oro.
+Sensación: colección, prestigio, progreso tangible.
+
+=====================================================================
+ESTRUCTURA GENERAL
+=====================================================================
+La pantalla pasa a llamarse:  ★ ESTRELLAS DE ORO
+Subtítulo: nombre del estudio actual (se actualiza en tiempo real).
+
+Secciones en scroll vertical:
+  [0] Header decorativo
+  [1] Vitrina 4×7 (28 posiciones)
+  [2] Barra de progreso (oro/ámbar)
+  [3] Siguiente Estrella + botón de reclamación
+  [4] Progreso del Estudio
+
+=====================================================================
+[0] HEADER
+=====================================================================
+  - "★ ESTRELLAS DE ORO ★" con estrellas doradas decorativas flanqueando
+  - Subtítulo: nombre de la instalación actual (e.g. "Gran Estudio")
+    actualizado en tiempo real desde CityLevelDatabase
+
+=====================================================================
+[1] VITRINA PRINCIPAL (4 × 7 = 28 posiciones)
+=====================================================================
+Diseño tipo vitrina de cristal:
+  ┌── Marco dorado (FRAME_GOLD, 3px border via VerticalLayoutGroup padding) ─┐
+  │ ╔═══════════════════ Interior oscuro (BG_VITRINA) ═══════════════════╗   │
+  │ ║  ─── Glass shine: 3px white line (alpha 0.07) at top ───          ║   │
+  │ ║  Row 0: ★  ★  ★  ★  ★  ★  ★   ← iluminadas (GOLD_BRIGHT)        ║   │
+  │ ║  Row 1: ★  ★  ★  ★  ★  ★  ★   ← iluminadas                      ║   │
+  │ ║  Row 2: ☆  ☆  ☆  ☆  ☆  ☆  ☆   ← apagadas (STAR_DIMFG, 40%)     ║   │
+  │ ║  Row 3: ☆  ☆  ☆  ☆  ☆  ☆  ☆   ← apagadas                       ║   │
+  │ ║  Glass overlay: alpha 0.025 white, ignoreLayout                   ║   │
+  │ ╚════════════════════════════════════════════════════════════════════╝   │
+  └───────────────────────────────────────────────────────────────────────────┘
+
+Efectos visuales (UGUI puro, sin 3D):
+  - Marco FRAME_GOLD (borde dorado mediante padding 3px)
+  - BG_VITRINA muy oscuro (0.05, 0.05, 0.10) — fondo de vitrina
+  - Glass shine: franja blanca 3px alpha 0.07 en el borde superior
+  - Glass overlay: panel blanco alpha 0.025 que cubre toda la vitrina
+  - Estrella ganada: fondo GOLD_GLOW (amber 30% alpha) + "★" GOLD_BRIGHT
+  - Estrella pendiente: fondo STAR_DARK 60% alpha + "★" STAR_DIMFG (gris)
+  - Celdas de 62px de alto, distribuidas equitativamente en 7 columnas
+
+Coherencia con el brief:
+  ✓ Cristal: glass shine + glass overlay
+  ✓ Profundidad: marco dorado + interior más oscuro
+  ✓ Iluminación: GOLD_GLOW + GOLD_BRIGHT para las ganadas
+  ✓ Apagadas: visibles pero claramente inertes (gris semi-transparente)
+  ✓ 28 huecos siempre visibles
+
+=====================================================================
+[2] PROGRESO GLOBAL
+=====================================================================
+  - Formato: "12 / 28 ★" en gold (17px bold)
+  - Etiqueta secundaria: "ESTRELLAS DE ORO" (11px, gris)
+  - Barra de progreso: fill color AMBER (oro cálido), fondo oscuro
+  - NO se usa verde — colores dorado/ámbar/oscuro exclusivamente
+
+=====================================================================
+[3] SIGUIENTE ESTRELLA + BOTÓN
+=====================================================================
+  Estado: canClaim = false
+    Título:    "Estrella #N"
+    Subtítulo: "REP necesaria: 120 / 510"
+    Botón:     gris oscuro, texto "Sigue produciendo..."
+
+  Estado: canClaim = true
+    Título:    "¡LISTA PARA RECLAMAR!"
+    Subtítulo: "Reputación: 510 / 510 REP ✓"
+    Botón:     BTN_READY (dorado oscuro), texto "✦ CONSEGUIR ESTRELLA DE ORO"
+
+  Acción del botón: llama a GameHub.Instance.ClaimOscar() — sin cambios
+  de lógica ni economía.
+
+=====================================================================
+[4] PROGRESO DEL ESTUDIO
+=====================================================================
+  - Ícono 🏛 + nombre de instalación actual (CityLevelDatabase)
+  - Estrellas conseguidas + cuántas faltan para siguiente instalación
+  - Studio nivel actual
+  - Mensaje: "Las Estrellas de Oro impulsan el crecimiento del estudio."
+
+  Ejemplo:
+    🏛 Gran Estudio
+    12 ★  ·  -2 para desbloq. siguiente    Estudio Nv. 8
+
+=====================================================================
+DOTween-READY ARCHITECTURE
+=====================================================================
+Método stub implementado:
+  void AnimateStarEarned(int slotIndex)
+    → Debug.Log("[ShowcaseUI] AnimateStarEarned slot=N — DOTween hook ready")
+    → Called from OnOscarGained event handler
+
+Para añadir la animación real:
+  1. Importar DOTween
+  2. En AnimateStarEarned(slot):
+     a. _starGlows[slot].transform.localScale = Vector3.zero;
+        _starGlows[slot].transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
+     b. DOVirtual.DelayedCall(0.15f, () =>
+        _starGlows[slot].transform.DOScale(1f, 0.15f));
+     c. _starLabels[slot].DOColor(GOLD_BRIGHT, 0.2f);
+
+=====================================================================
+DATOS EN TIEMPO REAL
+=====================================================================
+  - prestige.oscars           → stars ganadas
+  - prestige.OnOscarGained    → evento (suscrito con método named)
+  - prestige.NextOscarThreshold → umbral para siguiente
+  - prestige.CanClaimOscar(rep) → botón activo/inactivo
+  - studio.reputation         → progreso actual
+  - city.Level + .GetNextDefinition() → progreso de instalación
+  - studioLevel.Level         → nivel de estudio
+
+No se modifica ninguna lógica de juego — sólo lectura.
+
+=====================================================================
+RESULTADO
+=====================================================================
+  ANTES: contador numérico + barra verde + botón básico
+  AHORA: vitrina con 28 posiciones, efecto cristal, colores dorado/ámbar,
+         4 secciones de información contextual, DOTween-ready
+
+  ESTADO: PASS
+=====================================================================

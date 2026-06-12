@@ -21,40 +21,45 @@ public class UpgradeCardUI : MonoBehaviour
     public Image           badgeImage;
     public Slider          levelBar;
 
-    private UpgradeSystem     _upgrades;
-    private StudioManager     _studio;
-    private DepartmentSystem  _depts;
-    private StudioLevelSystem _studioLevel;
-    private CitySystem        _city;
-    private bool              _upgradeEventsBound;
-    private bool              _cityEventsBound;
+    const float CardLayoutHeight = 140f;
 
-    private void Awake()
+    UpgradeSystem     _upgrades;
+    StudioManager     _studio;
+    DepartmentSystem  _depts;
+    StudioLevelSystem _studioLevel;
+    CitySystem        _city;
+    bool              _upgradeEventsBound;
+    bool              _cityEventsBound;
+    bool              _purchaseInFlight;
+
+    void Awake()
     {
         AutoWireReferences();
         GameHub.OnGameReady += Bind;
-        if (buyButton != null)
-            buyButton.onClick.AddListener(OnBuyClicked);
+        WireBuyButton();
         ReadOnlySlider.Configure(levelBar);
     }
 
-    private void OnEnable()
+    void OnEnable()
+    {
+        WireBuyButton();
+        if (GameHub.Instance != null)
+            Bind();
+    }
+
+    void Start()
     {
         if (GameHub.Instance != null)
             Bind();
     }
 
-    private void Start()
-    {
-        if (GameHub.Instance != null)
-            Bind();
-    }
-
-    private void OnDestroy()
+    void OnDestroy()
     {
         GameHub.OnGameReady -= Bind;
         UnbindUpgradeEvents();
         UnbindCityEvents();
+        if (buyButton != null)
+            buyButton.onClick.RemoveListener(OnBuyClicked);
     }
 
     public void Bind()
@@ -82,7 +87,31 @@ public class UpgradeCardUI : MonoBehaviour
             _cityEventsBound = true;
         }
 
+        WireBuyButton();
         RefreshUI();
+    }
+
+    void WireBuyButton()
+    {
+        AutoWireReferences();
+        if (buyButton == null) return;
+
+        buyButton.onClick.RemoveListener(OnBuyClicked);
+        buyButton.onClick.AddListener(OnBuyClicked);
+
+        var guard = buyButton.GetComponent<UpgradeBuyButtonGuard>()
+                   ?? buyButton.gameObject.AddComponent<UpgradeBuyButtonGuard>();
+        guard.Bind(() => upgradeConfig != null ? upgradeConfig.id : string.Empty);
+
+        ApplyInteractionPolicy();
+    }
+
+    void ApplyInteractionPolicy()
+    {
+        UpgradeUiRaycastPolicy.ApplyCard(transform, buyButton);
+        UpgradeUiRaycastPolicy.EnsureCardHeight(
+            GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>(),
+            CardLayoutHeight);
     }
 
     void OnCityChanged(int _) => RefreshUI();
@@ -114,6 +143,8 @@ public class UpgradeCardUI : MonoBehaviour
 
         AutoWireReferences();
         EnsureEffectLayout();
+        ApplyInteractionPolicy();
+        DisableProgressBarRaycasts();
 
         int  level   = _upgrades.GetLevel(upgradeConfig);
         bool maxed   = _upgrades.IsMaxLevel(upgradeConfig);
@@ -147,12 +178,12 @@ public class UpgradeCardUI : MonoBehaviour
 
         if (buyButton != null)
         {
-            buyButton.interactable = canBuy;
+            buyButton.interactable = canBuy && !_purchaseInFlight;
             if (buyButton.GetComponent<UIButtonScale>() == null)
                 buyButton.gameObject.AddComponent<UIButtonScale>();
             var btnImg = buyButton.GetComponent<Image>();
             if (btnImg != null)
-                HudSkinProvider.ApplyPurchaseButton(btnImg, canBuy, locked);
+                HudSkinProvider.ApplyPurchaseButton(btnImg, canBuy && !_purchaseInFlight, locked);
         }
 
         if (levelBar != null)
@@ -161,6 +192,14 @@ public class UpgradeCardUI : MonoBehaviour
                        ?? levelBar.gameObject.AddComponent<SmoothProgressBar>();
             smooth.SetTarget(level, upgradeConfig.maxLevel);
         }
+    }
+
+    void DisableProgressBarRaycasts()
+    {
+        if (levelBar == null) return;
+        ReadOnlySlider.Configure(levelBar);
+        foreach (var graphic in levelBar.GetComponentsInChildren<Graphic>(true))
+            graphic.raycastTarget = false;
     }
 
     void AutoWireReferences()
@@ -205,8 +244,7 @@ public class UpgradeCardUI : MonoBehaviour
         effectLE.minHeight = 48f;
 
         var cardLE = GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
-        cardLE.preferredHeight = Mathf.Max(cardLE.preferredHeight, 132f);
-        cardLE.minHeight = 124f;
+        UpgradeUiRaycastPolicy.EnsureCardHeight(cardLE, CardLayoutHeight);
     }
 
     TextMeshProUGUI FindChildText(string childName)
@@ -227,7 +265,7 @@ public class UpgradeCardUI : MonoBehaviour
         return "Bloqueado";
     }
 
-    private string BuildEffectString(int level)
+    string BuildEffectString(int level)
     {
         if (level <= 0 || upgradeConfig.effects == null || upgradeConfig.effects.Length == 0)
             return "";
@@ -243,21 +281,34 @@ public class UpgradeCardUI : MonoBehaviour
         return sb.ToString().TrimEnd();
     }
 
-    private void OnBuyClicked()
+    void OnBuyClicked()
     {
-        if (upgradeConfig == null) return;
+        if (_purchaseInFlight || upgradeConfig == null) return;
+        if (!UpgradeUiInteractionGate.TryConsumeClick(upgradeConfig.id)) return;
+
         if (_upgrades == null || _studio == null)
         {
             Bind();
             if (_upgrades == null || _studio == null) return;
         }
 
-        if (!_upgrades.Purchase(upgradeConfig, _studio, _depts, _studioLevel?.Level ?? 1))
-            return;
+        _purchaseInFlight = true;
+        if (buyButton != null) buyButton.interactable = false;
 
-        int newLevel = _upgrades.GetLevel(upgradeConfig);
-        GameFeelUI.Instance?.ShowUpgradePurchase(transform as RectTransform, upgradeConfig, newLevel);
-        RefreshUI();
+        try
+        {
+            if (!_upgrades.Purchase(upgradeConfig, _studio, _depts, _studioLevel?.Level ?? 1))
+                return;
+
+            int newLevel = _upgrades.GetLevel(upgradeConfig);
+            GameFeelUI.Instance?.ShowUpgradePurchase(transform as RectTransform, upgradeConfig, newLevel);
+            RefreshUI();
+        }
+        finally
+        {
+            _purchaseInFlight = false;
+            RefreshUI();
+        }
     }
 }
 

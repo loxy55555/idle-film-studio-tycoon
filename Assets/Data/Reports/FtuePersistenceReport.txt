@@ -1,0 +1,121 @@
+FASE 7.1B — FTUE Persistence Report
+Generated: 2026-06-12
+================================================================
+
+WHERE ftueCompleted AND ftueStep ARE SAVED
+------------------------------------------
+File   : Assets/Scripts/SaveSystem.cs  (GameSaveData, v4 fields)
+Storage: JSON file — Application.persistentDataPath/save_v2.json
+
+GameSaveData fields (lines 42-43):
+  public bool ftueCompleted;
+  public int  ftueStep;
+
+Save path (SaveSystem.Save, lines 147-148):
+  ftueCompleted = FtueState.Completed
+  ftueStep      = (int)FtueState.Step
+
+Load path (SaveSystem.TryLoad, lines 231-236):
+  if (data.version >= 4)
+      FtueState.ApplySave(data.ftueCompleted, data.ftueStep);
+  else if (completedMovieKeys exist)
+      FtueState.ApplySave(true, Done);    // legacy upgrade: auto-complete
+  else
+      FtueState.ApplySave(false, Welcome); // legacy new game
+
+FtueState.Disabled is stored in PlayerPrefs ("idlefilm.ftue.disabled"),
+NOT in the save file. It is a debug kill-switch only.
+
+WHAT HAPPENS ON GAME LOAD
+--------------------------
+
+A. New game (no save file)
+   • SaveSystem.Load() returns false — no FtueState.ApplySave() called
+   • FtueState defaults: Completed=false, Step=Welcome
+   • FtueController.OnGameReady() → tutorial starts from Welcome
+   • [FTUE] LoadedCompleted=False  (emitted by FtueState.ApplySave
+     defaults are not logged, but FtueController logs state)
+   • [FTUE] TutorialStarted=       (FtueLog.TutorialStarted)
+
+B. Existing save — ftueCompleted=true
+   • FtueState.ApplySave(true, savedStep):
+       Completed = true
+       Step      = Done  (forced, regardless of savedStep)
+   • FtueController.OnGameReady() → FtueState.Completed == true
+       → HideOverlayImmediate(), return
+       → [FTUE] TutorialSkipped=
+   • NO overlay created, NO tutorial shown, NO UI blocked
+   • All rules for completed=true: SATISFIED
+
+C. Existing save — ftueCompleted=false, step=N
+   • FtueState.ApplySave(false, N):
+       Completed = false
+       Step      = clamped to [Welcome(0) … FirstMovieComplete(3)]
+       (cannot go below 0, cannot exceed 3 while not completed)
+   • FtueController.OnGameReady() → ResumeStep(FtueState.Step)
+       → tutorial resumes from saved step N
+   • Step is NEVER downgraded by ApplySave (old regression bug fixed)
+
+D. Application restart (save already has ftueCompleted=true)
+   • Identical to case B: skip fires immediately in OnGameReady
+   • No tutorial, no overlay, no blocks
+
+ANTI-REGRESSION RULES — VERIFIED
+----------------------------------
+Rule: If ftueCompleted == true → NO tutorial, NO overlays, NO UI blocks, NO step reset
+  Verification: FtueController.OnGameReady() checks FtueState.Completed first
+                (line 63-69). Returns immediately, calls HideOverlayImmediate().
+                Overlay is hidden, events are never bound.           STATUS: PASS
+
+Rule: If ftueCompleted == false → continue from saved step
+  Verification: FtueState.ApplySave clamps step to valid range.
+                ResumeStep(FtueState.Step) called with the exact saved step.
+                                                                     STATUS: PASS
+
+Rule: FTUE must never restart on app launch
+  Verification: Save stores ftueCompleted=true after CompleteFtue().
+                On next launch, ApplySave(true,*) → Done → skip.    STATUS: PASS
+
+Rule: FTUE must never regress to a lower step
+  Verification: ApplySave clamps to [0,3]. Steps only increase during play
+                (AdvanceTo always increases step). No code path decrements step.
+                Old bug (FirstMovieComplete → StudioDuringProduction) removed.
+                                                                     STATUS: PASS
+
+Rule: FTUE must never reappear after completion
+  Verification: OnGameReady() returns on FtueState.Completed without ever
+                calling EnsureOverlay() or BindEvents(). No other path
+                re-enables the tutorial after CompleteFtue() runs.   STATUS: PASS
+
+PERSISTENCE LOGS PRESENT
+-------------------------
+  [FTUE] LoadedCompleted=<bool>   — FtueLog.LoadedCompleted() in FtueState.ApplySave
+  [FTUE] LoadedStep=<int>         — FtueLog.LoadedStep()       in FtueState.ApplySave
+  [FTUE] TutorialStarted=         — FtueLog.TutorialStarted()  in FtueController.OnGameReady
+  [FTUE] TutorialSkipped=         — FtueLog.TutorialSkipped()  in FtueController.OnGameReady
+  [FTUE] TutorialCompleted=       — FtueLog.TutorialCompleted() in FtueController.CompleteFtue
+
+All 5 required log entries: PRESENT ✅
+
+MODIFIED FILES
+--------------
+Assets/Scripts/FTUE/FtueState.cs
+  • ApplySave(completed, step): hard-route completed=true to Done;
+    clamp completed=false to [Welcome, FirstMovieComplete]; emit log tags
+
+Assets/Scripts/FTUE/FtueLog.cs
+  • LoadedCompleted(), LoadedStep(), TutorialStarted(),
+    TutorialSkipped(), TutorialCompleted()  — all present
+
+Assets/Scripts/FTUE/FtueController.cs
+  • OnGameReady(): reads _loadedCompleted, emits FtueLog.LoadedCompleted/Step
+  • CompleteFtue(): emits FtueLog.TutorialCompleted
+  • OnGameReady(): emits FtueLog.TutorialStarted / TutorialSkipped
+
+Assets/Scripts/SaveSystem.cs
+  • GameSaveData.ftueCompleted / ftueStep (v4 fields)
+  • Save(): writes FtueState.Completed and FtueState.Step
+  • TryLoad(): calls FtueState.ApplySave with correct args
+  • Legacy migration: old saves with completed movies auto-complete FTUE
+
+RESULT: PASS

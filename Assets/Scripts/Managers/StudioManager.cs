@@ -144,6 +144,8 @@ public class StudioManager : MonoBehaviour
 
     public int ActiveProductionCount => _productions.Count;
 
+    public IEnumerable<MovieConfig> GetActiveProductionConfigs() => GetActiveMovieConfigs();
+
     public int UsedProductionSlotUnits => LegendaryProductionRules.GetUsedSlotUnits(GetActiveMovieConfigs());
 
     public int AvailableProductionSlotUnits => Mathf.Max(0, maxMovieSlots - UsedProductionSlotUnits);
@@ -481,6 +483,19 @@ public class StudioManager : MonoBehaviour
 
     void NotifyProductionsChanged() => OnProductionsChanged?.Invoke();
 
+    void NotifyProductionStarted(MovieConfig config)
+    {
+        EnsureMovieCatalog();
+        var catalog = MovieCatalogRuntime.AllMovies;
+        MovieOfferState.NotifyProductionStarted(
+            config,
+            catalog,
+            SL?.Level ?? 1,
+            reputation,
+            _completedMovieKeys,
+            GetActiveMovieConfigs());
+    }
+
 
 
     public bool CanStartMovie(MovieConfig config, out string blockReason)
@@ -535,7 +550,9 @@ public class StudioManager : MonoBehaviour
         currentMovies = _productions.Count;
 
         UpdateProductionFlags();
+        NotifyProductionStarted(config);
         NotifyProductionsChanged();
+        GameHub.Instance?.save?.Save("StartMovie");
 
         StartCoroutine(ProductionRoutine(production));
 
@@ -675,6 +692,8 @@ public class StudioManager : MonoBehaviour
 
         SetStatus(string.Format("{0} completada! +${1:N0}  +{2:0.0} REP",
             production.config.movieName, reward, rep));
+
+        GameHub.Instance?.save?.Save("MovieCompleted");
     }
 
 
@@ -919,21 +938,13 @@ public class StudioManager : MonoBehaviour
 
 
 
-        var tab = FindAnyObjectByType<MovieTabUI>();
-
-        if (tab != null && tab.allMovies != null)
+        foreach (var m in MovieCatalogRuntime.AllMovies)
 
         {
 
-            foreach (var m in tab.allMovies)
+            if (m != null && !_movieCatalog.ContainsKey(m.name))
 
-            {
-
-                if (m != null && !_movieCatalog.ContainsKey(m.name))
-
-                    _movieCatalog[m.name] = m;
-
-            }
+                _movieCatalog[m.name] = m;
 
         }
 

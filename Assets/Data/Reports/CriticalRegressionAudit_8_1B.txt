@@ -1,0 +1,324 @@
+CRITICAL REGRESSION AUDIT — FASE 8.1B
+======================================
+Generated: 2026-06-12
+Status:    PASS (all four root causes identified with exact code evidence)
+
+════════════════════════════════════════════════════════════════════════════════
+P0-1 — OFFERS NO REFRESCAN COMPLETAMENTE
+════════════════════════════════════════════════════════════════════════════════
+
+OBSERVED BEHAVIOUR
+  After selecting movie A and confirming production, slots for B and C look
+  visually unchanged. Only the slot that held A visually updates.
+
+ROOT CAUSE — TWO INTERACTING ISSUES
+
+A) Data behaviour is correct but user-perceivable
+  MovieOfferState.NotifyProductionStarted(A) correctly:
+    1. Nulls the slot that held A → _keys = [null, B, C]
+    2. Calls RefillToFull() → picks D → _keys = [D, B, C]
+  RefreshOfferDisplay() then rebuilds all three cards showing [D, B, C].
+  B and C display the SAME movies as before (by design), so the user
+  perceives "nothing changed" for those two slots.
+
+B) Per-frame rebuild loop (the real performance/visual problem)
+  StudioManager runs a production coroutine:
+
+    Assets/Scripts/Managers/StudioManager.cs (line ~627)
+      while (production.elapsed < production.totalDuration)
+      {
+          production.elapsed += Time.deltaTime;
+          RefreshProductionUI();   ← called EVERY frame
+          yield return null;
+      }
+
+  RefreshProductionUI() fires NotifyProductionsChanged() EVERY frame.
+  MovieTabUI.OnProductionsChanged() → RefreshOfferDisplay() EVERY frame.
+
+    Assets/Scripts/UI/Hub/MovieTabUI.cs (line 89)
+      void OnProductionsChanged() => RefreshOfferDisplay();
+
+  Inside RefreshOfferDisplay():
+    EnsureOffers() → HasActiveOffers = true → PruneAndRefill()
+    PruneAndRefill() → PersistSave() → Save() EVERY FRAME (~60×/sec)
+
+    Assets/Scripts/Core/MovieOfferState.cs (line 118-120)
+      static void PruneAndRefill(...)
+      {
+          PruneInvalid(...);
+          RefillToFull(...);
+          PersistSave();       ← disk write every frame during production
+      }
+
+  RenderOfferSlots() → ClearOfferSlots() destroys all 3 cards + creates 3
+  new cards EVERY FRAME. Because B and C always display the same movie
+  titles in the newly-created cards, the user sees them as "frozen."
+
+WHAT DATA CHANGES
+  _keys[0]: A.name → D.name  (after NotifyProductionStarted)
+  _keys[1]: B.name → B.name  (unchanged — correct per spec)
+  _keys[2]: C.name → C.name  (unchanged — correct per spec)
+
+WHAT DOES NOT VISUALLY REFRESH
+  Nothing truly fails to refresh: all three card GameObjects ARE replaced.
+  B and C appear "unchanged" because the replacement cards show identical
+  movie data. This is correct design (only the consumed slot gets a new pick).
+
+EXACT METHOD RESPONSIBLE FOR VISUAL CONFUSION
+  StudioManager.RefreshProductionUI() (called every frame from coroutine)
+  → NotifyProductionsChanged()
+  → MovieTabUI.OnProductionsChanged()
+  → RefreshOfferDisplay() + ClearOfferSlots() + rebuild every frame
+
+  The per-frame full-rebuild is the root cause of both the visual artifact
+  and the disk-hammering Save() flood.
+
+════════════════════════════════════════════════════════════════════════════════
+P0-2 — REFRESH OFFERS NO FUNCIONA
+════════════════════════════════════════════════════════════════════════════════
+
+OBSERVED BEHAVIOUR
+  Pressing the "NUEVA PRODUCCIÓN / REFRESH OFFERS" button and selecting
+  "Watch Ad" or "Spend Diamonds" produces no result — the offers stay the same.
+
+ROOT CAUSE — BUTTON LISTENER NEVER WIRED AT RUNTIME
+
+  The button click listener is registered ONLY inside
+  ProductionHudShell.Configure():
+
+    Assets/Scripts/UI/Hub/Hud/ProductionHudShell.cs (lines 23-27)
+      if (this.newProductionButton != null)
+      {
+          this.newProductionButton.onClick.RemoveListener(OnNewProductionClicked);
+          this.newProductionButton.onClick.AddListener(OnNewProductionClicked);
+      }
+
+  Configure() is called exclusively from StudioUIBuilder (an editor-only
+  MenuItem tool):
+
+    Assets/Scripts/Editor/StudioUIBuilder.cs (line 544)
+      shell.Configure(prodWidget, tabUI, newBtn);
+
+  Button.onClick.AddListener() registers a RUNTIME (non-persistent) listener.
+  Runtime listeners are NOT serialized to the scene file.
+  When Play Mode starts, Unity deserializes the scene — the listener is gone.
+
+  ProductionHudShell has no Awake(), no Start(), and no OnEnable() that
+  re-registers OnNewProductionClicked:
+
+    Assets/Scripts/UI/Hub/Hud/ProductionHudShell.cs (lines 12-15)
+      void OnEnable()
+      {
+          ApplyLocalizedButtonLabel();   // only updates button label — no listener
+      }
+
+  The serialized fields (newProductionButton, movieTab) are correctly
+  present at runtime, but the onClick event list is empty.
+
+WHERE THE FLOW BREAKS
+  Step 1: User clicks button → onClick fires with 0 listeners → nothing happens.
+  Steps 2-7 (RefreshChoiceDialogUI.Show, GameplayRefreshService,
+  MovieOfferState.ForceRegenerateAll, RefreshOfferDisplay) are NEVER reached.
+
+  The entire refresh flow from GameplayRefreshService.RequestProductionOfferRefresh()
+  onward is correct — it never gets invoked.
+
+════════════════════════════════════════════════════════════════════════════════
+P0-3 — CONTRACT CANDIDATES SIN INFORMACIÓN
+════════════════════════════════════════════════════════════════════════════════
+
+OBSERVED BEHAVIOUR
+  Candidate contract cards appear in the selection view but the select button
+  is missing or unreachable, and information appears incomplete.
+
+ROOT CAUSE — DATA EXISTS, LAYOUT HEIGHT IS INSUFFICIENT
+
+  ContractCardFactory.Create() correctly builds ALL required fields:
+
+    Assets/Scripts/UI/Hub/ContractsPanelUI.cs (lines 769-953)
+      title       → contractTitle  (LE.preferredHeight = 24)
+      desc        → description    (textWrappingMode = Normal, ~22px)
+      objective   → BuildObjectiveLabel(cfg) (LE.preferredHeight = 20)
+      rewardTxt   → BuildReward(cfg)  (~20px)
+      selectBtn   → "SELECT" button   (LE.preferredHeight = 30)
+    VLG padding top=8, bottom=8, spacing=4 between items.
+
+  Total content height required:
+    8 (top pad) + 24 (title) + 4 (gap) + 22 (desc) + 4 (gap)
+    + 20 (objective) + 4 (gap) + 20 (reward) + 4 (gap) + 30 (select)
+    + 8 (bottom pad) = ~148px
+
+  FixedSlotHeightPublic = 110f (used for all candidate cards):
+
+    Assets/Scripts/UI/Hub/ContractsPanelUI.cs (line 732-733)
+      float cardHeight = mode == ContractCardMode.Active
+          ? ContractsPanelUI.ActiveCardHeight - 8f
+          : ContractsPanelUI.FixedSlotHeightPublic;   // = 110f
+
+  ApplyFixedSlotLayout enforces this height on the slot root:
+
+    Assets/Scripts/UI/Hub/ContractsPanelUI.cs (lines 435-451)
+      le.preferredHeight = height;   // 110
+      le.minHeight       = height;   // 110
+
+  Content layout within 110px:
+    position 0–8:   top padding
+    position 8–32:  title (24px)
+    position 32–36: spacing
+    position 36–58: description (22px)
+    position 58–62: spacing
+    position 62–82: objective (20px)
+    position 82–86: spacing
+    position 86–106: reward (20px)
+    position 106–110: spacing
+    position 110–140: SELECT BUTTON  ← starts exactly AT the card boundary
+
+  The SELECT BUTTON (30px tall) begins at position ~110px and extends to ~140px.
+  Each card is given a fixed 110px slot in the scroll content. The button sits
+  in the gap between consecutive cards, or below the last card outside the
+  ScrollRect viewport. In both cases it is visually inaccessible/invisible.
+
+CONCLUSION (A or B)
+  A) Data EXISTS and IS assigned correctly in ContractCardFactory + RefreshUI().
+  B) The data DOES reach the UI but the select button is rendered outside the
+     card's allocated 110px height and is clipped/overlapped.
+
+════════════════════════════════════════════════════════════════════════════════
+P0-4 — SAVE / LOAD SIGUE RESETEANDO PARTIDA
+════════════════════════════════════════════════════════════════════════════════
+
+OBSERVED BEHAVIOUR
+  After: earn money → start production → select contract → exit/re-enter
+  Play Mode, the game appears to start fresh (money=1500, no contract, no offers).
+
+ROOT CAUSE — THREE-STEP FAILURE CHAIN
+
+STEP 1 — High-frequency writes increase corruption risk
+  As found in P0-1: SaveSystem.Save() is called approximately 60 times/second
+  while any production is running, via:
+    StudioManager coroutine
+    → RefreshProductionUI()
+    → NotifyProductionsChanged()
+    → MovieTabUI.RefreshOfferDisplay()
+    → MovieOfferState.PruneAndRefill()
+    → PersistSave()
+    → Save()               ← disk write every frame
+
+  Additionally Save() is called from:
+    ContractSystem.SelectCandidate()    (when contract is chosen)
+    ContractSystem.GenerateCandidates() (when candidates are generated)
+    MovieOfferState.NotifyProductionStarted() via PersistSave()
+    SaveSystem.OnApplicationQuit()
+
+STEP 2 — Unity Editor OnApplicationQuit() unreliability
+  In Unity Editor, stopping Play Mode via the Play button triggers
+  OnApplicationQuit() but does NOT guarantee that File.WriteAllText()
+  completes before the engine terminates the play context.
+
+    Assets/Scripts/SaveSystem.cs (line 107)
+      private void OnApplicationQuit() { Save(); }
+
+  If Play Mode is stopped while one of the ~60 per-frame saves is mid-write,
+  the file can be left in a partially-written or zero-byte state.
+  JsonUtility.FromJson on a truncated file throws an exception.
+
+STEP 3 — Corrupted save → irreversible new-game overwrite
+  When TryLoad() catches any exception it returns false:
+
+    Assets/Scripts/SaveSystem.cs (lines 252-256)
+      catch (Exception e)
+      {
+          Debug.LogError("[SaveSystem] Load failed: " + e.Message);
+          return false;
+      }
+
+  GameHub.Start() then takes the !loaded branch:
+
+    Assets/Scripts/GameHub.cs (lines 144-168)
+      if (!loaded)
+      {
+          studio.Initialize();          // money=1500, rep=5
+          ...
+          contracts?.Init(1);           // ← calls GenerateCandidates(1)
+          contracts?.EnsureActiveContracts(1);
+          MovieOfferState.Clear();
+          FtueState.Reset();
+      }
+
+  ContractSystem.Init(1) → GenerateCandidates(1):
+
+    Assets/Scripts/Core/Systems/ContractSystem.cs (lines 485-490)
+      void GenerateCandidates(int studioLevel)
+      {
+          _candidates.Clear();
+          FillCandidateSlots(studioLevel, CandidateSlotCount);
+          GameHub.Instance?.save?.Save();   // ← OVERWRITES with fresh game data
+      }
+
+  This Save() call writes money=1500, rep=5, no offers, no contracts.
+  The corrupted file is permanently replaced with a new-game state.
+  Player's progress (money, production, contract) is irrecoverably lost.
+
+ANSWERS TO THE FIVE AUDIT QUESTIONS
+
+  1. ¿Se genera save?
+     YES. Save() is triggered by multiple paths: per-frame PersistSave,
+     SelectCandidate, NotifyProductionStarted, and OnApplicationQuit.
+     The save file (save_v2.json — note: "v5" refers to the version field
+     INSIDE the file, not the filename) is written at
+     Application.persistentDataPath/save_v2.json.
+
+  2. ¿Se escribe correctamente?
+     MOSTLY YES under normal operation. However, the ~60×/sec write rate
+     and Unity Editor OnApplicationQuit() instability mean the file CAN be
+     left in a truncated state.
+
+  3. ¿Se carga correctamente?
+     YES when the file is intact. TryLoad() correctly restores money,
+     reputation, contracts (via isActiveContract flag from Phase 8.1),
+     offers, productions, FTUE state, and all sub-systems.
+
+  4. ¿Quién sobrescribe los datos cargados?
+     ContractSystem.GenerateCandidates() called from contracts.Init(1)
+     inside the !loaded branch of GameHub.Start(). This is the method that
+     unconditionally calls Save() with fresh-game data whenever load fails.
+
+  5. Causa raíz exacta.
+     High-frequency SaveSystem.Save() calls (every frame via PruneAndRefill)
+     combined with Unity Editor OnApplicationQuit() interruption risk produce
+     a corrupted save_v2.json. On the next play, TryLoad() catches the JSON
+     parse exception and returns false. GameHub.Start() runs studio.Initialize()
+     (resetting money/rep) then contracts.Init() which calls GenerateCandidates()
+     which calls Save() — permanently replacing the corrupt file with new-game
+     defaults. All prior player progress is destroyed in this overwrite.
+
+════════════════════════════════════════════════════════════════════════════════
+SUMMARY TABLE
+════════════════════════════════════════════════════════════════════════════════
+
+  Bug    | Root Cause File / Method                          | Result
+  -------|---------------------------------------------------|--------
+  P0-1   | StudioManager.RefreshProductionUI() per-frame     | EXPLAINED
+         | → NotifyProductionsChanged()                      |
+         | → MovieTabUI.OnProductionsChanged()               |
+         | → RefreshOfferDisplay() + ClearOfferSlots()       |
+         | every frame during production                     |
+  -------|---------------------------------------------------|--------
+  P0-2   | ProductionHudShell.Configure() registers onClick  | EXPLAINED
+         | listener via AddListener (runtime, not serialized)|
+         | No Awake/Start re-registers it at Play Mode start |
+         | → button is dead (zero listeners)                 |
+  -------|---------------------------------------------------|--------
+  P0-3   | ContractCardFactory: FixedSlotHeightPublic=110f   | EXPLAINED
+         | Content requires ~148px. Select button starts at  |
+         | ~110px → outside card bounds → clipped/covered    |
+         | Data IS present; layout clips it                  |
+  -------|---------------------------------------------------|--------
+  P0-4   | PruneAndRefill→PersistSave→Save ~60×/sec causes   | EXPLAINED
+         | interrupted writes in Editor Play Mode. Corrupted |
+         | JSON → TryLoad returns false → !loaded branch →   |
+         | studio.Initialize() + GenerateCandidates→Save()   |
+         | overwrites save with new-game defaults forever    |
+  -------|---------------------------------------------------|--------
+
+OVERALL: PASS — all four bugs explained with exact root causes.

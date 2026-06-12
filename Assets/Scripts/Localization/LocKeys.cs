@@ -44,6 +44,27 @@ public static class LocKeys
     public const string ProdBudgetStandard     = "prod.budget.standard";
     public const string ProdBudgetPremium      = "prod.budget.premium";
     public const string ProdBudgetCancel       = "prod.budget.cancel";
+    public const string ProdBudgetStatBlock    = "prod.budget.stat_block";
+
+    public const string ProdOfferMoney         = "prod.offer.money";
+    public const string ProdOfferRep           = "prod.offer.rep";
+
+    public const string RefreshChoosePayment   = "refresh.choose_payment";
+    public const string RefreshWatchAd         = "refresh.watch_ad";
+    public const string RefreshSpendDiamonds   = "refresh.spend_diamonds";
+
+    public const string ContractRefresh        = "contract.refresh";
+    public const string ContractSelect         = "contract.select";
+    public const string ContractChoosePrompt   = "contract.choose_prompt";
+    public const string ContractActiveObjective = "contract.active_objective";
+    public const string ContractObjProduceMovies = "contract.obj.produce_movies";
+    public const string ContractObjProduceGenre  = "contract.obj.produce_genre";
+    public const string ContractObjReachRep      = "contract.obj.reach_rep";
+    public const string ContractObjReachQuality  = "contract.obj.reach_quality";
+    public const string ContractObjEarnMoney     = "contract.obj.earn_money";
+    public const string ContractObjSpendUpgrades = "contract.obj.spend_upgrades";
+    public const string ContractObjReachLevel    = "contract.obj.reach_level";
+    public const string ContractObjUnderTime     = "contract.obj.under_time";
 
     public const string ProdRarityCommon       = "prod.rarity.common";
     public const string ProdRarityRare         = "prod.rarity.rare";
@@ -71,6 +92,7 @@ public static class LocKeys
     public const string FtueStudioTitle        = "ftue.studio_title";
     public const string FtueStudioBody         = "ftue.studio_body";
     public const string FtueFirstMovieTitle    = "ftue.first_movie_title";
+    public const string FtueCompleteBody       = "ftue.complete_body";
     public const string FtueMoneyEarned        = "ftue.money_earned";
     public const string FtueRepEarned          = "ftue.rep_earned";
     public const string FtueMovieDiscovered    = "ftue.movie_discovered";
@@ -92,6 +114,42 @@ public static class LocKeys
     public const string CollectionLocked         = "collection.locked";
     public const string CollectionDiscovered     = "collection.discovered";
     public const string CollectionLegendaryLock  = "collection.legendary_lock";
+    public const string CollectionSelectGenre    = "collection.select_genre";
+    public const string CollectionAllMovies      = "collection.all_movies";
+    public const string CollectionBack           = "collection.back";
+
+    // ─── Instalaciones (replaces Ciudad in UX) ────────────────────────────────
+    public const string InstLevel           = "inst.level";
+    public const string InstAvailable       = "inst.available";
+    public const string InstProgressScreen  = "inst.progress_screen";
+    public const string InstUpgrade         = "inst.upgrade";
+    public const string InstNextLevel       = "inst.next_level";
+    public const string InstCurrentLevel    = "inst.current_level";
+    public const string InstMultiplier      = "inst.multiplier";
+
+    // ─── Bonifications panel (Studio screen) ─────────────────────────────────
+    public const string BonifSpeed          = "bonif.speed";
+    public const string BonifQuality        = "bonif.quality";
+    public const string BonifBoxOffice      = "bonif.box_office";
+    public const string BonifRep            = "bonif.rep";
+    public const string BonifXP             = "bonif.xp";
+    public const string BonifCosts          = "bonif.costs";
+    public const string BonifTitle          = "bonif.title";
+
+    // ─── Settings overlay ──────────────────────────────────────────────────────
+    public const string SettingsTitle       = "settings.title";
+    public const string SettingsLanguage    = "settings.language";
+    public const string SettingsGooglePlay  = "settings.google_play";
+    public const string SettingsAccount     = "settings.account";
+    public const string SettingsSupport     = "settings.support";
+    public const string SettingsCredits     = "settings.credits";
+    public const string SettingsPrivacy     = "settings.privacy";
+    public const string SettingsRestore     = "settings.restore";
+    public const string SettingsClose       = "settings.close";
+
+    // ─── Tienda (Shop) placeholder ────────────────────────────────────────────
+    public const string TiendaTitle         = "tienda.title";
+    public const string TiendaComingSoon    = "tienda.coming_soon";
 }
 
 public static class DepartmentLocKeys

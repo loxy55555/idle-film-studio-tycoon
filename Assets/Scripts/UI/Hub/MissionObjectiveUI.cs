@@ -107,7 +107,10 @@ public class MissionObjectiveUI : MonoBehaviour
 
         if (target == null)
         {
-            SetTexts("OBJETIVO", "Sin contrato activo", "");
+            if (_contracts.IsSelectionMode)
+                SetTexts("OBJETIVO", Loc.Get(LocKeys.ContractChoosePrompt), "");
+            else
+                SetTexts("OBJETIVO", "Sin contrato activo", "");
             return;
         }
 

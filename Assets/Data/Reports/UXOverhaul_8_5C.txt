@@ -1,0 +1,179 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — FASE 8.5C — UX/UI OVERHAUL REPORT
+=====================================================================
+Fecha: 2026-06-12
+Objetivo: Cambios visuales inmediatos y evidentes en Play Mode sin
+          necesidad de reconstruir la escena con "Build Studio UI".
+
+=====================================================================
+ESTRATEGIA DE IMPLEMENTACIÓN
+=====================================================================
+Todas las modificaciones afectan COMPONENTES RUNTIME que se ejecutan
+en Awake/Start/OnEnable — visibles al pulsar Play sin herramientas
+de editor adicionales.
+
+=====================================================================
+P1 — ESTUDIO (PANTALLA PRINCIPAL)
+=====================================================================
+ESTADO: PASS (mejora visible)
+
+Cambios implementados:
+  1. HudLayoutConstants.StudioVisualShare:   0.45 → 0.20
+  2. HudLayoutConstants.StudioVisualMinHeight: 280 → 160
+  3. HudLayoutConstants.StudioVisualFixedHeight: NUEVO = 160px
+  4. StudioVisualStage.ApplyLayout(): preferredHeight=160px fija
+     (antes era flexibleHeight basado en porcentaje)
+  → El fondo decorativo ocupa ~160px en lugar de ~45% de la pantalla.
+  → Los departamentos y bonificaciones tienen MÁS ESPACIO visible.
+
+  5. DepartmentMiniCardLayoutBuilder.CardHeight: 236 → 270px
+  6. Fuentes departamentos: nombre 11→13, nivel 22→26, efecto 11→12
+  7. Botón mejora: 46→52px altura
+  8. Badge departamento: 48×48 → 56×56px
+
+Pendiente (requiere "Build Studio UI"):
+  - Columna 2 departamentos (grid 2-col en lugar de horizontal scroll)
+  - Barra de bonificaciones inyectada en la escena
+
+=====================================================================
+P2 — PRODUCCIÓN (PANTALLA ESTRELLA)
+=====================================================================
+ESTADO: PASS (cambio MAYOR y visible)
+
+Cambios implementados:
+  1. ProductionHudShell.Start(): NUEVO método UpgradeProductionLayout()
+     - Destruye SquareTileRowLayout (forzaba tarjetas cuadradas ~95px)
+     - Destruye HorizontalLayoutGroup
+     - Añade VerticalLayoutGroup (tarjetas full-width, verticales)
+     - El área de ofertas crece a flexibleHeight=2 (ocupa 2/3 espacio)
+     - Sección de historial reducida a 120px (ya no domina)
+
+  2. MovieOfferCardLayoutBuilder REDISEÑO COMPLETO:
+     - ANTES: cards ~95px (cuadradas, 3 por fila horizontal)
+     - AHORA: cards ~320px (full-width, 1 por fila vertical)
+     
+     Nueva estructura de cada tarjeta:
+       ├─ GenreStrip (6px banda de color del género)
+       ├─ PosterWrap (160px — gran área visual de color)
+       │   ├─ RarityFrame (overlay de rareza)
+       │   ├─ Poster (color del posterColorHex del cfg)
+       │   └─ RarityPill (píldora top-right: COMÚN/RARA/ÉPICA/LEGENDARIA)
+       ├─ TitleWrap (48px — título 16-18px bold + género colorido)
+       ├─ InfoRow (26px — duración + badges)
+       ├─ RewardWrap (32px — dinero verde 15px + REP dorado 15px)
+       └─ SelectBtn (52px — 16-18px bold)
+
+  3. MovieTabUI.CreateSlotCard(): preferredHeight=320px explícito
+
+  Impacto visual:
+  - Tarjetas de película dominan el 80%+ de la pantalla
+  - Cada película tiene zona de color visual grande
+  - Información de recompensas claramente visible
+  - Rareza identificable con píldora de color
+
+=====================================================================
+P3 — COLECCIÓN (REDISEÑO COMPLETO)
+=====================================================================
+ESTADO: PASS (rediseño total — ver CollectionRedesign_8_5C.txt)
+
+Cambios implementados:
+  1. MovieCollectionUI REESCRITO COMPLETAMENTE (L1/L2/L3 inline)
+  2. CollectionHudShell.EnsureGenreNav() ELIMINADO
+     → Ya no inyecta GenreSelectionUI ni CollectionNavController
+     → MovieCollectionUI maneja todo internamente
+
+  Ver CollectionRedesign_8_5C.txt para detalles completos.
+
+=====================================================================
+P4 — PREMIOS
+=====================================================================
+ESTADO: PARCIAL (mejora de texto y barra)
+
+Cambios implementados:
+  1. AwardsPanelUI.StyleUpAwardTexts() — NUEVO:
+     - Oscar counter: fontSize 36px bold (era lo que tuviera por defecto)
+     - Multiplier: 18px
+     - Threshold: 16px
+     - Progress text: 18px bold
+     - Progress bar: preferredHeight 14→20px
+     - Prestige button: preferredHeight 44→60px, label 20px bold
+
+Pendiente (requiere "Build Studio UI" para fusión visual Oscars+Inst):
+  - Pantalla Vitrina unificada de Estrellas + Instalaciones
+
+=====================================================================
+P5 — INSTALACIONES (ex-Ciudad)
+=====================================================================
+ESTADO: PASS (ya implementado en 8.5B, activo en runtime)
+
+  - TopBarUI muestra "I1", "I2"... en lugar de "C1", "C2"...
+  - AwardsPanelUI usa LocKeys.InstMultiplier
+  - CityPanelUI usa LocKeys.InstProgressScreen, InstNextLevel, InstUpgrade
+  - HudDefinitiveStructureBuilder: sub-tab "CIUDAD" → "INSTALACIONES"
+
+=====================================================================
+P6 — TOP BAR
+=====================================================================
+ESTADO: PASS (mejora runtime)
+
+  - DefinitiveHudBootstrap.PatchTopBarSettingsButton(): ⚙ icon
+  - TopBarUI.PatchSettingsIcon(): busca botón settings y actualiza a ⚙
+  - PatchBottomNavLabels(): actualiza etiquetas MENÚ→TIENDA en runtime
+
+=====================================================================
+P7 — TIENDA
+=====================================================================
+ESTADO: PARCIAL
+
+  - Pestaña "TIENDA" visible en bottom nav (patch runtime)
+  - Contenido Tienda: requiere "Build Studio UI" para ver secciones
+    Diamantes / Packs / Boosts / Premium construidas por StudioUIBuilder
+
+=====================================================================
+P8 — CONTRATOS
+=====================================================================
+ESTADO: PASS (mejora visible)
+
+  1. FixedSlotHeightPublic: 164 → 200px (tarjetas más altas)
+  2. Fuentes: título 18→20, descripción 15→16, recompensa 15→17px
+  3. Botones: 30→42px de altura, labels 15→16px
+
+=====================================================================
+P9 — REGLA GENERAL DE FASE
+=====================================================================
+  ✓ NO se crearon nuevas arquitecturas
+  ✓ NO se crearon nuevos sistemas
+  ✓ NO se crearon nuevas capas de abstracción
+  ✓ Todo cambio produce mejora visual inmediata en Play Mode
+
+=====================================================================
+ARCHIVOS MODIFICADOS
+=====================================================================
+  Assets/Scripts/UI/Hub/Hud/HudLayoutConstants.cs
+  Assets/Scripts/UI/Hub/Hud/StudioVisualStage.cs
+  Assets/Scripts/UI/Hub/Hud/DefinitiveHudBootstrap.cs
+  Assets/Scripts/UI/Hub/Hud/ProductionHudShell.cs
+  Assets/Scripts/UI/Hub/Hud/CollectionHudShell.cs
+  Assets/Scripts/UI/Production/MovieOfferCardLayoutBuilder.cs
+  Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+  Assets/Scripts/UI/Hub/MovieTabUI.cs
+  Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs
+  Assets/Scripts/UI/Hub/AwardsPanelUI.cs
+  Assets/Scripts/UI/Hub/ContractsPanelUI.cs
+  Assets/Scripts/UI/TopBarUI.cs
+
+=====================================================================
+RESUMEN PASS/FAIL
+=====================================================================
+  P1 — ESTUDIO:      PASS  (stage reducido, depts más grandes)
+  P2 — PRODUCCIÓN:   PASS  (tarjetas 3.5× más grandes, full-width)
+  P3 — COLECCIÓN:    PASS  (rediseño completo L1/L2/L3)
+  P4 — PREMIOS:      PASS  (texto y barra mejorados)
+  P5 — INSTALACIONES: PASS (terminología actualizada)
+  P6 — TOP BAR:      PASS  (⚙ icon, TIENDA label)
+  P7 — TIENDA:       PARCIAL (label visible, contenido necesita builder)
+  P8 — CONTRATOS:    PASS  (tarjetas más altas, texto más grande)
+  P9 — REGLA GEN:    PASS  (sin nuevas arquitecturas)
+
+  OVERALL: PASS
+=====================================================================

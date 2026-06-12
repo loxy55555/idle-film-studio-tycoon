@@ -1,0 +1,15 @@
+﻿FASE 7.3 — Reputation Visibility Fix
+Generated: 2026-06-12
+STATUS: PASS
+
+FIX
+  TopBarUI.FormatReputation(float rep)
+  - Integer rep → no decimal (5.0 → "REP 5")
+  - Fractional rep → one decimal (5.1 → "REP 5.1")
+
+FILE
+  Assets/Scripts/UI/TopBarUI.cs
+
+VERIFICATION
+  FormatReputation present     : YES
+  N0 format removed            : YES

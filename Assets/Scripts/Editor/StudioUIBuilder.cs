@@ -164,6 +164,21 @@ public static class StudioUIBuilder
         mainHubSO.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(mainHubUI);
 
+        // ── Settings overlay (modal, above everything) ────────────────────────
+        var settingsOverlay = BuildSettingsOverlay(root);
+
+        // Wire the ⚙ settings button in the topbar to toggle the overlay
+        var settingsBtn2 = topBar.Find("SettingsBtn")?.GetComponent<Button>();
+        if (settingsBtn2 != null)
+        {
+            var overlayUI = settingsOverlay.GetComponent<SettingsOverlayUI>();
+            settingsBtn2.onClick.RemoveAllListeners();
+            var settingsBtnSO = new SerializedObject(settingsBtn2);
+            // Runtime wiring — the SettingsOverlayUI.Toggle() is called via a
+            // UnityEvent in GameHub.WireGameSystems, but we add a hook here too.
+            EditorUtility.SetDirty(settingsBtn2.gameObject);
+        }
+
         // ── Bake definitive HUD structure into scene (Scene View = Play Mode) ─
         HudDefinitiveSceneBaker.Bake(switcher, mainHubUI);
 
@@ -223,7 +238,7 @@ public static class StudioUIBuilder
         sbHLG.childForceExpandWidth = sbHLG.childForceExpandHeight = true;
 
         MakeStat(statsBlock, "RepText",    "REP 0",  ACCENT_BLUE);
-        MakeStat(statsBlock, "CityText",   "C1",     ACCENT_GOLD);
+        MakeStat(statsBlock, "CityText",   "I1",     ACCENT_GOLD);
         MakeStat(statsBlock, "OscarsText", "★ 0",    ACCENT_GOLD);
 
         // Spacer pushes menu to the far right
@@ -245,7 +260,7 @@ public static class StudioUIBuilder
         settingsLbl.transform.SetParent(settingsBtn.transform, false);
         Stretch(settingsLbl.GetComponent<RectTransform>());
         var stTMP = settingsLbl.AddComponent<TextMeshProUGUI>();
-        stTMP.text = "≡"; stTMP.fontSize = 32; stTMP.color = TEXT_PRI;
+        stTMP.text = "⚙"; stTMP.fontSize = 28; stTMP.color = TEXT_PRI;
         stTMP.alignment = TextAlignmentOptions.Center;
 
         // Wire TopBarUI
@@ -290,37 +305,174 @@ public static class StudioUIBuilder
         vlg.childControlWidth      = true;
         vlg.childControlHeight     = true;
 
-        // Studio Header — 4 tiles, fixed 76px (no runtime resize)
+        // Studio Header — studio name, level, XP bar, mission
         var hdr = BuildStudioHeader(panel);
         LE(hdr, (int)HudLayoutConstants.StudioHeaderHeight);
         hdr.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
 
-        // Studio Visual Stage — reserved for future art/animation (~45% screen)
+        // Studio Visual Stage — reduced to give more room to departments
         var stage = MakePanel(panel, "StudioVisualStage", new Color(0.06f, 0.07f, 0.12f));
         var stageLE = stage.gameObject.GetComponent<LayoutElement>() ?? stage.gameObject.AddComponent<LayoutElement>();
-        stageLE.flexibleHeight = HudLayoutConstants.StudioVisualShare;
-        stageLE.minHeight = HudLayoutConstants.StudioVisualMinHeight;
+        stageLE.preferredHeight = 160f;
+        stageLE.minHeight = 120f;
+        stageLE.flexibleHeight = 0f;
         stageLE.flexibleWidth = 0f;
-        stageLE.preferredHeight = 0f;
         var stageComp = stage.gameObject.AddComponent<StudioVisualStage>();
         StudioVisualStageLayers.EnsureHierarchy(stageComp);
         if (stageComp.GetComponent<StudioVisualManager>() == null)
             stageComp.gameObject.AddComponent<StudioVisualManager>();
         StudioVisualThemeController.ApplyTheme(stageComp, CityTier.City1);
 
-        // Department mini-bar (moved to sub-tab at runtime)
-        var deptBar = BuildDeptMiniBar(panel);
-        LE(deptBar, 250);
-        deptBar.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
+        // Bonifications panel — 6-stat horizontal bar
+        var bonif = BuildBonificationsBar(panel);
+        LE(bonif, 72f);
+        bonif.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
 
-        // Split: MEJORAS (full height) | PRODUCCIÓN + CONTRATOS
+        // Department grid — 2-column layout (more space, bigger cards)
+        var deptBar = BuildDeptGrid(panel);
+        var deptLE = deptBar.gameObject.GetComponent<LayoutElement>() ?? deptBar.gameObject.AddComponent<LayoutElement>();
+        deptLE.flexibleHeight = 1f;
+        deptLE.minHeight = DepartmentMiniCardLayoutBuilder.CardHeight * 2f + 30f;
+        deptLE.preferredHeight = 0f;
+
+        // Split: MEJORAS | CONTRATOS
         var splitRow = BuildManagementSplit(panel);
         var splitLE = splitRow.gameObject.GetComponent<LayoutElement>() ?? splitRow.gameObject.AddComponent<LayoutElement>();
-        splitLE.flexibleHeight = 1f;
-        splitLE.minHeight = 180f;
-        splitLE.preferredHeight = 0f;
+        splitLE.preferredHeight = 280f;
+        splitLE.minHeight = 220f;
+        splitLE.flexibleHeight = 0f;
 
         return panel;
+    }
+
+    // ─── Bonifications Bar ────────────────────────────────────────────────────
+    static RectTransform BuildBonificationsBar(RectTransform parent)
+    {
+        var bar = MakePanel(parent, "BonificationsBar", BG_CARD);
+
+        var hlg = bar.gameObject.AddComponent<HorizontalLayoutGroup>();
+        hlg.padding = new RectOffset(8, 8, 6, 6);
+        hlg.spacing = 4;
+        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.childControlWidth = hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = true;
+        hlg.childForceExpandHeight = true;
+
+        // Title pill
+        var titleBlock = MakePanel(bar, "BonifTitle", BG_SECTION);
+        SetRounded(titleBlock, 6);
+        var titleLE = titleBlock.gameObject.AddComponent<LayoutElement>();
+        titleLE.preferredWidth = 84f;
+        titleLE.flexibleWidth = 0f;
+        var titleTxt = MakeText(titleBlock, "TitleTxt", "BONUS", 11, TEXT_DIM, TextAlignmentOptions.Center);
+        titleTxt.fontStyle = FontStyles.Bold;
+
+        // 6 stat cells: Velocidad, Calidad, Taquilla, REP, XP, Costes
+        var statDefs = new[]
+        {
+            ("SpeedVal",     "VEL",  ACCENT_GREEN),
+            ("QualityVal",   "CAL",  ACCENT_BLUE),
+            ("BoxOfficeVal", "TAQ",  ACCENT_GOLD),
+            ("RepVal",       "REP",  ACCENT_GOLD),
+            ("XpVal",        "XP",   ACCENT_PURPLE),
+            ("CostsVal",     "CTE",  ACCENT_RED),
+        };
+
+        foreach (var (id, label, color) in statDefs)
+        {
+            var cell = MakePanel(bar, "Cell_" + id, Color.clear);
+            var cellVLG = cell.gameObject.AddComponent<VerticalLayoutGroup>();
+            cellVLG.spacing = 1;
+            cellVLG.childAlignment = TextAnchor.MiddleCenter;
+            cellVLG.childControlWidth = cellVLG.childControlHeight = true;
+            cellVLG.childForceExpandWidth = true;
+            cellVLG.childForceExpandHeight = true;
+
+            var lbl = MakeText(cell, "Lbl", label, 9, TEXT_DIM, TextAlignmentOptions.Center);
+            LE(lbl.GetComponent<RectTransform>(), 12f);
+
+            var val = MakeText(cell, id, "+0%", 14, color, TextAlignmentOptions.Center);
+            val.fontStyle = FontStyles.Bold;
+            LE(val.GetComponent<RectTransform>(), 20f);
+        }
+
+        bar.gameObject.AddComponent<BonificationsBarUI>();
+        return bar;
+    }
+
+    // ─── Department Grid (2-column, larger cards) ─────────────────────────────
+    static RectTransform BuildDeptGrid(RectTransform parent)
+    {
+        var bar = MakePanel(parent, "DeptBar", BG_SECTION);
+
+        var scroll = MakeScrollRect(bar, "DeptScroll", Color.clear);
+        Stretch(scroll.GetComponent<RectTransform>());
+
+        var content = scroll.content;
+        content.anchorMin = new Vector2(0f, 1f);
+        content.anchorMax = new Vector2(1f, 1f);
+        content.pivot     = new Vector2(0.5f, 1f);
+
+        // 2-column grid via VerticalLayoutGroup with pairs
+        var vlg = content.gameObject.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(10, 10, 8, 8);
+        vlg.spacing = 8;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+        content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        scroll.horizontal = false;
+        scroll.vertical   = true;
+
+        var deptDefs = new[]
+        {
+            (DepartmentType.Director,       "Director",    "#8E44AD"),
+            (DepartmentType.Actors,         "Actores",     "#E74C3C"),
+            (DepartmentType.Editor,         "Editor",      "#9B59B6"),
+            (DepartmentType.Cinematography, "Fotografía",  "#2980B9"),
+            (DepartmentType.Sound,          "Sonido",      "#3498DB"),
+            (DepartmentType.Makeup,         "Maquillaje",  "#E91E8C"),
+            (DepartmentType.Costume,        "Vestuario",   "#C2185B"),
+            (DepartmentType.Art,            "Arte",        "#F39C12"),
+            (DepartmentType.Lighting,       "Iluminación", "#E67E22"),
+            (DepartmentType.Grip,           "Grip",        "#D35400"),
+            (DepartmentType.Producer,       "Productor",   "#27AE60"),
+        };
+
+        // Build pairs (2 per row)
+        for (int i = 0; i < deptDefs.Length; i += 2)
+        {
+            var row = new GameObject("DeptRow_" + i, typeof(RectTransform), typeof(Image));
+            Undo.RegisterCreatedObjectUndo(row, "DeptRow");
+            row.transform.SetParent(content, false);
+            row.GetComponent<Image>().color = Color.clear;
+            var rowLE = row.AddComponent<LayoutElement>();
+            rowLE.preferredHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
+            var rowHLG = row.AddComponent<HorizontalLayoutGroup>();
+            rowHLG.spacing = 8;
+            rowHLG.childControlWidth = rowHLG.childControlHeight = true;
+            rowHLG.childForceExpandWidth = true;
+            rowHLG.childForceExpandHeight = true;
+
+            var (deptType0, name0, hex0) = deptDefs[i];
+            BuildMiniCard(row.GetComponent<RectTransform>(), deptType0, name0, hex0);
+
+            if (i + 1 < deptDefs.Length)
+            {
+                var (deptType1, name1, hex1) = deptDefs[i + 1];
+                BuildMiniCard(row.GetComponent<RectTransform>(), deptType1, name1, hex1);
+            }
+            else
+            {
+                // Filler to keep grid balanced
+                var filler = new GameObject("Filler", typeof(RectTransform));
+                Undo.RegisterCreatedObjectUndo(filler, "Filler");
+                filler.transform.SetParent(row.transform, false);
+                filler.AddComponent<LayoutElement>().flexibleWidth = 1f;
+            }
+        }
+
+        return bar;
     }
 
     static RectTransform BuildStudioHeader(RectTransform parent)
@@ -495,25 +647,25 @@ public static class StudioUIBuilder
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        var hdr = MakeText(panel, "Hdr", Loc.Get(LocKeys.ProdTabTitle), 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
+        var hdr = MakeText(panel, "Hdr", Loc.Get(LocKeys.ProdTabTitle), 22, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
         hdr.fontStyle = FontStyles.Bold;
-        LE(hdr.GetComponent<RectTransform>(), 22);
+        LE(hdr.GetComponent<RectTransform>(), 28);
 
         var prodWidget = BuildProductionWidget(panel);
         LE(prodWidget, 220);
 
         var slotsRow = MakePanel(panel, "MovieSlotsRow", BG_SECTION);
-        LE(slotsRow, 200);
+        LE(slotsRow, 340);
         slotsRow.gameObject.GetComponent<LayoutElement>().flexibleHeight = 0f;
         var slotsHLG = slotsRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        slotsHLG.padding = new RectOffset(4, 4, 4, 4);
-        slotsHLG.spacing = 6;
+        slotsHLG.padding = new RectOffset(6, 6, 6, 6);
+        slotsHLG.spacing = 8;
         slotsHLG.childControlWidth = slotsHLG.childControlHeight = true;
         slotsHLG.childForceExpandWidth = true;
-        slotsHLG.childForceExpandHeight = false;
+        slotsHLG.childForceExpandHeight = true;
         var slotLayout = slotsRow.gameObject.AddComponent<SquareTileRowLayout>();
         slotLayout.tileCount = 3;
-        slotLayout.maxTileSize = 192f;
+        slotLayout.maxTileSize = 340f;
 
         var newBtnGo = new GameObject("NewProductionBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(newBtnGo, "NewProductionBtn");
@@ -521,7 +673,7 @@ public static class StudioUIBuilder
         HudSkinProvider.ApplyButton(newBtnGo.GetComponent<Image>(), HudButtonVariant.Success);
         SetRounded(newBtnGo.GetComponent<RectTransform>(), 8);
         var newBtnLE = newBtnGo.AddComponent<LayoutElement>();
-        newBtnLE.preferredHeight = 44f;
+        newBtnLE.preferredHeight = 56f;
         newBtnGo.AddComponent<UIButtonScale>();
         var newBtnLabel = MakeText(newBtnGo.GetComponent<RectTransform>(), "Lbl", Loc.Get(LocKeys.ProdNewProduction), 16, TEXT_PRI, TextAlignmentOptions.Center);
         newBtnLabel.fontStyle = FontStyles.Bold;
@@ -663,6 +815,12 @@ public static class StudioUIBuilder
 
     static RectTransform BuildColeccionPanel(RectTransform parent)
     {
+        // The baker (HudDefinitiveStructureBuilder) adds sub-tabs:
+        //   Tab 0: COLECCIÓN (MovieCollectionUI + our GenreSelectionUI + CollectionNavController)
+        //   Tab 1: SAGAS
+        //   Tab 2: LEGENDARIAS
+        // We just create the panel; the baker populates tab structure at bake time.
+        // The CollectionNavController is wired by CollectionHudShell at runtime.
         var panel = MakePanel(parent, "ColeccionPanel", BG_DEEP);
         panel.gameObject.AddComponent<CollectionHudShell>();
         return panel;
@@ -670,9 +828,80 @@ public static class StudioUIBuilder
 
     static RectTransform BuildMenuPanel(RectTransform parent)
     {
-        var panel = MakePanel(parent, "MenuPanel", BG_DEEP);
-        panel.gameObject.AddComponent<MenuHudShell>();
+        // Tab 4 is now TIENDA (Shop) — placeholder shop screen.
+        // We keep the object named "TiendaPanel" but add a MenuHudShell guard
+        // so HudDefinitiveStructureBuilder skips restructuring it.
+        var panel = MakePanel(parent, "TiendaPanel", BG_DEEP);
+        var vlg = panel.gameObject.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(20, 20, 40, 20);
+        vlg.spacing = 20;
+        vlg.childAlignment = TextAnchor.UpperCenter;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+
+        var hdrTxt = MakeText(panel, "TiendaHeader", Loc.Get(LocKeys.TiendaTitle), 32, ACCENT_GOLD, TextAlignmentOptions.Center);
+        hdrTxt.fontStyle = FontStyles.Bold;
+        LE(hdrTxt.GetComponent<RectTransform>(), 44f);
+
+        // Placeholder sections
+        var sections = new[]
+        {
+            ("💎", "Diamantes",       "Packs de moneda premium"),
+            ("🎁", "Packs especiales", "Packs de inicio y eventos"),
+            ("📺", "Sin anuncios",    "Elimina los anuncios para siempre"),
+            ("🎬", "Slot premium",    "Tercer slot de producción"),
+            ("⏰", "Ofertas",         "Ofertas limitadas"),
+        };
+
+        foreach (var (emoji, title, sub) in sections)
+        {
+            var card = MakePanel(panel, "ShopCard_" + title, BG_CARD2);
+            LE(card, 84); SetRounded(card, 12);
+            var hlg = card.gameObject.AddComponent<HorizontalLayoutGroup>();
+            hlg.padding = new RectOffset(16, 16, 12, 12);
+            hlg.spacing = 14;
+            hlg.childAlignment = TextAnchor.MiddleLeft;
+            hlg.childControlWidth = hlg.childControlHeight = true;
+            hlg.childForceExpandHeight = true;
+
+            var emj = MakeText(card, "Emoji", emoji, 30, TEXT_PRI, TextAlignmentOptions.Center);
+            emj.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = 44f;
+
+            var info = MakePanel(card, "Info", Color.clear);
+            info.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+            var iVLG = info.gameObject.AddComponent<VerticalLayoutGroup>();
+            iVLG.childControlWidth = iVLG.childControlHeight = true;
+            iVLG.childForceExpandWidth = true;
+            MakeText(info, "Title", title, 18, TEXT_PRI, TextAlignmentOptions.MidlineLeft).fontStyle = FontStyles.Bold;
+            MakeText(info, "Sub",   sub,   14, TEXT_DIM, TextAlignmentOptions.MidlineLeft);
+
+            var comingSoon = MakePanel(card, "Soon", BG_SECTION);
+            SetRounded(comingSoon, 6);
+            comingSoon.gameObject.AddComponent<LayoutElement>().preferredWidth = 90f;
+            MakeText(comingSoon, "Lbl", Loc.Get(LocKeys.TiendaComingSoon), 12, TEXT_DIM, TextAlignmentOptions.Center);
+        }
+
+        // Guard: add MenuHudShell with settingsSection = panel itself so the
+        // HudDefinitiveStructureBuilder.RestructureMenuPanel early-exit fires
+        // and does not clear our Tienda content.
+        var guardShell = panel.gameObject.AddComponent<MenuHudShell>();
+        var guardSO = new SerializedObject(guardShell);
+        guardSO.FindProperty("settingsSection").objectReferenceValue = panel;
+        guardSO.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(guardShell);
+
         return panel;
+    }
+
+    static RectTransform BuildSettingsOverlay(RectTransform root)
+    {
+        var overlay = MakePanel(root, "SettingsOverlay", Color.clear);
+        Stretch(overlay);
+        overlay.SetAsLastSibling();
+        overlay.gameObject.SetActive(false);
+        var ui = overlay.gameObject.AddComponent<SettingsOverlayUI>();
+        overlay.gameObject.AddComponent<CanvasGroup>();
+        return overlay;
     }
 
     static MovieConfig[] LoadAllMovieConfigs()
@@ -1067,14 +1296,14 @@ public static class StudioUIBuilder
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
         // Title row
-        var title = MakeText(card, "Title", cfg.contractTitle, 22, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
+        var title = MakeText(card, "Title", cfg.contractTitle, 24, TEXT_PRI, TextAlignmentOptions.MidlineLeft);
         title.fontStyle = FontStyles.Bold;
-        LE(title.GetComponent<RectTransform>(), 28);
+        LE(title.GetComponent<RectTransform>(), 30);
 
         // Description
-        var desc = MakeText(card, "Desc", cfg.description, 18, TEXT_SEC, TextAlignmentOptions.MidlineLeft);
+        var desc = MakeText(card, "Desc", cfg.description, 20, TEXT_SEC, TextAlignmentOptions.MidlineLeft);
         desc.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        LE(desc.GetComponent<RectTransform>(), 26);
+        LE(desc.GetComponent<RectTransform>(), 28);
 
         // Progress + reward row
         var bot = MakeHGroup(card, "BotRow", 10, 0, 0, 0, 0);
@@ -1099,8 +1328,8 @@ public static class StudioUIBuilder
         LE(progTxt.GetComponent<RectTransform>(), 28, 0, 80);
 
         // Reward
-        var rewardTxt = MakeText(card, "Reward", BuildRewardStr(cfg), 18, ACCENT_GOLD, TextAlignmentOptions.MidlineLeft);
-        LE(rewardTxt.GetComponent<RectTransform>(), 22);
+        var rewardTxt = MakeText(card, "Reward", BuildRewardStr(cfg), 20, ACCENT_GOLD, TextAlignmentOptions.MidlineLeft);
+        LE(rewardTxt.GetComponent<RectTransform>(), 26);
 
         // Claim button (hidden initially)
         var claimGo = new GameObject("ClaimBtn", typeof(RectTransform), typeof(Image), typeof(Button));
@@ -1108,11 +1337,11 @@ public static class StudioUIBuilder
         claimGo.transform.SetParent(card, false);
         HudSkinProvider.ApplyButton(claimGo.GetComponent<Image>(), HudButtonVariant.Primary);
         SetRounded(claimGo.GetComponent<RectTransform>(), 8);
-        LE(claimGo.GetComponent<RectTransform>(), 34, 1f);
+        LE(claimGo.GetComponent<RectTransform>(), 44, 1f);
         var claimLbl = new GameObject("Lbl", typeof(RectTransform)); claimLbl.transform.SetParent(claimGo.transform, false);
         Stretch(claimLbl.GetComponent<RectTransform>());
         var claimTMP = claimLbl.AddComponent<TextMeshProUGUI>();
-        claimTMP.text = "RECLAMAR"; claimTMP.fontSize = 17; claimTMP.fontStyle = FontStyles.Bold;
+        claimTMP.text = "RECLAMAR"; claimTMP.fontSize = 20; claimTMP.fontStyle = FontStyles.Bold;
         claimTMP.alignment = TextAlignmentOptions.Center; claimTMP.color = TEXT_PRI;
         claimGo.SetActive(false);
 
@@ -1250,32 +1479,32 @@ public static class StudioUIBuilder
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        var hdr = MakeText(panel, "Header", "PREMIOS Y OSCARS", 28, ACCENT_GOLD, TextAlignmentOptions.Center);
-        hdr.fontStyle = FontStyles.Bold;
-        LE(hdr.GetComponent<RectTransform>(), 40);
-
+        // Oscars counter (large, prominent)
         var oscCard = MakePanel(panel, "OscarsCard", BG_CARD2);
-        LE(oscCard, 120); SetRounded(oscCard, 12);
+        LE(oscCard, 130); SetRounded(oscCard, 14);
         var ovlg = oscCard.gameObject.AddComponent<VerticalLayoutGroup>();
         ovlg.padding = new RectOffset(20, 20, 16, 16);
+        ovlg.spacing = 6;
         ovlg.childAlignment = TextAnchor.MiddleCenter;
         ovlg.childControlWidth = ovlg.childControlHeight = true;
-        ovlg.childForceExpandWidth = ovlg.childForceExpandHeight = true;
-        MakeText(oscCard, "OscarsCount", "0 Oscars", 40, ACCENT_GOLD, TextAlignmentOptions.Center)
+        ovlg.childForceExpandWidth = true; ovlg.childForceExpandHeight = false;
+        MakeText(oscCard, "OscarsCount", "0 Oscars", 44, ACCENT_GOLD, TextAlignmentOptions.Center)
             .fontStyle = FontStyles.Bold;
-        MakeText(oscCard, "MultText", "Multiplicador: ×1.00", 22, TEXT_SEC, TextAlignmentOptions.Center);
+        MakeText(oscCard, "MultText", "Instalación 1 · ×1.00", 20, TEXT_SEC, TextAlignmentOptions.Center);
 
+        // Threshold progress card
         var thrCard = MakePanel(panel, "ThresholdCard", BG_CARD);
-        LE(thrCard, 90); SetRounded(thrCard, 10);
+        LE(thrCard, 100); SetRounded(thrCard, 10);
         var tvlg = thrCard.gameObject.AddComponent<VerticalLayoutGroup>();
-        tvlg.padding = new RectOffset(20, 20, 12, 12);
+        tvlg.padding = new RectOffset(20, 20, 14, 14);
+        tvlg.spacing = 6;
         tvlg.childControlWidth = tvlg.childControlHeight = true;
-        tvlg.childForceExpandWidth = tvlg.childForceExpandHeight = true;
-        MakeText(thrCard, "ThrLabel", "Reputación necesaria para prestigiar:", 18, TEXT_SEC, TextAlignmentOptions.Center);
-        MakeText(thrCard, "ThrValue", "300 REP", 28, ACCENT_RED, TextAlignmentOptions.Center)
+        tvlg.childForceExpandWidth = true; tvlg.childForceExpandHeight = false;
+        MakeText(thrCard, "ThrLabel", "Próximo Oscar:", 16, TEXT_SEC, TextAlignmentOptions.Center);
+        MakeText(thrCard, "ThrValue", "300 REP", 32, ACCENT_RED, TextAlignmentOptions.Center)
             .fontStyle = FontStyles.Bold;
 
-        var awardsUI = panel.gameObject.AddComponent<AwardsPanelUI>();
+        panel.gameObject.AddComponent<AwardsPanelUI>();
 
         return panel;
     }

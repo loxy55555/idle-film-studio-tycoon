@@ -1,0 +1,25 @@
+UPGRADE PURCHASE AUDIT (Phase 8.3)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Root causes identified ---
+1. UpgradeCardUI: AddListener without RemoveListener (duplicate listener risk)
+2. DepartmentMiniCardUI: _buttonWired guard blocked rewire after layout rebuild
+3. UpgradeContentSorter: immediate SetSiblingIndex on purchase could shift cards under cursor
+4. LevelBar slider raycasts could intercept clicks near buy button
+
+--- Fixes applied ---
+UpgradeCardUI: WireBuyButton (Remove+Add), _purchaseInFlight guard, raycast off on level bar
+DepartmentMiniCardUI: always rewire, purchase guard, logs
+UpgradeSystem: PurchaseAttempt / Purchased logs with UpgradeId
+UpgradeContentSorter: deferred sort via _sortPending (next frame)
+
+--- Part D: UI audit checklist ---
+UpgradeCardUI: single listener via WireBuyButton, upgradeConfig.id on click
+DepartmentMiniCardUI: _personnelUpgrade resolved per deptType
+Suspicious elements resolved:
+  [FIXED] _buttonWired in DepartmentMiniCardUI
+  [FIXED] Missing RemoveListener in UpgradeCardUI Awake
+  [FIXED] Sort-on-purchase same-frame reorder
+  [FIXED] LevelBar raycast overlap with BuyBtn

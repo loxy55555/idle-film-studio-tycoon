@@ -169,7 +169,7 @@ public static class HudDefinitiveStructureBuilder
 
         var existingChildren = CaptureChildren(panel);
         var subTabs = HudSubTabShell.Create(panel, "Premios",
-            new[] { "NOMINACIONES", "PRESENTACIONES", "ESTRELLAS DE ORO", "CIUDAD" });
+            new[] { "NOMINACIONES", "PRESENTACIONES", "ESTRELLAS DE ORO", "INSTALACIONES" });
 
         HudSubTabShell.CreateSection(subTabs.panels[0], "NOMINACIONES", flexibleHeight: false);
         HudSubTabShell.CreateSection(subTabs.panels[1], "PRESENTACIONES", flexibleHeight: false);

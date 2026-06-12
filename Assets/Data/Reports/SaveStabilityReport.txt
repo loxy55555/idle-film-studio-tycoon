@@ -1,0 +1,20 @@
+SAVE STABILITY REPORT (Phase 8.2)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Event-driven saves ---
+Save(string reason) with [Save] Reason= logs
+Removed: PersistSave() from MovieOfferState
+Removed: 30s auto-save timer
+Allowed reasons: StartMovie, MovieCompleted, ContractSelected,
+  ContractClaimed, RefreshOffers, RefreshContracts, PurchaseUpgrade,
+  FtueStep, FtueCompletion, ApplicationQuit, ApplicationPause
+
+--- Atomic write ---
+Write save_v2.tmp → validate → replace save_v2.json
+
+--- Corrupt load handling ---
+[Save] LoadFailed + [Save] PreservingCorruptFile
+Corrupt file renamed to .corrupt — not overwritten on init
+GenerateCandidates no longer auto-saves on new game init

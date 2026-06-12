@@ -137,13 +137,23 @@ public class GameHub : MonoBehaviour
 
         pendingLegacyContractRefresh = false;
 
-        bool loaded = save != null && save.Load();
+        SaveLoadResult loadResult = save != null ? save.LoadGame() : SaveLoadResult.NotFound;
 
-
-
-        if (!loaded)
-
+        if (loadResult == SaveLoadResult.Success)
         {
+            upgrades?.ResyncAllPersonnel(departments);
+
+            contracts?.RecoverAfterLoad(studioLevel?.Level ?? 1);
+
+            studio.NotifyAll();
+
+            city?.BindRuntime(prestige, studio);
+            studio.RecalculateIncome();
+        }
+        else
+        {
+            if (loadResult == SaveLoadResult.Corrupt)
+                Debug.LogWarning("[Save] Corrupt save preserved — session starts without overwriting backup file.");
 
             studio.Initialize();
 
@@ -161,28 +171,10 @@ public class GameHub : MonoBehaviour
             diamonds?.Init();
 
             contracts?.Init(1);
+            contracts?.EnsureActiveContracts(1);
 
-        }
-
-        else
-
-        {
-
-            upgrades?.ResyncAllPersonnel(departments);
-
-
-
-            if (pendingLegacyContractRefresh)
-
-                contracts?.RefreshContracts(studioLevel?.Level ?? 1);
-
-
-
-            studio.NotifyAll();
-
-            city?.BindRuntime(prestige, studio);
-            studio.RecalculateIncome();
-
+            MovieOfferState.Clear();
+            FtueState.Reset();
         }
 
 
@@ -289,7 +281,7 @@ public class GameHub : MonoBehaviour
     {
         if (prestige == null || studio == null) return;
         if (!prestige.TryClaimOscar(studio.reputation)) return;
-        save?.Save();
+        save?.Save("ClaimOscar");
     }
 
     /// <summary>Legacy alias — permanent Oscar claim, no reset.</summary>

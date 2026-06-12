@@ -1,0 +1,309 @@
+FASE 6.0 — Core Gameplay Audit
+================================
+Fecha: 2026-06-10
+Alcance: diagnóstico únicamente — sin cambios aplicados.
+
+RESUMEN EJECUTIVO
+-----------------
+El bucle principal está roto por una desconexión crítica entre el catálogo 5.0
+(300 MovieConfig en Assets/Data/Movies/) y la escena de juego (MainGame.unity).
+
+MainGame.unity serializa 306 referencias MovieConfig en MovieTabUI.allMovies y
+MovieCollectionUI.allMovies, pero solo 10 resuelven a assets válidos (las 10
+legendarias). Las otras 296 referencias apuntan a GUIDs obsoletos → null en runtime.
+
+Consecuencia directa en Ciudad 1:
+  • Pool de ofertas elegible = 0 películas (las 10 válidas requieren Ciudad 8)
+  • Producción muestra slots vacíos / "—"
+  • Colección cae al fallback de legendarias (1 por género)
+  • Botón "Actualizar ofertas" funciona técnicamente pero no hay pool que barajar
+
+Estado por sistema:
+  • Movie Offer System      → ROTO
+  • Catalog Loading         → ROTO
+  • Collection System       → PARCIALMENTE ROTO
+  • Contract System         → PARCIALMENTE ROTO
+  • Save Data               → PARCIALMENTE ROTO
+
+
+================================================================================
+1. MOVIE OFFER SYSTEM
+================================================================================
+Estado: ROTO
+
+Archivos clave:
+  Assets/Scripts/UI/Hub/MovieTabUI.cs
+  Assets/Scripts/Core/MovieOfferPoolRules.cs
+  Assets/Scripts/Core/SagaProgressionRules.cs
+  Assets/Scripts/UI/Hub/Hud/ProductionHudShell.cs
+
+Flujo esperado:
+  MovieTabUI.allMovies[]
+    → MovieOfferPicker.PickThree()
+    → MovieOfferPoolRules.BuildEligiblePool()
+    → SagaProgressionRules.IsOfferEligible()
+    → 3 tarjetas en slotsRow
+
+Qué ocurre ahora:
+  1. allMovies tiene Length=306 pero ~296 entradas son null (refs rotas).
+  2. Las 10 entradas válidas son *_Legendary con cityUnlock=8.
+  3. En Ciudad 1, CityProgressionRules.IsMovieUnlocked() las excluye.
+  4. BuildEligiblePool() devuelve lista vacía → PickThree() devuelve 0 picks.
+  5. RebuildSlots() crea 3 slots vacíos con texto ProdEmptySlot / ProdNoOffer.
+
+Botón "Actualizar ofertas" (ProductionHudShell → movieTab.RebuildAll()):
+  • Cableado correctamente en escena (NewProductionBtn → ProductionHudShell.movieTab).
+  • NO está roto como botón: vuelve a ejecutar PickThree().
+  • Parece "no funcionar" porque el pool elegible sigue vacío tras reshuffle.
+
+Evidencia numérica (probe escena vs assets actuales):
+  MovieTabUI.allMovies     : 306 refs serializadas
+  Referencias válidas      : 10  (solo legendarias)
+  Referencias rotas (null) : 296
+  Películas elegibles Ciudad 1 con refs actuales: 0
+  Películas elegibles Ciudad 1 con catálogo completo: ~50 (CSV integrado)
+
+Mensajes UI engañosos:
+  • catalogEmpty vs catalogLow en MovieTabUI usan GetMovieCatalogSnapshot().
+  • Con refs rotas, eligibleTotal puede ser 0 → slots muestran ProdNoOffer aunque
+    el catálogo real no esté "completado".
+
+Conclusión:
+  Las ofertas no aparecen porque el runtime no carga las 300 películas; solo ve 10
+  legendarias bloqueadas por ciudad. El sistema de ofertas en sí es coherente.
+
+
+================================================================================
+2. CONTRACT SYSTEM
+================================================================================
+Estado: PARCIALMENTE ROTO
+
+Archivos clave:
+  Assets/Scripts/Core/Systems/ContractSystem.cs
+  Assets/Scripts/UI/Hub/ContractsPanelUI.cs
+  Assets/Scripts/GameHub.cs
+  Assets/Scripts/SaveSystem.cs
+
+Qué funciona:
+  • 22 ContractConfig en Assets/Data/Contracts/ — 22/22 refs válidas en escena.
+  • Partida nueva: GameHub.Start() → contracts.Init(1) → RefreshContracts().
+  • Generación, progreso y claim están implementados.
+
+Problema A — Ubicación UI (confusión):
+  Tras el HUD definitivo (Fase 7A), los contratos ya NO están en la pestaña
+  Producción. Están en:
+    ESTUDIO → sub-tab CONTRATOS → ContratosPanel (ContractsPanelUI)
+  Si el jugador busca contratos en Producción o Colección, ve paneles vacíos o
+  placeholders distintos.
+
+Problema B — Bug save/load (crítico en partidas guardadas):
+  SaveSystem.TryLoad() v3+ siempre llama:
+    contracts.LoadFromSave(data.contractStates, ...)
+  Si contractStates está vacío ([]), _active queda vacío.
+  RefreshContracts() NO se invoca en ese camino (solo pendingLegacyContractRefresh
+  para saves v2 sin snapshot).
+
+  Ciclo de bloqueo:
+    1. Carga save v3/v4 con contractStates=[]
+    2. _active = 0 contratos
+    3. Auto-save persiste contractStates=[]
+    4. Partidas futuras arrancan sin contratos aunque haya elegibles
+
+  Código relevante:
+    SaveSystem.cs L219-224 (LoadFromSave sin RefreshContracts posterior)
+    GameHub.cs L175-177 (RefreshContracts solo si pendingLegacyContractRefresh)
+    ContractSystem.cs L255-289 (LoadFromSave no repuebla activos)
+
+Problema C — Sin refresh al subir nivel de estudio:
+  ContractSystem.OnStudioLevelUp() solo actualiza progreso de metas activas;
+  no llama RefreshContracts() para desbloquear contratos nuevos por nivel.
+
+Conclusión:
+  En partida nueva limpia los contratos deberían existir en Estudio→Contratos.
+  En partidas guardadas con contractStates vacío el sistema queda permanentemente
+  sin contratos activos. La UI también contribuye a la percepción de "no hay".
+
+
+================================================================================
+3. COLLECTION SYSTEM
+================================================================================
+Estado: PARCIALMENTE ROTO
+
+Archivos clave:
+  Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+  Assets/Scripts/UI/Collection/CollectionCatalogModel.cs
+  Assets/Scripts/UI/Collection/CollectionMovieCardView.cs
+  Assets/Scripts/UI/Collection/CollectionLegendaryRegistry.cs
+  Assets/Scripts/UI/Hub/Hud/HudDefinitiveStructureBuilder.cs
+
+Qué funciona (diseño):
+  • CollectionCatalogModel agrupa Género → Rareza → Películas.
+  • Legendarias siempre visibles con marco dorado y estado BLOQUEADA/DESCUBIERTA.
+  • Películas no descubiertas se renderizan como siluetas ("???") — no ocultas.
+  • Progreso global usa ContentScaleDatabase.TargetMovieCount = 300.
+
+Por qué "solo muestra legendarias":
+  1. Misma causa raíz: allMovies con 296 null + 10 legendarias válidas.
+  2. CollectionCatalogModel L65-69: si un género tiene movies.Count==0, inyecta
+     fallback CollectionLegendaryRegistry.FindInCatalog() → 1 legendaria/género.
+  3. Resultado visible: ~10 tarjetas legendarias (marco dorado, título, lock).
+  4. Las ~290 restantes no existen en el array → no pueden renderizarse.
+
+Por qué "no muestra películas bloqueadas":
+  • Comportamiento parcialmente correcto: no descubiertas = silueta oscura, sin
+    nombre (CollectionMovieCardView L66-92). No es el mismo tratamiento que
+    legendarias bloqueadas (título + condición visibles).
+  • Con refs rotas, ni siquiera llegan a renderizarse como siluetas.
+
+Sub-tabs Colección:
+  • COLECCIÓN  → MovieCollectionUI (filmoteca real)
+  • SAGAS      → placeholder vacío (solo header)
+  • LEGENDARIAS → placeholder vacío (solo header)
+  Ver solo legendarias puede deberse a tab incorrecto + fallback anterior.
+
+Sin loader runtime de 300 películas:
+  • MovieCollectionUI copia allMovies de MovieTabUI; no usa MovieCatalogDatabase.
+  • MovieCatalogDatabase.Instance es null en builds (asset fuera de Resources/).
+  • MovieGridUI tiene fallback Resources.LoadAll("Movies") pero no existe carpeta
+    Resources/Movies — no aplica a la colección actual.
+
+Conclusión:
+  La colección no consume el catálogo 300 porque depende de refs de escena rotas.
+  El fallback de legendarias enmascara el problema mostrando 10 entradas.
+
+
+================================================================================
+4. SAVE DATA
+================================================================================
+Estado: PARCIALMENTE ROTO
+
+Archivo: Assets/Scripts/SaveSystem.cs
+Ruta runtime: Application.persistentDataPath/save_v2.json (v4)
+
+Qué funciona:
+  • completedMovieKeys usa MovieConfig.name (catalogId) — estable tras 5.0.
+  • movieHistory, activeProductions, cityLevel, upgrades persisten.
+  • Guardado automático cada 30s.
+
+Problemas detectados:
+
+  A) contractStates vacío sin repoblado (ver sección Contratos).
+
+  B) MigrateCompletedFromMovieHistory() (StudioManager L435-449):
+     • Solo corre si completedMovieKeys está vacío.
+     • Empareja por movieName, no por catalogId.
+     • Tras integración 5.0 muchos movieName cambiaron (pósters premium).
+     • Saves antiguos pueden no migrar descubrimientos correctamente.
+
+  C) Save inválido si money==0 AND reputation==0 (TryLoad L178-179):
+     • Descarta save corrupto → partida nueva. Comportamiento aceptable.
+
+  D) Save no guarda/recupera el wiring de catálogo (correcto por diseño):
+     • El problema de refs rotas es de escena, no de save.
+
+Impacto combinado con catálogo roto:
+  • completedMovieKeys puede referenciar catalogIds válidos, pero si allMovies
+    no contiene esos assets, la colección no puede mostrar las tarjetas.
+  • Ofertas excluyen completadas vía cfg.name aunque el asset sea null en array.
+
+
+================================================================================
+5. CATALOG LOADING
+================================================================================
+Estado: ROTO
+
+Fuentes de catálogo en proyecto:
+
+  Capa                          | Películas | Usado en runtime
+  ------------------------------|-----------|------------------
+  Assets/Data/Movies/*.asset    | 300       | NO directamente
+  MovieCatalogDatabase.asset    | 300       | NO (solo editor)
+  MainGame.unity allMovies[]    | 306 refs  | SÍ — pero 296 rotas
+  Resources/Movies              | —         | NO existe
+
+Pipeline editor:
+  StudioUIBuilder.LoadAllMovieConfigs() escanea Assets/Data/Movies y asigna
+  MovieTabUI.allMovies + MovieGridUI.allMovies.
+
+Pipeline post-5.0:
+  MovieCatalogIntegrationTools importa CSV → actualiza 300 assets.
+  NO actualiza referencias en MainGame.unity.
+
+  Tras reimportación masiva de assets, los GUIDs de MovieConfig cambiaron o las
+  refs de escena quedaron apuntando a assets eliminados/reemplazados. Solo las
+  10 legendarias (*_Legendary.asset) conservaron GUID compatible con la escena.
+
+Evidencia:
+  Valid IDs en escena: Action_Legendary, Animation_Legendary, Comedy_Legendary,
+  Documentary_Legendary, Drama_Legendary, Fantasy_Legendary, Horror_Legendary,
+  Romance_Legendary, SciFi_Legendary, Thriller_Legendary
+  (todas cityUnlock=8, isLegendary=1)
+
+  HudDefinitiveSceneBaker / HudDefinitiveStructureBuilder rebakean HUD pero
+  NO reasignan allMovies desde LoadAllMovieConfigs().
+
+Conclusión:
+  El catálogo 5.0 existe en disco pero no llega al gameplay. La escena es la
+  única fuente runtime y está desincronizada.
+
+
+================================================================================
+CADENA CAUSAL UNIFICADA
+================================================================================
+
+  Catálogo 5.0 integrado en assets (300 OK)
+           │
+           ▼
+  MainGame.unity NO resincronizada (296 refs null)
+           │
+           ├─► MovieOfferPoolRules → pool vacío en Ciudad 1 → sin ofertas
+           ├─► ProductionHudShell RebuildAll → reshuffle vacío → botón "inútil"
+           ├─► CollectionCatalogModel → fallback legendarias → solo 10 visibles
+           └─► StudioManager._movieCatalog incompleto → sistemas downstream ciegos
+
+  (Paralelo) Save v3/v4 contractStates=[] → sin RefreshContracts → sin contratos
+
+
+================================================================================
+VERIFICACIÓN RECOMENDADA (Play Mode)
+================================================================================
+  1. Log MovieTabUI.allMovies.Length y count(cfg != null)
+     Esperado roto: Length≈306, nonNull≈10
+     Esperado sano:  nonNull=300
+
+  2. Log MovieOfferPoolRules.BuildEligiblePool(...).Count at city level 1
+     Esperado roto: 0
+     Esperado sano: ~50
+
+  3. Tras Init partida nueva, log ContractSystem.ActiveContracts.Count
+     Esperado: 3 (si se mira Estudio→Contratos)
+
+  4. Inspeccionar save_v2.json → contractStates length
+
+  5. Menú editor: re-ejecutar StudioUIBuilder o script que reasigne allMovies
+     desde Assets/Data/Movies → debería restaurar ofertas/colección
+
+
+================================================================================
+FIXES SUGERIDOS (NO IMPLEMENTADOS — solo para fase posterior)
+================================================================================
+  P0 — Resincronizar MainGame.unity allMovies desde LoadAllMovieConfigs() (300)
+  P0 — Añadir runtime catalog loader fallback si allMovies tiene nulls
+  P1 — Tras LoadFromSave, llamar RefreshContracts(studioLevel)
+  P1 — RefreshContracts al subir studio level
+  P2 — Migración completed keys por catalogId, no movieName
+  P2 — Documentar / señalizar contratos en Estudio→Contratos
+  P3 — Implementar tabs SAGAS / LEGENDARIAS o eliminar placeholders
+
+
+================================================================================
+VEREDICTO FINAL
+================================================================================
+  El bucle principal está ROTO por desincronización escena↔catálogo (causa #1).
+  Contratos y save tienen bugs secundarios independientes (causa #2).
+  Colección refleja causa #1 + diseño de siluetas + tabs placeholder (causa #3).
+
+  Prioridad absoluta antes de balance o contenido:
+    Reconectar las 300 MovieConfig al runtime (escena o loader).
+
+Report: Assets/Data/Reports/CoreGameplayAudit.txt

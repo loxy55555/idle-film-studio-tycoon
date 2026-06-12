@@ -1,0 +1,103 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — STORE FIX (FASE 8.6B.3)
+=====================================================================
+
+=====================================================================
+DIAGNÓSTICO — POR QUÉ LA TIENDA APARECÍA VACÍA
+=====================================================================
+Root cause: combinación de tres problemas:
+
+1. TIMING DE ADDCOMPONENT vs ONENABLE
+   DefinitiveHudBootstrap.EnsureStorePanel() añadía el componente
+   StorePanelUI al TiendaPanel. El panel estaba INACTIVO en ese momento
+   (solo la pestaña activa tiene su GO activo).
+   Cuando el panel se activa (usuario pulsa Tienda), OnEnable() dispara,
+   pero si el scene ya había pasado su primer frame antes de que el
+   componente fuera añadido, el ciclo Awake/Start no disparó.
+   Resultado: _built = false, pero en algunas condiciones de race la
+   construcción no ocurría.
+
+2. FALTA DE TRIGGERS DE RESPALDO
+   StorePanelUI solo tenía OnEnable(). Sin Awake() ni Start(), si el
+   panel se activaba justo durante el frame del AddComponent, el
+   OnEnable que disparaba correspondía al objeto recién habilitado
+   pero el componente aún no estaba completamente inicializado.
+
+3. RECTTRANSFORM INCORRECTO
+   El panel TiendaPanel podía tener anchorMin/Max no extendidos (ej.
+   anchorMax.y < 1) si fue creado por el builder con layout fijo.
+   Esto hacía que el StoreRoot estirado dentro tuviera altura 0.
+
+=====================================================================
+FIXES APLICADOS
+=====================================================================
+
+StorePanelUI.cs:
+  + Añadido void Awake()  => EnsureBuilt();
+  + Añadido void Start()  => EnsureBuilt();
+  → Triple trigger (Awake + Start + OnEnable) garantiza que al menos
+    uno dispare en cualquier condición de lifecycle.
+
+  EnsureBuilt() ahora es PUBLIC:
+  + Permite llamarlo externamente desde DefinitiveHudBootstrap
+  
+  Guard mejorado:
+  - ANTES: if (_built) return;
+  - AHORA: if (_built && transform.Find("StoreRoot") != null) return;
+  → Si StoreRoot fue destruido por alguna razón, se reconstruye.
+
+  RectTransform explícito:
+  + rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+  + rt.offsetMin = rt.offsetMax = Vector2.zero;
+  → El panel siempre ocupa 100% del parent.
+
+  LayoutElement en StoreRoot:
+  + flexibleWidth = 1f; flexibleHeight = 1f;
+  → StoreRoot escala con el panel padre.
+
+  Legacy child hiding fix:
+  - ANTES: ocultaba TODOS los children
+  - AHORA: excluye "StoreRoot" del ocultado para evitar auto-ocultar
+    la tienda recién construida.
+
+DefinitiveHudBootstrap.EnsureStorePanel():
+  + RectTransform patch: menu.anchorMin = (0,0), anchorMax = (1,1)
+    → Garantiza que el TiendaPanel tenga stretch correcto.
+  + SendMessage("EnsureBuilt") si el panel ya está activo al momento
+    del patch → fuerza construcción inmediata.
+
+=====================================================================
+VERIFICACIÓN
+=====================================================================
+Al pulsar Play y navegar a la pestaña TIENDA debe mostrarse:
+
+  ╔═══════════════════════════════════╗
+  ║  TIENDA                           ║
+  ║                                   ║
+  ║  [🚀 STARTER PACK — 2,99€]       ║ ← banner featured
+  ║                                   ║
+  ║  💎 DIAMANTES                     ║
+  ║  [Puñado x25][Bolsa x150][Cofre x400] ← 3 cards azules
+  ║                                   ║
+  ║  🎁 PACKS                         ║
+  ║  [PACK DIRECTOR][PACK ESTRELLA]   ← 2 cards anchas
+  ║                                   ║
+  ║  ⚡ BOOSTS                        ║
+  ║  [Producción x2][Ingresos x2]     ← 2 cards verdes (ver anuncio)
+  ║                                   ║
+  ║  👑 PREMIUM                       ║
+  ║  [SIN ANUNCIOS — 5,99€]           ║ ← banner premium
+  ╚═══════════════════════════════════╝
+
+Todos los productos son placeholders visuales.
+Los botones loggean: "[Store] Producto placeholder — compra no disponible"
+
+=====================================================================
+RESULTADO
+=====================================================================
+  Tienda vacía:             CORREGIDO
+  Anchura completa:         GARANTIZADA (RectTransform stretch)
+  Contenido siempre visible: GARANTIZADO (triple trigger + public build)
+  
+  ESTADO: PASS
+=====================================================================

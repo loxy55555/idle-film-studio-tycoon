@@ -1,0 +1,105 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — COLECCIÓN UX (FASE 8.6A)
+=====================================================================
+
+=====================================================================
+PROBLEMAS DE LA VERSIÓN 8.5C
+=====================================================================
+  - Las tarjetas de género tenían padding interno que rompía la
+    alineación (emoji flotando sobre fondo plano uniforme)
+  - El progreso era solo texto — sin barra de progreso visual
+  - El grid L2 de 4 columnas producía posters minúsculos (~60px)
+  - La rareza NO era visible en el grid — solo dentro del popup
+  - Las películas no completadas se veían igual que las completadas
+  - El popup L3 mostraba el poster sin marco ni jerarquía de rareza
+
+=====================================================================
+DISEÑO 8.6A — FILOSOFÍA ÁLBUM/COLECCIÓN
+=====================================================================
+La colección debe sentirse como un álbum de cromos:
+  - lo que tienes se ve en color, con marco según su rareza
+  - lo que falta se ve atenuado con "?" — invita a completar
+  - el progreso se ve como barra, no solo como número
+
+=====================================================================
+NIVEL 1 — PORTADAS DE GÉNERO
+=====================================================================
+Estructura por tarjeta (150px, 2 columnas, edge-to-edge):
+  ┌─────────────────────┐
+  │   COVER (flexible)  │ ← tintada con color de género + emoji 42px
+  ├─────────────────────┤
+  │ Nombre      12 / 45 │ ← strip oscuro 40px: nombre izq, progreso der
+  ├─────────────────────┤
+  │ ▓▓▓▓▓░░░░░░░░░░░░░ │ ← barra fill 6px del color del género
+  └─────────────────────┘
+
+Header:
+  FILMOTECA                          37 / 300
+  ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░ (barra global dorada 8px)
+
+Alineaciones: cover sin padding (llena la tarjeta), strip de info con
+padding lateral 10px consistente, barra pegada al borde inferior.
+
+=====================================================================
+NIVEL 2 — GRID DE POSTERS
+=====================================================================
+  - 3 columnas (antes 4): posters ~33% más anchos
+  - Celda 172px de alto:
+    · Borde de 3px = COLOR DE RAREZA (visible sin abrir el popup)
+      - Común:      gris azulado
+      - Rara:       azul
+      - Épica:      morado
+      - Legendaria: dorado
+    · Poster flexible (área dominante de la celda)
+    · Strip de nombre 34px (2 líneas máx, ellipsis)
+  - Estado visual:
+    · COMPLETADA: poster a color pleno + badge ✔ verde (esquina sup-der)
+      + marco de rareza a brillo completo
+    · PENDIENTE: poster atenuado 65% + "?" + marco de rareza apagado
+  - BackBar 56px: botón cuadrado "←" 48px (área táctil correcta),
+    título del género, contador X/Y dorado a la derecha
+
+=====================================================================
+NIVEL 3 — TARJETA DE DETALLE
+=====================================================================
+  - Panel 88% ancho × 82% alto, centrado
+  - Poster 200px CON MARCO de 4px del color de rareza
+  - Título 22px bold centrado
+  - Badges: género (color del género) + rareza (color de la rareza)
+    — antes eran colores fijos para todos
+  - Píldora de estado full-width 32px:
+    · verde oscuro "✔ COMPLETADA"
+    · gris oscuro "○ PENDIENTE"
+  - Sinopsis (tagline real o info generada)
+  - Cierre: ✕ (44px) o tap en backdrop
+
+=====================================================================
+NAVEGACIÓN
+=====================================================================
+  L1 → L2: tap en portada de género
+  L2 → L1: botón ← (48px, esquina superior izquierda)
+  L2 → L3: tap en poster
+  L3 → L2: ✕ o tap fuera del panel
+
+  Reset a L1 al reabrir la pestaña sin género seleccionado.
+
+=====================================================================
+DATOS EN TIEMPO REAL
+=====================================================================
+  - Barras y contadores (global + por género) desde
+    studio.CompletedMovieKeys vs MovieCatalogRuntime.AllMovies
+  - Suscripción a StudioManager.OnMovieCompleted con handler con nombre
+    (corrige fuga: la versión anterior suscribía un lambda que nunca
+    se podía desuscribir)
+  - Contador del género visible también en la BackBar de L2
+
+=====================================================================
+RESULTADO
+=====================================================================
+  ANTES (8.5C): grid funcional pero plano — sin rareza visible,
+                sin barras de progreso, posters pequeños
+  AHORA (8.6A): álbum visual — marcos de rareza, posters dominantes,
+                progreso en barra, pendientes diferenciadas
+
+  ESTADO: PASS
+=====================================================================

@@ -1,0 +1,216 @@
+FASE 7.0 — Tutorial Blocker Audit Report
+==========================================
+Date: 2026-06-10
+Mode: READ-ONLY (no fixes applied)
+
+PROBLEM STATEMENT
+-----------------
+Tutorial allows producing the first movie. After completion:
+  • Tutorial does not advance
+  • Offers appear not to regenerate
+  • Player cannot continue
+
+FTUE STEP FLOW (FtueStep enum)
+------------------------------
+  0 Welcome
+  1 ProductionGuide        — highlight Production tab + first offer
+  2 StudioDuringProduction — switch to Studio tab while movie runs
+  3 FirstMovieComplete     — waiting for premiere dismiss → complete
+  4 Done                   — FTUE finished
+
+Files: Assets/Scripts/FTUE/FtueState.cs, FtueController.cs
+
+TUTORIAL FLOW DIAGRAM
+---------------------
+
+  Welcome → ProductionGuide → [player starts movie] → StudioDuringProduction
+       → [movie completes] → FirstMovieComplete → [premiere dismissed] → Done
+
+Production start trigger:
+  OnProductionsChanged (ActiveProductionCount > 0)
+  File: FtueController.cs L222-230
+
+Movie complete trigger:
+  OnMovieCompleted (CompletedMovieKeys.Count == 1)
+  File: FtueController.cs L233-244
+
+Final completion trigger:
+  OnPremiereDismissed while _step == FirstMovieComplete
+  File: FtueController.cs L246-250 → CompleteFtue(save: true)
+
+1. PASO ACTUAL DEL TUTORIAL (at blocker)
+----------------------------------------
+When blocked after first movie completes:
+
+  Runtime state:
+    FtueState.Completed = false
+    FtueState.Step      = FirstMovieComplete (3)
+    _step               = FirstMovieComplete
+    Overlay             = hidden (_overlay?.Hide() in OnMovieCompleted)
+
+  Saved to disk (PersistStep on complete):
+    ftueStep = 3, ftueCompleted = false
+    File: FtueController.cs L261-265, SaveSystem.cs L147-148
+
+  Player sees: no FTUE card, premiere overlay (if working), game otherwise
+  interactive but FTUE never marks Done.
+
+2. EVENTO QUE ESPERA EL TUTORIAL
+--------------------------------
+After first movie completes, FTUE waits for:
+
+  Event: PremiereSequenceController.OnPremiereDismissed
+  Handler: FtueController.OnPremiereDismissed()
+  Condition: _step == FtueStep.FirstMovieComplete
+  Action: CompleteFtue(save: true) → FtueState.MarkCompleted(), UnbindEvents()
+
+  File: FtueController.cs L246-250
+
+  Premiere dismiss chain:
+    PremiereOverlayView.TryDismiss() → OnComplete callback
+    → PremiereSequenceController.OnPremiereClosed()
+    → OnPremiereDismissed?.Invoke()
+    File: PremiereOverlayView.cs L247-264
+    File: PremiereSequenceController.cs L89-92
+
+3. EVENTO QUE REALMENTE SE DISPARA
+----------------------------------
+On movie completion (FinalizeProduction), this order fires:
+
+  A) StudioManager.OnMovieCompleted (event)
+     Subscribers (BindEvents in FtueController.cs L101-106):
+       • GameFeelUI.OnMovieCompleted → PremiereSequenceController.TryPresent
+       • MovieTabUI.OnMovieCompleted → RebuildSlots (if bound)
+       • MovieCollectionUI.OnMovieCompleted → Refresh (if bound)
+       • FtueController.OnMovieCompleted → step FirstMovieComplete + Hide overlay
+
+  B) ContractSystem direct calls (not FTUE-related)
+
+  FtueController.OnMovieCompleted (L233-244):
+    ✓ Fires when CompletedMovieKeys.Count == 1
+    ✓ Sets _step = FirstMovieComplete, PersistStep()
+    ✓ Hides FTUE overlay
+    ✗ Does NOT call CompleteFtue — intentionally waits for premiere
+
+  OnPremiereDismissed:
+    ✓ Fires ONLY when premiere overlay closes successfully
+    ✗ Does NOT fire if premiere presentation aborts (see root cause #1)
+
+4. CONDICIÓN EXACTA QUE IMPIDE AVANZAR
+--------------------------------------
+
+ROOT CAUSE #1 (PRIMARY — same session): Premiere dismiss never fires
+---------------------------------------------------------------------
+File: PremiereSequenceController.cs L76-81
+
+  EnsureOverlay();
+  if (_overlay == null)
+  {
+      _queue.Clear();
+      _isPresenting = false;
+      return;   // ← NO OnPremiereDismissed invoked
+  }
+
+If premiere overlay creation fails (no Canvas, EnsureOverlay timing),
+TryPresent enqueues payload but PresentNext aborts and clears queue.
+FtueController remains at FirstMovieComplete with Completed=false forever.
+
+Symptom match: tutorial "stuck" after movie completes, no advance to Done.
+
+ROOT CAUSE #2 (PRIMARY — after save/reload): ResumeStep remaps completed step
+-----------------------------------------------------------------------------
+File: FtueController.cs L128-129
+
+  if (step == FtueStep.FirstMovieComplete)
+      _step = FtueStep.StudioDuringProduction;
+
+PersistStep saves ftueStep=3 (FirstMovieComplete) on movie complete.
+On reload, ResumeStep downgrades to StudioDuringProduction:
+  • Shows studio guide again
+  • Movie already completed — no new production event
+  • Premiere does not replay
+  • OnPremiereDismissed never fires
+  → Permanent softlock until debug skip or manual FtueDebugCommands
+
+ROOT CAUSE #3 (SECONDARY): OnMovieCompleted gate Count != 1
+-------------------------------------------------------------
+File: FtueController.cs L236
+
+  if (_studio.CompletedMovieKeys.Count != 1) return;
+
+If save migration, offline completion, or prior movies exist, FTUE never
+enters FirstMovieComplete. ShouldAutoComplete (L63-67) skips FTUE entirely
+if Count > 0 on load — inconsistent paths.
+
+ROOT CAUSE #4 (CONTRIBUTING — offers "not regenerating"): UI bind failure
+-------------------------------------------------------------------------
+File: Assets/Scripts/UI/Hub/MovieTabUI.cs — OnMovieCompleted → RebuildSlots
+
+Pre-6.8 audit: MovieTabUI._studio often NOT BOUND at startup.
+OnMovieCompleted listener missing → offer slots not rebuilt after completion.
+
+Symptom match: "offers don't regenerate" (stale cards / empty slots).
+Fixed in FASE 6.8 — separate from FTUE step logic but same user report.
+
+Note: FTUE EnterHighlightPassThrough (FtueOverlayView L131-137) sets
+dim raycastTarget=false — does not block clicks. Overlay Hide() on
+movie complete deactivates FTUE root. Not the primary blocker.
+
+5. RELACIÓN TUTORIAL ↔ PRODUCTION ↔ COMPLETION
+------------------------------------------------
+
+| Phase              | Tutorial step           | Production state        | Completion event              |
+|--------------------|-------------------------|-------------------------|-------------------------------|
+| Pick offer         | ProductionGuide         | —                       | —                             |
+| StartMovie         | → StudioDuringProduction| ActiveProductionCount=1 | OnProductionsChanged          |
+| Timer elapses      | StudioDuringProduction  | coroutine running       | —                             |
+| FinalizeProduction | (still Studio/During)   | production removed      | OnMovieCompleted (all subs)   |
+| FTUE handler       | → FirstMovieComplete    | —                       | PersistStep, overlay hidden   |
+| Premiere shown     | FirstMovieComplete      | —                       | GameFeelUI → TryPresent       |
+| Premiere dismiss   | → Done                  | —                       | OnPremiereDismissed → Complete|
+
+Critical gap: FTUE completion is NOT tied to OnMovieCompleted directly.
+It requires a second event (OnPremiereDismissed) that can silently fail.
+
+EVENT SUBSCRIPTION TABLE
+------------------------
+| Event                         | Registered in          | Purpose                          |
+|-------------------------------|------------------------|----------------------------------|
+| GameHub.OnGameReady           | FtueController         | Start / ResumeStep               |
+| OnProductionsChanged          | FtueController         | Advance to StudioDuringProduction|
+| OnMovieCompleted              | FtueController         | Set FirstMovieComplete           |
+| OnPremiereDismissed           | FtueController         | CompleteFtue → Done              |
+| OnMovieCompleted              | GameFeelUI             | Show premiere (prerequisite)     |
+
+Save/load:
+  SaveSystem.Load → FtueState.ApplySave(ftueCompleted, ftueStep)
+  File: SaveSystem.cs L231-236 (before GameHub.OnGameReady)
+
+RECOMMENDED VERIFICATION (Play Mode logs)
+-----------------------------------------
+Filter console: [FTUE]
+
+Expected on success:
+  "First movie completed — waiting for premiere dismiss."
+  (premiere shown and dismissed)
+  "CompleteFtue save=True"
+
+Blocker signatures:
+  Missing "CompleteFtue" after premiere
+  ResumeStep → StudioDuringProduction with ftueStep=3 on reload
+  PremiereSequenceController abort with _overlay null
+
+ROOT CAUSE SUMMARY (exact)
+--------------------------
+The tutorial blocks because FTUE completion depends on
+OnPremiereDismissed, which is NOT guaranteed when:
+
+  1. PremiereSequenceController aborts if _overlay is null (silent no-op)
+  2. Save reload remaps FirstMovieComplete → StudioDuringProduction,
+     preventing premiere replay and completion
+
+Secondary: MovieTabUI bind failure prevents offer refresh (FASE 6.8).
+
+STATUS: ROOT CAUSE IDENTIFIED
+
+NOT MODIFIED (audit only)

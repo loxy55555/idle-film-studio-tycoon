@@ -28,7 +28,7 @@ public class DepartmentMiniCardUI : MonoBehaviour
     UpgradeConfig     _personnelUpgrade;
     int               _cachedLevel = -1;
     bool              _cachedLocked;
-    bool              _buttonWired;
+    bool              _purchaseInFlight;
 
     void Awake()
     {
@@ -42,6 +42,8 @@ public class DepartmentMiniCardUI : MonoBehaviour
     {
         GameHub.OnGameReady -= OnGameReady;
         Unsubscribe();
+        if (upgradeButton != null)
+            upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
     }
 
     void Unsubscribe()
@@ -81,7 +83,11 @@ public class DepartmentMiniCardUI : MonoBehaviour
             OnGameReady();
     }
 
-    void OnEnable() => Refresh();
+    void OnEnable()
+    {
+        WireUpgradeButton();
+        Refresh();
+    }
 
     void EnsurePremiumLayoutIfNeeded()
     {
@@ -116,16 +122,34 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
     void WireUpgradeButton()
     {
-        if (_buttonWired || upgradeButton == null) return;
+        if (upgradeButton == null) return;
         upgradeButton.onClick.RemoveListener(OnUpgradeClicked);
         upgradeButton.onClick.AddListener(OnUpgradeClicked);
-        _buttonWired = true;
+
+        var guard = upgradeButton.GetComponent<UpgradeBuyButtonGuard>()
+                   ?? upgradeButton.gameObject.AddComponent<UpgradeBuyButtonGuard>();
+        guard.Bind(() => _personnelUpgrade != null ? _personnelUpgrade.id : string.Empty);
+
+        UpgradeUiRaycastPolicy.ApplyCard(transform, upgradeButton);
     }
 
     void OnUpgradeClicked()
     {
-        if (_personnelUpgrade == null || _upgrades == null || _studio == null) return;
-        _upgrades.Purchase(_personnelUpgrade, _studio, _depts, _studioLevel?.Level ?? 1);
+        if (_purchaseInFlight || _personnelUpgrade == null || _upgrades == null || _studio == null) return;
+        if (!UpgradeUiInteractionGate.TryConsumeClick(_personnelUpgrade.id)) return;
+
+        _purchaseInFlight = true;
+        if (upgradeButton != null) upgradeButton.interactable = false;
+
+        try
+        {
+            _upgrades.Purchase(_personnelUpgrade, _studio, _depts, _studioLevel?.Level ?? 1);
+        }
+        finally
+        {
+            _purchaseInFlight = false;
+            Refresh();
+        }
     }
 
     void Refresh()
@@ -180,6 +204,7 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
         UpdateProgressBar(level, maxLevel, locked);
         UpdateUpgradeButton(locked, level, maxLevel);
+        UpgradeUiRaycastPolicy.ApplyCard(transform, upgradeButton);
 
         if (_canvasGroup != null)
         {
@@ -240,7 +265,7 @@ public class DepartmentMiniCardUI : MonoBehaviour
         bool canBuy = _upgrades.CanPurchase(_personnelUpgrade, _studio.Money, _studioLevel?.Level ?? 1);
 
         upgradeCostText.text = AnimatedMoneyText.FormatMoney(cost);
-        upgradeButton.interactable = canBuy;
+        upgradeButton.interactable = canBuy && !_purchaseInFlight;
 
         var btnImg = upgradeButton.GetComponent<Image>();
         if (btnImg != null)

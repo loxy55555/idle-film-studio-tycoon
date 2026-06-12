@@ -1,0 +1,183 @@
+FASE 6.5 — Contract UI Root Cause Audit Report
+===============================================
+Date: 2026-06-10
+Mode: READ-ONLY (no fixes applied)
+
+SUMMARY
+-------
+ContractSystem reports PASS (3 active contracts at runtime).
+Contract UI is EMPTY because ContractsPanelUI never binds to ContractSystem
+at startup. Manual Bind() immediately renders 3 cards.
+This is NOT a data/generation bug — it is an initialization/bind failure.
+
+RUNTIME VERIFICATION (Play Mode, fresh load)
+--------------------------------------------
+| Check                              | Result                          |
+|------------------------------------|---------------------------------|
+| ContractSystem exists              | YES                             |
+| Active contracts                   | 3                               |
+|   c_three_movies                   | Festival de Cortometrajes       |
+|   c_first_reputation               | Primeros Fans                   |
+|   c_first_movie                    | Primer Rodaje                   |
+| maxActiveContracts                 | 3                               |
+| Contract DB entries                | 22                              |
+| ContractsPanelUI._contracts bound  | NO — BIND FAILED                |
+| activeContent child count          | 0 (empty scroll)                |
+| Manual Bind() + Rebuild()          | 3 cards rendered instantly      |
+| MissionObjectiveUI                 | active, has Bind retry in Refresh|
+
+1. ContractSystem
+-----------------
+Generation (new game):
+  GameHub.Start → contracts.Init(1) + EnsureActiveContracts(1)
+  File: Assets/Scripts/GameHub.cs L163-164
+
+Recovery (load):
+  contracts.RecoverAfterLoad(studioLevel)
+  File: Assets/Scripts/GameHub.cs L174
+
+Refresh logic:
+  ContractSystem.RefreshContracts(studioLevel) fills _active up to max 3
+  File: Assets/Scripts/Core/Systems/ContractSystem.cs L88-106
+
+Events:
+  OnContractUpdated, OnContractCompleted, OnContractClaimed
+
+VERDICT: DATA LAYER OK — 3 active contracts confirmed at runtime.
+
+2. ContractsPanelUI
+-------------------
+Location: EstudioPanel → StudioPanel_CONTRATOS → ContratosPanel
+  (3rd studio sub-tab; inactive by default)
+
+Bind flow:
+  Awake → GameHub.OnGameReady += Bind
+  Bind → _contracts = GameHub.Instance?.contracts
+       → if null: return (PERMANENT FAIL — unsubscribed from OnGameReady)
+       → else: subscribe OnContractUpdated + Rebuild()
+  File: Assets/Scripts/UI/Hub/ContractsPanelUI.cs L25-92
+
+OnEnable:
+  if (_contracts != null) Rebuild();   // NO Bind() retry
+  File: L32-35
+
+Rebuild:
+  Spawns 3 ContractCardUI via ContractCardFactory OR placeholders
+  File: L105-137
+
+RUNTIME: _contracts = null → Rebuild() returns immediately L108
+         activeContent.children = 0
+
+3. ContractCardUI
+-----------------
+Spawned at runtime by ContractCardFactory.Create() inside Rebuild()
+  File: Assets/Scripts/UI/Hub/ContractsPanelUI.cs L225-229
+  File: ContractCardFactory L269-338
+
+Bind per card: ContractCardUI.Bind() reads GameHub.Instance.contracts
+  File: Assets/Scripts/UI/Hub/ContractCardUI.cs
+
+Cards never created because parent Rebuild() never runs (bind failure).
+
+4. Scene Bindings
+-----------------
+MainGame.unity (baked):
+  GameHub.contracts → ContractSystem (serialized, 22 allContracts entries)
+  ContratosPanel → ContractsPanelUI (enabled, m_Enabled: 1)
+  activeContent → ActiveScroll/Viewport/Content (serialized, valid)
+  StudioHudShell.contractsPanel → StudioPanel_CONTRATOS
+
+Legacy path (inactive):
+  ManagementSplit/ContratosColumn → empty, m_IsActive: 0
+
+VERDICT: Scene refs intact — NOT a missing reference problem.
+
+5. Contract Generation
+----------------------
+EnsureActiveContracts / RecoverAfterLoad populate _active
+City gating at city 1 allows 8+ contract IDs
+ContractRecoveryReport (6.2): PASS 0→3 recovery
+
+VERDICT: Generation OK.
+
+6. Active Objects at Runtime
+----------------------------
+Hierarchy:
+  Canvas/HubRoot/MainContent/ContentSwitcher/
+    EstudioPanel/StudioSubContent/StudioPanel_CONTRATOS/ContratosPanel
+      [ContractsPanelUI]  ← activeInHierarchy=false until sub-tab opened
+      ActiveScroll/Viewport/Content  ← 0 children (bind failure)
+
+Header summary (works):
+  StudioHeader/MissionCard [MissionObjectiveUI]
+  Uses Bind retry in Refresh() — shows first active contract
+
+Navigation required to see list:
+  Bottom nav ESTUDIO → sub-tab CONTRATOS (3rd tab, index 2)
+  Default sub-tab: DEPARTAMENTOS (index 0)
+  File: Assets/Scripts/UI/Hub/StudioHubUI.cs L61 ShowTab(0)
+
+WHY UI IS EMPTY (ROOT CAUSE)
+----------------------------
+PRIMARY: ContractsPanelUI.Bind() never succeeds at startup.
+
+  Evidence:
+    • Fresh Play Mode: _contracts = NOT BOUND, 0 UI children
+    • GameHub.Instance.contracts has 3 active (same frame)
+    • Manual Bind() via reflection: BOUND + 3 cards rendered
+
+  Mechanism (ContractsPanelUI.cs L83-87):
+    1. GameHub.OnGameReady -= Bind  (removes one-shot retry)
+    2. _contracts = GameHub.Instance?.contracts
+    3. if (_contracts == null) return  → silent permanent failure
+
+  Missing fallback vs GameFeelUI:
+    GameFeelUI.Start() also calls Bind() if GameHub.Instance != null
+    ContractsPanelUI has NO Start() fallback
+
+  OnEnable does NOT retry Bind — only Rebuild if already bound.
+
+SECONDARY: Navigation gating (contributes to “invisible” even if bound):
+  StudioPanel_CONTRATOS inactive until user opens CONTRATOS sub-tab
+  User on DEPARTAMENTOS sees no contracts list (expected UX confusion)
+
+TERTIARY: Layout while inactive (minor):
+  First successful Rebuild while panel inactive may need LayoutRebuilder
+  after tab activation — not the primary cause (0 children proves no Rebuild)
+
+COMPARISON: MissionObjectiveUI vs ContractsPanelUI
+----------------------------------------------------
+| Feature              | MissionObjectiveUI     | ContractsPanelUI        |
+|----------------------|------------------------|-------------------------|
+| OnGameReady bind     | YES                    | YES                     |
+| Start() fallback     | NO                     | NO                      |
+| Retry on Refresh     | YES (re-Bind if null)  | NO                      |
+| OnEnable             | N/A                    | Rebuild only if bound   |
+| Runtime bind status  | Works (header shows)   | FAILS (list empty)      |
+
+UI THAT SHOULD SHOW CONTRACTS
+-----------------------------
+Primary: ContractsPanelUI → ActiveScroll/Content → ContractCardUI × 3
+Header:  MissionObjectiveUI → MissionCard (first active / claimable)
+NOT used for list: ContractCardFactory placeholders when _active < 3
+
+ANSWERS TO REQUIRED QUESTIONS
+-----------------------------
+Q: ¿Existen contratos activos?
+A: SÍ — 3 activos en runtime (c_three_movies, c_first_reputation, c_first_movie)
+
+Q: ¿Cuántos contratos activos hay?
+A: 3 (maxActiveContracts = 3)
+
+Q: ¿Qué UI debería mostrarlos?
+A: ContractsPanelUI en Estudio → CONTRATOS sub-tab
+   + MissionObjectiveUI resumen en MissionCard header
+
+Q: ¿Por qué no aparecen visualmente?
+A: ContractsPanelUI.Bind() falla al inicio → _contracts null → Rebuild() no-op
+   → 0 tarjetas en Content. Confirmado: Bind manual funciona al instante.
+   Tab CONTRATOS además está oculto por defecto (sub-tab 3).
+
+STATUS: ROOT CAUSE IDENTIFIED — UI bind failure, NOT contract generation
+
+NOTE: No code changes applied (audit only).

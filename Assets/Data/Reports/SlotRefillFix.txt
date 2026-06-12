@@ -1,0 +1,11 @@
+﻿FASE 7.3 — Slot Refill Fix
+Generated: 2026-06-12
+STATUS: PASS
+
+FIX
+  StudioManager.StartMovie → MovieOfferState.NotifyProductionStarted
+  Removes consumed offer from slots and RefillToFull to maintain 3 offers
+
+FILES
+  Assets/Scripts/Managers/StudioManager.cs
+  Assets/Scripts/Core/MovieOfferState.cs

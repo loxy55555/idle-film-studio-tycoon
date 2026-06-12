@@ -1,0 +1,171 @@
+FASE 7.2 — PARTE C: Collection Rarity Visual Audit
+Generated: 2026-06-12
+STATUS: VISUAL OVERLAP CONFIRMED (audit only — no fixes applied)
+================================================================
+
+PROBLEM STATEMENT
+-----------------
+Epic and Legendary borders in the Collection UI appear to use the same
+color, or rarities are rendered incorrectly.
+
+SYSTEMS AUDITED
+---------------
+  CollectionMovieCardView.cs    — card builder (frame assignment)
+  CollectionLegendaryVisual.cs  — legendary-specific frame/poster
+  MovieRarityVisual.cs          — non-legendary frame colors + badges
+  MovieButtonUI.cs              — production offer cards (same color system)
+  MoviePosterVisual.cs          — poster only, no frame logic
+
+NOT FOUND IN CODEBASE (requested but absent):
+  RarityFrameProvider           — does not exist
+  CardFrameVisual               — does not exist
+
+All frames are Unity UI Image components tinted via Image.color.
+No rarity-specific sprites are assigned anywhere in the frame pipeline.
+
+================================================================
+FRAME ASSIGNMENT LOGIC (CollectionMovieCardView.cs)
+================================================================
+
+Build() L42-47:
+  if (isLegendary)
+      CollectionLegendaryVisual.ApplyLegendaryFrame(rarityFrame, locked)
+  else
+      MovieRarityVisual.ApplyFrame(rarityFrame, cfg.rarity)
+
+Legendary cards BYPASS MovieRarityVisual entirely — separate color path.
+Non-legendary cards (Common/Rare/Epic) use MovieRarityVisual.
+
+Badge label L70-71:
+  All rarities: MovieRarityVisual.ApplyBadge(rarityLbl, cfg.rarity)
+  (Legendary cards also get standard badge colors from MovieRarityVisual)
+
+================================================================
+RARITY | FRAME | COLOR TABLE
+================================================================
+
+RARITY     | FRAME SYSTEM              | FRAME COLOR (RGBA)              | SPRITE
+-----------|---------------------------|----------------------------------|--------
+Common     | MovieRarityVisual         | (0.12, 0.22, 0.42, 0.55)        | none
+           | ApplyFrame L38-43         | blue tint @ 55% alpha            |
+Rare       | MovieRarityVisual         | (0.45, 0.22, 0.72, 0.55)        | none
+           | ApplyFrame                | purple tint @ 55% alpha          |
+Epic       | MovieRarityVisual         | (0.72, 0.58, 0.18, 0.55)        | none
+           | GetAccentColor L10        | gold/yellow tint @ 55% alpha     |
+Legendary  | CollectionLegendaryVisual | UNLOCKED: (0.92, 0.76, 0.18, 0.95)| none
+(unlocked) | ApplyLegendaryFrame L12-16| bright gold @ 95% alpha          |
+Legendary  | CollectionLegendaryVisual | LOCKED: (0.62, 0.48, 0.14, 0.85) | none
+(locked)   | ApplyLegendaryFrame       | muted gold @ 85% alpha           |
+
+Source constants:
+  MovieRarityVisual.cs L8-11:
+    CommonBlue   = (0.12, 0.22, 0.42)
+    RarePurple   = (0.45, 0.22, 0.72)
+    EpicGold     = (0.72, 0.58, 0.18)      ← Epic frame base
+    LegendaryDim = (0.55, 0.38, 0.12)      ← used in PRODUCTION UI only
+
+  CollectionLegendaryVisual.cs L7-8:
+    FrameGoldBright = (0.92, 0.76, 0.18, 0.95)  ← Legendary unlocked
+    FrameGoldLocked = (0.62, 0.48, 0.14, 0.85)  ← Legendary locked
+
+ApplyFrame (MovieRarityVisual.cs L38-43):
+  frame.color = new Color(accent.r, accent.g, accent.b, 0.55f)
+
+================================================================
+BADGE TEXT COLORS (label below poster)
+================================================================
+
+RARITY     | BADGE COLOR (MovieRarityVisual.GetBadgeTextColor L29-36)
+-----------|--------------------------------------------------------
+Common     | (0.65, 0.75, 0.92)  light blue
+Rare       | (0.82, 0.68, 1.00)  light purple
+Epic       | (1.00, 0.88, 0.45)  bright gold
+Legendary  | (1.00, 0.82, 0.35)  bright gold (nearly identical to Epic)
+
+================================================================
+EPIC vs LEGENDARY — SHARED VISUAL RESOURCES?
+================================================================
+
+FRAMES:
+  Epic (collection):     rgb(0.72, 0.58, 0.18) @ 55% alpha
+  Legendary locked:      rgb(0.62, 0.48, 0.14) @ 85% alpha
+  Legendary unlocked:    rgb(0.92, 0.76, 0.18) @ 95% alpha
+
+  All three are in the GOLD/YELLOW hue family (R > G > B, low blue).
+  Epic @ 55% alpha on dark card background ≈ muted yellow border.
+  Legendary locked @ 85% alpha ≈ similar muted gold — VISUALLY SIMILAR.
+
+  Epic and Legendary DO NOT share the same code path or constant,
+  but they DO share the same color family (gold/yellow), producing
+  near-identical appearance especially Epic vs locked Legendary.
+
+BADGES:
+  Epic badge:       (1.00, 0.88, 0.45)
+  Legendary badge:  (1.00, 0.82, 0.35)
+  Delta: ΔG=0.06, ΔB=0.10 — barely distinguishable on screen.
+
+SPRITES:
+  No sprite assigned to any rarity frame in collection or production.
+  frame.sprite is never set in MovieRarityVisual or CollectionLegendaryVisual.
+  Visual differentiation relies 100% on Color tinting.
+
+PRODUCTION UI (for reference — MovieButtonUI.cs L119):
+  Legendary uses MovieRarityVisual.LegendaryDim (0.55, 0.38, 0.12)
+  Epic uses EpicGold (0.72, 0.58, 0.18)
+  Production UI has MORE differentiation than Collection legendary path.
+
+================================================================
+ROOT CAUSE — EXACT
+================================================================
+
+PRIMARY: Dual frame systems with overlapping gold palette
+
+  Epic cards use MovieRarityVisual.EpicGold (L10, L24).
+  Legendary cards use CollectionLegendaryVisual frame constants (L7-8)
+  which are brighter/darker variants of the SAME gold hue.
+
+  CollectionMovieCardView.cs L44-47 splits legendary to a separate visual
+  system that was designed for "premium gold" treatment but converges
+  chromatically with EpicGold at collection card scale.
+
+SECONDARY: No sprite differentiation
+
+  All frames are color-only Image tints. Without distinct border sprites,
+  hue proximity between EpicGold and FrameGold* is the only differentiator.
+
+TERTIARY: Badge text colors for Epic/Legendary nearly identical
+
+  MovieRarityVisual.cs L33-34: both bright gold, Δ < 0.10 per channel.
+
+NOT A DATA BUG:
+  MovieConfig.rarity field is correctly read (cfg.rarity).
+  Wrong-rarity rendering would require data error — not observed in code.
+  CollectionCatalogModel passes correct MovieConfig to Build().
+
+================================================================
+VISUAL REFERENCE (approximate hex)
+================================================================
+
+RARITY     | FRAME APPROX HEX | NOTES
+-----------|------------------|----------------------------------
+Common     | #1F386B @ 55%    | clearly blue
+Rare       | #7338B8 @ 55%    | clearly purple
+Epic       | #B8942E @ 55%    | yellow-gold
+Legendary  | #9E7A24 @ 85%    | yellow-gold (locked)
+Legendary  | #EBC22E @ 95%    | yellow-gold (unlocked, brighter)
+
+Epic frame and Legendary locked frame are both muted gold on dark cards.
+Players cannot reliably distinguish them without reading the badge text.
+
+RESPONSIBLE CODE LINES
+----------------------
+  MovieRarityVisual.cs           L10   EpicGold constant
+  MovieRarityVisual.cs           L11   LegendaryDim (production only)
+  MovieRarityVisual.cs           L38-43 ApplyFrame (55% alpha)
+  CollectionLegendaryVisual.cs   L7-8  FrameGoldBright / FrameGoldLocked
+  CollectionLegendaryVisual.cs   L12-16 ApplyLegendaryFrame
+  CollectionMovieCardView.cs     L44-47 frame path split (legendary vs rest)
+  MovieRarityVisual.cs           L33-34 badge colors Epic/Legendary
+
+RESULT: Epic/Legendary visual overlap CONFIRMED — by design of color
+        constants, not a rendering bug or wrong rarity assignment.

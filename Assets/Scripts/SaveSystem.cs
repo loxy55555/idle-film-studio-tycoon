@@ -7,7 +7,7 @@ using UnityEngine;
 [Serializable]
 public class GameSaveData
 {
-    public int version = 4;
+    public int version = 5;
 
     // Economy
     public long   money;
@@ -41,6 +41,9 @@ public class GameSaveData
     // v4 — FTUE
     public bool ftueCompleted;
     public int  ftueStep;
+
+    // v5 — persistent production offers
+    public string[] currentOffers;
 }
 
 [Serializable]
@@ -50,6 +53,8 @@ public class ContractSaveEntry
     public float  progress;
     public bool   readyToClaim;
     public int    genreMask;
+    /// <summary>True = this entry is the single active contract; false = candidate slot.</summary>
+    public bool   isActiveContract;
 }
 
 [Serializable]
@@ -72,18 +77,25 @@ public class MovieHistorySaveEntry
     public float  xpGain;
 }
 
+public enum SaveLoadResult
+{
+    Success,
+    NotFound,
+    Corrupt,
+}
+
 // ─── Save System ─────────────────────────────────────────────────────────────
 
 public class SaveSystem : MonoBehaviour
 {
-    private const string SAVE_FILE           = "save_v2.json";
-    private const string LEGACY_SAVE_FILE    = "save.json";
-    private const float  AUTO_SAVE_INTERVAL  = 30f;
+    const string SaveFile        = "save_v2.json";
+    const string LegacySaveFile  = "save.json";
+    const string TempSaveSuffix  = ".tmp";
+    const string CorruptSuffix   = ".corrupt";
 
-    private static string SavePath       => Path.Combine(Application.persistentDataPath, SAVE_FILE);
-    private static string LegacySavePath => Path.Combine(Application.persistentDataPath, LEGACY_SAVE_FILE);
-
-    private float autoSaveTimer;
+    static string SavePath       => Path.Combine(Application.persistentDataPath, SaveFile);
+    static string TempSavePath   => SavePath + TempSaveSuffix;
+    static string LegacySavePath => Path.Combine(Application.persistentDataPath, LegacySaveFile);
 
     public static float GetOfflineSeconds(long saveTimestampUnix)
     {
@@ -92,72 +104,57 @@ public class SaveSystem : MonoBehaviour
         return Math.Max(0f, now - saveTimestampUnix);
     }
 
-    private void Update()
+    void OnApplicationPause(bool pause)
     {
-        autoSaveTimer += Time.deltaTime;
-        if (autoSaveTimer >= AUTO_SAVE_INTERVAL) { Save(); autoSaveTimer = 0f; }
+        if (pause) Save("ApplicationPause");
     }
 
-    private void OnApplicationPause(bool pause) { if (pause) Save(); }
-    private void OnApplicationQuit()            { Save(); }
+    void OnApplicationQuit() => Save("ApplicationQuit");
 
     // ─── Public API ──────────────────────────────────────────────────────────
 
-    public void Save()
+    public void Save(string reason)
     {
         var hub = GameHub.Instance;
         if (hub == null) return;
 
-        var data = new GameSaveData
-        {
-            version = 4,
-            money      = hub.studio.Money,
-            moneyExact = hub.studio.MoneyExact,
-            reputation = hub.studio.reputation,
-            diamonds   = hub.diamonds != null ? hub.diamonds.GetSaveData() : 0,
-
-            editor         = hub.departments.editor,
-            director       = hub.departments.director,
-            actors         = hub.departments.actors,
-            sound          = hub.departments.sound,
-            cinematography = hub.departments.cinematography,
-            makeup         = hub.departments.makeup,
-            costume        = hub.departments.costume,
-            art            = hub.departments.art,
-            lighting       = hub.departments.lighting,
-            grip           = hub.departments.grip,
-            producer       = hub.departments.producer,
-
-            oscars = hub.prestige.oscars,
-            cityLevel = hub.city != null ? hub.city.GetSaveData() : 1,
-
-            studioLevel = hub.studioLevel?.Level ?? 1,
-            studioXP    = hub.studioLevel?.XP    ?? 0f,
-
-            upgradeLevels        = hub.upgrades?.GetSaveData(),
-            completedContractIds = hub.contracts?.GetCompletedIds(),
-
-            saveTimestampUnix  = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-            contractStates     = hub.contracts?.GetSaveData() ?? System.Array.Empty<ContractSaveEntry>(),
-            contractHistoryIds = hub.contracts?.GetHistorySaveIds(),
-            activeProductions  = hub.studio?.GetProductionSaveData(),
-            movieHistory       = hub.studio?.GetMovieHistorySaveData(),
-            recentProductionKeys = hub.studio?.GetRecentProductionSaveData(),
-            completedMovieKeys   = hub.studio?.GetCompletedMovieSaveData(),
-            ftueCompleted        = FtueState.Completed,
-            ftueStep             = (int)FtueState.Step,
-        };
+        var data = BuildSaveData(hub);
 
         try
         {
-            File.WriteAllText(SavePath, JsonUtility.ToJson(data, true));
-            Debug.Log("[SaveSystem] Saved v4 → " + SavePath);
+            string json = JsonUtility.ToJson(data, true);
+            if (!ValidateSaveJson(json, out string validationError))
+            {
+                Debug.LogError("[Save] ValidationFailed Reason=" + reason + " — " + validationError);
+                return;
+            }
+
+            File.WriteAllText(TempSavePath, json);
+
+            if (!ValidateSaveFile(TempSavePath, out validationError))
+            {
+                Debug.LogError("[Save] TempValidationFailed Reason=" + reason + " — " + validationError);
+                TryDeleteFile(TempSavePath);
+                return;
+            }
+
+            if (File.Exists(SavePath))
+                File.Delete(SavePath);
+
+            File.Move(TempSavePath, SavePath);
+            Debug.Log("[Save] Reason=" + reason + " → " + SavePath);
         }
-        catch (Exception e) { Debug.LogError("[SaveSystem] Save failed: " + e.Message); }
+        catch (Exception e)
+        {
+            Debug.LogError("[Save] SaveFailed Reason=" + reason + " — " + e.Message);
+            TryDeleteFile(TempSavePath);
+        }
     }
 
-    /// <summary>Returns true if a save was found and loaded.</summary>
-    public bool Load()
+    /// <summary>Legacy bool API — true only on successful load.</summary>
+    public bool Load() => LoadGame() == SaveLoadResult.Success;
+
+    public SaveLoadResult LoadGame()
     {
         if (File.Exists(SavePath))
             return TryLoad(SavePath);
@@ -165,87 +162,232 @@ public class SaveSystem : MonoBehaviour
         if (File.Exists(LegacySavePath))
             return TryLoad(LegacySavePath);
 
-        return false;
+        return SaveLoadResult.NotFound;
     }
 
-    private bool TryLoad(string path)
+    SaveLoadResult TryLoad(string path)
     {
         try
         {
-            var data = JsonUtility.FromJson<GameSaveData>(File.ReadAllText(path));
-            var hub  = GameHub.Instance;
+            string raw = File.ReadAllText(path);
+            if (!ValidateSaveJson(raw, out string validationError))
+                throw new InvalidDataException(validationError);
+
+            var data = JsonUtility.FromJson<GameSaveData>(raw);
+            if (data == null)
+                throw new InvalidDataException("JsonUtility returned null.");
 
             if (data.money == 0 && data.reputation == 0f)
-                return false;
+                return SaveLoadResult.NotFound;
 
-            hub.studio.Money      = data.money;
-            hub.studio.reputation = data.reputation;
-            hub.studio.LoadMoneyExact(data.moneyExact, data.money);
-
-            hub.departments.editor         = data.editor;
-            hub.departments.director       = data.director;
-            hub.departments.actors         = data.actors;
-            hub.departments.sound          = data.sound;
-            hub.departments.cinematography = data.cinematography;
-            hub.departments.makeup         = data.makeup;
-            hub.departments.costume        = data.costume;
-            hub.departments.art            = data.art;
-            hub.departments.lighting       = data.lighting;
-            hub.departments.grip           = data.grip;
-            hub.departments.producer       = data.producer;
-
-            hub.prestige.oscars = data.oscars;
-            hub.city?.LoadFromSave(data.cityLevel);
-            hub.city?.BindRuntime(hub.prestige, hub.studio);
-
-            hub.diamonds?.LoadFromSave(data.diamonds);
-
-            if (data.version >= 2)
-            {
-                hub.studioLevel?.LoadFromSave(data.studioLevel, data.studioXP);
-                hub.upgrades?.LoadFromSave(data.upgradeLevels);
-                hub.contracts?.LoadCompletedIds(data.completedContractIds);
-            }
-            else
-            {
-                MigrateV1ToV2(data, hub);
-            }
-
-            hub.studio.LoadMovieHistory(data.movieHistory);
-            hub.studio.LoadRecentProductionKeys(data.recentProductionKeys);
-            hub.studio.LoadCompletedMovieKeys(data.completedMovieKeys);
-            hub.studio.MigrateCompletedFromMovieHistory(data.movieHistory, data.completedMovieKeys);
-
-            if (data.version >= 3)
-                hub.contracts?.LoadFromSave(data.contractStates, data.contractHistoryIds);
-            else if (data.contractStates != null && data.contractStates.Length > 0)
-                hub.contracts?.LoadFromSave(data.contractStates, data.contractHistoryIds);
-            else
-                hub.pendingLegacyContractRefresh = true;
-
-            float offlineSeconds = GetOfflineSeconds(data.saveTimestampUnix);
-            offlineSeconds = Mathf.Min(offlineSeconds, StudioManager.MaxOfflineSeconds);
-            hub.studio.ApplyOfflinePassiveIncome(offlineSeconds);
-            hub.studio.ResumeProductions(data.activeProductions, offlineSeconds);
-
-            if (data.version >= 4)
-                FtueState.ApplySave(data.ftueCompleted, data.ftueStep);
-            else if (data.completedMovieKeys != null && data.completedMovieKeys.Length > 0)
-                FtueState.ApplySave(true, (int)FtueStep.Done);
-            else
-                FtueState.ApplySave(false, (int)FtueStep.Welcome);
-
-            Debug.Log($"[SaveSystem] Loaded v{data.version} from {Path.GetFileName(path)} | ftueCompleted={FtueState.Completed} ftueStep={FtueState.Step}");
-            return true;
+            ApplyLoadedData(data);
+            Debug.Log($"[SaveSystem] Loaded v{data.version} from {Path.GetFileName(path)} | ftueCompleted={FtueState.Completed} ftueStep={FtueState.Step} offers={MovieOfferState.HasActiveOffers}");
+            return SaveLoadResult.Success;
         }
         catch (Exception e)
         {
-            Debug.LogError("[SaveSystem] Load failed: " + e.Message);
+            Debug.LogError("[Save] LoadFailed — " + e.Message);
+            PreserveCorruptFile(path);
+            return SaveLoadResult.Corrupt;
+        }
+    }
+
+    static GameSaveData BuildSaveData(GameHub hub) => new GameSaveData
+    {
+        version = 5,
+        money      = hub.studio.Money,
+        moneyExact = hub.studio.MoneyExact,
+        reputation = hub.studio.reputation,
+        diamonds   = hub.diamonds != null ? hub.diamonds.GetSaveData() : 0,
+
+        editor         = hub.departments.editor,
+        director       = hub.departments.director,
+        actors         = hub.departments.actors,
+        sound          = hub.departments.sound,
+        cinematography = hub.departments.cinematography,
+        makeup         = hub.departments.makeup,
+        costume        = hub.departments.costume,
+        art            = hub.departments.art,
+        lighting       = hub.departments.lighting,
+        grip           = hub.departments.grip,
+        producer       = hub.departments.producer,
+
+        oscars = hub.prestige.oscars,
+        cityLevel = hub.city != null ? hub.city.GetSaveData() : 1,
+
+        studioLevel = hub.studioLevel?.Level ?? 1,
+        studioXP    = hub.studioLevel?.XP    ?? 0f,
+
+        upgradeLevels        = hub.upgrades?.GetSaveData(),
+        completedContractIds = hub.contracts?.GetCompletedIds(),
+
+        saveTimestampUnix    = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+        contractStates       = hub.contracts?.GetSaveData() ?? Array.Empty<ContractSaveEntry>(),
+        contractHistoryIds   = hub.contracts?.GetHistorySaveIds(),
+        activeProductions    = hub.studio?.GetProductionSaveData(),
+        movieHistory         = hub.studio?.GetMovieHistorySaveData(),
+        recentProductionKeys = hub.studio?.GetRecentProductionSaveData(),
+        completedMovieKeys   = hub.studio?.GetCompletedMovieSaveData(),
+        ftueCompleted        = FtueState.Completed,
+        ftueStep             = (int)FtueState.Step,
+        currentOffers        = MovieOfferState.GetSaveData(),
+    };
+
+    void ApplyLoadedData(GameSaveData data)
+    {
+        var hub = GameHub.Instance;
+
+        hub.studio.Money      = data.money;
+        hub.studio.reputation = data.reputation;
+        hub.studio.LoadMoneyExact(data.moneyExact, data.money);
+
+        hub.departments.editor         = data.editor;
+        hub.departments.director       = data.director;
+        hub.departments.actors         = data.actors;
+        hub.departments.sound          = data.sound;
+        hub.departments.cinematography = data.cinematography;
+        hub.departments.makeup         = data.makeup;
+        hub.departments.costume        = data.costume;
+        hub.departments.art            = data.art;
+        hub.departments.lighting       = data.lighting;
+        hub.departments.grip           = data.grip;
+        hub.departments.producer       = data.producer;
+
+        hub.prestige.oscars = data.oscars;
+        hub.city?.LoadFromSave(data.cityLevel);
+        hub.city?.BindRuntime(hub.prestige, hub.studio);
+
+        hub.diamonds?.LoadFromSave(data.diamonds);
+
+        if (data.version >= 2)
+        {
+            hub.studioLevel?.LoadFromSave(data.studioLevel, data.studioXP);
+            hub.upgrades?.LoadFromSave(data.upgradeLevels);
+            hub.contracts?.LoadCompletedIds(data.completedContractIds);
+        }
+        else
+        {
+            MigrateV1ToV2(data, hub);
+        }
+
+        hub.studio.LoadMovieHistory(data.movieHistory);
+        hub.studio.LoadRecentProductionKeys(data.recentProductionKeys);
+        hub.studio.LoadCompletedMovieKeys(data.completedMovieKeys);
+        hub.studio.MigrateCompletedFromMovieHistory(data.movieHistory, data.completedMovieKeys);
+
+        if (data.version >= 3)
+            hub.contracts?.LoadFromSave(data.contractStates, data.contractHistoryIds);
+        else if (data.contractStates != null && data.contractStates.Length > 0)
+            hub.contracts?.LoadFromSave(data.contractStates, data.contractHistoryIds);
+        else
+            hub.pendingLegacyContractRefresh = true;
+
+        float offlineSeconds = GetOfflineSeconds(data.saveTimestampUnix);
+        offlineSeconds = Mathf.Min(offlineSeconds, StudioManager.MaxOfflineSeconds);
+        hub.studio.ApplyOfflinePassiveIncome(offlineSeconds);
+        hub.studio.ResumeProductions(data.activeProductions, offlineSeconds);
+
+        if (data.version >= 4)
+            FtueState.ApplySave(data.ftueCompleted, data.ftueStep);
+        else if (data.completedMovieKeys != null && data.completedMovieKeys.Length > 0)
+            FtueState.ApplySave(true, (int)FtueStep.Done);
+        else
+            FtueState.ApplySave(false, (int)FtueStep.Welcome);
+
+        if (data.version >= 5 && data.currentOffers != null)
+            MovieOfferState.ApplySave(data.currentOffers);
+        else
+            MovieOfferState.Clear();
+    }
+
+    static bool ValidateSaveJson(string json, out string error)
+    {
+        error = null;
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            error = "Empty JSON payload.";
+            return false;
+        }
+
+        try
+        {
+            var probe = JsonUtility.FromJson<GameSaveData>(json);
+            if (probe == null)
+            {
+                error = "Deserialized save data is null.";
+                return false;
+            }
+
+            if (probe.version < 1)
+            {
+                error = "Invalid save version.";
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+            return false;
+        }
+
+        return true;
+    }
+
+    static bool ValidateSaveFile(string path, out string error)
+    {
+        error = null;
+        if (!File.Exists(path))
+        {
+            error = "Temp save file missing.";
+            return false;
+        }
+
+        try
+        {
+            return ValidateSaveJson(File.ReadAllText(path), out error);
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
             return false;
         }
     }
 
-    private static void MigrateV1ToV2(GameSaveData data, GameHub hub)
+    static void PreserveCorruptFile(string path)
+    {
+        if (!File.Exists(path)) return;
+
+        string backup = path + CorruptSuffix;
+        int attempt = 0;
+        while (File.Exists(backup))
+        {
+            attempt++;
+            backup = path + CorruptSuffix + "." + attempt;
+            if (attempt > 20) break;
+        }
+
+        try
+        {
+            File.Move(path, backup);
+            Debug.LogWarning("[Save] PreservingCorruptFile → " + backup);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("[Save] PreservingCorruptFile failed — " + e.Message);
+        }
+    }
+
+    static void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch { /* best effort */ }
+    }
+
+    static void MigrateV1ToV2(GameSaveData data, GameHub hub)
     {
         if (hub.upgrades == null || hub.studioLevel == null) return;
 
@@ -276,8 +418,9 @@ public class SaveSystem : MonoBehaviour
 
     public void DeleteSave()
     {
-        if (File.Exists(SavePath))       File.Delete(SavePath);
-        if (File.Exists(LegacySavePath)) File.Delete(LegacySavePath);
+        TryDeleteFile(SavePath);
+        TryDeleteFile(TempSavePath);
+        TryDeleteFile(LegacySavePath);
         Debug.Log("[SaveSystem] Save deleted.");
     }
 }

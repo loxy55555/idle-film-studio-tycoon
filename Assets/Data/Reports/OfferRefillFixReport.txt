@@ -1,0 +1,23 @@
+﻿OFFER REFILL FIX REPORT (Phase 8.1)
+Generated: 2026-06-12 15:34:48
+
+OVERALL: PASS
+
+--- Refill Chain ---
+  1. StartMovie(B) → NotifyProductionStarted(B)
+     → MovieOfferState.NotifyProductionStarted: remove B, RefillToFull([A,C] → [A,D,C])
+  2. NotifyProductionsChanged() → OnProductionsChanged event
+     → MovieTabUI.OnProductionsChanged() → RefreshOfferDisplay()
+  3. RefreshOfferDisplay(): EnsureOffers(activeProductions=GetActiveProductionConfigs())
+     → PruneAndRefill with active productions excluded → count=3 → no-op
+  4. RenderOfferSlots([A,D,C]) → UI rebuilt immediately (same frame)
+
+--- Regression Root Cause (Phase 8.0) ---
+  RefreshOfferDisplay() called EnsureOffers without activeProductions.
+  PruneAndRefill could accidentally re-add the movie currently in production
+  as a new offer if a different slot needed filling.
+
+--- Fix Applied ---
+  EnsureOffers signature updated: activeProductions = null (optional).
+  RefreshOfferDisplay passes _studio.GetActiveProductionConfigs().
+  Active productions are always excluded from the eligible pick pool.

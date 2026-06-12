@@ -1,0 +1,30 @@
+PHASE 8.3 FINAL STABILIZATION REPORT
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+  Part A — Full offer regeneration     : PASS
+  Part B — Offer refresh validation   : PASS
+  Part C — Upgrade double purchase    : PASS
+  Part D — Upgrade UI audit           : PASS
+
+--- Root causes found ---
+  Offers: single-slot refill preserved discarded offers; design now requires full RegenerateAll on production
+  Upgrades: duplicate/stale button listeners + same-frame card reorder + level bar raycast overlap
+
+--- Files modified ---
+  Assets/Scripts/Core/MovieOfferState.cs
+  Assets/Scripts/Core/GameplayRefreshService.cs
+  Assets/Scripts/UI/Hub/Hud/ProductionHudShell.cs
+  Assets/Scripts/UI/Hub/UpgradeCardUI.cs
+  Assets/Scripts/UI/Hub/DepartmentMiniCardUI.cs
+  Assets/Scripts/UI/Hub/ContentSortBootstrap.cs
+  Assets/Scripts/Core/Systems/UpgradeSystem.cs
+  Assets/Scripts/Editor/Phase83StabilizationAuditTools.cs
+
+--- Validation (manual Play Mode) ---
+  1. Produce movie → all 3 offers change (D E F)
+  2. Refresh offers → all 3 change, logs present
+  3. Buy upgrade → single PurchaseAttempt/Purchased per click
+  4. Save/load → progress intact
+  5. Contracts unchanged

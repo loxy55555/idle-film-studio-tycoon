@@ -61,7 +61,7 @@ public class CitySystem : MonoBehaviour
         CityProgressionNotifier.NotifyLevelUp(oldLevel, Level);
         _studio?.RecalculateIncome();
         GameHub.Instance?.contracts?.RefreshContracts(GameHub.Instance?.studioLevel?.Level ?? 1);
-        GameHub.Instance?.save?.Save();
+        GameHub.Instance?.save?.Save("CityUpgrade");
         return true;
     }
 

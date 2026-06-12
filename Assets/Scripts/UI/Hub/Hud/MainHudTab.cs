@@ -5,7 +5,7 @@ public enum MainHudTab
     Production = 1,
     Awards     = 2,
     Collection = 3,
-    Menu       = 4,
+    Shop       = 4,
 }
 
 public static class MainHudTabLabels
@@ -16,15 +16,15 @@ public static class MainHudTabLabels
         "PRODUCCIÓN",
         "PREMIOS",
         "COLECCIÓN",
-        "MENÚ",
+        "TIENDA",
     };
 
     public static readonly string[] BottomIcons =
     {
-        "EST",
-        "PRO",
-        "PRE",
-        "COL",
-        "MEN",
+        "🎬",
+        "🎥",
+        "⭐",
+        "📚",
+        "🛒",
     };
 }

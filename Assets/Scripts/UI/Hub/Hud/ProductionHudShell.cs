@@ -2,45 +2,150 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Production tab shell — active slots, offers, new production action.</summary>
+/// <summary>Production tab shell — active slots, offers, new production action. Phase 8.5C: upgrades offer slot layout to tall vertical cards.</summary>
 public class ProductionHudShell : MonoBehaviour
 {
     public RectTransform activeProductionRoot;
-    public MovieTabUI movieTab;
-    public Button newProductionButton;
+    public MovieTabUI    movieTab;
+    public Button        newProductionButton;
+
+    bool _layoutUpgraded;
+
+    void Awake()
+    {
+        WireRefreshButton();
+    }
+
+    void Start()
+    {
+        UpgradeProductionLayout();
+        ApplyLocalizedButtonLabel();
+    }
 
     void OnEnable()
     {
         ApplyLocalizedButtonLabel();
+        WireRefreshButton();
+        // Re-apply layout upgrade if the panel was rebuilt (e.g. after domain reload)
+        if (!_layoutUpgraded)
+            UpgradeProductionLayout();
     }
 
     public void Configure(RectTransform activeProductionRoot, MovieTabUI movieTab, Button newProductionButton)
     {
         this.activeProductionRoot = activeProductionRoot;
-        this.movieTab = movieTab;
-        this.newProductionButton = newProductionButton;
+        this.movieTab             = movieTab;
+        this.newProductionButton  = newProductionButton;
+        WireRefreshButton();
+        ApplyLocalizedButtonLabel();
+    }
 
-        if (this.newProductionButton != null)
+    /// <summary>
+    /// Phase 8.5C: Replaces SquareTileRowLayout + HorizontalLayoutGroup on the offer slots row
+    /// with a VerticalLayoutGroup so each offer card is full-width and tall (mobile-first).
+    /// Also shrinks the history section to give offers more visual prominence.
+    /// </summary>
+    void UpgradeProductionLayout()
+    {
+        if (movieTab?.slotsRow == null) return;
+        if (_layoutUpgraded) return;
+        _layoutUpgraded = true;
+
+        var row = movieTab.slotsRow;
+
+        // Remove square-tile constraint (makes cards square = small)
+        var strl = row.GetComponent<SquareTileRowLayout>();
+        if (strl != null) DestroyImmediate(strl);
+
+        // Replace HorizontalLayoutGroup with VerticalLayoutGroup
+        var hlg = row.GetComponent<HorizontalLayoutGroup>();
+        if (hlg != null) DestroyImmediate(hlg);
+
+        var vlg = row.gameObject.GetComponent<VerticalLayoutGroup>()
+                  ?? row.gameObject.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing              = 10f;
+        vlg.padding              = new RectOffset(8, 8, 4, 4);
+        vlg.childControlWidth    = vlg.childControlHeight   = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        // Offer row grows to fill available space in the production panel
+        var rowLE = row.GetComponent<LayoutElement>() ?? row.gameObject.AddComponent<LayoutElement>();
+        rowLE.flexibleHeight  = 2f;
+        rowLE.preferredHeight = -1f;
+        rowLE.minHeight       = -1f;
+
+        // Shrink history section so offers dominate (find it as sibling)
+        ConstrainHistorySection(row.transform.parent);
+
+        // Refresh cards so they are rendered with the new layout
+        movieTab.RebuildAll();
+    }
+
+    static void ConstrainHistorySection(Transform productionPanel)
+    {
+        if (productionPanel == null) return;
+
+        var historyScroll = productionPanel.Find("MovieHistoryScroll")
+                         ?? productionPanel.Find("HistoryScroll");
+        if (historyScroll == null)
         {
-            this.newProductionButton.onClick.RemoveListener(OnNewProductionClicked);
-            this.newProductionButton.onClick.AddListener(OnNewProductionClicked);
+            // Fallback: find a ScrollRect sibling that isn't the active production widget
+            foreach (Transform child in productionPanel)
+            {
+                if (child.GetComponent<ScrollRect>() != null &&
+                    child.name != "MovieSlotsRow" &&
+                    child.name != "ProductionWidget" &&
+                    child.name != "ActiveProductionRoot")
+                {
+                    historyScroll = child;
+                    break;
+                }
+            }
         }
 
-        ApplyLocalizedButtonLabel();
+        if (historyScroll != null)
+        {
+            var le = historyScroll.GetComponent<LayoutElement>() ?? historyScroll.gameObject.AddComponent<LayoutElement>();
+            le.preferredHeight  = 120f;
+            le.minHeight        = 80f;
+            le.flexibleHeight   = 0f;
+        }
+    }
+
+    void WireRefreshButton()
+    {
+        if (newProductionButton == null) return;
+        newProductionButton.onClick.RemoveListener(OnNewProductionClicked);
+        newProductionButton.onClick.AddListener(OnNewProductionClicked);
     }
 
     void ApplyLocalizedButtonLabel()
     {
         if (newProductionButton == null) return;
-
         var label = newProductionButton.transform.Find("Label")?.GetComponent<TextMeshProUGUI>()
                  ?? newProductionButton.GetComponentInChildren<TextMeshProUGUI>();
         if (label != null)
+        {
             label.text = Loc.Get(LocKeys.ProdNewProduction);
+            label.fontSize = 16f;
+        }
+
+        // Make the button taller for mobile (P2 rule)
+        var le = newProductionButton.GetComponent<LayoutElement>();
+        if (le != null) le.preferredHeight = Mathf.Max(le.preferredHeight, 52f);
     }
 
     void OnNewProductionClicked()
     {
-        movieTab?.RebuildAll();
+        Debug.Log("[Offers] RefreshClicked");
+        GameplayRefreshService.RequestProductionOfferRefresh(OnRefreshOffersComplete);
+    }
+
+    void OnRefreshOffersComplete()
+    {
+        Debug.Log("[Offers] RefreshGenerated");
+        movieTab?.RefreshOfferDisplay();
     }
 }
+

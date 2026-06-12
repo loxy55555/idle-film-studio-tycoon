@@ -1,0 +1,168 @@
+FASE 6.6 — Legendary Visibility Audit Report
+=============================================
+Date: 2026-06-10
+Mode: READ-ONLY (no fixes applied)
+
+DESIGN RULE (approved)
+----------------------
+Legendaries must be VISIBLE in collection but LOCKED until genre complete.
+While locked:
+  • NO real poster
+  • NO real name
+  • SHOW unlock condition only
+
+CURRENT BEHAVIOR
+----------------
+Locked legendaries show FULL identity:
+  • Real poster (dimmed, not hidden)
+  • Real movieName
+  • Rarity badge + genre info
+  • Lock overlay + "BLOQUEADA" label + condition text ADDED on top
+
+This leaks content and breaks collection progression mystery.
+
+COMPONENT AUDIT
+---------------
+
+1. CollectionMovieCardView (PRIMARY)
+   File: Assets/Scripts/UI/Collection/CollectionMovieCardView.cs
+
+   Legendary branch (L53-60, L97-119):
+     • Always calls CollectionLegendaryVisual.ApplyLegendaryPoster(poster, cfg, ...)
+     • Always sets title = cfg.movieName (L99) — REAL NAME even when legendaryLocked
+     • Lock labels appended but identity already exposed
+
+   Non-legendary undiscovered (CORRECT reference, L62-72, L89-92):
+     • Silhouette poster, no sprite
+     • Title = CollectionLoc.UnknownTitle() ("???")
+
+   GAP: Legendaries never use silhouette / ??? path.
+
+2. CollectionLegendaryVisual
+   File: Assets/Scripts/UI/Collection/CollectionLegendaryVisual.cs
+
+   ApplyLegendaryPoster (L18-32):
+     • MoviePosterVisual.Apply(poster, cfg) — REAL poster ALWAYS first (L22)
+     • Then multiplies color × PosterDim if locked/undiscovered
+     • Poster identity remains visible (dimmed, not replaced)
+
+   ApplyLegendaryFrame (L11-16):
+     • Gold frame bright vs locked tint — frame only, not content mask
+
+3. MoviePosterVisual
+   File: Assets/Scripts/UI/Production/MoviePosterVisual.cs L20-44
+   • No lock/discovery awareness
+   • Always renders config.posterSprite or posterColorHex
+
+4. MovieCollectionUI
+   File: Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+   • Delegates to CollectionCatalogModel → CollectionGenreSectionView
+     → CollectionMovieCardView.Build()
+   • No legendary masking logic at this layer
+
+5. MovieButtonUI (Production offers)
+   File: Assets/Scripts/UI/MovieButtonUI.cs L102-133
+
+   RefreshUI always sets (before lock branch):
+     titleText  = movieConfig.movieName   (L114)
+     taglineText = movieConfig.tagline    (L115)
+     genreText  = genre label             (L116)
+     MoviePosterVisual.Apply(poster)      (L118)
+
+   Locked branch (L122-133):
+     • Shows unlockText, hides cost/reward/duration/rep
+     • Does NOT mask title, poster, tagline, rarity
+
+   No legendary-specific placeholder path.
+
+6. MovieTabUI / MovieOfferCardLayoutBuilder
+   • Wires offer cards through MovieButtonUI — same leak in production tab
+
+7. LegendaryProductionRules
+   File: Assets/Scripts/Core/LegendaryProductionRules.cs
+   • Slot cost only — unrelated to visibility
+
+DISCOVERY / LOCK STATE
+----------------------
+Collection discovery:
+  MovieCollectionService.IsDiscovered(cfg, completedKeys)
+  Key match: cfg.name in completedMovieKeys (produced movies)
+  File: Assets/Scripts/Core/MovieCollectionService.cs L42-50
+
+Legendary presentation lock:
+  CollectionCatalogModel.IsLegendaryPresentationLocked()
+  True when ANY non-legendary in same genre is not discovered
+  File: Assets/Scripts/UI/Collection/CollectionCatalogModel.cs L151-167
+
+Entry flags at build:
+  discovered      = IsDiscovered OR CollectionDebugState.RevealAll
+  legendaryLocked = IsLegendaryPresentationLocked OR bypass if RevealAll
+  File: CollectionCatalogModel.cs L85-96
+
+Production lock (separate system, MovieButtonUI.IsLocked):
+  City unlock, studio level, reputation, saga prerequisites
+  Legendaries: unlockCityLevel typically 8
+  Does NOT affect collection card rendering
+
+Unlock condition copy:
+  LocKeys.CollectionLegendaryLock
+  "Completa todas las películas de este género para desbloquear esta película legendaria."
+  File: Assets/Scripts/Localization/Loc.cs L140
+
+EDGE CASE
+---------
+When legendaryLocked=false but discovered=false (genre complete, not yet produced):
+  BuildLegendaryLabels shows REAL title + dimmed poster + rarity
+  NO "BLOQUEADA" label, NO unlock condition
+  File: CollectionMovieCardView.cs L106-119 (falls through both if branches)
+
+DESIGN DOC CONFLICT
+-------------------
+CoreGameplayAudit.txt L139-155 documents current behavior as intentional:
+  "legendarias bloqueadas (título + condición visibles)"
+This CONFLICTS with approved FASE 6.6 rule (placeholder + condition only).
+
+ROOT CAUSE (exact)
+------------------
+Collection UI implements TWO different UX models in the same component:
+
+  Model A (non-legendary undiscovered):
+    Silhouette + "???" — identity hidden
+
+  Model B (legendary, including legendaryLocked):
+    Real cfg.movieName + real poster via MoviePosterVisual.Apply
+    Lock feedback = dim + overlay + text labels ONLY
+
+There is NO code path applying Model A to locked legendaries.
+
+Production UI (MovieButtonUI) treats lock as interaction gating only,
+never masking identity fields.
+
+FILE:LINE EVIDENCE
+------------------
+| Issue                              | File:Line                                      |
+|------------------------------------|------------------------------------------------|
+| Legendary always real name         | CollectionMovieCardView.cs L99                 |
+| Never uses UnknownTitle()          | CollectionMovieCardView.cs L89-92 vs L97-114   |
+| Real poster before dim             | CollectionLegendaryVisual.cs L22-26            |
+| Poster helper no lock logic        | MoviePosterVisual.cs L20-44                    |
+| Production title always real       | MovieButtonUI.cs L114-118                      |
+| Lock hides stats not identity      | MovieButtonUI.cs L122-133                      |
+| legendaryLocked computation OK     | CollectionCatalogModel.cs L151-167             |
+| RevealAll bypasses lock            | CollectionCatalogModel.cs L88-89               |
+
+WHAT WORKS vs BROKEN
+--------------------
+| Check                         | Status                                      |
+|-------------------------------|---------------------------------------------|
+| Legendary visible in grid     | YES (always shown)                          |
+| Gold frame distinction        | YES (bright vs locked tint)                 |
+| Lock state computed correctly | YES (legendaryLocked flag)                  |
+| Poster hidden when locked     | NO — real poster shown dimmed               |
+| Name hidden when locked       | NO — real movieName shown                   |
+| Unlock condition shown        | YES (when legendaryLocked)                  |
+| Production offer masking      | NO — full info on locked legendaries        |
+
+STATUS: ROOT CAUSE IDENTIFIED — intentional dual UX model, not a missing flag
+
+NOTE: No code changes applied (audit only).

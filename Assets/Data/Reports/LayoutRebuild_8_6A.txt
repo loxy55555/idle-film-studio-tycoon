@@ -1,0 +1,140 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — FASE 8.6A — LAYOUT REBUILD
+=====================================================================
+Fecha: 2026-06-12
+Objetivo: Dejar de escalar elementos y rediseñar la ESTRUCTURA visual
+          de Colección, Estudio y Tienda. Sin tocar economía ni progresión.
+
+=====================================================================
+ENFOQUE
+=====================================================================
+En 8.5C el enfoque fue "hacer todo más grande". En 8.6A el enfoque es
+estructura: composición, alineación, jerarquía y uso completo del ancho.
+Varias alturas BAJAN (tarjetas de departamento) porque la estructura
+correcta necesita menos espacio, no más.
+
+Todos los cambios son runtime — visibles al pulsar Play sin ejecutar
+"Build Studio UI".
+
+=====================================================================
+PRIORIDAD 1 — COLLECTION REBUILD
+=====================================================================
+Archivo: Assets/Scripts/UI/Hub/MovieCollectionUI.cs (reescrito)
+
+L1 — GÉNEROS (estilo álbum):
+  - Tarjetas de género rediseñadas como "portadas de álbum":
+    · Zona cover flexible tintada con el color del género (emoji grande)
+    · Strip inferior oscuro: nombre (izq) + progreso X/Y (der)
+    · Barra de progreso de color en el borde inferior (fill real)
+  - Header: FILMOTECA + contador global + barra de progreso global dorada
+  - Altura de fila 150px, sin padding interno desperdiciado (la cover
+    llena la tarjeta de borde a borde)
+
+L2 — PELÍCULAS (grid de posters):
+  - 3 columnas (antes 4) → posters más grandes y dominantes
+  - Celda 172px: poster flexible + strip de nombre 34px
+  - MARCO DE RAREZA: el borde de cada celda usa el color de rareza
+    (gris=común, azul=rara, morado=épica, dorado=legendaria)
+  - Películas NO completadas: poster atenuado + "?" (sensación de
+    álbum por completar); completadas: color pleno + badge ✔
+  - BackBar: botón cuadrado ← + título del género + contador X/Y
+
+L3 — DETALLE (tarjeta de álbum):
+  - Poster 200px con MARCO de color de rareza (4px)
+  - Badges de género y rareza coloreados por su valor real
+  - Píldora de estado full-width (verde si completada)
+  - Sinopsis + cierre por ✕ o tap en backdrop
+
+Detalle completo en CollectionUX_8_6A.txt.
+
+=====================================================================
+PRIORIDAD 2 — STUDIO REBUILD
+=====================================================================
+Archivos:
+  Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs
+  Assets/Scripts/UI/Hub/Hud/HudLayoutConstants.cs
+  Assets/Scripts/UI/Hub/BonificationsBarUI.cs (reescrito)
+  Assets/Scripts/UI/Hub/Hud/DefinitiveHudBootstrap.cs
+
+1. TARJETAS DE DEPARTAMENTO MÁS COMPACTAS (270 → 192px):
+   - Estructura nueva: badge 32px + nombre EN LA MISMA FILA
+     (antes: icono 66px + nombre + nivel gigante apilados)
+   - Nivel 22px alineado a la izquierda, barra 8px, efecto 32px,
+     botón de mejora 46px
+   - Marker de layout v2 → v3: las tarjetas baked se reconstruyen
+     automáticamente con la nueva estructura
+   - NormalizeParentRowHeight(): las filas baked con altura antigua
+     se encogen en runtime → el espacio liberado vuelve al stage
+
+2. FONDO DECORATIVO RESTAURADO:
+   - StudioVisualFixedHeight: 160 → 230px
+   - StudioVisualMinHeight:   160 → 200px
+   - El stage cinematográfico vuelve a ser visible sin dominar
+     (~23% de pantalla, antes 45% en 8.5B y 14% en 8.5C)
+
+3. PANEL DE BONIFICACIONES FUNCIONAL EN TIEMPO REAL:
+   - BonificationsBarUI ahora es self-building: si no encuentra sus
+     labels (escena baked sin builder) construye su propia UI
+   - 6 celdas: ⭐ Calidad, ⚡ Velocidad, 🎟 Taquilla, 🏆 REP, 📈 XP, 💰 Costes
+   - Actualización en tiempo real:
+     · OnProductionsChanged (StudioManager)
+     · OnUpgradePurchased (UpgradeSystem)
+     · OnLevelUp (StudioLevelSystem)
+     · poll ligero 1s (DepartmentSystem no emite eventos)
+   - DefinitiveHudBootstrap la inyecta bajo StudioVisualStage en
+     escenas baked → SIEMPRE visible al pulsar Play
+
+Detalle completo en StudioUX_8_6A.txt.
+
+=====================================================================
+PRIORIDAD 3 — STORE REBUILD
+=====================================================================
+Archivo: Assets/Scripts/UI/Hub/StorePanelUI.cs (NUEVO)
+Inyección: DefinitiveHudBootstrap.EnsureStorePanel()
+
+Pantalla comercial construida en runtime dentro del tab Tienda:
+  1. FEATURED: banner dorado "STARTER PACK" con icono, descripción,
+     etiqueta "OFERTA ÚNICA" y botón de precio
+  2. 💎 DIAMANTES: 3 tarjetas (Puñado x25 / Bolsa x150 / Cofre x400)
+     con strip azul, icono, cantidad y botón de precio
+  3. 🎁 PACKS: 2 tarjetas anchas claramente diferenciadas:
+     · PACK DIRECTOR (morado) — Diamantes + Boost + Película rara
+     · PACK ESTRELLA (dorado) — Diamantes + REP + Película épica
+  4. ⚡ BOOSTS: 2 tarjetas verdes (Producción x2 / Ingresos x2)
+     con botón "📺 Ver anuncio"
+  5. 👑 PREMIUM: banner morado "SIN ANUNCIOS" permanente
+
+Jerarquía visual: banner destacado arriba → secciones con headers →
+tarjetas con strip de color de categoría → botones de compra verdes
+uniformes. Los productos son placeholders visuales (sin lógica de
+compra; el botón solo loggea).
+
+El contenido legacy del tab menú se oculta (los ajustes viven en ⚙).
+
+=====================================================================
+RESTRICCIONES RESPETADAS
+=====================================================================
+  ✓ Sin cambios de economía
+  ✓ Sin cambios de progresión
+  ✓ Sin escalado arbitrario (las dept cards REDUCEN altura)
+  ✓ Sin lógica de compra real en Tienda
+
+=====================================================================
+VALIDACIÓN
+=====================================================================
+  - Recompilación Unity: OK (0 errores de consola tras domain reload)
+  - Archivos tocados:
+      MovieCollectionUI.cs            (reescrito — L1/L2/L3 álbum)
+      DepartmentMiniCardLayoutBuilder.cs (estructura compacta v3)
+      HudLayoutConstants.cs           (stage restaurado)
+      BonificationsBarUI.cs           (self-building + tiempo real)
+      DefinitiveHudBootstrap.cs       (inyección bonus bar + store)
+      StorePanelUI.cs                 (nuevo — tienda comercial)
+
+=====================================================================
+RESUMEN
+=====================================================================
+  COLECCIÓN: PASS — estructura álbum, rareza y progreso visibles
+  ESTUDIO:   PASS — cards -29% altura, stage +44%, bonus en vivo
+  TIENDA:    PASS — storefront comercial con 4 secciones + featured
+=====================================================================

@@ -1,0 +1,258 @@
+FASE 7.2 — PARTE D: FTUE Regression Audit
+Generated: 2026-06-12
+STATUS: REGRESSION PATH IDENTIFIED (audit only — no fixes applied)
+================================================================
+
+PROBLEM STATEMENT (observed player flow)
+-----------------------------------------
+  1. Tutorial guides player to produce a movie
+  2. Movie finishes
+  3. Tutorial asks to improve studio ("mejorar estudio")
+  4. Movie completion popup (premiere) appears
+  5. Player presses green Continue button
+  6. Tutorial disappears
+
+Question: What event closes the tutorial? Why? What FTUE state is saved?
+
+SYSTEMS AUDITED
+---------------
+  FtueController.cs       — step machine, completion logic
+  FtueOverlayView.cs      — overlay card + green Continue button
+  FtueState.cs            — persistence (Completed, Step)
+  GameFeelUI.cs           — routes movie completion to premiere
+  PremiereSequenceController.cs — premiere queue + OnPremiereDismissed
+  PremiereOverlayView.cs  — premiere Continue button
+  StudioManager.cs        — OnProductionsChanged, OnMovieCompleted
+
+================================================================
+FTUE STEP SEQUENCE (normal first-movie flow)
+================================================================
+
+Step | Trigger                          | Overlay behavior
+-----|----------------------------------|----------------------------------
+Welcome (0)              | OnGameReady / ResumeStep  | ShowMessage welcome
+ProductionGuide (1)      | OnWelcomeContinue         | Highlight Production tab
+StudioDuringProduction(2)| OnProductionsChanged      | Switch to Studio tab,
+                         | (ActiveProductionCount>0) | "improve studio" message
+FirstMovieComplete (3)   | OnMovieCompleted          | Hide overlay immediately
+                         | (CompletedMovieKeys==1) | StartCompleteFallback()
+Done (4)                 | CompleteFtue()            | Overlay off, events unbound
+
+NOTE: Step 2 (studio guide) is triggered by PRODUCTION START, not by
+movie completion. If the player sees "improve studio" after the movie
+ends, they are still on step 2 overlay that was shown when production
+started — the movie finished while that step was active.
+
+================================================================
+OBSERVED FLOW — EVENT TRACE
+================================================================
+
+T0  Player starts first movie
+    StudioManager.StartMovie (L495-541)
+      → NotifyProductionsChanged()                        StudioManager L538
+
+T1  FtueController.OnProductionsChanged (L247-256)
+      condition: ActiveProductionCount > 0
+                 _step < StudioDuringProduction
+      → EnterStudioDuringProduction()                     L255
+
+T2  EnterStudioDuringProduction (L228-238)
+      _step = StudioDuringProduction (2)
+      PersistStep() → save ftueStep=2                     L234, L346-351
+      ShowTab(Studio)                                     L235
+      _overlay.ShowMessage(..., OnStudioGuideContinue)    L237
+      GREEN BUTTON wired to OnStudioGuideContinue         FtueOverlayView L254
+
+T3  Movie completes (ProductionRoutine → FinalizeProduction)
+    StudioManager.OnMovieCompleted event                  L660-669
+    GameFeelUI.OnMovieCompleted → TryPresent (premiere)   GameFeelUI L89-91
+
+T4  FtueController.OnMovieCompleted (L258-273)
+      condition: CompletedMovieKeys.Count == 1
+      _step = FirstMovieComplete (3)
+      PersistStep() → save ftueStep=3                     L269
+      _overlay?.Hide()                                    L271  ← OVERLAY OFF
+      StartCompleteFallback()                             L272
+
+T5  Premiere overlay appears (above FTUE overlay sort order)
+    PremiereOverlayView sorting: default canvas
+    FtueOverlayView sorting: 9000                         FtueOverlayView L34
+    → Premiere may render BEHIND or compete with FTUE layer
+
+T6  Player presses green button — TWO POSSIBLE BUTTONS:
+
+    PATH A — FTUE green Continue (if overlay still visible at T2):
+      FtueOverlayView ContinueBtn → OnStudioGuideContinue (L240-245)
+        ClearHighlight()
+        _overlay?.Hide()                                  L244
+        DOES NOT advance step
+        DOES NOT call CompleteFtue()
+        Step remains: StudioDuringProduction (2) or already 3 if T4 ran
+
+    PATH B — Premiere green Continue:
+      PremiereOverlayView.TryDismiss (L247-265)
+        → PremiereSequenceController.OnPremiereClosed
+        → OnPremiereDismissed event                       PremiereSequenceController L92
+      FtueController.OnPremiereDismissed (L275-280)
+        if _step == FirstMovieComplete
+          TryCompleteFtueFromFirstMovie("premiere_dismissed") L279
+
+T7  CompleteFallbackRoutine (parallel coroutine, L295-327)
+    Runs from T4 onward. Three auto-complete paths:
+      premiere_unavailable  — grace ≥ 1.5s, premiere never started    L308-311
+      premiere_ended          — premiere started then IsPresenting=false L314-317
+      fallback_timeout        — after 120s safety net                  L325-326
+    All call TryCompleteFtueFromFirstMovie → CompleteFtue()           L329-335
+
+T8  CompleteFtue (L360-374)
+      FtueState.MarkCompleted() → Completed=true, Step=Done
+      _overlay?.Hide()
+      UnbindEvents()
+      save → ftueCompleted=true, ftueStep=4
+
+================================================================
+WHAT EVENT CLOSES THE TUTORIAL?
+================================================================
+
+The tutorial FULLY closes (never returns) only via CompleteFtue():
+
+  Trigger                              | Reason string              | Line
+  -------------------------------------|----------------------------|------
+  OnPremiereDismissed                  | premiere_dismissed         | L279
+  CompleteFallbackRoutine              | premiere_unavailable       | L310
+  CompleteFallbackRoutine              | premiere_ended             | L316
+  CompleteFallbackRoutine              | fallback_timeout           | L326
+  SkipAll (skip button)                | skip                       | L357
+  ShouldAutoComplete (on load)         | auto_complete_profile      | L74
+  ResumeStep FirstMovieComplete+done   | resume_first_movie_done    | L144
+
+OnStudioGuideContinue (green FTUE button) does NOT complete the tutorial.
+It only hides the overlay:
+
+  FtueController.cs L240-245:
+    void OnStudioGuideContinue()
+    {
+        StopTargetWait();
+        ClearHighlight();
+        _overlay?.Hide();    ← visual only, FTUE still active
+    }
+
+If the player presses green Continue on the STUDIO GUIDE step BEFORE
+the movie completes: overlay disappears but FTUE remains at step 2.
+When the movie later completes, T4→T7 auto-completes FTUE silently.
+
+If the player presses green Continue on the PREMIERE popup:
+  OnPremiereDismissed → CompleteFtue("premiere_dismissed")
+  Tutorial permanently completed.
+
+If premiere is slow/missing:
+  CompleteFallbackRoutine fires after 1.5s → CompleteFtue("premiere_unavailable")
+  Tutorial permanently completed WITHOUT any button press.
+
+================================================================
+WHY THE TUTORIAL "DISAPPEARS" — ROOT CAUSES
+================================================================
+
+ROOT CAUSE 1: OnStudioGuideContinue hides overlay without completing FTUE
+
+  File: FtueController.cs L240-245
+  Player clicks green Continue on "improve studio" message.
+  Overlay vanishes → player thinks tutorial is done.
+  FTUE is still active (_step=2 or transitioning to 3).
+  No PersistStep on continue — step may desync from player expectation.
+
+ROOT CAUSE 2: FASE 7.1 auto-complete fires aggressively after first movie
+
+  File: FtueController.cs L295-327 (CompleteFallbackRoutine)
+  File: FtueController.cs L258-273 (OnMovieCompleted → StartCompleteFallback)
+
+  After first movie, FTUE auto-completes via:
+    • premiere dismiss (intended)
+    • 1.5s grace if premiere unavailable (may fire while player still
+      reading studio guide or premiere)
+    • premiere ended detection
+
+  Player perception: "I clicked a button and the tutorial vanished"
+  Actual: CompleteFtue() was triggered by premiere_dismissed OR
+          premiere_unavailable/premiere_ended fallback, not by the
+          studio guide Continue handler.
+
+ROOT CAUSE 3: OnMovieCompleted hides overlay at step 2 without transition UI
+
+  File: FtueController.cs L271
+  When movie completes during StudioDuringProduction, overlay is hidden
+  immediately (_overlay?.Hide()) before premiere shows.
+  Studio guide message vanishes abruptly; premiere popup replaces it.
+  Player may interpret premiere Continue as "tutorial button."
+
+ROOT CAUSE 4: Step 2 overlay + premiere timing overlap
+
+  Studio guide appears on production START (step 2).
+  Movie may still be running when premiere appears on completion.
+  If player hasn't clicked studio Continue, both messages compete.
+  OnMovieCompleted force-hides FTUE overlay regardless.
+
+================================================================
+FTUE STATE SAVED AFTER REPORTED FLOW
+================================================================
+
+Scenario A — Player clicks studio Continue, then movie completes,
+               premiere dismissed:
+
+  After studio Continue:  ftueStep=2, ftueCompleted=false (no save on continue)
+  After movie complete:   ftueStep=3, ftueCompleted=false (PersistStep L269)
+  After premiere/auto:    ftueStep=4 (Done), ftueCompleted=true (L364-373)
+
+Scenario B — Movie completes before studio Continue clicked:
+
+  After movie complete:   ftueStep=3, ftueCompleted=false
+  After auto-complete:    ftueStep=4, ftueCompleted=true
+
+Scenario C — Auto-complete via 1.5s grace (premiere slow):
+
+  ftueCompleted=true saved without player dismissing premiere
+  Tutorial never reappears (OnGameReady checks Completed L63-68)
+
+Save fields (SaveSystem.cs L42-43, L147-148):
+  ftueCompleted : bool
+  ftueStep      : int (0=Welcome … 4=Done)
+
+After full flow: ftueCompleted=true, ftueStep=4 (Done)
+
+================================================================
+REGRESSION vs FASE 7.1 FIXES
+================================================================
+
+FASE 7.1 added CompleteFallbackRoutine to prevent softlock when premiere
+is unavailable. Side effect: FTUE now auto-completes 1.5s after first
+movie if premiere hasn't started, OR immediately when premiere ends.
+
+Combined with OnStudioGuideContinue only hiding overlay (not advancing
+or completing), the player experience is:
+
+  "Tutorial showed studio tip → movie finished → popup appeared →
+   I clicked green → everything tutorial-related vanished"
+
+The vanish is caused by CompleteFtue (auto or premiere-triggered), NOT
+by OnStudioGuideContinue — unless the player only saw overlay hide without
+premiere (partial disappear, FTUE still active until movie completes).
+
+================================================================
+RESPONSIBLE CODE LINES
+================================================================
+
+  FtueController.cs   L228-238  EnterStudioDuringProduction (step 2 entry)
+  FtueController.cs   L240-245  OnStudioGuideContinue (hide only — no complete)
+  FtueController.cs   L258-273  OnMovieCompleted → hide + fallback start
+  FtueController.cs   L275-280  OnPremiereDismissed → CompleteFtue
+  FtueController.cs   L295-327  CompleteFallbackRoutine (auto-complete)
+  FtueController.cs   L329-335  TryCompleteFtueFromFirstMovie
+  FtueController.cs   L360-374  CompleteFtue (marks completed + saves)
+  FtueOverlayView.cs  L87-88   Green ContinueBtn (HudButtonVariant.Success)
+  FtueOverlayView.cs  L246-255 WireButtons → onContinue callback
+  GameFeelUI.cs       L89-91   Routes completion to premiere popup
+  PremiereOverlayView L247-265 TryDismiss → OnPremiereDismissed chain
+
+RESULT: Tutorial disappearance is EXPECTED BEHAVIOR from FASE 7.1
+        auto-complete logic, compounded by OnStudioGuideContinue hiding
+        overlay without step completion and overlapping step 2 / premiere UI.

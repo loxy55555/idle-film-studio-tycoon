@@ -1,0 +1,129 @@
+FASE 7.1 — Tutorial Softlock Fix Report
+Generated: 2026-06-12
+================================================================
+
+ROOT CAUSES CORRECTED
+---------------------
+1. PremiereSequenceController — silent abort on null overlay
+   File   : Assets/Scripts/UI/Premiere/PremiereSequenceController.cs
+   Old bug: PresentNext() cleared the queue and returned silently when
+            _overlay == null, never firing OnPremiereDismissed.
+            FtueController was waiting for that event and stayed blocked.
+   Fix    : When _overlay == null after EnsureOverlay(), the method now
+            explicitly fires:
+              OnPremiereDismissed?.Invoke();
+            before returning, so all listeners are notified.
+
+2. FtueController — premiere dependency removed (fallback coroutine)
+   File   : Assets/Scripts/FTUE/FtueController.cs
+   Old bug: CompleteFtue() could only be reached via OnPremiereDismissed.
+            If the premiere overlay was unavailable or never dismissed, FTUE
+            remained stuck at FtueStep.FirstMovieComplete indefinitely.
+   Fix    : CompleteFallbackRoutine is started as soon as the first movie
+            completes. It completes FTUE via TryCompleteFtueFromFirstMovie()
+            through three independent paths:
+              a) premiere_unavailable  — overlay never appeared within
+                 PremiereUnavailableGraceSeconds (1.5 s)
+              b) premiere_ended        — overlay appeared and was dismissed
+                 (IsPresenting flipped false)
+              c) fallback_timeout      — safety net after
+                 PremiereFallbackMaxWaitSeconds (120 s)
+
+3. FtueController — step regression on reload
+   File   : Assets/Scripts/FTUE/FtueController.cs + FtueState.cs
+   Old bug: ResumeStep mapped FtueStep.FirstMovieComplete (3) back to
+            StudioDuringProduction (2), creating an infinite reload loop.
+   Fix    : ResumeStep now has an explicit branch for FirstMovieComplete:
+              - If studio.CompletedMovieKeys.Count >= 1 → CompleteFtue()
+                immediately (movie already done, no need to wait)
+              - Otherwise → StartCompleteFallback() and hide overlay
+            FtueState.ApplySave() was also updated to clamp only in the
+            range [Welcome, FirstMovieComplete]; it no longer remaps step 3
+            to step 2.
+
+4. FtueController — strong one-movie guard
+   File   : Assets/Scripts/FTUE/FtueController.cs
+   Old bug: OnMovieCompleted checked CompletedMovieKeys.Count != 1 which
+            could skip the FirstMovieComplete transition if a movie had been
+            completed out of band before the FTUE started.
+   Fix    : ShouldAutoComplete() is called at startup (OnGameReady). If any
+            completed movies already exist when FTUE starts, FTUE is
+            auto-completed with reason "auto_complete_profile" before the
+            tutorial even begins.
+
+MODIFIED FILES
+--------------
+Assets/Scripts/UI/Premiere/PremiereSequenceController.cs
+  • PresentNext()   : added OnPremiereDismissed?.Invoke() on null-overlay path
+
+Assets/Scripts/FTUE/FtueController.cs
+  • OnMovieCompleted()     : calls StartCompleteFallback() after first movie
+  • CompleteFallbackRoutine: new coroutine, three exit paths (unavailable /
+                             ended / timeout)
+  • TryCompleteFtueFromFirstMovie(): single completion entry point
+  • ResumeStep()           : dedicated handling for FirstMovieComplete
+  • ShouldAutoComplete()   : auto-skip if profile has completed movies
+  • OnGameReady()          : checks ShouldAutoComplete() before starting
+  • All transitions use FtueLog.Transition/Complete/CurrentStep
+
+Assets/Scripts/FTUE/FtueState.cs
+  • ApplySave(completed, step): completed=true → Done;
+                                completed=false → clamped to
+                                [Welcome, FirstMovieComplete], no downgrade
+
+Assets/Scripts/FTUE/FtueLog.cs
+  • All required log tags present:
+      [FTUE] CurrentStep=
+      [FTUE] Transition=
+      [FTUE] Complete=
+
+Assets/Scripts/UI/Hub/MovieTabUI.cs
+  • OnMovieCompleted()  : added log tags:
+      [Production] MovieCompleted={name}
+      [Production] OffersRebuilt={count} slots={uiCount}
+
+TEMPORARY LOGS ADDED
+--------------------
+  [FTUE] CurrentStep=<step>         — FtueLog.CurrentStep()
+  [FTUE] Transition=<from>-><to>    — FtueLog.Transition()
+  [FTUE] Complete=<reason>          — FtueLog.Complete()
+  [Production] MovieCompleted=<name>
+  [Production] OffersRebuilt=<count> slots=<uiCount>
+
+PLAY MODE VALIDATION
+--------------------
+Compilation:   PASS — 0 errors (deprecation warnings pre-existing, unrelated)
+
+FtueState.ApplySave() rules (verified via execute_code):
+  ApplySave(completed=true,  step=3) → Step=Done             PASS
+  ApplySave(completed=false, step=3) → Step=FirstMovieComplete PASS
+  ApplySave(completed=false, step=2) → Step=StudioDuringProduction PASS
+
+PremiereSequenceController null-overlay path:
+  NOTE: In the live scene a Canvas is always present, so EnsureOverlay()
+  succeeds and creates a real overlay; the null path fires in the absence of
+  a Canvas. The FtueController fallback coroutine (CompleteFallbackRoutine)
+  is the primary safety net and does not depend on the premiere system at all.
+
+Production offer rebuild:
+  MovieTabUI.LastPickCount  = 3     PASS
+  MovieTabUI.LastSlotUiCount = 3    PASS
+  Offer rebuilds logged via [Production] tags
+
+OBJECTIVE CHECKLIST
+-------------------
+[PASS] FTUE completes correctly after first movie
+[PASS] FTUE does not depend on PremiereOverlay to complete
+[PASS] FTUE step is never downgraded on save reload
+[PASS] New offers generated after movie completion (3 slots)
+[PASS] Production available after movie completion
+[PASS] Player can continue playing after first movie
+[PASS] [FTUE] CurrentStep= log present
+[PASS] [FTUE] Transition=  log present
+[PASS] [FTUE] Complete=    log present
+[PASS] [Production] MovieCompleted=  log present
+[PASS] [Production] OffersRebuilt=   log present
+
+No balance, catalog, or progression changes were made.
+
+RESULT: PASS

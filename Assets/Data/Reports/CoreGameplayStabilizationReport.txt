@@ -1,0 +1,11 @@
+﻿FASE 7.3 — Core Gameplay Stabilization Report
+Generated: 2026-06-12
+
+RESULTS
+  Reputation visibility    : PASS
+  Persistent offers        : PASS
+  Slot refill              : PASS
+  FTUE completion          : PASS
+  Epic/Legendary visuals   : PASS
+
+OVERALL: PASS

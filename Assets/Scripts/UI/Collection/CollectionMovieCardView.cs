@@ -12,7 +12,6 @@ public static class CollectionMovieCardView
     static readonly Color BgPoster      = new Color(0.08f, 0.08f, 0.14f);
     static readonly Color TextPrimary   = Color.white;
     static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color Silhouette    = new Color(0.06f, 0.06f, 0.12f);
     static readonly Color LockRed       = new Color(0.95f, 0.45f, 0.35f);
     static readonly Color DiscGreen     = new Color(0.18f, 0.80f, 0.44f);
 
@@ -65,10 +64,7 @@ public static class CollectionMovieCardView
         }
         else
         {
-            poster.sprite = null;
-            poster.color = Silhouette;
-            if (ColorUtility.TryParseHtmlString(cfg.posterColorHex, out Color hint))
-                poster.color = Color.Lerp(Silhouette, hint, 0.18f);
+            CollectionLegendaryVisual.ApplySilhouette(poster, cfg);
         }
 
         var rarityLbl = CreateLabel(card.transform, CollectionLoc.GetRarityLabel(cfg.rarity), 10f, TextSecondary, FontStyles.Bold, 14f);
@@ -96,6 +92,18 @@ public static class CollectionMovieCardView
 
     static void BuildLegendaryLabels(Transform card, MovieConfig cfg, CollectionCatalogModel.MovieEntry entry)
     {
+        if (entry.legendaryLocked)
+        {
+            CreateLabel(card, CollectionLoc.UnknownTitle(), 14f, TextSecondary, FontStyles.Bold, 20f);
+            CreateLabel(card, CollectionLoc.LockedLabel(), 11f, LockRed, FontStyles.Bold, 16f);
+            var cond = CreateLabel(card, CollectionLoc.LegendaryLockCondition(), 9f, TextSecondary, FontStyles.Normal, 40f);
+            cond.enableAutoSizing = true;
+            cond.fontSizeMin = 8f;
+            cond.fontSizeMax = 10f;
+            cond.textWrappingMode = TextWrappingModes.Normal;
+            return;
+        }
+
         var title = CreateLabel(card, cfg.movieName, 13f, TextPrimary, FontStyles.Bold, 36f);
         title.enableAutoSizing = true;
         title.fontSizeMin = 10f;
@@ -103,16 +111,7 @@ public static class CollectionMovieCardView
         title.textWrappingMode = TextWrappingModes.Normal;
         title.overflowMode = TextOverflowModes.Ellipsis;
 
-        if (entry.legendaryLocked)
-        {
-            CreateLabel(card, CollectionLoc.LockedLabel(), 11f, LockRed, FontStyles.Bold, 16f);
-            var cond = CreateLabel(card, CollectionLoc.LegendaryLockCondition(), 9f, TextSecondary, FontStyles.Normal, 40f);
-            cond.enableAutoSizing = true;
-            cond.fontSizeMin = 8f;
-            cond.fontSizeMax = 10f;
-            cond.textWrappingMode = TextWrappingModes.Normal;
-        }
-        else if (entry.discovered)
+        if (entry.discovered)
         {
             CreateLabel(card, CollectionLoc.DiscoveredLabel(), 11f, DiscGreen, FontStyles.Bold, 16f);
             CreateLabel(card, CollectionLoc.GetGenreLabel(cfg.genre), 10f, TextSecondary, FontStyles.Normal, 14f);

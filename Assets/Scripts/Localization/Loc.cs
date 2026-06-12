@@ -56,7 +56,7 @@ public static class Loc
             { LocKeys.DeptUpgrade, "MEJORAR" },
             { LocKeys.DeptMax, "MÁXIMO" },
             { LocKeys.DeptLocked, "Bloqueado" },
-            { LocKeys.DeptAvailableCity, "Disponible en Ciudad {0}" },
+            { LocKeys.DeptAvailableCity, "Disponible en Instalación {0}" },
             { LocKeys.DeptBonusSummary, "{0}\n+{1}/nv  Total +{2}" },
             { LocKeys.DeptCategoryQuality, "Calidad" },
             { LocKeys.DeptCategorySpeed, "Velocidad" },
@@ -93,6 +93,24 @@ public static class Loc
             { LocKeys.ProdBudgetStandard, "NORMAL" },
             { LocKeys.ProdBudgetPremium, "PREMIUM" },
             { LocKeys.ProdBudgetCancel, "CANCELAR" },
+            { LocKeys.ProdBudgetStatBlock, "Tiempo: {0}\nDinero: {1}\nReputación: {2}" },
+            { LocKeys.ProdOfferMoney, "Dinero: {0}" },
+            { LocKeys.ProdOfferRep, "Rep: +{0}" },
+            { LocKeys.RefreshChoosePayment, "Elige cómo pagar" },
+            { LocKeys.RefreshWatchAd, "VER ANUNCIO" },
+            { LocKeys.RefreshSpendDiamonds, "GASTAR DIAMANTES" },
+            { LocKeys.ContractRefresh, "ACTUALIZAR CONTRATOS" },
+            { LocKeys.ContractSelect, "ELEGIR" },
+            { LocKeys.ContractChoosePrompt, "Elige un contrato" },
+            { LocKeys.ContractActiveObjective, "Objetivo: {0}" },
+            { LocKeys.ContractObjProduceMovies, "Producir {0} películas" },
+            { LocKeys.ContractObjProduceGenre, "Producir {0} películas de {1}" },
+            { LocKeys.ContractObjReachRep, "Alcanzar {0} REP" },
+            { LocKeys.ContractObjReachQuality, "Calidad ≥ {0}" },
+            { LocKeys.ContractObjEarnMoney, "Ganar ${0}" },
+            { LocKeys.ContractObjSpendUpgrades, "Gastar ${0} en mejoras" },
+            { LocKeys.ContractObjReachLevel, "Alcanzar nivel {0}" },
+            { LocKeys.ContractObjUnderTime, "Producir en ≤ {0}s" },
             { LocKeys.ProdRarityCommon, "Común" },
             { LocKeys.ProdRarityRare, "Rara" },
             { LocKeys.ProdRarityEpic, "Épica" },
@@ -117,6 +135,7 @@ public static class Loc
             { LocKeys.FtueStudioTitle, "Mejora el estudio" },
             { LocKeys.FtueStudioBody, "Mejora tus departamentos para producir mejores películas." },
             { LocKeys.FtueFirstMovieTitle, "Tu primera película está lista." },
+            { LocKeys.FtueCompleteBody, "Mejora el estudio y confirma para continuar." },
             { LocKeys.FtueMoneyEarned, "Dinero ganado: {0}" },
             { LocKeys.FtueRepEarned, "Reputación: +{0}" },
             { LocKeys.FtueMovieDiscovered, "Película descubierta: {0}" },
@@ -138,6 +157,42 @@ public static class Loc
             { LocKeys.CollectionLocked, "BLOQUEADA" },
             { LocKeys.CollectionDiscovered, "DESCUBIERTA" },
             { LocKeys.CollectionLegendaryLock, "Completa todas las películas de este género para desbloquear esta película legendaria." },
+            { LocKeys.CollectionSelectGenre,  "Elige un género" },
+            { LocKeys.CollectionAllMovies,    "Todas las películas" },
+            { LocKeys.CollectionBack,         "← VOLVER" },
+
+            // Instalaciones
+            { LocKeys.InstLevel,          "Instalación {0}" },
+            { LocKeys.InstAvailable,      "Disponible en Instalación {0}" },
+            { LocKeys.InstProgressScreen, "INSTALACIONES" },
+            { LocKeys.InstUpgrade,        "EXPANDIR" },
+            { LocKeys.InstNextLevel,      "Próxima expansión:" },
+            { LocKeys.InstCurrentLevel,   "Instalación {0}" },
+            { LocKeys.InstMultiplier,     "Instalación {0} · ×{1:0.00}" },
+
+            // Bonificaciones
+            { LocKeys.BonifTitle,     "BONIFICACIONES" },
+            { LocKeys.BonifSpeed,     "Velocidad" },
+            { LocKeys.BonifQuality,   "Calidad" },
+            { LocKeys.BonifBoxOffice, "Taquilla" },
+            { LocKeys.BonifRep,       "REP" },
+            { LocKeys.BonifXP,        "XP" },
+            { LocKeys.BonifCosts,     "Costes" },
+
+            // Settings
+            { LocKeys.SettingsTitle,      "AJUSTES" },
+            { LocKeys.SettingsLanguage,   "Idioma" },
+            { LocKeys.SettingsGooglePlay, "Google Play Games" },
+            { LocKeys.SettingsAccount,    "Cuenta" },
+            { LocKeys.SettingsSupport,    "Soporte" },
+            { LocKeys.SettingsCredits,    "Créditos" },
+            { LocKeys.SettingsPrivacy,    "Política de privacidad" },
+            { LocKeys.SettingsRestore,    "Restaurar compras" },
+            { LocKeys.SettingsClose,      "CERRAR" },
+
+            // Tienda
+            { LocKeys.TiendaTitle,      "TIENDA" },
+            { LocKeys.TiendaComingSoon, "Próximamente" },
         };
 
         static Dictionary<string, string> En(Dictionary<string, string> es)
@@ -147,7 +202,7 @@ public static class Loc
             d[LocKeys.DeptUpgrade] = "UPGRADE";
             d[LocKeys.DeptMax] = "MAX";
             d[LocKeys.DeptLocked] = "Locked";
-            d[LocKeys.DeptAvailableCity] = "Available in City {0}";
+            d[LocKeys.DeptAvailableCity] = "Available in Facility {0}";
             d[LocKeys.DeptBonusSummary] = "{0}\n+{1}/lvl  Total +{2}";
             d[LocKeys.DeptCategoryQuality] = "Quality";
             d[LocKeys.DeptCategorySpeed] = "Speed";
@@ -175,6 +230,24 @@ public static class Loc
             d[LocKeys.ProdBudgetStandard] = "NORMAL";
             d[LocKeys.ProdBudgetPremium] = "PREMIUM";
             d[LocKeys.ProdBudgetCancel] = "CANCEL";
+            d[LocKeys.ProdBudgetStatBlock] = "Time: {0}\nMoney: {1}\nReputation: {2}";
+            d[LocKeys.ProdOfferMoney] = "Money: {0}";
+            d[LocKeys.ProdOfferRep] = "Rep: +{0}";
+            d[LocKeys.RefreshChoosePayment] = "Choose payment";
+            d[LocKeys.RefreshWatchAd] = "WATCH AD";
+            d[LocKeys.RefreshSpendDiamonds] = "SPEND DIAMONDS";
+            d[LocKeys.ContractRefresh] = "REFRESH CONTRACTS";
+            d[LocKeys.ContractSelect] = "CHOOSE";
+            d[LocKeys.ContractChoosePrompt] = "Choose a contract";
+            d[LocKeys.ContractActiveObjective] = "Objective: {0}";
+            d[LocKeys.ContractObjProduceMovies] = "Produce {0} movies";
+            d[LocKeys.ContractObjProduceGenre] = "Produce {0} {1} movies";
+            d[LocKeys.ContractObjReachRep] = "Reach {0} REP";
+            d[LocKeys.ContractObjReachQuality] = "Quality ≥ {0}";
+            d[LocKeys.ContractObjEarnMoney] = "Earn ${0}";
+            d[LocKeys.ContractObjSpendUpgrades] = "Spend ${0} on upgrades";
+            d[LocKeys.ContractObjReachLevel] = "Reach level {0}";
+            d[LocKeys.ContractObjUnderTime] = "Produce in ≤ {0}s";
             d[LocKeys.ProdRarityCommon] = "Common";
             d[LocKeys.ProdRarityRare] = "Rare";
             d[LocKeys.ProdRarityEpic] = "Epic";
@@ -195,6 +268,7 @@ public static class Loc
             d[LocKeys.FtueStudioTitle] = "Upgrade the studio";
             d[LocKeys.FtueStudioBody] = "Upgrade your departments to make better films.";
             d[LocKeys.FtueFirstMovieTitle] = "Your first film is ready.";
+            d[LocKeys.FtueCompleteBody] = "Upgrade the studio and confirm to continue.";
             d[LocKeys.FtueMoneyEarned] = "Money earned: {0}";
             d[LocKeys.FtueRepEarned] = "Reputation: +{0}";
             d[LocKeys.FtueMovieDiscovered] = "Film discovered: {0}";
@@ -214,6 +288,34 @@ public static class Loc
             d[LocKeys.CollectionLocked] = "LOCKED";
             d[LocKeys.CollectionDiscovered] = "DISCOVERED";
             d[LocKeys.CollectionLegendaryLock] = "Complete every film in this genre to unlock this legendary film";
+            d[LocKeys.CollectionSelectGenre]  = "Choose a genre";
+            d[LocKeys.CollectionAllMovies]    = "All films";
+            d[LocKeys.CollectionBack]         = "← BACK";
+            d[LocKeys.InstLevel]          = "Facility {0}";
+            d[LocKeys.InstAvailable]      = "Available at Facility {0}";
+            d[LocKeys.InstProgressScreen] = "FACILITIES";
+            d[LocKeys.InstUpgrade]        = "EXPAND";
+            d[LocKeys.InstNextLevel]      = "Next expansion:";
+            d[LocKeys.InstCurrentLevel]   = "Facility {0}";
+            d[LocKeys.InstMultiplier]     = "Facility {0} · ×{1:0.00}";
+            d[LocKeys.BonifTitle]     = "BONUSES";
+            d[LocKeys.BonifSpeed]     = "Speed";
+            d[LocKeys.BonifQuality]   = "Quality";
+            d[LocKeys.BonifBoxOffice] = "Box Office";
+            d[LocKeys.BonifRep]       = "REP";
+            d[LocKeys.BonifXP]        = "XP";
+            d[LocKeys.BonifCosts]     = "Costs";
+            d[LocKeys.SettingsTitle]      = "SETTINGS";
+            d[LocKeys.SettingsLanguage]   = "Language";
+            d[LocKeys.SettingsGooglePlay] = "Google Play Games";
+            d[LocKeys.SettingsAccount]    = "Account";
+            d[LocKeys.SettingsSupport]    = "Support";
+            d[LocKeys.SettingsCredits]    = "Credits";
+            d[LocKeys.SettingsPrivacy]    = "Privacy Policy";
+            d[LocKeys.SettingsRestore]    = "Restore Purchases";
+            d[LocKeys.SettingsClose]      = "CLOSE";
+            d[LocKeys.TiendaTitle]      = "SHOP";
+            d[LocKeys.TiendaComingSoon] = "Coming soon";
             return d;
         }
 
@@ -272,6 +374,7 @@ public static class Loc
             d[LocKeys.FtueStudioTitle] = "Améliorez le studio";
             d[LocKeys.FtueStudioBody] = "Améliorez vos départements pour de meilleurs films.";
             d[LocKeys.FtueFirstMovieTitle] = "Votre premier film est prêt.";
+            d[LocKeys.FtueCompleteBody] = "Améliorez le studio et confirmez pour continuer.";
             d[LocKeys.FtueMoneyEarned] = "Argent gagné : {0}";
             d[LocKeys.FtueRepEarned] = "Réputation : +{0}";
             d[LocKeys.FtueMovieDiscovered] = "Film découvert : {0}";
@@ -347,6 +450,7 @@ public static class Loc
             d[LocKeys.FtueStudioTitle] = "Studio verbessern";
             d[LocKeys.FtueStudioBody] = "Verbessere deine Abteilungen für bessere Filme.";
             d[LocKeys.FtueFirstMovieTitle] = "Dein erster Film ist fertig.";
+            d[LocKeys.FtueCompleteBody] = "Verbessere das Studio und bestätige, um fortzufahren.";
             d[LocKeys.FtueMoneyEarned] = "Verdientes Geld: {0}";
             d[LocKeys.FtueRepEarned] = "Reputation: +{0}";
             d[LocKeys.FtueMovieDiscovered] = "Film entdeckt: {0}";
@@ -425,6 +529,7 @@ public static class Loc
             d[LocKeys.FtueStudioTitle] = "スタジオを強化";
             d[LocKeys.FtueStudioBody] = "部署を強化して、より良い映画を作ろう。";
             d[LocKeys.FtueFirstMovieTitle] = "最初の映画が完成した。";
+            d[LocKeys.FtueCompleteBody] = "スタジオを強化して、確認して続けよう。";
             d[LocKeys.FtueMoneyEarned] = "獲得金: {0}";
             d[LocKeys.FtueRepEarned] = "評判: +{0}";
             d[LocKeys.FtueMovieDiscovered] = "発見した映画: {0}";

@@ -1,12 +1,14 @@
 using UnityEngine;
 
 /// <summary>FTUE progression steps (Phase 8.4).</summary>
-public enum FtueStep{
+public enum FtueStep
+{
     Welcome                = 0,
     ProductionGuide        = 1,
     StudioDuringProduction = 2,
     FirstMovieComplete     = 3,
-    Done                   = 4,
+    AwaitCompletion        = 4,
+    Done                   = 5,
 }
 
 public static class FtueState
@@ -36,14 +38,22 @@ public static class FtueState
     public static void ApplySave(bool completed, int step)
     {
         Completed = completed;
-        Step = completed
-            ? FtueStep.Done
-            : (FtueStep)System.Math.Max(0, System.Math.Min(step, (int)FtueStep.Done));
 
-        if (!completed && Step == FtueStep.Done)
-            Step = FtueStep.Welcome;
+        if (completed)
+        {
+            Step = FtueStep.Done;
+            FtueLog.LoadedCompleted(true);
+            FtueLog.LoadedStep((int)FtueStep.Done);
+            FtueLog.State("ApplySave");
+            return;
+        }
 
-        FtueLog.State($"ApplySave(completed={completed}, rawStep={step})");
+        int clamped = Mathf.Clamp(step, (int)FtueStep.Welcome, (int)FtueStep.AwaitCompletion);
+        Step = (FtueStep)clamped;
+
+        FtueLog.LoadedCompleted(false);
+        FtueLog.LoadedStep((int)Step);
+        FtueLog.State("ApplySave");
     }
 
     public static (bool completed, int step) GetSaveData() => (Completed, (int)Step);

@@ -17,6 +17,7 @@ public class MovieButtonUI : MonoBehaviour
     public TextMeshProUGUI costText;
     public TextMeshProUGUI rewardText;
     public TextMeshProUGUI repText;
+    public TextMeshProUGUI badgesText;
     public TextMeshProUGUI unlockText;
     public TextMeshProUGUI taglineText;
     public GameObject      lockedOverlay;
@@ -27,6 +28,7 @@ public class MovieButtonUI : MonoBehaviour
     StudioManager     _studio;
     StudioLevelSystem _studioLevel;
     DepartmentSystem  _depts;
+    ContractSystem    _contracts;
     Button            _btn;
     bool              _initialized;
 
@@ -36,6 +38,7 @@ public class MovieButtonUI : MonoBehaviour
              : GetComponent<Button>() ?? GetComponentInChildren<Button>();
         if (_btn != null && _btn.GetComponent<UIButtonScale>() == null)
             _btn.gameObject.AddComponent<UIButtonScale>();
+        ProductionBudgetPickerUI.OnVisibilityChanged += OnPickerVisibilityChanged;
     }
 
     void Start()
@@ -58,6 +61,13 @@ public class MovieButtonUI : MonoBehaviour
     void OnDestroy()
     {
         GameHub.OnGameReady -= Initialize;
+        ProductionBudgetPickerUI.OnVisibilityChanged -= OnPickerVisibilityChanged;
+    }
+
+    void OnPickerVisibilityChanged(bool visible)
+    {
+        if (!_initialized || _btn == null) return;
+        _btn.interactable = !visible && !IsLocked();
     }
 
     void Initialize()
@@ -66,6 +76,7 @@ public class MovieButtonUI : MonoBehaviour
         _studio      = GameHub.Instance?.studio;
         _studioLevel = GameHub.Instance?.studioLevel;
         _depts       = GameHub.Instance?.departments;
+        _contracts   = GameHub.Instance?.contracts;
         _initialized = true;
         RefreshUI();
     }
@@ -76,6 +87,7 @@ public class MovieButtonUI : MonoBehaviour
         _studio      = st;
         _studioLevel = GameHub.Instance?.studioLevel;
         _depts       = GameHub.Instance?.departments;
+        _contracts   = GameHub.Instance?.contracts;
         _initialized = true;
         if (_btn == null) _btn = produceButton ?? GetComponent<Button>() ?? GetComponentInChildren<Button>();
         if (_btn != null) { _btn.onClick.RemoveAllListeners(); _btn.onClick.AddListener(OnClick); }
@@ -98,7 +110,8 @@ public class MovieButtonUI : MonoBehaviour
         bool locked = IsLocked();
 
         if (lockedOverlay != null) lockedOverlay.SetActive(locked);
-        if (_btn != null) _btn.interactable = !locked;
+        if (_btn != null)
+            _btn.interactable = !locked && !ProductionBudgetPickerUI.IsOpen;
         if (selectLabelText != null)
             selectLabelText.text = Loc.Get(LocKeys.ProdSelect);
 
@@ -121,6 +134,7 @@ public class MovieButtonUI : MonoBehaviour
             if (rewardText != null) rewardText.text = string.Empty;
             if (durationText != null) durationText.text = string.Empty;
             if (repText != null) repText.text = string.Empty;
+            if (badgesText != null) badgesText.text = string.Empty;
             return;
         }
 
@@ -137,8 +151,19 @@ public class MovieButtonUI : MonoBehaviour
 
         if (durationText != null) durationText.text = ProductionLoc.FormatDuration(duration);
         if (costText != null) costText.text = AnimatedMoneyText.FormatMoney((long)realCost);
-        if (rewardText != null) rewardText.text = AnimatedMoneyText.FormatMoney((long)reward);
-        if (repText != null) repText.text = "+" + rep.ToString("0.0") + " REP";
+        if (rewardText != null) rewardText.text = Loc.Format(LocKeys.ProdOfferMoney, AnimatedMoneyText.FormatMoney((long)reward));
+        if (repText != null) repText.text = Loc.Format(LocKeys.ProdOfferRep, rep.ToString("0.0"));
+
+        if (badgesText != null)
+        {
+            string badges = MovieOfferBadgeHelper.BuildBadgeLine(
+                movieConfig,
+                _studio?.CompletedMovieKeys,
+                _contracts,
+                _depts);
+            badgesText.text = badges;
+            badgesText.gameObject.SetActive(!string.IsNullOrEmpty(badges));
+        }
     }
 
     bool IsLocked()
@@ -154,11 +179,7 @@ public class MovieButtonUI : MonoBehaviour
         return false;
     }
 
-    MovieConfig[] GetAllMovies()
-    {
-        var tab = Object.FindAnyObjectByType<MovieTabUI>(FindObjectsInactive.Include);
-        return tab != null ? tab.allMovies : null;
-    }
+    MovieConfig[] GetAllMovies() => MovieCatalogRuntime.AllMovies;
 
     string GetLockReason()
     {

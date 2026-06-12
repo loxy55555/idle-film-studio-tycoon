@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -105,6 +106,8 @@ public class UpgradeContentSorter : MonoBehaviour
     StudioLevelSystem _level;
     CitySystem _city;
     float _nextSort;
+    bool _sortPending;
+    Coroutine _deferredSort;
 
     void OnEnable()
     {
@@ -147,16 +150,57 @@ public class UpgradeContentSorter : MonoBehaviour
         if (_city != null) _city.OnCityLevelChanged -= OnCityChanged;
     }
 
-    void OnChanged() => SortNow();
-    void OnMoneyChanged(long _) => SortNow();
-    void OnMoneyDisplayChanged(double _) => SortNow();
-    void OnCityChanged(int _) => SortNow();
+    void OnChanged() => RequestSort();
+    void OnMoneyChanged(long _) => RequestSort();
+    void OnMoneyDisplayChanged(double _) => RequestSort();
+    void OnCityChanged(int _) => RequestSort();
+
+    void RequestSort()
+    {
+        _sortPending = true;
+        if (_deferredSort != null) return;
+        _deferredSort = StartCoroutine(DeferredSortRoutine());
+    }
+
+    IEnumerator DeferredSortRoutine()
+    {
+        yield return null;
+        yield return new WaitForEndOfFrame();
+
+        float deadline = Time.unscaledTime + 0.75f;
+        while (!UpgradeUiInteractionGate.CanReorderNow() && Time.unscaledTime < deadline)
+            yield return null;
+
+        yield return null;
+
+        if (_sortPending)
+        {
+            _sortPending = false;
+            SortNow();
+            if (transform is RectTransform rt)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
+
+        _deferredSort = null;
+
+        if (_sortPending)
+            RequestSort();
+    }
 
     void Update()
     {
+        if (_deferredSort != null) return;
+
+        if (_sortPending && UpgradeUiInteractionGate.CanReorderNow())
+        {
+            RequestSort();
+            return;
+        }
+
         if (Time.unscaledTime < _nextSort) return;
         _nextSort = Time.unscaledTime + 0.35f;
-        SortNow();
+        if (UpgradeUiInteractionGate.CanReorderNow())
+            RequestSort();
     }
 
     public void SortNow()

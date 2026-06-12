@@ -21,6 +21,10 @@ public class MovieTabUI : MonoBehaviour
 
     readonly List<MovieButtonUI> _slotButtons = new();
     Coroutine _layoutRoutine;
+    bool _bound;
+
+    public int LastPickCount { get; private set; }
+    public int LastSlotUiCount => slotsRow != null ? slotsRow.childCount : 0;
 
     StudioManager     _studio;
     StudioLevelSystem _level;
@@ -28,6 +32,7 @@ public class MovieTabUI : MonoBehaviour
     void Awake()
     {
         GameHub.OnGameReady += Bind;
+        MovieOfferState.OnOffersChanged += RefreshOfferDisplay;
         ProductionPremiereHooks.EnsureOnCanvas();
     }
 
@@ -46,6 +51,7 @@ public class MovieTabUI : MonoBehaviour
     void OnDestroy()
     {
         GameHub.OnGameReady -= Bind;
+        MovieOfferState.OnOffersChanged -= RefreshOfferDisplay;
         Unbind();
         if (_layoutRoutine != null)
             StopCoroutine(_layoutRoutine);
@@ -53,17 +59,20 @@ public class MovieTabUI : MonoBehaviour
 
     void Bind()
     {
-        Unbind();
-        _studio = GameHub.Instance?.studio;
-        _level  = GameHub.Instance?.studioLevel;
-        if (_studio != null)
+        if (!_bound)
         {
-            _studio.OnMovieCompleted += OnMovieCompleted;
-            _studio.OnMovieHistoryChanged += RebuildHistory;
+            _studio = GameHub.Instance?.studio;
+            _level  = GameHub.Instance?.studioLevel;
+            if (_studio != null)
+            {
+                _studio.OnMovieCompleted += OnMovieCompleted;
+                _studio.OnMovieHistoryChanged += RebuildHistory;
+                _bound = true;
+            }
         }
 
-        if (isActiveAndEnabled)
-            RebuildAll();
+        if (_bound && isActiveAndEnabled)
+            RefreshOfferDisplay();
     }
 
     void Unbind()
@@ -73,39 +82,80 @@ public class MovieTabUI : MonoBehaviour
             _studio.OnMovieCompleted -= OnMovieCompleted;
             _studio.OnMovieHistoryChanged -= RebuildHistory;
         }
+        _studio = null;
+        _bound = false;
     }
 
-    void OnMovieCompleted(MovieCompletePayload _) { RebuildHistory(); RebuildSlots(); }
+    void OnMovieCompleted(MovieCompletePayload payload)
+    {
+        Debug.Log($"[Production] MovieCompleted={payload.movieName}");
+        RebuildHistory();
+
+        var catalog = MovieCatalogRuntime.AllMovies;
+        MovieOfferState.OnMovieCompleted(
+            catalog,
+            _level?.Level ?? 1,
+            _studio?.reputation ?? 0f,
+            _studio?.CompletedMovieKeys,
+            _studio?.GetActiveProductionConfigs());
+
+        Debug.Log($"[Production] OffersRebuilt={LastPickCount} slots={LastSlotUiCount}");
+    }
 
     public void RebuildAll()
     {
-        RebuildSlots();
+        RefreshOfferDisplay();
         RebuildHistory();
     }
 
-    void RebuildSlots()
+    public void RefreshOfferDisplay()
     {
         if (slotsRow == null) return;
 
-        for (int i = slotsRow.childCount - 1; i >= 0; i--)
-            Destroy(slotsRow.GetChild(i).gameObject);
-        _slotButtons.Clear();
-
-        var picks = MovieOfferPicker.PickThree(
-            allMovies,
+        var catalogMovies = MovieCatalogRuntime.AllMovies;
+        MovieOfferState.SyncOffers(
+            catalogMovies,
             _level?.Level ?? 1,
             _studio?.reputation ?? 0f,
-            _studio?.CompletedMovieKeys);
+            _studio?.CompletedMovieKeys,
+            _studio?.GetActiveProductionConfigs());
+
+        RenderOfferSlots(MovieOfferState.ResolveOffers(catalogMovies));
+    }
+
+
+    void RenderOfferSlots(List<MovieConfig> picks)
+    {
+        if (slotsRow == null) return;
+
+        if (_layoutRoutine != null)
+        {
+            StopCoroutine(_layoutRoutine);
+            _layoutRoutine = null;
+        }
+
+        ClearOfferSlots();
+
+        LastPickCount = 0;
+        for (int i = 0; i < picks.Count; i++)
+        {
+            if (picks[i] != null) LastPickCount++;
+        }
+
+        MovieOfferAuditState.rebuildCount++;
+        MovieOfferAuditState.lastPickCount = LastPickCount;
 
         var catalog = _studio != null
-            ? _studio.GetMovieCatalogSnapshot(allMovies)
+            ? _studio.GetMovieCatalogSnapshot(MovieCatalogRuntime.AllMovies)
             : default;
         bool catalogEmpty = _studio != null && catalog.eligibleRemaining == 0 && catalog.eligibleTotal > 0;
         bool catalogLow = _studio != null && catalog.NeedsCatalogExpansion && !catalogEmpty;
 
+        int emptySlots = 0;
         for (int i = 0; i < MovieOfferPicker.OfferSlotCount; i++)
         {
             MovieConfig cfg = i < picks.Count ? picks[i] : null;
+            if (cfg == null) emptySlots++;
             string emptyLabel = catalogEmpty
                 ? Loc.Get(LocKeys.ProdCatalogComplete)
                 : catalogLow && cfg == null
@@ -115,8 +165,39 @@ public class MovieTabUI : MonoBehaviour
             if (slot != null) _slotButtons.Add(slot);
         }
 
+        MovieOfferAuditState.lastSlotUiCount = slotsRow.childCount;
+        MovieOfferAuditState.lastEmptySlotCount = emptySlots;
+        MovieOfferAuditState.lastDuplicateUiDetected = CountOfferUiIssues();
+
         slotsRow.GetComponent<SquareTileRowLayout>()?.RequestDeferredApply();
         RequestSlotLayout();
+    }
+
+    void ClearOfferSlots()
+    {
+        for (int i = slotsRow.childCount - 1; i >= 0; i--)
+        {
+            var go = slotsRow.GetChild(i).gameObject;
+            go.transform.SetParent(null, false);
+            Destroy(go);
+        }
+        _slotButtons.Clear();
+    }
+
+    static int CountOfferUiIssues()
+    {
+        var tab = Object.FindAnyObjectByType<MovieTabUI>(FindObjectsInactive.Include);
+        if (tab == null || tab.slotsRow == null) return 0;
+
+        int issues = Mathf.Max(0, tab.slotsRow.childCount - MovieOfferPicker.OfferSlotCount);
+
+        var names = new HashSet<string>();
+        for (int i = 0; i < tab.slotsRow.childCount; i++)
+        {
+            string n = tab.slotsRow.GetChild(i).name;
+            if (!names.Add(n)) issues++;
+        }
+        return issues;
     }
 
     void RequestSlotLayout()
@@ -151,8 +232,10 @@ public class MovieTabUI : MonoBehaviour
             typeof(RectTransform), typeof(Image));
         cardGo.transform.SetParent(slotsRow, false);
         var le = cardGo.AddComponent<LayoutElement>();
-        le.flexibleWidth = 1f;
-        le.flexibleHeight = 0f;
+        le.flexibleWidth   = 1f;
+        le.flexibleHeight  = 0f;
+        le.preferredHeight = MovieOfferCardLayoutBuilder.CardPreferredHeight; // Phase 8.5C: explicit height for VLG
+        le.minHeight       = 180f;
 
         if (cfg == null)
         {
@@ -172,6 +255,9 @@ public class MovieTabUI : MonoBehaviour
         ui.genreText = wire.genreText;
         ui.rarityText = wire.rarityText;
         ui.durationText = wire.durationText;
+        ui.rewardText = wire.rewardText;
+        ui.repText = wire.repText;
+        ui.badgesText = wire.badgesText;
         ui.unlockText = wire.unlockText;
         ui.lockedOverlay = wire.lockedOverlay;
         ui.produceButton = wire.selectButton;
@@ -225,7 +311,7 @@ public class MovieTabUI : MonoBehaviour
     }
 }
 
-/// <summary>Three uniform-random offers from the eligible pool. Rejected offers are not tracked.</summary>
+/// <summary>Uniform-random offers from the eligible pool. Rejected offers are not tracked.</summary>
 public static class MovieOfferPicker
 {
     public const int OfferSlotCount = 3;
@@ -234,24 +320,51 @@ public static class MovieOfferPicker
         MovieConfig[] allMovies,
         int studioLevel,
         float reputation,
-        IReadOnlyCollection<string> completedMovieKeys)
-    {
-        var result = new List<MovieConfig>(OfferSlotCount);
-        var eligible = MovieOfferPoolRules.BuildEligiblePool(
-            allMovies, studioLevel, reputation, completedMovieKeys);
-        if (eligible.Count == 0) return result;
+        IReadOnlyCollection<string> completedMovieKeys) =>
+        PickMany(allMovies, studioLevel, reputation, completedMovieKeys, OfferSlotCount, null);
 
-        var shuffled = new List<MovieConfig>(eligible);
-        for (int i = shuffled.Count - 1; i > 0; i--)
+    public static List<MovieConfig> PickMany(
+        MovieConfig[] allMovies,
+        int studioLevel,
+        float reputation,
+        IReadOnlyCollection<string> completedMovieKeys,
+        int count,
+        HashSet<string> excludeKeys)
+    {
+        var result = new List<MovieConfig>(count);
+        var exclude = excludeKeys ?? new HashSet<string>();
+
+        for (int i = 0; i < count; i++)
         {
-            int j = Random.Range(0, i + 1);
-            (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
+            var pick = PickOne(allMovies, studioLevel, reputation, completedMovieKeys, exclude);
+            if (pick == null) break;
+            result.Add(pick);
+            exclude.Add(pick.name);
         }
 
-        int pickCount = Mathf.Min(OfferSlotCount, shuffled.Count);
-        for (int i = 0; i < pickCount; i++)
-            result.Add(shuffled[i]);
-
         return result;
+    }
+
+    public static MovieConfig PickOne(
+        MovieConfig[] allMovies,
+        int studioLevel,
+        float reputation,
+        IReadOnlyCollection<string> completedMovieKeys,
+        HashSet<string> excludeKeys)
+    {
+        var eligible = MovieOfferPoolRules.BuildEligiblePool(
+            allMovies, studioLevel, reputation, completedMovieKeys);
+        if (eligible.Count == 0) return null;
+
+        var candidates = new List<MovieConfig>();
+        foreach (var cfg in eligible)
+        {
+            if (cfg == null) continue;
+            if (excludeKeys != null && excludeKeys.Contains(cfg.name)) continue;
+            candidates.Add(cfg);
+        }
+
+        if (candidates.Count == 0) return null;
+        return candidates[Random.Range(0, candidates.Count)];
     }
 }

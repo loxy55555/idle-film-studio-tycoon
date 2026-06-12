@@ -17,7 +17,7 @@ public static class HudLayoutPass
         ApplyProductionLayout(FindPanel(contentSwitcher, "ProduccionPanel", "PeliculasPanel"));
         ApplyPlaceholderSections(FindPanel(contentSwitcher, "PremiosPanel"));
         ApplyPlaceholderSections(FindPanel(contentSwitcher, "ColeccionPanel"));
-        ApplyPlaceholderSections(FindPanel(contentSwitcher, "MenuPanel"));
+        ApplyPlaceholderSections(FindPanel(contentSwitcher, "MenuPanel", "TiendaPanel"));
     }
 
     static void SyncMainNavigationOrder(RectTransform switcher, StudioHubUI mainNavigation)

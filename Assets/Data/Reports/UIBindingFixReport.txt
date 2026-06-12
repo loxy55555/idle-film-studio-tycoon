@@ -1,0 +1,67 @@
+FASE 6.8 — UI Binding Fix Report
+=================================
+Date: 2026-06-10
+
+FIXES APPLIED
+-------------
+1. ContractsPanelUI
+   • TryBind() replaces poison Bind() — no OnGameReady unsubscribe on failure
+   • Start(), OnEnable(), Update() retry until bound
+   • Rebuild() calls TryBind() if _contracts null
+   • IsBound property for verification
+   • ClearSlots() detaches children before Destroy (no duplicate cards)
+
+2. MovieCollectionUI
+   • TryBind() with _eventsSubscribed guard
+   • Start(), OnEnable(), Update() retry until bound
+   • Refresh() calls TryBind() if _studio null
+   • OnMovieCompleted → Refresh() when bound
+   • IsBound property for verification
+
+3. Legendary Visibility (Collection)
+   • Locked: CollectionLegendaryVisual.ApplySilhouette — no real poster
+   • Locked: CollectionMovieCardView uses CollectionLoc.UnknownTitle() ("???")
+   • Locked: shows LockedLabel + LegendaryLockCondition only
+   • Unlocked (!legendaryLocked): current behavior (real name/poster)
+
+VERIFICATION
+------------
+  ContractsPanelUI bound           : YES
+  MovieCollectionUI bound          : YES
+  Active contracts rendered        : YES (3 cards when ActiveCount=3)
+  Collection refresh on movie completion : YES (OnMovieCompleted listener)
+  Legendary hidden state verified  : YES (locked entries use silhouette + ???)
+
+RUNTIME NOTES
+-------------
+  • Inactive sub-panels (Estudio→CONTRATOS, Colección) defer Start(); Update()
+    retry ensures bind on first frame after GameHub is ready.
+  • Manual Rebuild()/Refresh() after fix: IsBound=true, 3 contract cards rendered.
+  • Catalog model: 10 locked legendaries at city-1 save — poster/name hidden by code path.
+
+STATIC CODE CHECKS
+------------------
+  TryBind in ContractsPanelUI      : YES
+  Start fallback ContractsPanelUI  : YES
+  Update retry ContractsPanelUI    : YES
+  IsBound on ContractsPanelUI      : YES
+  TryBind in MovieCollectionUI     : YES
+  Update retry MovieCollectionUI   : YES
+  Locked silhouette poster         : YES (CollectionLegendaryVisual.ApplySilhouette)
+  Locked legendary UnknownTitle    : YES (CollectionMovieCardView)
+
+FILES MODIFIED
+--------------
+  Assets/Scripts/UI/Hub/ContractsPanelUI.cs
+  Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+  Assets/Scripts/UI/Collection/CollectionLegendaryVisual.cs
+  Assets/Scripts/UI/Collection/CollectionMovieCardView.cs
+  Assets/Scripts/Editor/UIBindingFixAuditTools.cs
+
+NOT MODIFIED (per scope)
+------------------------
+  MovieConfig, catalog, rarities, progression rules
+
+STATUS: PASS
+
+Regenerate in Play Mode: IdleFilm → Reports → Generate UI Binding Fix Report (6.8)

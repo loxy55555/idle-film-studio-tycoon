@@ -1,0 +1,25 @@
+﻿CONTRACT SELECTION FIX REPORT (Phase 8.1)
+Generated: 2026-06-12 15:34:48
+
+OVERALL: PASS
+
+--- Card Content ---
+  Title       : contract.contractTitle          SHOWN
+  Description : contract.description            SHOWN
+  Objective   : ContractSystem.BuildObjectiveLabel SHOWN
+  Reward      : BuildRewardString()             SHOWN
+
+--- Button State ---
+  Button.onClick     : wired via RemoveListener + AddListener
+  Raycast target     : Image on card root (default=true)
+  Interactable       : set in RefreshUI → IsCandidate(contract)
+  Selection callback : ContractSystem.SelectCandidate(contract)
+
+--- Regression Root Cause (Phase 8.0) ---
+  ContractCardUI.WireButtons() set _buttonsWired=true in Awake(),
+  when buttons were null (factory assigns them after AddComponent).
+  Subsequent Bind() calls skipped wiring → onClick never registered.
+
+--- Fix Applied ---
+  Removed _buttonsWired guard and field entirely.
+  WireButtons() always uses RemoveListener+AddListener (idempotent).

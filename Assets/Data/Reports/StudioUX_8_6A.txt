@@ -1,0 +1,117 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — ESTUDIO UX (FASE 8.6A)
+=====================================================================
+
+=====================================================================
+PROBLEMA DE LA VERSIÓN 8.5C
+=====================================================================
+En 8.5C se aplicó "todo más grande":
+  - Tarjetas de departamento: 270px con icono de 56px, nivel a 26px
+    y mucho aire vertical desperdiciado
+  - Para que cupieran, el fondo decorativo se redujo a 160px fijos
+    → el estudio perdió su identidad cinematográfica
+  - El panel de bonificaciones dependía de la jerarquía del builder:
+    en escenas baked sin labels, NO aparecía nada
+
+Conclusión: escalar no es diseñar. 8.6A reestructura.
+
+=====================================================================
+1. TARJETAS DE DEPARTAMENTO — ESTRUCTURA COMPACTA
+=====================================================================
+Archivo: DepartmentMiniCardLayoutBuilder.cs (marker v2 → v3)
+
+ANTES (270px):                      AHORA (192px):
+  ┌──────────────┐                   ┌──────────────┐
+  │   [BADGE]    │ 66px              │ [B] Guión    │ 36px (fila única)
+  │    Guión     │ 18px              │ NIVEL 3      │ 22px
+  │   NIVEL 3    │ 32px              │ ▓▓▓▓░░░ 8px  │
+  │  ▓▓▓▓░ 10px  │                   │ +15% Calidad │ 32px
+  │ +15% Calidad │ 50px              │ [ MEJORAR  ] │ 46px
+  │ [ MEJORAR  ] │ 52px              │ [  $2.1K   ] │
+  └──────────────┘                   └──────────────┘
+
+Cambios estructurales (no de escala):
+  - Badge (32px) y nombre comparten una fila horizontal
+    → elimina ~50px de apilado vertical
+  - Nivel y efecto alineados a la IZQUIERDA (lectura natural),
+    antes todo centrado
+  - El coste sigue dentro del botón de mejora (visible y táctil, 46px)
+  - Marker v3: tarjetas baked con layout v2 se RECONSTRUYEN solas
+  - NormalizeParentRowHeight(): filas baked con altura antigua (270)
+    se encogen a 192 en runtime
+
+Resultado: -29% de altura por tarjeta con la MISMA información.
+Espacio recuperado por grid de 2 filas: ~156px.
+
+=====================================================================
+2. FONDO DECORATIVO RESTAURADO
+=====================================================================
+Archivo: HudLayoutConstants.cs
+
+  StudioVisualFixedHeight: 160 → 230px
+  StudioVisualMinHeight:   160 → 200px
+  StudioVisualShare:       0.20 → 0.26
+
+Evolución del stage:
+  8.5B: ~45% de pantalla (dominaba demasiado)
+  8.5C: 160px fijos (~14% — prácticamente invisible)
+  8.6A: 230px (~23% — backdrop cinematográfico presente sin dominar)
+
+El espacio lo financian las tarjetas compactas: las 2 filas de
+departamentos ahorran ~156px, el stage recupera +70px y sobra
+margen para la barra de bonificaciones (78px).
+
+=====================================================================
+3. PANEL DE BONIFICACIONES — FUNCIONAL Y EN TIEMPO REAL
+=====================================================================
+Archivos: BonificationsBarUI.cs (reescrito),
+          DefinitiveHudBootstrap.cs (inyección)
+
+SELF-BUILDING:
+  Si AutoWire() no encuentra los labels (escena baked sin builder),
+  el componente construye su propia UI:
+  ┌────┬────┬────┬────┬────┬────┐
+  │ ⭐ │ ⚡ │ 🎟 │ 🏆 │ 📈 │ 💰 │  fila única 78px
+  │+12%│ +8%│ +7%│ +5%│ +3%│ -4%│  valores 13px bold
+  │CAL.│VEL.│TAQ.│REP │ XP │COST│  labels 8px
+  └────┴────┴────┴────┴────┴────┘
+  Verde = bonus activo, gris = sin bonus.
+
+INYECCIÓN GARANTIZADA:
+  DefinitiveHudBootstrap.EnsureBonificationsBar() añade la barra
+  justo debajo del StudioVisualStage en escenas baked
+  → SIEMPRE visible al pulsar Play, sin "Build Studio UI".
+
+TIEMPO REAL:
+  - StudioManager.OnProductionsChanged  → Refresh
+  - UpgradeSystem.OnUpgradePurchased    → Refresh (nuevo)
+  - StudioLevelSystem.OnLevelUp         → Refresh (nuevo)
+  - Poll de 1s (DepartmentSystem no emite eventos al subir nivel)
+  → comprar una mejora o subir un departamento actualiza los
+    porcentajes al instante.
+
+Fuentes de datos (solo lectura, sin lógica de juego):
+  - Calidad / Velocidad / Costes: DepartmentSystem.Calculate*()
+  - Taquilla: derivada de calidad (proxy 0.6×)
+  - REP / XP: derivados del nivel de estudio
+
+=====================================================================
+DISTRIBUCIÓN VERTICAL RESULTANTE (pantalla Estudio)
+=====================================================================
+  TopBar               ~64px
+  StudioVisualStage    230px   ← backdrop cinematográfico restaurado
+  BonificationsBar      78px   ← NUEVA, siempre visible, en vivo
+  SubTabBar             56px
+  Departamentos (2×5)  ~400px  ← grid compacto 192px/fila
+  BottomNav            ~80px
+
+=====================================================================
+RESULTADO
+=====================================================================
+  ANTES (8.5C): tarjetas hinchadas, stage invisible, bonus bar
+                inexistente en la escena real
+  AHORA (8.6A): tarjetas compactas y estructuradas, stage presente,
+                bonificaciones vivas y siempre visibles
+
+  ESTADO: PASS
+=====================================================================

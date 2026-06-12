@@ -75,7 +75,7 @@ public static class HudNavigationCleanup
             DestroyPanel(switcher, "TiendaPanel");
     }
 
-    static void NormalizeBottomNav(StudioHubUI mainNavigation)
+    public static void NormalizeBottomNav(StudioHubUI mainNavigation)
     {
         var nav = GameObject.Find("BottomNav")?.transform;
         if (nav == null) return;

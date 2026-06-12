@@ -88,6 +88,10 @@ public class UpgradeSystem : MonoBehaviour
 
     public bool Purchase(UpgradeConfig cfg, StudioManager studio, DepartmentSystem departments, int studioLevel)
     {
+        if (cfg == null) return false;
+
+        Debug.Log($"[Upgrade] PurchaseAttempt UpgradeId={cfg.id}");
+
         if (!CanPurchase(cfg, studio.Money, studioLevel)) return false;
 
         long cost = GetNextCost(cfg);
@@ -103,6 +107,9 @@ public class UpgradeSystem : MonoBehaviour
 
         GameHub.Instance?.contracts?.OnMoneySpentOnUpgrade(cost);
         OnUpgradePurchased?.Invoke();
+        GameHub.Instance?.save?.Save("PurchaseUpgrade");
+
+        Debug.Log($"[Upgrade] Purchased UpgradeId={cfg.id} Level={GetLevel(cfg)}");
         return true;
     }
 

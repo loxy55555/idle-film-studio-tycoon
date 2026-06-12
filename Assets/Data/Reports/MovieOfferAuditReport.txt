@@ -1,0 +1,40 @@
+﻿FASE 6.3 — Movie Offer Audit Report
+===================================
+
+IMPLEMENTATION
+  MovieTabUI uses MovieCatalogRuntime.AllMovies
+  RebuildSlots clears UI before rebuild (ClearOfferSlots)
+  Always renders MovieOfferPicker.OfferSlotCount (=3) slots
+  ProductionBudgetPickerUI single modal + visibility event
+  MovieButtonUI disables offers while picker open
+
+STATIC CHECKS
+  MovieTabUI in scene            : YES
+  slotsRow assigned              : YES
+  OfferSlotCount constant        : 3
+  Catalog loaded (editor)        : 300
+  UI clear before rebuild        : YES
+  Single budget picker enforced  : YES
+  Offer buttons lock during pick : YES
+
+RUNTIME (Play Mode)
+  Last pick count                : 3
+  Last slot UI children          : 3
+  Rebuild count                  : 5
+  Empty slots in last rebuild    : 0
+  Duplicate UI names detected    : 0
+  Budget picker open             : False
+
+RUNTIME CHECKS
+  Exactly 3 UI slots             : PASS (3)
+  Offers or labeled empty slots  : PASS (picks=3)
+  No duplicate UI accumulation   : PASS
+  Single picker instance         : PASS
+
+EXPECTED BEHAVIOR
+  3 offer slots always visible
+  3 movie picks when eligible pool >= 3 (city 1 ≈ 50 eligible)
+  Refresh offers replaces cards without stacking duplicates
+  Only one budget picker active; other offer buttons disabled
+
+STATUS: PASS

@@ -1,0 +1,34 @@
+UPGRADE UI FINAL FIX REPORT (Phase 8.4)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Root causes ---
+1. Card layout height (100px builder vs 132px+ content) caused vertical overlap
+2. Non-button Graphics kept raycastTarget=true (card bg, text, badge)
+3. UpgradeContentSorter reordered cards immediately after purchase
+   (pointer release could land on a different BuyBtn hitbox)
+
+--- Fixes ---
+UpgradeUiRaycastPolicy: only BuyBtn Image receives raycasts
+CardLayoutHeight=140: consistent LayoutElement min/preferred height
+UpgradeBuyButtonGuard: PointerDown/Up per button with UpgradeId logs
+UpgradeUiInteractionGate: click only valid if PointerDown id matches
+UpgradeContentSorter: deferred sort + CanReorderNow + layout rebuild
+
+--- Debug logs (temporary) ---
+[UpgradeUI] PointerDown=<id>
+[UpgradeUI] PointerUp=<id>
+[UpgradeUI] Clicked=<id> UpgradeId=<id>
+
+--- Manual validation ---
+Buy 20+ upgrades rapidly. Expect exactly one Clicked log per purchase.
+No PointerUp mismatch warnings. No neighbor UpgradeId in PurchaseAttempt.
+
+--- Files modified ---
+  UpgradeCardUI.cs
+  DepartmentMiniCardUI.cs
+  ContentSortBootstrap.cs
+  UpgradeUiInteractionGate.cs (new)
+  UpgradeBuyButtonGuard.cs (new)
+  UpgradeUiRaycastPolicy.cs (new)

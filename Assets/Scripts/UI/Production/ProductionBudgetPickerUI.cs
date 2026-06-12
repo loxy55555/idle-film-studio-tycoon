@@ -18,10 +18,14 @@ public class ProductionBudgetPickerUI : MonoBehaviour
     Action<ProductionBudget> _onConfirm;
     MovieConfig _pendingConfig;
 
+    public static bool IsOpen => Instance != null && Instance.gameObject.activeSelf;
+    public static event Action<bool> OnVisibilityChanged;
+
     public static void Show(MovieConfig config, Action<ProductionBudget> onConfirm)
     {
         if (config == null) return;
         EnsureInstance();
+        if (Instance == null) return;
         Instance.Open(config, onConfirm);
     }
 
@@ -51,7 +55,7 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         _panel = CreatePanel(root, "Panel", Color.clear);
         var panelRT = _panel;
         panelRT.anchorMin = panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRT.sizeDelta = new Vector2(320f, 420f);
+        panelRT.sizeDelta = new Vector2(320f, 480f);
         panelRT.anchoredPosition = Vector2.zero;
         HudSkinProvider.ApplyPanel(_panel.GetComponent<Image>(), HudPanelVariant.Card);
 
@@ -113,14 +117,31 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         go.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(go.GetComponent<Image>(), variant);
         go.AddComponent<UIButtonScale>();
-        LE(go.GetComponent<RectTransform>(), 44f);
+        LE(go.GetComponent<RectTransform>(), 72f);
         go.GetComponent<Button>().onClick.AddListener(() => Confirm(budget));
+
+        var vlg = go.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(8, 8, 6, 6);
+        vlg.spacing = 2;
+        vlg.childAlignment = TextAnchor.UpperCenter;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
 
         var lbl = RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 14f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
         lbl.enableAutoSizing = true;
         lbl.fontSizeMin = 11f;
         lbl.fontSizeMax = 15f;
+        lbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+
+        var stats = RuntimeTmpText.Create(go.transform, ProductionBudgetRules.FormatStatBlock(budget), 10f, TextSecondary,
+            FontStyles.Normal, TextAlignmentOptions.Center, "Stats");
+        stats.enableAutoSizing = true;
+        stats.fontSizeMin = 8f;
+        stats.fontSizeMax = 11f;
+        stats.textWrappingMode = TextWrappingModes.Normal;
+        stats.gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
     }
 
     void Open(MovieConfig config, Action<ProductionBudget> onConfirm)
@@ -129,7 +150,11 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         _onConfirm = onConfirm;
         if (_titleText != null) _titleText.text = config.movieName;
         MoviePosterVisual.Apply(_posterImage, config);
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+            OnVisibilityChanged?.Invoke(true);
+        }
     }
 
     void Confirm(ProductionBudget budget)
@@ -142,7 +167,11 @@ public class ProductionBudgetPickerUI : MonoBehaviour
     {
         _pendingConfig = null;
         _onConfirm = null;
-        gameObject.SetActive(false);
+        if (gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+            OnVisibilityChanged?.Invoke(false);
+        }
     }
 
     static RectTransform CreatePanel(Transform parent, string name, Color color)

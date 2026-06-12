@@ -1,22 +1,26 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>First-time user experience orchestrator (Phase 8.4).</summary>
+/// <summary>First-time user experience orchestrator (Phase 8.4 / 7.1).</summary>
 public class FtueController : MonoBehaviour
 {
     public static FtueController Instance { get; private set; }
 
     const float TargetResolveTimeoutSeconds = 12f;
     const float TargetResolveRetryInterval  = 0.35f;
+    const float PremiereUnavailableGraceSeconds = 1.5f;
+    const float PremiereFallbackMaxWaitSeconds  = 120f;
 
     FtueOverlayView _overlay;
     StudioHubUI     _mainNav;
     StudioManager   _studio;
+    UpgradeSystem   _upgrades;
     RectTransform   _highlightTarget;
     FtueStep        _step;
     bool            _bound;
     bool            _loadedCompleted;
     Coroutine       _targetWaitRoutine;
+    Coroutine       _completeFallbackRoutine;
 
     void Awake()
     {
@@ -30,6 +34,7 @@ public class FtueController : MonoBehaviour
     {
         GameHub.OnGameReady -= OnGameReady;
         StopTargetWait();
+        StopCompleteFallback();
         UnbindEvents();
         if (Instance == this) Instance = null;
     }
@@ -40,14 +45,18 @@ public class FtueController : MonoBehaviour
         _bound = true;
 
         _studio = GameHub.Instance?.studio;
+        _upgrades = GameHub.Instance?.upgrades;
         _mainNav = FindAnyObjectByType<DefinitiveHudShell>()?.mainNavigation
                 ?? FindAnyObjectByType<StudioHubUI>();
 
         _loadedCompleted = FtueState.Completed;
+        FtueLog.LoadedCompleted(FtueState.Completed);
+        FtueLog.LoadedStep((int)FtueState.Step);
         FtueLog.State("OnGameReady");
 
         if (FtueState.Disabled)
         {
+            FtueLog.TutorialSkipped();
             FtueLog.Info("Disabled via debug flag — skipping FTUE.");
             HideOverlayImmediate();
             return;
@@ -55,6 +64,7 @@ public class FtueController : MonoBehaviour
 
         if (FtueState.Completed)
         {
+            FtueLog.TutorialSkipped();
             FtueLog.Info("Already completed — skipping FTUE.");
             HideOverlayImmediate();
             return;
@@ -63,12 +73,13 @@ public class FtueController : MonoBehaviour
         if (ShouldAutoComplete())
         {
             FtueLog.Info("Auto-completing FTUE (profile has completed movies).");
-            CompleteFtue(save: true);
+            CompleteFtue(save: true, reason: "auto_complete_profile");
             return;
         }
 
         EnsureOverlay();
         BindEvents();
+        FtueLog.TutorialStarted();
         ResumeStep(FtueState.Step);
     }
 
@@ -94,6 +105,7 @@ public class FtueController : MonoBehaviour
     void HideOverlayImmediate()
     {
         ClearHighlight();
+        StopCompleteFallback();
         if (_overlay != null)
             _overlay.Hide();
     }
@@ -101,9 +113,12 @@ public class FtueController : MonoBehaviour
     void BindEvents()
     {
         if (_studio == null) return;
+        _upgrades = GameHub.Instance?.upgrades;
         _studio.OnProductionsChanged += OnProductionsChanged;
         _studio.OnMovieCompleted += OnMovieCompleted;
         PremiereSequenceController.OnPremiereDismissed += OnPremiereDismissed;
+        if (_upgrades != null)
+            _upgrades.OnUpgradePurchased += OnUpgradePurchased;
     }
 
     void UnbindEvents()
@@ -112,21 +127,42 @@ public class FtueController : MonoBehaviour
         _studio.OnProductionsChanged -= OnProductionsChanged;
         _studio.OnMovieCompleted -= OnMovieCompleted;
         PremiereSequenceController.OnPremiereDismissed -= OnPremiereDismissed;
+        if (_upgrades != null)
+            _upgrades.OnUpgradePurchased -= OnUpgradePurchased;
     }
 
     void ResumeStep(FtueStep step)
     {
-        _step = step;
-        FtueLog.Info($"ResumeStep → {_step}");
-
         if (step == FtueStep.Done)
         {
-            CompleteFtue(save: !_loadedCompleted);
+            CompleteFtue(save: !_loadedCompleted, reason: "resume_done");
             return;
         }
 
+        _step = step;
+        FtueLog.CurrentStep(_step);
+        FtueLog.Info($"ResumeStep → {_step}");
+
         if (step == FtueStep.FirstMovieComplete)
-            _step = FtueStep.StudioDuringProduction;
+        {
+            if (_studio != null && _studio.CompletedMovieKeys.Count >= 1)
+            {
+                FtueLog.Info("Resume FirstMovieComplete — entering await completion.");
+                EnterAwaitCompletion();
+                return;
+            }
+
+            ClearHighlight();
+            _overlay?.Hide();
+            StartCompleteFallback();
+            return;
+        }
+
+        if (step == FtueStep.AwaitCompletion)
+        {
+            EnterAwaitCompletion();
+            return;
+        }
 
         if (_studio != null && _studio.ActiveProductionCount > 0 && step <= FtueStep.ProductionGuide)
         {
@@ -205,7 +241,9 @@ public class FtueController : MonoBehaviour
     void EnterStudioDuringProduction()
     {
         StopTargetWait();
+        var from = _step;
         _step = FtueStep.StudioDuringProduction;
+        FtueLog.Transition(from, _step, "enter_studio_guide");
         PersistStep();
         _mainNav?.ShowTab((int)MainHudTab.Studio, instant: true);
         HighlightMainTab(MainHudTab.Studio);
@@ -235,52 +273,193 @@ public class FtueController : MonoBehaviour
         if (FtueState.Completed || _studio == null) return;
         if (_studio.CompletedMovieKeys.Count != 1) return;
 
-        FtueLog.Info("First movie completed — waiting for premiere dismiss.");
-        StopTargetWait();
+        var from = _step;
         _step = FtueStep.FirstMovieComplete;
+        FtueLog.Transition(from, _step, "first_movie_completed");
+        FtueLog.Info("First movie completed — awaiting premiere, then upgrade + final confirm.");
+
+        StopTargetWait();
         PersistStep();
         ClearHighlight();
         _overlay?.Hide();
+        StartCompleteFallback();
     }
 
     void OnPremiereDismissed()
     {
         if (FtueState.Completed) return;
         if (_step == FtueStep.FirstMovieComplete)
-            CompleteFtue(save: true);
+            EnterAwaitCompletion();
+    }
+
+    void OnUpgradePurchased()
+    {
+        if (FtueState.Completed) return;
+        if (_step != FtueStep.AwaitCompletion) return;
+
+        FtueLog.Info("Upgrade purchased — showing final FTUE confirm.");
+        ShowFinalConfirmStep();
+    }
+
+    bool HasFtueUpgradePurchased()
+    {
+        if (_upgrades?.allUpgrades == null) return false;
+        foreach (var cfg in _upgrades.allUpgrades)
+        {
+            if (cfg != null && _upgrades.GetLevel(cfg) > 0)
+                return true;
+        }
+        return false;
+    }
+
+    void EnterAwaitCompletion()
+    {
+        if (FtueState.Completed) return;
+        if (_step < FtueStep.FirstMovieComplete) return;
+
+        StopCompleteFallback();
+        StopTargetWait();
+        ClearHighlight();
+
+        if (_step == FtueStep.FirstMovieComplete)
+            AdvanceTo(FtueStep.AwaitCompletion);
+        else if (_step < FtueStep.AwaitCompletion)
+            AdvanceTo(FtueStep.AwaitCompletion);
+
+        EnsureOverlay();
+        ActivateOverlayIfNeeded();
+        PresentAwaitCompletionStep();
+    }
+
+    void PresentAwaitCompletionStep()
+    {
+        if (HasFtueUpgradePurchased())
+            ShowFinalConfirmStep();
+        else
+            ShowUpgradeRequiredStep();
+    }
+
+    void ShowUpgradeRequiredStep()
+    {
+        _mainNav?.ShowTab((int)MainHudTab.Studio, instant: true);
+        HighlightMainTab(MainHudTab.Studio);
+        _overlay?.ShowMessage(LocKeys.FtueStudioTitle, LocKeys.FtueStudioBody, OnUpgradeRequiredContinue, SkipAll);
+    }
+
+    void OnUpgradeRequiredContinue()
+    {
+        _overlay?.EnterHighlightPassThrough(SkipAll);
+    }
+
+    void ShowFinalConfirmStep()
+    {
+        ClearHighlight();
+        _overlay?.RestoreMessageCard();
+        _overlay?.ShowMessage(LocKeys.FtueFirstMovieTitle, LocKeys.FtueCompleteBody, OnFinalFtueConfirm, SkipAll);
+    }
+
+    void OnFinalFtueConfirm()
+    {
+        if (_studio == null || _studio.CompletedMovieKeys.Count < 1)
+        {
+            FtueLog.Warn("Final confirm blocked — first movie not completed.");
+            return;
+        }
+
+        if (!HasFtueUpgradePurchased())
+        {
+            FtueLog.Info("Final confirm blocked — studio upgrade required.");
+            ShowUpgradeRequiredStep();
+            return;
+        }
+
+        CompleteFtue(save: true, reason: "final_confirm");
+    }
+
+    void StartCompleteFallback()
+    {
+        StopCompleteFallback();
+        _completeFallbackRoutine = StartCoroutine(CompleteFallbackRoutine());
+    }
+
+    void StopCompleteFallback()
+    {
+        if (_completeFallbackRoutine == null) return;
+        StopCoroutine(_completeFallbackRoutine);
+        _completeFallbackRoutine = null;
+    }
+
+    IEnumerator CompleteFallbackRoutine()
+    {
+        yield return null;
+
+        float grace = 0f;
+        float elapsed = 0f;
+        bool premiereEverStarted = false;
+
+        while (!FtueState.Completed && _step == FtueStep.FirstMovieComplete && elapsed < PremiereFallbackMaxWaitSeconds)
+        {
+            if (PremiereSequenceController.IsPresenting)
+                premiereEverStarted = true;
+
+            if (!premiereEverStarted && grace >= PremiereUnavailableGraceSeconds)
+            {
+                EnterAwaitCompletion();
+                yield break;
+            }
+
+            if (premiereEverStarted && !PremiereSequenceController.IsPresenting)
+            {
+                EnterAwaitCompletion();
+                yield break;
+            }
+
+            grace += Time.unscaledDeltaTime;
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (!FtueState.Completed && _step == FtueStep.FirstMovieComplete)
+            EnterAwaitCompletion();
     }
 
     void AdvanceTo(FtueStep step)
     {
+        var from = _step;
         _step = step;
         FtueState.Step = step;
         PersistStep();
-        FtueLog.Info($"Advanced to {_step}");
+        FtueLog.Transition(from, _step, "advance");
     }
 
     void PersistStep()
     {
         FtueState.Step = _step;
-        GameHub.Instance?.save?.Save();
+        GameHub.Instance?.save?.Save("FtueStep");
+        FtueLog.CurrentStep(_step);
         FtueLog.Info($"Persisted step={_step} completed={FtueState.Completed}");
     }
 
     void SkipAll()
     {
         FtueLog.Info("Skip requested.");
-        CompleteFtue(save: true);
+        CompleteFtue(save: true, reason: "skip");
     }
 
-    void CompleteFtue(bool save)
+    void CompleteFtue(bool save, string reason)
     {
         StopTargetWait();
+        StopCompleteFallback();
         FtueState.MarkCompleted();
         _step = FtueStep.Done;
         ClearHighlight();
         _overlay?.Hide();
         UnbindEvents();
+        FtueLog.Complete(reason);
+        FtueLog.TutorialCompleted();
+        FtueLog.CurrentStep(_step);
         FtueLog.Info($"CompleteFtue save={save}");
-        if (save) GameHub.Instance?.save?.Save();
+        if (save) GameHub.Instance?.save?.Save("FtueCompletion");
     }
 
     bool TryHighlightMainTab(MainHudTab tab)
@@ -415,13 +594,14 @@ public class FtueController : MonoBehaviour
             _studio = GameHub.Instance?.studio;
             EnsureOverlay();
         }
-        CompleteFtue(save: true);
+        CompleteFtue(save: true, reason: "debug");
     }
 
     public void DebugResetFtue()
     {
         FtueLog.Info("DebugResetFtue invoked.");
         StopTargetWait();
+        StopCompleteFallback();
         UnbindEvents();
         FtueState.Reset();
         FtueState.Disabled = false;
@@ -430,10 +610,11 @@ public class FtueController : MonoBehaviour
         _bound = false;
         ClearHighlight();
         _overlay?.Hide();
-        GameHub.Instance?.save?.Save();
+        GameHub.Instance?.save?.Save("FtueDebugReset");
         _bound = true;
         EnsureOverlay();
         BindEvents();
+        FtueLog.TutorialStarted();
         ResumeStep(FtueStep.Welcome);
     }
 
@@ -442,7 +623,8 @@ public class FtueController : MonoBehaviour
         FtueLog.Info("DebugDisableFtue invoked.");
         FtueState.Disabled = true;
         StopTargetWait();
-        CompleteFtue(save: false);
+        StopCompleteFallback();
+        CompleteFtue(save: false, reason: "debug_disable");
     }
 
     public void DebugEnableFtue()

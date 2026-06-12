@@ -1,0 +1,24 @@
+﻿SAVE / LOAD AUDIT REPORT (Phase 8.1)
+Generated: 2026-06-12 15:34:48
+
+OVERALL: PASS
+
+--- Static Analysis ---
+Save file path    : C:/Users/elise/AppData/LocalLow/DefaultCompany/idle film\save_v2.json
+Save version      : 5 (GameSaveData.version = 5)
+Money saved       : hub.studio.Money
+Reputation saved  : hub.studio.reputation
+Collection saved  : completedMovieKeys[]
+Contracts saved   : contractStates[] with isActiveContract flag
+Offers saved      : currentOffers[] (save v5)
+
+--- Regression Root Cause (Phase 8.0) ---
+  ContractSaveEntry lacked isActiveContract field.
+  A freshly selected contract (progress=0) was indistinguishable
+  from a candidate on reload → treated as candidate, lost active status.
+
+--- Fix Applied ---
+  Added ContractSaveEntry.isActiveContract boolean.
+  GetSaveData() sets isActiveContract=true for the active contract entry.
+  LoadFromSave() checks isActiveContract first; falls back to progress/readyToClaim
+  for backward-compat with Phase 8.0 saves.

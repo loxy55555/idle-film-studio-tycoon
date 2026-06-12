@@ -1,0 +1,25 @@
+﻿PRODUCTION & CONTRACT GAMEPLAY REPORT (Phase 8.0)
+Generated: 2026-06-12 15:11:08
+
+Production Cards          : PASS
+Production Refresh        : PASS
+Production Budget UI      : PASS
+Offer Persistence         : PASS
+Contract Selection        : PASS
+Contract Progress         : PASS
+Contract Rewards          : PASS
+Contract Refresh          : PASS
+Movie Contract Badges     : PASS
+
+OVERALL: PASS
+
+--- Details ---
+Production cards: poster/title/rarity/genre/duration/money/rep + NUEVA/SAGA/CONTRATO badges
+Production refresh: REFRESH OFFERS via ad or diamonds (GameplayRefreshService)
+Budget UI: LOW/STANDARD/PREMIUM stats from ProductionBudgetRules.GetModifiers()
+Offer persistence: MovieOfferState + save v5 currentOffers[]
+Contract selection: 3 candidates OR 1 active — SelectCandidate()
+Contract progress: active card shows objective + progress bar
+Contract rewards: claim button + GameFeelUI reward panel
+Contract refresh: REFRESH CONTRACTS when no active contract
+Movie badges: MovieOfferBadgeHelper + DoesMovieHelpActiveContract()

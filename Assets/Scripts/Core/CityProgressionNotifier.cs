@@ -24,8 +24,7 @@ public static class CityProgressionNotifier
         }
 
         int movieCount = CityProgressionRules.CountMoviesUnlockedAtCity(
-            hub.GetComponentInChildren<MovieTabUI>()?.allMovies
-            ?? Object.FindAnyObjectByType<MovieTabUI>()?.allMovies, newLevel);
+            MovieCatalogRuntime.AllMovies, newLevel);
         if (movieCount > 0)
             feel.ShowCityContentUnlock("Nuevas películas desbloqueadas",
                 new[] { $"+{movieCount} título(s) en catálogo" });

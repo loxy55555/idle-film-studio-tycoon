@@ -194,7 +194,7 @@ public class TopBarUI : MonoBehaviour
     {
         if (cityText != null || statsBlock == null) return;
 
-        cityText = RuntimeTmpText.Create(statsBlock, "C1", 18, new Color(0.95f, 0.77f, 0.06f), FontStyles.Bold,
+        cityText = RuntimeTmpText.Create(statsBlock, "I1", 18, new Color(0.95f, 0.77f, 0.06f), FontStyles.Bold,
             TextAlignmentOptions.Center, "CityText");
         cityText.gameObject.AddComponent<LayoutElement>().preferredWidth = 96f;
     }
@@ -202,7 +202,7 @@ public class TopBarUI : MonoBehaviour
     void UpdateCity(int level)
     {
         if (cityText == null) return;
-        cityText.text = "C" + level;
+        cityText.text = "I" + level;
     }
 
     void BindDiamonds()
@@ -264,7 +264,16 @@ public class TopBarUI : MonoBehaviour
     private void UpdateReputation(float rep)
     {
         if (reputationText != null)
-            reputationText.text = "REP " + rep.ToString("N0");
+            reputationText.text = "REP " + FormatReputation(rep);
+    }
+
+    /// <summary>Whole numbers omit decimals; fractional rep shows one decimal (Phase 7.3).</summary>
+    public static string FormatReputation(float rep)
+    {
+        float rounded = Mathf.Round(rep * 10f) / 10f;
+        if (Mathf.Approximately(rounded, Mathf.Round(rounded)))
+            return ((int)Mathf.Round(rounded)).ToString();
+        return rounded.ToString("0.0");
     }
 
     void UpdateDiamonds(int amount)
@@ -298,4 +307,20 @@ public class TopBarUI : MonoBehaviour
     }
 
     public RectTransform GetOscarRect() => _oscarRT;
+
+    /// <summary>Phase 8.5C — patches the top-bar settings button to show the ⚙ icon.</summary>
+    public void PatchSettingsIcon()
+    {
+        // Try the serialized settings button or find by name
+        foreach (var btn in GetComponentsInChildren<UnityEngine.UI.Button>(true))
+        {
+            var btnName = btn.gameObject.name.ToUpperInvariant();
+            if (btnName.Contains("SETTING") || btnName.Contains("MENU") || btnName.Contains("HAMB") || btnName == "SETTINGSBTN")
+            {
+                var tmp = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+                if (tmp != null) tmp.text = "⚙";
+                break;
+            }
+        }
+    }
 }

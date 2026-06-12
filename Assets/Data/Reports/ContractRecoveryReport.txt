@@ -1,0 +1,30 @@
+﻿FASE 6.2 — Contract Recovery Report
+====================================
+
+IMPLEMENTATION
+  ContractSystem.EnsureActiveContracts(studioLevel)
+  ContractSystem.RecoverAfterLoad(studioLevel) after save load
+  GameHub new game: Init(1) + EnsureActiveContracts(1)
+  OnContractUpdated → ContractsPanelUI.Rebuild()
+
+STATIC CHECKS
+  ContractSystem in scene        : YES
+  Contract database entries      : 22
+  maxActiveContracts             : 3
+  EnsureActiveContracts present  : YES
+  RecoverAfterLoad present         : YES
+  Refresh after empty load         : YES (via EnsureActiveContracts)
+
+RUNTIME (Play Mode)
+  Last recovery triggered        : True
+  Trigger reason                 : EmptyActive
+  Active before → after          : 0 → 3
+  Max active                     : 3
+  Current active count           : 3
+
+EXPECTED BEHAVIOR
+  New game       : 3 active contracts (city/studio eligible)
+  Load empty save: auto top-up to 3 via EnsureActiveContracts
+  UI refresh     : ContractsPanelUI listens to OnContractUpdated
+
+STATUS: PASS

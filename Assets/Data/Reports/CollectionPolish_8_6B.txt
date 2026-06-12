@@ -1,0 +1,88 @@
+=====================================================================
+IDLE FILM STUDIO TYCOON — COLLECTION POLISH (FASE 8.6B.2)
+=====================================================================
+
+=====================================================================
+1. ELIMINAR BOTONES HUÉRFANOS
+=====================================================================
+Estado: PASS
+
+Problema: MovieCollectionUI era un componente añadido sobre ColeccionPanel
+que ya tenía hijos de la build anterior (botones de filtro por género,
+encabezados, contenido de album, etc.). Al llamar BuildAllLevels() sin
+limpiar, el contenido nuevo se añadía encima del antiguo.
+
+Fix en MovieCollectionUI.BuildAllLevels():
+  // Phase 8.6B: remove any legacy children (orphan filter buttons, old grids)
+  for (int i = root.childCount - 1; i >= 0; i--)
+  {
+      var ch = root.GetChild(i);
+      if (Application.isPlaying)  Object.Destroy(ch.gameObject);
+      else                        Object.DestroyImmediate(ch.gameObject);
+  }
+
+Cualquier botón, panel o texto que existiera antes de BuildAllLevels()
+es eliminado antes de construir el nuevo layout. El componente arranca
+desde cero, garantizando pantalla limpia.
+
+=====================================================================
+2. GÉNEROS OCUPAN TODA LA PANTALLA
+=====================================================================
+Estado: PASS
+
+La limpieza de children (punto 1) elimina el padding superior causado
+por los objetos huérfanos. El L1 scroll container ya tiene:
+  - padding = (14, 14, 12, 16) — compacto
+  - spacing = 12 entre filas
+  - Header 72px + 5 filas de 150px + 4 espaciados de 12px = ~820px
+  → Scroll natural sin espacios vacíos al inicio
+
+=====================================================================
+3. PELÍCULAS ORDENADAS POR RAREZA
+=====================================================================
+Estado: PASS
+
+Implementado en PopulateMovieGrid() antes de construir las filas:
+  filtered.Sort((a, b) => RarityOrder(b.rarity).CompareTo(RarityOrder(a.rarity)));
+
+Función de orden:
+  Legendary = 3  (primeras)
+  Epic      = 2
+  Rare      = 1
+  Common    = 0  (últimas)
+
+Agrupación visual resultante dentro de cada género:
+  ┌────────────────────────────────────────────────┐
+  │ ★ ★ ★   ← Legendarias (marco dorado brillante)│
+  │ ◆ ◆ ◆   ← Épicas (marco morado)               │
+  │ ● ● ●   ← Raras (marco azul)                  │
+  │ · · ·   ← Comunes (marco gris)                │
+  └────────────────────────────────────────────────┘
+
+Las Legendarias y Épicas aparecen primero → el jugador ve inmediatamente
+las películas más valiosas y sabe cuáles le faltan.
+
+=====================================================================
+4. BORDES DE COLOR POR RAREZA (mantenidos de 8.6A)
+=====================================================================
+Estado: PASS (sin cambios)
+
+  Legendaria: marco (0.95, 0.77, 0.06) dorado       — apagado 55% si pendiente
+  Épica:      marco (0.61, 0.35, 0.71) morado
+  Rara:       marco (0.25, 0.55, 0.90) azul
+  Común:      marco (0.28, 0.30, 0.40) gris azulado
+
+Efecto: las películas completadas tienen el borde a brillo pleno.
+Las pendientes tienen el borde oscurecido 55% — visibles como objetivo
+pero claramente no conseguidas.
+
+=====================================================================
+RESUMEN
+=====================================================================
+  Botones huérfanos:     ELIMINADOS (build limpia siempre)
+  Espacio vacío inicial: ELIMINADO
+  Orden de películas:    LEGENDARY > EPIC > RARE > COMMON
+  Bordes rareza:         MANTENIDOS
+
+  ESTADO: PASS
+=====================================================================

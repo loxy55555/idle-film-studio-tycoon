@@ -1,0 +1,202 @@
+FASE 7.2 — PARTE A: Reputation Reward Audit
+Generated: 2026-06-12
+STATUS: ROOT CAUSE IDENTIFIED (audit only — no fixes applied)
+================================================================
+
+PROBLEM STATEMENT
+-----------------
+On movie completion: money, completion flag, popups, and contract progress
+all work. Visible reputation in the top bar does NOT appear to increase.
+
+SYSTEMS AUDITED
+---------------
+  ProductionRoutine     → StudioManager.cs L603-627
+  FinalizeProduction    → StudioManager.cs L631-678
+  CreateProductionState → StudioManager.cs L555-598
+  AddReputation         → StudioManager.cs L1048-1058
+  StudioManager.reputation + OnReputationChanged → L157, L101, L643-644
+  MovieConfig.baseRep   → MovieConfig.cs L23
+  SaveSystem            → SaveSystem.cs L15, L116, L182
+  TopBarUI              → TopBarUI.cs L264-268
+  PremiereOverlayView   → PremiereOverlayView.cs L228 (shows rep in popup)
+  GameFeelUI            → GameFeelUI.cs L89-91 (routes to premiere, no top-bar)
+
+NOT FOUND IN CODEBASE (requested but absent):
+  ReputationManager     — does not exist; reputation lives on StudioManager
+  MovieRewardData       — does not exist; rewards computed inline in
+                          CreateProductionState / FinalizeProduction
+
+================================================================
+1. REPUTATION CONFIGURED IN EACH MOVIE (MovieConfig)
+================================================================
+
+Field: MovieConfig.baseRep (MovieConfig.cs L23)
+
+Catalog scan (Assets/Data/Movies/*.asset, 300 movies):
+  baseRep = 0.1   → 300/300 movies (100%)
+  baseRep ≠ 0.1   → 0 movies
+
+Example: Action_Borderline.asset
+  movieName: Silent Extraction
+  baseRep: 0.1
+  quality: 1.0
+  rarity: Rare (1)
+
+CONCLUSION: Reputation IS configured, but uniformly at 0.1 for every movie
+in the catalog. Per-movie differentiation by rarity does not exist in data.
+
+================================================================
+2. REPUTATION DELIVERED ON COMPLETION (FinalizeProduction)
+================================================================
+
+Flow:
+  ProductionRoutine (L603-627)
+    while elapsed < totalDuration → yield
+    FinalizeProduction(production, totalDuration)
+
+  CreateProductionState (L569-571):
+    repMult  = 1f + UpgradeSystem.ReputationBonus
+    repGain  = config.baseRep * studioQuality * repMult
+    ProductionBudgetRules.Apply(ref repGain, budget)  // currently ×1.0
+
+  FinalizeProduction (L637-644):
+    varietyMult = CalculateVarietyMultiplier(...)   // 1.0 on first movie
+    rep         = production.pendingRep * varietyMult
+    reputation += rep                               // ✅ APPLIED TO BACKEND
+    OnReputationChanged?.Invoke(reputation)         // ✅ EVENT FIRED
+
+  SetStatus (L676-677):
+    "{movie} completada! +${money}  +{rep:0.0} REP"  // shows decimal rep
+
+EXPECTED REWARD (first movie, default departments):
+  studioQuality ≈ 1.0
+  repMult       = 1.0
+  varietyMult   = 1.0
+  repGain       = 0.1 × 1.0 × 1.0 × 1.0 = 0.1 REP
+
+ACTUAL BACKEND REWARD: 0.1 REP (correctly applied)
+
+Evidence: backend pipeline is intact. Money uses identical path and works.
+
+================================================================
+3. REPUTATION RECEIVED BY StudioManager
+================================================================
+
+  reputation field:     public float reputation = 0f (L157)
+  New game Initialize:  reputation = 5f          (L209)
+
+After 1st movie completion:
+  reputation = 5.0 + 0.1 = 5.1  (backend value)
+
+AddReputation(float amount) (L1048-1058):
+  reputation += amount
+  OnReputationChanged?.Invoke(reputation)
+  Used by ContractSystem for contract claim rewards — same event path.
+
+ContractSystem.OnReputationChanged (ContractSystem.cs L184):
+  Separate listener for contract thresholds — does NOT block rep gain.
+
+CONCLUSION: StudioManager receives and stores reputation correctly.
+
+================================================================
+4. REPUTATION PERSISTED IN SAVE
+================================================================
+
+GameSaveData.reputation (SaveSystem.cs L15)
+
+Save (L116):
+  reputation = hub.studio.reputation
+
+Load (L182):
+  hub.studio.reputation = data.reputation
+
+After 1 movie: save file contains reputation = 5.1 (approx)
+
+CONCLUSION: Persistence works. Reload preserves accumulated rep.
+
+================================================================
+5. REPUTATION SHOWN IN UI
+================================================================
+
+Primary display: TopBarUI.UpdateReputation (TopBarUI.cs L264-268)
+
+  reputationText.text = "REP " + rep.ToString("N0");
+
+Scene wiring (MainGame.unity):
+  TopBarUI.reputationText serialized = {fileID: 0}  (null in inspector)
+  Runtime AutoWire via FindStatText("RepText") under StatsBlock/RepTextBlock
+  Hierarchy exists: TopBar → StatsBlock → RepTextBlock → RepText ✅
+
+Subscription (TopBarUI.cs L225-238):
+  studio.OnReputationChanged += UpdateReputation   ✅
+  Update() retries TrySubscribe if not yet bound   ✅
+
+Secondary displays:
+  MovieButtonUI.repText:  "+" + rep.ToString("0.0") + " REP"  (L150) — decimal
+  PremiereOverlayView:    PremiereLoc.FormatRepReward → rep.ToString("0.0")
+  MovieTabUI history:     ProductionLoc.FormatHistoryRewards → rep.ToString("0.0")
+  SetStatus bar:          rep.ToString("0.0")
+
+================================================================
+ROOT CAUSE — EXACT
+================================================================
+
+PRIMARY ROOT CAUSE: UI FORMAT MASKS SMALL REPUTATION GAINS
+
+  File: TopBarUI.cs L267
+  Code: rep.ToString("N0")
+
+  "N0" rounds to nearest INTEGER with zero decimal places.
+
+  Starting reputation = 5.0 (StudioManager.Initialize L209)
+  Per-movie gain      = 0.1   (all 300 MovieConfig assets)
+
+  Display behavior:
+    rep = 5.0 → "REP 5"
+    rep = 5.1 → "REP 5"   ← NO VISIBLE CHANGE
+    rep = 5.2 → "REP 5"
+    rep = 5.3 → "REP 5"
+    rep = 5.4 → "REP 5"
+    rep = 5.5 → "REP 6"   ← first visible change (~5 movies)
+
+  User completes 1-4 movies and sees "REP 5" unchanged despite backend
+  gaining +0.1 each time. Popups/premiere show "+0.1 REP" (decimal format)
+  creating a disconnect: popup says rep gained, top bar says nothing changed.
+
+CONTRIBUTING FACTOR: Uniform low baseRep in catalog
+
+  All 300 movies: baseRep = 0.1
+  No rarity scaling in MovieConfig for reputation.
+  Combined with N0 format, visible top-bar updates require ~5 completions
+  per integer step from the starting value of 5.
+
+NOT THE ROOT CAUSE (verified working):
+  ✗ FinalizeProduction not applying rep        — L643 applies correctly
+  ✗ OnReputationChanged not firing             — L644 fires correctly
+  ✗ Save not persisting rep                    — SaveSystem L116/L182 OK
+  ✗ Missing ReputationManager                  — N/A; StudioManager is source
+  ✗ TopBar not subscribed                      — TrySubscribe + event OK
+  ✗ repGain = 0 in calculation                 — baseRep=0.1, not zero
+
+================================================================
+EVIDENCE TABLE
+================================================================
+
+CHECK                          | EXPECTED | ACTUAL (backend) | VISIBLE UI
+-------------------------------|----------|------------------|------------
+baseRep in MovieConfig         | > 0      | 0.1 (all movies) | N/A
+repGain on 1st completion      | ~0.1     | 0.1              | N/A
+reputation after 1st movie     | 5.1      | 5.1              | "REP 5" (N0)
+OnReputationChanged fired      | yes      | yes              | N/A
+Save reputation field          | 5.1      | 5.1              | N/A
+TopBar display format          | show gain| rounds to int    | MASKED
+
+RESPONSIBLE CODE LINES
+----------------------
+  TopBarUI.cs          L267   rep.ToString("N0")           ← PRIMARY UI BUG
+  StudioManager.cs     L209   reputation = 5f (start value)
+  StudioManager.cs     L571   repGain = baseRep * quality  ← 0.1 per movie
+  MovieConfig assets   L20    baseRep: 0.1 (all 300)       ← CONTRIBUTING
+  FinalizeProduction   L643   reputation += rep            ← backend OK
+
+RESULT: Backend PASS / Visible UI FAIL (format + magnitude)

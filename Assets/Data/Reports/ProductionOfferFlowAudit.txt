@@ -1,0 +1,184 @@
+FASE 7.2 — PARTE B: Production Offer Flow Audit
+Generated: 2026-06-12
+STATUS: ROOT CAUSES IDENTIFIED (audit only — no fixes applied)
+================================================================
+
+PROBLEM STATEMENT
+-----------------
+1) Selecting a movie and starting production does NOT regenerate offers
+   immediately, even when a production slot remains free.
+2) Switching tabs (e.g. Production → Collection → Production) shows
+   DIFFERENT offers, breaking player choice consistency.
+
+SYSTEMS AUDITED
+---------------
+  MovieTabUI.cs           — offer UI lifecycle
+  MovieOfferPicker.cs     — PickThree (inline in MovieTabUI.cs L287-315)
+  MovieOfferPoolRules.cs  — BuildEligiblePool
+  StudioManager.cs        — StartMovie, OnProductionsChanged, OnMovieCompleted
+  StudioHubUI.cs          — ShowTab (tab activation)
+  ProductionHudShell.cs   — OnNewProductionClicked
+  MovieButtonUI.cs        — OnClick → StartMovie
+
+================================================================
+WHEN OFFERS ARE GENERATED / REGENERATED
+================================================================
+
+Offer generation entry point:
+  MovieTabUI.RebuildSlots() (L101-151)
+    → ClearOfferSlots()
+    → MovieOfferPicker.PickThree(...)   // fresh random draw every call
+    → CreateSlotCard × 3
+
+PickThree algorithm (MovieTabUI.cs L291-314):
+  eligible = MovieOfferPoolRules.BuildEligiblePool(...)
+  Fisher-Yates shuffle with Random.Range(0, i+1)
+  Take first 3 from shuffled list
+  NO seed, NO persistence, NO session state
+
+BuildEligiblePool (MovieOfferPoolRules.cs L11-30):
+  Filters by: studioLevel, reputation, cityLevel, saga rules
+  Excludes: completed movies (permanently removed)
+  Does NOT exclude: movies currently in production
+  Does NOT exclude: movies shown in previous offer set
+
+EVENT → REBUILD MAP
+-------------------
+
+EVENT                              | LISTENER            | REBUILDS OFFERS?
+-----------------------------------|---------------------|------------------
+GameHub.OnGameReady + Bind         | MovieTabUI.Bind L58 | YES (RebuildAll L73)
+MovieTabUI.OnEnable                | Bind L38-41         | YES (if bound+active)
+MovieTabUI.Start                   | Bind L44-47         | YES (if bound+active)
+StudioManager.OnMovieCompleted     | OnMovieCompleted L87| YES (RebuildSlots L91)
+ProductionHudShell button click    | OnNewProduction L44 | YES (RebuildAll)
+StudioManager.OnProductionsChanged | NONE              | NO ❌
+StudioManager.StartMovie           | NONE              | NO ❌
+MovieButtonUI.OnClick → StartMovie | NONE              | NO ❌
+Tab switch (ShowTab)               | indirect via OnEnable| YES ❌ (reroll)
+
+================================================================
+ISSUE 1 — NO IMMEDIATE REGENERATION ON PRODUCTION START
+================================================================
+
+Observed flow:
+  3 offers shown
+    ↓
+  Player selects one → ProductionBudgetPickerUI → StudioManager.StartMovie
+    ↓
+  StartMovie (StudioManager.cs L495-541):
+    _productions.Add(production)
+    NotifyProductionsChanged()          // L538 — event fires
+    StartCoroutine(ProductionRoutine)
+  ↓
+  MovieTabUI: NO subscription to OnProductionsChanged
+  MovieTabUI: NO call to RebuildSlots from StartMovie path
+  ↓
+  Same 3 offer cards remain visible (including the movie just started)
+
+Expected behavior (per design request):
+  If a production slot is free after starting one movie, regenerate offers
+  immediately so the player sees a fresh set.
+
+ROOT CAUSE:
+  File: MovieTabUI.cs
+  Missing listener: _studio.OnProductionsChanged is never subscribed.
+  Bind() (L58-74) only subscribes:
+    _studio.OnMovieCompleted       (L66)
+    _studio.OnMovieHistoryChanged  (L67)
+
+  Compare: MultiProductionPanelUI DOES subscribe to OnProductionsChanged
+  (MultiProductionPanelUI.cs L63) — production panel refreshes, offer row does not.
+
+Responsible lines:
+  StudioManager.cs  L538   NotifyProductionsChanged() — event exists
+  MovieTabUI.cs     L58-74 Bind() — no OnProductionsChanged handler
+  MovieTabUI.cs     L87-93  OnMovieCompleted — only rebuilds on COMPLETION
+
+Secondary note:
+  Even without reroll, the started movie remains visible in offers because
+  BuildEligiblePool does not filter active productions — only completed ones
+  (MovieOfferPoolRules.cs L24-27 via SagaProgressionRules.IsOfferEligible).
+
+================================================================
+ISSUE 2 — TAB SWITCH CAUSES OFFER REROLL
+================================================================
+
+Observed flow:
+  Production tab active → 3 offers (set A)
+    ↓
+  Switch to Collection tab
+    ↓
+  StudioHubUI.ShowTab (StudioHubUI.cs L79-108):
+    tabPanels[i].SetActive(active)   // deactivates Production panel
+    ↓
+  Switch back to Production tab
+    ↓
+  Production panel SetActive(true)
+    ↓
+  MovieTabUI.OnEnable (L38-41):
+    Bind() → RebuildAll() (L72-73)
+    ↓
+  RebuildSlots → PickThree → NEW Random shuffle → set B ≠ set A
+
+ROOT CAUSE:
+  File: MovieTabUI.cs L38-41 (OnEnable) + L72-73 (Bind → RebuildAll)
+  File: MovieTabUI.cs L115-119 (PickThree uses non-deterministic Random.Range)
+
+  Every panel reactivation triggers a full reroll. There is no saved offer
+  state in GameSaveData or any session cache. Offers exist only as ephemeral
+  UI elements destroyed and recreated on each RebuildSlots call.
+
+  Tab switching chain:
+    StudioHubUI.ShowTab L89  → SetActive(true) on Production panel
+    MovieTabUI.OnEnable L38  → Bind()
+    MovieTabUI.Bind L72       → RebuildAll()
+    MovieTabUI.RebuildSlots L115 → PickThree (new random)
+
+Contributing design gaps:
+  • No OfferState / currentPicks persistence
+  • No guard in RebuildSlots to skip if offers unchanged
+  • MovieOfferAuditState tracks rebuild count but does not prevent reroll
+
+================================================================
+OTHER REBUILD TRIGGERS (for completeness)
+================================================================
+
+  Opening UI first time:  Bind on GameReady/Start/OnEnable → RebuildAll
+  Completing a movie:    OnMovieCompleted → RebuildSlots ✅ (correct trigger)
+  "New Production" button: ProductionHudShell L44 → RebuildAll
+                           (manual reroll — also uses random PickThree)
+
+================================================================
+VERIFICATION CHECKLIST
+================================================================
+
+Question                                    | Answer
+--------------------------------------------|--------
+When are offers first generated?            | MovieTabUI.Bind → RebuildAll
+When regenerated on production start?       | NO — missing listener
+When regenerated on production complete?    | YES — OnMovieCompleted L91
+Does tab switch cause reroll?               | YES — OnEnable → RebuildAll
+Does opening UI cause reroll?               | YES — if panel was inactive
+Is offer set persisted in save?             | NO — no save field exists
+Does PickThree use deterministic seed?      | NO — Random.Range each call
+Are active productions excluded from pool?  | NO — only completed excluded
+
+================================================================
+ROOT CAUSES SUMMARY
+================================================================
+
+ISSUE 1 — No immediate regeneration:
+  CAUSE: MovieTabUI never listens to OnProductionsChanged / StartMovie
+  LINES: MovieTabUI.cs L58-74 (Bind subscriptions)
+         StudioManager.cs L538 (event fires but no consumer in offer UI)
+
+ISSUE 2 — Tab switch reroll:
+  CAUSE: OnEnable always calls RebuildAll → PickThree with Random shuffle;
+         no offer state persistence
+  LINES: MovieTabUI.cs L38-41, L72-73, L115-119
+         StudioHubUI.cs L89 (panel reactivation)
+         MovieOfferPicker.PickThree L304-306 (Random.Range shuffle)
+
+RESULT: Both observed behaviors confirmed by code trace — design gaps, not
+        random bugs.

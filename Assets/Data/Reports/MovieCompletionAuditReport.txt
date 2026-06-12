@@ -1,0 +1,193 @@
+FASE 6.4 — Movie Completion Audit Report
+=========================================
+Date: 2026-06-10
+Mode: READ-ONLY (no fixes applied)
+
+SUMMARY
+-------
+Movies CAN complete via ProductionRoutine → FinalizeProduction.
+Runtime save shows CompletedKeys=3, money/rep persisted — backend completion works.
+User-reported “no rewards / no discovery / no collection update” is caused by
+UI listeners NOT binding at startup, plus optional premiere/feedback gaps.
+Economy state updates in FinalizeProduction even when UI fails to refresh.
+
+FLOW TRACE
+----------
+Movie Start
+  MovieButtonUI.OnClick → ProductionBudgetPickerUI.Show → StudioManager.StartMovie()
+  File: Assets/Scripts/UI/MovieButtonUI.cs L93-99
+  File: Assets/Scripts/Managers/StudioManager.cs L495-541
+
+Movie Complete (timer)
+  ProductionRoutine() while elapsed < totalDuration → FinalizeProduction()
+  File: Assets/Scripts/Managers/StudioManager.cs L603-626
+
+Rewards (synchronous, before any event)
+  varietyMult applied → AddMoney(reward) → reputation += rep
+  → OnReputationChanged → RecalculateIncome → SL?.AddXP
+  File: Assets/Scripts/Managers/StudioManager.cs L637-647
+
+Collection Discovery (synchronous, before event)
+  MarkMovieCompleted(config) adds config.name to _completedMovieKeys
+  File: Assets/Scripts/Managers/StudioManager.cs L400-404, L658
+
+Contract Progress (direct call, NOT event-subscribed)
+  CS?.OnMovieCompleted(config, quality, duration, reward)
+  CS?.OnReputationChanged(reputation)
+  File: Assets/Scripts/Managers/StudioManager.cs L649-651
+
+Movie Complete EVENT (after state applied)
+  OnMovieCompleted?.Invoke(MovieCompletePayload)
+  File: Assets/Scripts/Managers/StudioManager.cs L660-669
+
+1. EVENT ON COMPLETION
+----------------------
+Event: StudioManager.OnMovieCompleted (Action<MovieCompletePayload>)
+Payload fields: movieName, moneyReward, repGain, xpGain, varietyBonusPercent,
+                config, isFirstDiscovery
+Invoked at: StudioManager.FinalizeProduction() L660
+Also triggered from: ResumeProductions() offline path L762
+
+2. LISTENERS REGISTERED
+-----------------------
+| Listener            | Registration                         | On fire does                          | Bound at runtime? |
+|---------------------|--------------------------------------|---------------------------------------|-------------------|
+| GameFeelUI          | GameHub.OnGameReady + Start fallback | PremiereSequenceController.TryPresent | YES (BOUND)       |
+| MovieTabUI          | GameHub.OnGameReady → Bind           | RebuildHistory + RebuildSlots         | via _bound guard  |
+| MovieCollectionUI   | GameHub.OnGameReady → Bind           | Refresh() rebuilds collection grid    | NO (NOT BOUND)    |
+| FtueController      | BindEvents                           | FTUE step on first movie              | if FTUE active    |
+| ContractSystem      | NOT subscribed — direct CS?. calls   | OnMovieCompleted method L118          | N/A (direct)      |
+| TopBarUI            | Lazy TrySubscribe in Update          | UpdateMoney / UpdateReputation        | lazy (works)      |
+| ContractsPanelUI    | OnGameReady → Bind                   | NOT on movie event — contract UI only | NO (NOT BOUND)    |
+
+3. REWARDS CALCULATED
+---------------------
+At StartMovie → CreateProductionState():
+  reward  = baseReward × quality × studioQuality (× budget rules)
+  repGain = baseRep × studioQuality × repMult
+  xp      = StudioLevelSystem.CalculateMovieXP
+  File: StudioManager.cs L555-597
+
+At FinalizeProduction():
+  varietyMult applied → AddMoney + reputation += + AddXP
+  File: StudioManager.cs L637-647
+
+ProductionBudgetRules: all budgets currently 1× (identity)
+  File: Assets/Scripts/Core/ProductionBudget.cs
+
+VERDICT: Calculation and application code IS connected and runs in FinalizeProduction.
+
+4. COLLECTION DISCOVERY
+-----------------------
+Registration: MarkMovieCompleted() in FinalizeProduction (before event)
+  Key = MovieConfig.name (asset filename, e.g. Action_Common_01)
+  File: StudioManager.cs L400-404
+
+Read path: MovieCollectionService.IsDiscovered(cfg, completedKeys)
+  File: Assets/Scripts/Core/MovieCollectionService.cs L42-50
+
+UI refresh: MovieCollectionUI.OnMovieCompleted → Refresh()
+  Builds via CollectionCatalogModel.Build(MovieCatalogRuntime.AllMovies, completed)
+  File: Assets/Scripts/UI/Hub/MovieCollectionUI.cs L59-84
+
+RUNTIME (Play Mode, fresh load):
+  CompletedKeys in save: 0-3 depending on save
+  MovieCollectionUI._studio: NOT BOUND
+  Manual Bind() invoke: BOUND immediately → Refresh works
+
+VERDICT: Discovery STATE is written in FinalizeProduction.
+          Discovery UI fails because MovieCollectionUI never binds _studio at startup.
+
+5. REPUTATION GAIN
+------------------
+Applied: reputation += rep in FinalizeProduction L643-644
+Event:   OnReputationChanged?.Invoke(reputation) L644
+Contract rep goals: CS?.OnReputationChanged(reputation) L651
+HUD:     TopBarUI.UpdateReputation via lazy Subscribe L231-238
+
+VERDICT: Reputation IS applied in code path.
+          Visible feedback depends on TopBar subscription (lazy, generally works)
+          and premiere overlay (GameFeelUI — bound OK).
+
+6. CONTRACT PROGRESS
+--------------------
+Path: Direct CS?.OnMovieCompleted() in FinalizeProduction (not event listener)
+Handler: ContractSystem.OnMovieCompleted() iterates _active contracts L118-157
+Requires: CS != null AND _active.Count > 0
+
+RUNTIME: ContractSystem ActiveCount = 3 (data OK)
+UI progress display: ContractsPanelUI NOT BOUND → panel empty (see 6.5 report)
+
+VERDICT: Contract DATA advances if CS wired and _active populated.
+          Contract UI does not reflect progress due to bind failure.
+
+ROOT CAUSE (exact)
+------------------
+PRIMARY — UI bind failure at startup (verified Play Mode):
+
+  ContractsPanelUI._contracts  = NOT BOUND after load
+  MovieCollectionUI._studio    = NOT BOUND after load
+  GameFeelUI._studio           = BOUND (has Start() fallback Bind)
+
+  Manual reflection call to Bind() on both panels succeeds immediately:
+    → ContractsPanelUI renders 3 cards
+    → MovieCollectionUI._studio binds to studio
+
+  Difference vs working GameFeelUI (GameFeelUI.cs L57-61):
+    GameFeelUI:  OnGameReady += Bind  AND  if (Instance != null) Bind() in Start()
+    MovieCollectionUI / ContractsPanelUI: OnGameReady ONLY, no Start() fallback
+
+  ContractsPanelUI poison pattern (ContractsPanelUI.cs L83-87):
+    GameHub.OnGameReady -= Bind;   // removes self permanently
+    _contracts = GameHub.Instance?.contracts;
+    if (_contracts == null) return; // never retries, never Rebuilds
+
+  ContractsPanelUI.OnEnable (L32-35): only Rebuild() if already bound — no Bind retry
+  MovieCollectionUI.OnEnable (L31-35): calls Bind() but only when activeInHierarchy
+    (parent StudioPanel_COLECCIÓN inactive until user opens sub-tab)
+
+  RESULT for user:
+    • Money/rep/state DO update in StudioManager (if FinalizeProduction runs)
+    • Collection grid does NOT refresh → “no discovery / no collection update”
+    • Contract panel empty → “no contract progress visible”
+    • Premiere MAY show (GameFeelUI bound) but user may miss subtle TopBar changes
+
+SECONDARY — Completion without FinalizeProduction (edge case):
+
+  StopAllCoroutines() in Initialize() L195 and ResumeProductions() L686
+  kills ProductionRoutine before timer reaches FinalizeProduction.
+  File: SaveSystem.cs L229 calls ResumeProductions on every load.
+  Symptom: production bar completes visually after reload glitch, zero rewards.
+
+TERTIARY — Premiere silent abort:
+
+  PremiereSequenceController.PresentNext() L77-81:
+    if (_overlay == null) { _queue.Clear(); return; }
+  Economy still applied; reward/discovery UX may not appear.
+
+WHAT DOES NOT FIRE / BREAKS
+-----------------------------
+| Step                  | State update | UI feedback     | Break point                          |
+|-----------------------|--------------|-----------------|--------------------------------------|
+| FinalizeProduction    | YES (code)   | depends         | coroutine killed (edge case)         |
+| AddMoney / rep        | YES (code)   | TopBar lazy OK  | —                                    |
+| MarkMovieCompleted    | YES (code)   | NO              | MovieCollectionUI bind failure       |
+| OnMovieCompleted evt  | YES (fires)  | partial         | Collection listener missing          |
+| CS?.OnMovieCompleted  | YES (code)   | NO              | ContractsPanelUI bind failure        |
+| Premiere TryPresent   | fires        | maybe           | overlay null clears queue            |
+
+FILES INSPECTED
+---------------
+Assets/Scripts/Managers/StudioManager.cs
+Assets/Scripts/UI/Hub/MovieCollectionUI.cs
+Assets/Scripts/UI/Hub/ContractsPanelUI.cs
+Assets/Scripts/UI/Animation/GameFeelUI.cs
+Assets/Scripts/UI/Premiere/PremiereSequenceController.cs
+Assets/Scripts/Core/Systems/ContractSystem.cs
+Assets/Scripts/Core/MovieCollectionService.cs
+Assets/Scripts/GameHub.cs
+
+STATUS: ROOT CAUSE IDENTIFIED — UI bind failure (not missing completion event)
+        Backend FinalizeProduction pipeline is intact.
+
+NOTE: No code changes applied (audit only).

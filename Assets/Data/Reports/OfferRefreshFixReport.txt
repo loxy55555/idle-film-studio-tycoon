@@ -1,0 +1,13 @@
+OFFER REFRESH FIX REPORT (Phase 8.2)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Root cause (Phase 8.1B) ---
+ProductionHudShell.Configure() only wired onClick in editor build.
+
+--- Fix ---
+WireRefreshButton() in Awake() + OnEnable()
+Flow: RefreshClicked → RefreshChoiceDialog → RefreshConfirmed
+  → ForceRegenerateAll(activeProductions) → OnOffersChanged → RefreshOfferDisplay()
+  → Save(RefreshOffers)

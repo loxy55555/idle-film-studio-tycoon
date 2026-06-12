@@ -1,0 +1,16 @@
+﻿CRITICAL REGRESSION REPORT (Phase 8.1)
+Generated: 2026-06-12 15:34:48
+
+Save persists               : PASS
+Load restores               : PASS
+Contracts selectable        : PASS
+Contracts show information  : PASS
+Offers refill instantly     : PASS
+No console errors (static)  : PASS
+
+OVERALL: PASS
+
+--- Regressions Fixed ---
+P0-1  ContractSaveEntry.isActiveContract — active contract saved/loaded correctly
+P0-2  ContractCardUI._buttonsWired guard removed — selectButton wired after factory
+P0-3  RefreshOfferDisplay passes activeProductions — no in-production movie re-offered

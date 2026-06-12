@@ -79,7 +79,7 @@ public static class CollectionDebugTools
 
         studio.LoadCompletedMovieKeys(keys.ToArray());
         CollectionDebugState.SetRevealAll(false);
-        GameHub.Instance?.save?.Save();
+        GameHub.Instance?.save?.Save("Debug");
         RefreshCollectionUi();
 
         Debug.Log($"[CollectionDebug] Unlock All Movies — {keys.Count} entries written to completedMovieKeys (saved).");
@@ -96,7 +96,7 @@ public static class CollectionDebugTools
 
         studio.LoadCompletedMovieKeys(System.Array.Empty<string>());
         CollectionDebugState.SetRevealAll(false);
-        GameHub.Instance?.save?.Save();
+        GameHub.Instance?.save?.Save("Debug");
         RefreshCollectionUi();
 
         Debug.Log("[CollectionDebug] Discovery progress reset (completedMovieKeys cleared, saved).");
@@ -111,6 +111,10 @@ public static class CollectionDebugTools
     static MovieConfig[] ResolveAllMovies()
     {
         var collectionUi = Object.FindAnyObjectByType<MovieCollectionUI>(FindObjectsInactive.Include);
+        var runtime = MovieCatalogRuntime.AllMovies;
+        if (runtime != null && runtime.Length > 0)
+            return runtime;
+
         if (collectionUi != null && collectionUi.allMovies != null && collectionUi.allMovies.Length > 0)
             return collectionUi.allMovies;
 

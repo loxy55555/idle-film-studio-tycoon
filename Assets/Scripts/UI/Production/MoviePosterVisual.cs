@@ -15,11 +15,7 @@ public static class MoviePosterVisual
         return null;
     }
 
-    public static MovieConfig[] ResolveCatalog()
-    {
-        var tab = Object.FindAnyObjectByType<MovieTabUI>(FindObjectsInactive.Include);
-        return tab != null ? tab.allMovies : null;
-    }
+    public static MovieConfig[] ResolveCatalog() => MovieCatalogRuntime.AllMovies;
 
     public static void Apply(Image posterImage, MovieConfig config)
     {

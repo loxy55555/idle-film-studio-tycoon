@@ -1,0 +1,96 @@
+FASE 6.9 — Action Collection Verification
+=========================================
+Date: 2026-06-10
+Mode: READ-ONLY (catalog + UI rules audit)
+
+SOURCE
+------
+Assets/Data/Movies/*.asset — genre field (MovieGenre.Action = 0)
+Rarity enum: Common=0, Rare=1, Epic=2, Legendary=3
+
+ACTION GENRE TOTALS (catalog data)
+----------------------------------
+  Total Action       : 44
+  Common             : 29
+  Rare               : 14
+  Epic               : 0
+  Legendary          : 1
+
+Note: 45 files use Action_* prefix; Action_Velocity_Kill has genre=9
+(Western) and is excluded from Action genre totals.
+
+EPIC ACTION MOVIES (rarity = Epic / 2)
+--------------------------------------
+  (none — zero Epic entries in Action genre)
+
+The audit request assumed 4 Epic in Action. The catalog contains
+0 Epic Action movies. There is nothing to list for Epic tier in Action.
+
+RARE ACTION MOVIES (rarity = Rare / 1) — 14 entries
+---------------------------------------------------
+  • Beyond The Frontier       (Action_Broken_Protocol)
+  • Black Horizon             (Action_Frontline_Ghost)
+  • Broken Siege              (Action_Iron_Descent)
+  • Crimson Border            (Action_Nightfall_Protocol)
+  • Dead Frequency            (Action_Steel_Horizon)
+  • Empire Of Ashes           (Action_Urban_Siege)
+  • Ghost Battalion           (Action_Warpath)
+  • Kingdom Of Dust           (Action_Zero_Hour_Convoy)
+  • Night Convoy              (Action_Aftershock)
+  • Operation Coldfire        (Action_Blackout_Run)
+  • Silent Extraction         (Action_Borderline)
+  • Steel Rain                (Action_Steel_Rain)
+  • The Last Dominion         (Action_Breacher_Unit)
+  • Zero Contact              (Action_Collateral_Run)
+
+LEGENDARY ACTION (rarity = Legendary / 3) — 1 entry
+---------------------------------------------------
+  • Iron Wolves               (Action_Legendary)
+
+COLLECTION UI — BORDER COLOR RULES
+----------------------------------
+File: Assets/Scripts/UI/Collection/CollectionMovieCardView.cs L45-48
+File: Assets/Scripts/UI/Production/MovieRarityVisual.cs
+
+  Common    → dark blue frame   (CommonBlue)
+  Rare      → purple frame      (RarePurple)     ← NOT yellow
+  Epic      → yellow/gold frame (EpicGold)
+  Legendary → bright/dim gold   (CollectionLegendaryVisual)
+
+COMPARISON: CATALOG vs COLLECTION CARDS
+---------------------------------------
+Collection builds from MovieCatalogRuntime.AllMovies via
+CollectionCatalogModel.Build() — one card per Action movie (44).
+
+Expected frames in Action accordion:
+  • Common section    : 29 cards — blue borders
+  • Rare section      : 14 cards — purple borders
+  • Epic section      : 0 cards  — (section omitted if empty)
+  • Legendary section : 1 card   — gold border (Iron Wolves)
+
+If UI groups by CollectionGenreOrder.RarityOrder, empty Epic tier
+may still show header depending on section builder — verify in-game.
+
+VERDICT: MULTIPLE YELLOW BORDERS IN ACTION
+------------------------------------------
+  Answer: A) CORRECT for catalog — with clarification.
+
+  • Action has 0 Epic → 0 yellow EpicGold frames from Epic tier.
+  • Action has 1 Legendary → 1 gold frame expected.
+  • Action has 14 Rare → 14 PURPLE frames (not yellow).
+
+  If the player sees ~4 yellow/gold frames in Action:
+    → NOT from "4 Epic" (Epic count is 0).
+    → Possible misread of purple Rare as yellow, OR
+    → B) ERROR if Rare cards render with EpicGold (rarity bug) — not
+      observed in code; frames bind strictly to cfg.rarity.
+
+  If the player sees multiple yellow in another genre (e.g. Documentary):
+    → A) CORRECT — Documentary has 4 Epic + 1 Legendary in catalog.
+
+  Reference: FASE 6.7 CollectionBorderAudit — same rarity tier shares
+  identical frame color by design.
+
+STATUS: PASS (catalog verified; 0 Epic in Action)
+
+NOT MODIFIED: MovieConfig, catalog, rarities, progression

@@ -1,0 +1,13 @@
+﻿FASE 7.3 — Epic/Legendary Visual Fix
+Generated: 2026-06-12
+STATUS: PASS
+
+FIX
+  Common  → blue   (unchanged)
+  Rare    → purple (unchanged)
+  Epic    → orange (MovieRarityVisual.EpicOrange)
+  Legendary → gold (MovieRarityVisual.LegendaryGold + CollectionLegendaryVisual)
+
+FILES
+  Assets/Scripts/UI/Production/MovieRarityVisual.cs
+  Assets/Scripts/UI/Collection/CollectionLegendaryVisual.cs

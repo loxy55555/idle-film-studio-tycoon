@@ -1,0 +1,17 @@
+UI EVENT STABILIZATION REPORT (Phase 8.2)
+Generated: 2026-06-12
+
+OVERALL: PASS
+
+--- Offer refresh triggers (event-driven) ---
+MovieOfferState.OnOffersChanged fires on:
+  • NotifyProductionStarted (consume + refill → D B C)
+  • OnMovieCompleted (prune + refill)
+  • ForceRegenerateAll (reroll)
+
+--- Removed per-frame path ---
+MovieTabUI no longer subscribes to OnProductionsChanged
+RefreshProductionUI still updates production widget only
+
+--- Production visual (A B C → D B C) ---
+StartMovie → NotifyProductionStarted → OnOffersChanged → single UI rebuild

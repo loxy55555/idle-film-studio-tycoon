@@ -76,19 +76,14 @@ public class MovieGridUI : MonoBehaviour
         for (int i = content.childCount - 1; i >= 0; i--)
             Destroy(content.GetChild(i).gameObject);
 
-        // Fallback: try Resources if no movies were injected
-        MovieConfig[] movies = allMovies;
+        MovieConfig[] movies = MovieCatalogRuntime.Resolve(allMovies);
         if (movies == null || movies.Length == 0)
         {
-            movies = Resources.LoadAll<MovieConfig>("Movies");
-            if (movies == null || movies.Length == 0)
-            {
-                var lbl = MakeText(content,
-                    "No hay películas disponibles.\nEjecuta: IdleFilm > Generate Movie Database",
-                    22, TEXT_SEC);
-                lbl.textWrappingMode = TMPro.TextWrappingModes.Normal;
-                return;
-            }
+            var lbl = MakeText(content,
+                "No hay películas disponibles.\nEjecuta: IdleFilm → Catalog → Rebuild Scene Movie References",
+                22, TEXT_SEC);
+            lbl.textWrappingMode = TMPro.TextWrappingModes.Normal;
+            return;
         }
 
         // Sort by availability bucket then cost
