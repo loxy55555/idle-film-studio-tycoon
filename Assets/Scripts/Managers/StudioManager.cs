@@ -26,12 +26,14 @@ public struct MovieCompletePayload
 public struct ProductionSlotSnapshot
 {
     public bool      isActive;
+    public string    movieKey;
     public string    movieName;
     public MovieGenre genre;
     public float     progress01;
     public float     timeLeftSeconds;
     public long      rewardMoney;
     public float     rewardRep;
+    public bool      awaitingDiscovery;
 }
 
 
@@ -71,6 +73,10 @@ class ActiveProduction
     public float pendingRep;
 
     public float pendingXp;
+
+    public float varietyBonusPercent;
+
+    public bool awaitingDiscovery;
 
 }
 
@@ -470,12 +476,14 @@ public class StudioManager : MonoBehaviour
             list.Add(new ProductionSlotSnapshot
             {
                 isActive         = true,
+                movieKey         = p.config.name,
                 movieName        = p.config.movieName,
                 genre            = p.config.genre,
-                progress01       = Mathf.Clamp01(p.elapsed / total),
-                timeLeftSeconds  = Mathf.Max(0f, total - p.elapsed),
+                progress01       = p.awaitingDiscovery ? 1f : Mathf.Clamp01(p.elapsed / total),
+                timeLeftSeconds  = p.awaitingDiscovery ? 0f : Mathf.Max(0f, total - p.elapsed),
                 rewardMoney      = p.pendingReward,
                 rewardRep        = p.pendingRep,
+                awaitingDiscovery = p.awaitingDiscovery,
             });
         }
         return list;
@@ -648,52 +656,97 @@ public class StudioManager : MonoBehaviour
     void FinalizeProduction(ActiveProduction production, float durationUsed)
     {
         if (production == null || production.config == null) return;
+        if (production.awaitingDiscovery) return;
 
         EnsureMovieCatalog();
-
         float varietyMult = CalculateVarietyMultiplier(production.config, out float varietyBonusPct);
-        long  reward = (long)(production.pendingReward * varietyMult);
-        float rep    = production.pendingRep * varietyMult;
+        production.pendingReward = (long)(production.pendingReward * varietyMult);
+        production.pendingRep *= varietyMult;
+        production.varietyBonusPercent = varietyBonusPct;
+        production.elapsed = production.totalDuration;
+        production.awaitingDiscovery = true;
+
+        TrackRecentProduction(production.config);
+        UpdateProductionFlags();
+        RefreshProductionUI();
+        SetStatus(Loc.Get(LocKeys.ProdStatusComplete));
+        GameHub.Instance?.save?.Save("ProductionAwaitingDiscovery");
+    }
+
+    ActiveProduction FindAwaitingProduction(string movieKey)
+    {
+        if (string.IsNullOrEmpty(movieKey)) return null;
+        foreach (var p in _productions)
+        {
+            if (p.awaitingDiscovery && p.config != null && p.config.name == movieKey)
+                return p;
+        }
+        return null;
+    }
+
+    public bool TryPrepareDiscovery(string movieKey, out MovieCompletePayload payload)
+    {
+        payload = default;
+        var p = FindAwaitingProduction(movieKey);
+        if (p == null || p.config == null) return false;
+
+        payload = new MovieCompletePayload
+        {
+            movieName           = p.config.movieName,
+            moneyReward         = p.pendingReward,
+            repGain             = p.pendingRep,
+            xpGain              = p.pendingXp,
+            varietyBonusPercent = p.varietyBonusPercent,
+            config              = p.config,
+            isFirstDiscovery    = !IsMovieCompleted(p.config),
+        };
+        return true;
+    }
+
+    public void FinalizeDiscovery(string movieKey)
+    {
+        var p = FindAwaitingProduction(movieKey);
+        if (p == null || p.config == null) return;
+
+        long  reward          = p.pendingReward;
+        float rep             = p.pendingRep;
+        float xp              = p.pendingXp;
+        float varietyBonusPct = p.varietyBonusPercent;
+        float durationUsed    = p.totalDuration;
 
         AddMoney(reward);
-
         reputation += rep;
         OnReputationChanged?.Invoke(reputation);
         RecalculateIncome();
-
-        SL?.AddXP(production.pendingXp);
+        SL?.AddXP(xp);
 
         float studioQuality = D != null ? D.CalculateQuality() : 1f;
-        CS?.OnMovieCompleted(production.config, studioQuality, durationUsed, reward);
+        CS?.OnMovieCompleted(p.config, studioQuality, durationUsed, reward);
         CS?.OnReputationChanged(reputation);
 
-        _productions.Remove(production);
+        _productions.Remove(p);
         currentMovies = _productions.Count;
         if (U != null) maxMovieSlots = U.GetMaxMovieSlots();
 
-        TrackRecentProduction(production.config);
-        bool isFirstDiscovery = MarkMovieCompleted(production.config);
+        bool isFirstDiscovery = MarkMovieCompleted(p.config);
 
         OnMovieCompleted?.Invoke(new MovieCompletePayload
         {
-            movieName            = production.config.movieName,
-            moneyReward          = reward,
-            repGain              = rep,
-            xpGain               = production.pendingXp,
-            varietyBonusPercent  = varietyBonusPct,
-            config               = production.config,
-            isFirstDiscovery     = isFirstDiscovery,
+            movieName           = p.config.movieName,
+            moneyReward         = reward,
+            repGain             = rep,
+            xpGain              = xp,
+            varietyBonusPercent = varietyBonusPct,
+            config              = p.config,
+            isFirstDiscovery    = isFirstDiscovery,
         });
 
-        RecordHistory(production.config.movieName, reward, rep, production.pendingXp);
-
+        RecordHistory(p.config.movieName, reward, rep, xp);
         UpdateProductionFlags();
         RefreshProductionUI();
-
-        SetStatus(string.Format("{0} completada! +${1:N0}  +{2:0.0} REP",
-            production.config.movieName, reward, rep));
-
-        GameHub.Instance?.save?.Save("MovieCompleted");
+        SetStatus(string.Format("{0} descubierta! +${1:N0}  +{2:0.0} REP",
+            p.config.movieName, reward, rep));
+        GameHub.Instance?.save?.Save("MovieDiscovered");
     }
 
 
@@ -778,7 +831,37 @@ public class StudioManager : MonoBehaviour
 
             {
 
+                production.elapsed = total;
+
+                production.totalDuration = total;
+
+                if (entry.awaitingDiscovery)
+
+                {
+
+                    production.awaitingDiscovery = true;
+
+                    production.pendingReward = entry.pendingReward;
+
+                    production.pendingRep = entry.pendingRep;
+
+                    production.pendingXp = entry.pendingXp;
+
+                    _productions.Add(production);
+
+                    currentMovies++;
+
+                    continue;
+
+                }
+
+
+
                 FinalizeProduction(production, total);
+
+                _productions.Add(production);
+
+                currentMovies++;
 
                 continue;
 
@@ -839,6 +922,8 @@ public class StudioManager : MonoBehaviour
                 pendingRep      = p.pendingRep,
 
                 pendingXp       = p.pendingXp,
+
+                awaitingDiscovery = p.awaitingDiscovery,
 
             });
 

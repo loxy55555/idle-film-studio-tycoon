@@ -130,7 +130,7 @@ public class DepartmentMiniCardUI : MonoBehaviour
                    ?? upgradeButton.gameObject.AddComponent<UpgradeBuyButtonGuard>();
         guard.Bind(() => _personnelUpgrade != null ? _personnelUpgrade.id : string.Empty);
 
-        UpgradeUiRaycastPolicy.ApplyCard(transform, upgradeButton);
+        UpgradeUiRaycastPolicy.ApplyDepartmentCard(transform, upgradeButton);
     }
 
     void OnUpgradeClicked()
@@ -193,18 +193,14 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
             if (effectText != null)
             {
-                var category = DepartmentLoc.GetCategoryLabel(data.category);
-                effectText.text = Loc.Format(LocKeys.DeptBonusSummary,
-                    category,
-                    data.effectPerLevel.ToString("0.##"),
-                    (data.effectPerLevel * level).ToString("0.##"));
+                effectText.text = FormatBonusLine(data.category, data.effectPerLevel);
                 RuntimeTmpText.ApplyDefaultFont(effectText);
             }
         }
 
         UpdateProgressBar(level, maxLevel, locked);
         UpdateUpgradeButton(locked, level, maxLevel);
-        UpgradeUiRaycastPolicy.ApplyCard(transform, upgradeButton);
+        UpgradeUiRaycastPolicy.ApplyDepartmentCard(transform, upgradeButton);
 
         if (_canvasGroup != null)
         {
@@ -284,6 +280,17 @@ public class DepartmentMiniCardUI : MonoBehaviour
     }
 
     bool IsLocked() => _city != null && !_city.IsDepartmentUnlocked(deptType);
+
+    static string FormatBonusLine(string category, float effectPerLevel)
+    {
+        float pct = effectPerLevel * 100f;
+        return category switch
+        {
+            "Reducción" => $"-{pct:0.#}% costes",
+            "Velocidad" => $"+{pct:0.#}% velocidad",
+            _           => $"+{pct:0.#}% ingresos",
+        };
+    }
 
     int GetLevel() => deptType switch
     {

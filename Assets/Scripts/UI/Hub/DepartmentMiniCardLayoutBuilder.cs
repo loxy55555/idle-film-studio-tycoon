@@ -2,12 +2,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Builds premium department mini-card layout (Phase 8.6A: compact structured cards).</summary>
+/// <summary>Builds premium department list cards — Phase 10.0 full-width rows.</summary>
 public static class DepartmentMiniCardLayoutBuilder
 {
     public const string LayoutMarkerName = "DeptCardLayout_v3";
-    public const float CardWidth  = 172f;
-    public const float CardHeight = 140f; // Phase ESTUDIO-TUNING: compact card — recovers vertical space for the stage
+    public const float CardHeight = HudLayoutConstants.StudioDeptCardHeight;
 
     static readonly Color TextPrimary = Color.white;
     static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
@@ -48,13 +47,17 @@ public static class DepartmentMiniCardLayoutBuilder
         var result = new WireResult();
 
         var cardLE = card.GetComponent<LayoutElement>() ?? card.gameObject.AddComponent<LayoutElement>();
-        cardLE.preferredWidth = CardWidth;
         cardLE.preferredHeight = CardHeight;
         cardLE.minHeight = CardHeight;
+        cardLE.flexibleWidth = 1f;
+        cardLE.preferredWidth = -1f;
 
         NormalizeParentRowHeight(card);
 
         HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
+
+        // Left accent strip — 5 px colored bar using the badge/dept color (Phase 9.2)
+        ApplyAccentStrip(card, badgeColor);
 
         var marker = new GameObject(LayoutMarkerName, typeof(RectTransform));
         marker.transform.SetParent(card, false);
@@ -65,24 +68,25 @@ public static class DepartmentMiniCardLayoutBuilder
         result.themeBackdrop = themeRoot.GetComponent<Image>();
         result.themeBackdrop.raycastTarget = false;
 
-        var motif = RuntimeTmpText.Create(themeRoot.transform, "•", 44f, Color.white,
+        var motif = RuntimeTmpText.Create(themeRoot.transform, "•", 28f, Color.white,
             FontStyles.Normal, TextAlignmentOptions.Center, "ThemeMotif");
         Stretch(motif.rectTransform);
         motif.raycastTarget = false;
+        motif.alpha = 0.35f;
 
+        // Content VLG — left padding 13 (5 strip + 8 gap) to avoid overlapping the accent strip
         var content = CreatePanel(card, "Content", Color.clear);
         Stretch(content);
         var vlg = content.gameObject.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(10, 10, 10, 10);
-        vlg.spacing = 6;
-        vlg.childAlignment = TextAnchor.UpperCenter;
+        vlg.padding = new RectOffset(14, 10, 8, 8);
+        vlg.spacing = 4;
+        vlg.childAlignment = TextAnchor.UpperLeft;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        // Header row: badge + name side by side (was stacked — saves ~50px)
         var headerRow = CreatePanel(content.transform, "HeaderRow", Color.clear);
-        LE(headerRow, 36f);
+        LE(headerRow, 26f);
         var hdrHLG = headerRow.gameObject.AddComponent<HorizontalLayoutGroup>();
         hdrHLG.spacing = 8;
         hdrHLG.childAlignment = TextAnchor.MiddleLeft;
@@ -91,66 +95,47 @@ public static class DepartmentMiniCardLayoutBuilder
         hdrHLG.childForceExpandHeight = false;
 
         var badge = CreatePanel(headerRow.transform, "Badge", badgeColor);
-        LE(badge, 32f, 32f);
+        LE(badge, 22f, 22f);
         result.categoryBadge = badge.GetComponent<Image>();
 
-        result.deptNameText = CreateLabel(headerRow.transform, "DeptName", string.Empty, 13f, TextPrimary,
-            FontStyles.Bold, 36f);
+        result.deptNameText = CreateLabel(headerRow.transform, "DeptName", string.Empty, 17f, TextPrimary,
+            FontStyles.Bold, 26f);
         result.deptNameText.alignment = TextAlignmentOptions.MidlineLeft;
-        result.deptNameText.textWrappingMode = TextWrappingModes.Normal;
-        result.deptNameText.enableAutoSizing = true;
-        result.deptNameText.fontSizeMin = 10f;
-        result.deptNameText.fontSizeMax = 14f;
-        var nameLE = result.deptNameText.GetComponent<LayoutElement>();
-        nameLE.flexibleWidth = 1f;
+        result.deptNameText.textWrappingMode = TextWrappingModes.NoWrap;
+        result.deptNameText.overflowMode = TextOverflowModes.Ellipsis;
+        result.deptNameText.gameObject.GetComponent<LayoutElement>().flexibleWidth = 1f;
 
-        result.levelText = CreateLabel(content.transform, "LevelText", string.Empty, 17f, AccentGreen,
-            FontStyles.Bold, 22f);
+        result.levelText = CreateLabel(content.transform, "LevelText", string.Empty, 16f, AccentGreen,
+            FontStyles.Bold, 20f);
         result.levelText.alignment = TextAlignmentOptions.MidlineLeft;
-        result.levelText.enableAutoSizing = true;
-        result.levelText.fontSizeMin = 13f;
-        result.levelText.fontSizeMax = 18f;
+
+        result.effectText = CreateLabel(content.transform, "EffectText", string.Empty, 12f, AccentBlue,
+            FontStyles.Normal, 18f);
+        result.effectText.alignment = TextAlignmentOptions.MidlineLeft;
+        result.effectText.textWrappingMode = TextWrappingModes.Normal;
+        result.effectText.maxVisibleLines = 2;
 
         result.levelProgressBar = CreateProgressBar(content.transform, "LevelProgressBar");
         LE(result.levelProgressBar.GetComponent<RectTransform>(), 8f);
 
-        result.effectText = CreateLabel(content.transform, "EffectText", string.Empty, 11f, AccentBlue,
-            FontStyles.Normal, 32f);
-        result.effectText.alignment = TextAlignmentOptions.TopLeft;
-        result.effectText.textWrappingMode = TextWrappingModes.Normal;
-        result.effectText.lineSpacing = -2f;
-        result.effectText.enableAutoSizing = true;
-        result.effectText.fontSizeMin = 9f;
-        result.effectText.fontSizeMax = 12f;
-
-        var spacer = CreatePanel(content.transform, "Spacer", Color.clear);
-        LE(spacer, 0f, flexibleHeight: 1f);
-
         var btnGo = new GameObject("UpgradeBtn", typeof(RectTransform), typeof(Image), typeof(Button), typeof(VerticalLayoutGroup));
         btnGo.transform.SetParent(content.transform, false);
-        LE(btnGo.GetComponent<RectTransform>(), 46f);
+        LE(btnGo.GetComponent<RectTransform>(), 34f);
         HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<UIButtonScale>();
         result.upgradeButton = btnGo.GetComponent<Button>();
 
         var btnVLG = btnGo.GetComponent<VerticalLayoutGroup>();
-        btnVLG.padding = new RectOffset(6, 6, 4, 4);
+        btnVLG.padding = new RectOffset(4, 4, 2, 2);
         btnVLG.spacing = 0;
         btnVLG.childAlignment = TextAnchor.MiddleCenter;
         btnVLG.childControlWidth = btnVLG.childControlHeight = true;
         btnVLG.childForceExpandWidth = btnVLG.childForceExpandHeight = true;
 
-        result.upgradeLabelText = CreateLabel(btnGo.transform, "UpgradeLabel", string.Empty, 13f, TextPrimary,
+        result.upgradeLabelText = CreateLabel(btnGo.transform, "UpgradeLabel", string.Empty, 12f, TextPrimary,
             FontStyles.Bold, 16f);
-        result.upgradeLabelText.enableAutoSizing = true;
-        result.upgradeLabelText.fontSizeMin = 10f;
-        result.upgradeLabelText.fontSizeMax = 14f;
-
-        result.upgradeCostText = CreateLabel(btnGo.transform, "UpgradeCost", string.Empty, 13f, TextPrimary,
-            FontStyles.Bold, 16f);
-        result.upgradeCostText.enableAutoSizing = true;
-        result.upgradeCostText.fontSizeMin = 10f;
-        result.upgradeCostText.fontSizeMax = 14f;
+        result.upgradeCostText = CreateLabel(btnGo.transform, "UpgradeCost", string.Empty, 11f, TextPrimary,
+            FontStyles.Bold, 14f);
 
         var themeVisual = card.gameObject.GetComponent<DepartmentThemeVisual>();
         if (themeVisual == null)
@@ -162,10 +147,41 @@ public static class DepartmentMiniCardLayoutBuilder
     }
 
     /// <summary>
+    /// Adds or updates a 5 px colored left accent strip to an existing (baked) card.
+    /// Called from the bootstrap patch so baked cards also receive the visual treatment.
+    /// </summary>
+    public static void ApplyAccentStrip(RectTransform card, Color color)
+    {
+        if (card == null) return;
+        const string StripName = "AccentStrip";
+        var existing = card.Find(StripName) as RectTransform;
+        if (existing != null)
+        {
+            var existImg = existing.GetComponent<Image>();
+            if (existImg != null) existImg.color = color;
+            return;
+        }
+
+        var strip = new GameObject(StripName, typeof(RectTransform), typeof(Image));
+        strip.transform.SetParent(card, false);
+        strip.transform.SetAsLastSibling();
+
+        var rt = strip.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = new Vector2(0f, 1f);
+        rt.pivot     = new Vector2(0f, 0.5f);
+        rt.sizeDelta = new Vector2(5f, 0f);
+        rt.anchoredPosition = Vector2.zero;
+
+        strip.GetComponent<Image>().color = color;
+        strip.GetComponent<Image>().raycastTarget = false;
+    }
+
+    /// <summary>
     /// Baked scenes carry rows sized for the old taller cards — shrink the row so the
     /// freed space goes back to the decorative stage (Phase 8.6A).
     /// </summary>
-    static void NormalizeParentRowHeight(RectTransform card)
+    public static void NormalizeParentRowHeight(RectTransform card)
     {
         var parent = card.parent as RectTransform;
         if (parent == null) return;
@@ -180,7 +196,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
     public static WireResult WireExisting(Transform card)
     {
-        return new WireResult
+        var result = new WireResult
         {
             categoryBadge = card.Find("Content/HeaderRow/Badge")?.GetComponent<Image>(),
             deptNameText = card.Find("Content/HeaderRow/DeptName")?.GetComponent<TextMeshProUGUI>(),
@@ -193,6 +209,24 @@ public static class DepartmentMiniCardLayoutBuilder
             themeBackdrop = card.Find("ThemeBackdrop")?.GetComponent<Image>(),
             themeVisual = card.GetComponent<DepartmentThemeVisual>(),
         };
+
+        NormalizeParentRowHeight(card as RectTransform);
+        ApplyCompactSizing(card as RectTransform);
+        return result;
+    }
+
+    static void ApplyCompactSizing(RectTransform card)
+    {
+        if (card == null) return;
+
+        var cardLE = card.GetComponent<LayoutElement>();
+        if (cardLE != null)
+        {
+            cardLE.preferredHeight = CardHeight;
+            cardLE.minHeight = CardHeight;
+            cardLE.flexibleWidth = 1f;
+            cardLE.preferredWidth = -1f;
+        }
     }
 
     static Slider CreateProgressBar(Transform parent, string name)

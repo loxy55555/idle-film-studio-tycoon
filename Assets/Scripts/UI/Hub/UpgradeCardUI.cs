@@ -108,7 +108,7 @@ public class UpgradeCardUI : MonoBehaviour
 
     void ApplyInteractionPolicy()
     {
-        UpgradeUiRaycastPolicy.ApplyCard(transform, buyButton);
+        UpgradeUiRaycastPolicy.ApplyDepartmentCard(transform, buyButton);
         UpgradeUiRaycastPolicy.EnsureCardHeight(
             GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>(),
             CardLayoutHeight);

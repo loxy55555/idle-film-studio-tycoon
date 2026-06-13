@@ -64,6 +64,7 @@ public class TopBarUI : MonoBehaviour
         if (GameHub.Instance != null) BindDiamonds();
         if (GameHub.Instance != null) BindCity();
         TrySubscribe();
+        PatchSettingsIcon();
     }
 
     private void OnDestroy()
@@ -308,19 +309,45 @@ public class TopBarUI : MonoBehaviour
 
     public RectTransform GetOscarRect() => _oscarRT;
 
-    /// <summary>Phase 8.5C — patches the top-bar settings button to show the ⚙ icon.</summary>
+    /// <summary>Phase 10.1 — settings button pinned to top-right of the bar.</summary>
     public void PatchSettingsIcon()
     {
-        // Try the serialized settings button or find by name
-        foreach (var btn in GetComponentsInChildren<UnityEngine.UI.Button>(true))
+        var bar = transform as RectTransform;
+        if (bar == null) return;
+
+        Button settingsBtn = null;
+        foreach (var btn in GetComponentsInChildren<Button>(true))
         {
             var btnName = btn.gameObject.name.ToUpperInvariant();
             if (btnName.Contains("SETTING") || btnName.Contains("MENU") || btnName.Contains("HAMB") || btnName == "SETTINGSBTN")
             {
-                var tmp = btn.GetComponentInChildren<TextMeshProUGUI>(true);
-                if (tmp != null) tmp.text = "⚙";
+                settingsBtn = btn;
                 break;
             }
+        }
+
+        if (settingsBtn == null) return;
+
+        var btnRT = settingsBtn.transform as RectTransform;
+        btnRT.SetAsLastSibling();
+
+        var le = btnRT.GetComponent<LayoutElement>() ?? btnRT.gameObject.AddComponent<LayoutElement>();
+        le.ignoreLayout = true;
+
+        const float size = 104f;
+        const float margin = 12f;
+        btnRT.anchorMin = new Vector2(1f, 1f);
+        btnRT.anchorMax = new Vector2(1f, 1f);
+        btnRT.pivot     = new Vector2(1f, 1f);
+        btnRT.sizeDelta = new Vector2(size, size);
+        btnRT.anchoredPosition = new Vector2(-margin, -margin);
+
+        var tmp = settingsBtn.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (tmp != null)
+        {
+            tmp.text = "⚙";
+            tmp.fontSize = 40f;
+            tmp.alignment = TextAlignmentOptions.Center;
         }
     }
 }

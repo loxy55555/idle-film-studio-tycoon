@@ -4,48 +4,42 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Premiere Night overlay — poster, rewards, discovery (Phase 8.5).</summary>
+/// <summary>Premiere overlay — fixed layout, player-triggered discovery (Phase 10.3).</summary>
 public class PremiereOverlayView : MonoBehaviour
 {
-    static readonly Color OverlayDim    = new Color(0f, 0f, 0f, 0.78f);
-    static readonly Color CardBg        = new Color(0.08f, 0.08f, 0.16f, 0.98f);
+    const string LayoutMarker = "PremiereLayout_v10_3";
+
+    static readonly Color OverlayDim    = new Color(0f, 0f, 0f, 0.82f);
+    static readonly Color CardBg        = new Color(0.07f, 0.08f, 0.15f, 0.98f);
     static readonly Color TextPrimary   = Color.white;
     static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
     static readonly Color MoneyGreen    = new Color(0.18f, 0.80f, 0.44f);
     static readonly Color RepGold       = new Color(0.95f, 0.77f, 0.06f);
-    static readonly Color BarBg         = new Color(0.09f, 0.09f, 0.18f);
+    static readonly Color PosterBg      = new Color(0.09f, 0.09f, 0.18f);
 
     CanvasGroup _overlayGroup;
     CanvasGroup _cardGroup;
     CanvasGroup _posterGroup;
     CanvasGroup _headlineGroup;
-    CanvasGroup _moneyGroup;
-    CanvasGroup _repGroup;
-    CanvasGroup _discoveryGroup;
+    CanvasGroup _titleGroup;
+    CanvasGroup _rewardsGroup;
+    CanvasGroup _extrasGroup;
     CanvasGroup _continueGroup;
 
     RectTransform _card;
     RectTransform _posterWrap;
-    RectTransform _moneyLine;
-    RectTransform _repLine;
-    RectTransform _discoverySection;
     Image         _posterImage;
-    Image         _discoveryPoster;
     Image         _rarityFrame;
+    TextMeshProUGUI _headlineText;
     TextMeshProUGUI _titleText;
     TextMeshProUGUI _genreText;
     TextMeshProUGUI _rarityText;
-    TextMeshProUGUI _headlineText;
     TextMeshProUGUI _moneyText;
     TextMeshProUGUI _repText;
-    TextMeshProUGUI _discoveryTitleText;
-    TextMeshProUGUI _discoveryNameText;
+    TextMeshProUGUI _xpText;
+    TextMeshProUGUI _extrasText;
     Button        _continueButton;
     Button        _backdropButton;
-
-    RectTransform _premiereSection;
-    RectTransform _rewardsSection;
-    RectTransform _futureRewardsHook;
 
     Sequence _activeSequence;
     Action   _onClosed;
@@ -58,7 +52,13 @@ public class PremiereOverlayView : MonoBehaviour
         if (hooks == null) return null;
 
         var existing = hooks.transform.Find("PremiereOverlay");
-        if (existing != null) return existing.GetComponent<PremiereOverlayView>();
+        if (existing != null)
+        {
+            if (existing.Find(LayoutMarker) != null)
+                return existing.GetComponent<PremiereOverlayView>();
+            if (Application.isPlaying) Destroy(existing.gameObject);
+            else DestroyImmediate(existing.gameObject);
+        }
 
         var go = new GameObject("PremiereOverlay", typeof(RectTransform), typeof(CanvasGroup), typeof(PremiereOverlayView));
         go.transform.SetParent(hooks.transform, false);
@@ -70,14 +70,17 @@ public class PremiereOverlayView : MonoBehaviour
         go.AddComponent<GraphicRaycaster>();
 
         var view = go.GetComponent<PremiereOverlayView>();
-        view.Build(hooks);
+        view.Build();
         go.SetActive(false);
         return view;
     }
 
-    void Build(ProductionPremiereHooks hooks)
+    void Build()
     {
         _overlayGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+
+        var marker = new GameObject(LayoutMarker, typeof(RectTransform));
+        marker.transform.SetParent(transform, false);
 
         var dim = CreatePanel(transform, "Backdrop", OverlayDim);
         Stretch(dim);
@@ -88,95 +91,86 @@ public class PremiereOverlayView : MonoBehaviour
         _card = CreatePanel(transform, "Card", CardBg);
         var cardRT = _card;
         cardRT.anchorMin = cardRT.anchorMax = new Vector2(0.5f, 0.5f);
-        cardRT.sizeDelta = new Vector2(340f, 0f);
+        cardRT.pivot = new Vector2(0.5f, 0.5f);
+        cardRT.sizeDelta = new Vector2(400f, 620f);
         cardRT.anchoredPosition = Vector2.zero;
         HudSkinProvider.ApplyPanel(_card.GetComponent<Image>(), HudPanelVariant.Card);
         _cardGroup = _card.gameObject.AddComponent<CanvasGroup>();
-        _card.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-        var vlg = _card.gameObject.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(20, 20, 20, 20);
-        vlg.spacing = 10;
-        vlg.childAlignment = TextAnchor.UpperCenter;
-        vlg.childControlWidth = vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true;
-        vlg.childForceExpandHeight = false;
+        _headlineText = CreateLabel(_card, "Headline", Loc.Get(LocKeys.PremiereHeadline), 22f, RepGold,
+            FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(340f, 28f));
+        _headlineGroup = _headlineText.gameObject.AddComponent<CanvasGroup>();
 
-        _premiereSection = CreateSection(_card, "PremiereSection", hooks.premiereRoot);
-        _posterWrap = CreatePanel(_premiereSection, "PosterWrap", BarBg);
-        LE(_posterWrap, 140f);
+        _posterWrap = CreatePanel(_card, "PosterWrap", PosterBg);
+        var posterRT = _posterWrap;
+        posterRT.anchorMin = posterRT.anchorMax = new Vector2(0.5f, 1f);
+        posterRT.pivot = new Vector2(0.5f, 1f);
+        posterRT.anchoredPosition = new Vector2(0f, -68f);
+        posterRT.sizeDelta = new Vector2(320f, 240f);
         _posterGroup = _posterWrap.gameObject.AddComponent<CanvasGroup>();
         _rarityFrame = CreatePanel(_posterWrap, "RarityFrame", Color.clear).GetComponent<Image>();
         Stretch(_rarityFrame.rectTransform);
         _posterImage = CreatePanel(_posterWrap, "Poster", Color.clear).GetComponent<Image>();
-        var posterRT = _posterImage.rectTransform;
-        posterRT.anchorMin = new Vector2(0.05f, 0.05f);
-        posterRT.anchorMax = new Vector2(0.95f, 0.95f);
-        posterRT.offsetMin = posterRT.offsetMax = Vector2.zero;
+        Inset(_posterImage.rectTransform, 0.05f);
 
-        _titleText = CreateLabel(_premiereSection, "Title", string.Empty, 18f, TextPrimary, FontStyles.Bold, 24f);
+        _titleText = CreateLabel(_card, "Title", string.Empty, 20f, TextPrimary,
+            FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -322f), new Vector2(340f, 30f));
         _titleText.enableAutoSizing = true;
-        _titleText.fontSizeMin = 14f;
-        _titleText.fontSizeMax = 20f;
+        _titleText.fontSizeMin = 16f;
+        _titleText.fontSizeMax = 22f;
+        _titleGroup = _titleText.gameObject.AddComponent<CanvasGroup>();
 
-        var metaRow = CreatePanel(_premiereSection, "MetaRow", Color.clear);
-        LE(metaRow, 18f);
-        var metaHLG = metaRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        metaHLG.spacing = 8;
-        metaHLG.childAlignment = TextAnchor.MiddleCenter;
-        metaHLG.childControlWidth = metaHLG.childControlHeight = true;
-        metaHLG.childForceExpandWidth = metaHLG.childForceExpandHeight = true;
-        _genreText = CreateLabel(metaRow, "Genre", string.Empty, 10f, TextSecondary, FontStyles.Normal, 16f);
-        _genreText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
-        _rarityText = CreateLabel(metaRow, "Rarity", string.Empty, 10f, TextSecondary, FontStyles.Bold, 16f);
-        _rarityText.gameObject.AddComponent<LayoutElement>().preferredWidth = 72f;
+        _genreText = CreateLabel(_card, "Genre", string.Empty, 12f, TextSecondary,
+            FontStyles.Normal, new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(24f, -358f), new Vector2(160f, 18f));
+        _genreText.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _headlineText = CreateLabel(_premiereSection, "Headline", Loc.Get(LocKeys.PremiereCompleted), 15f, RepGold, FontStyles.Bold, 22f);
-        _headlineGroup = _headlineText.gameObject.AddComponent<CanvasGroup>();
+        _rarityText = CreateLabel(_card, "Rarity", string.Empty, 12f, TextSecondary,
+            FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(1f, 1f), new Vector2(-24f, -358f), new Vector2(160f, 18f));
+        _rarityText.alignment = TextAlignmentOptions.MidlineRight;
 
-        _rewardsSection = CreateSection(_card, "RewardsSection", hooks.rewardsRoot);
-        var rewardsTitle = CreateLabel(_rewardsSection, "RewardsTitle", Loc.Get(LocKeys.PremiereRewardsTitle), 12f, TextSecondary, FontStyles.Bold, 18f);
+        var rewardsRoot = CreatePanel(_card, "RewardsBlock", new Color(0.06f, 0.07f, 0.12f, 0.85f));
+        var rewardsRT = rewardsRoot;
+        rewardsRT.anchorMin = rewardsRT.anchorMax = new Vector2(0.5f, 1f);
+        rewardsRT.pivot = new Vector2(0.5f, 1f);
+        rewardsRT.anchoredPosition = new Vector2(0f, -388f);
+        rewardsRT.sizeDelta = new Vector2(340f, 118f);
+        _rewardsGroup = rewardsRoot.gameObject.AddComponent<CanvasGroup>();
 
-        _moneyLine = CreatePanel(_rewardsSection, "MoneyLine", Color.clear);
-        LE(_moneyLine, 28f);
-        _moneyGroup = _moneyLine.gameObject.AddComponent<CanvasGroup>();
-        _moneyText = CreateLabel(_moneyLine, "Money", string.Empty, 16f, MoneyGreen, FontStyles.Bold, 24f);
+        var rewardsTitle = CreateLabel(rewardsRoot, "RewardsTitle", Loc.Get(LocKeys.PremiereRewardsTitle), 12f, TextSecondary,
+            FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -8f), new Vector2(-24f, 16f));
+        rewardsTitle.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _repLine = CreatePanel(_rewardsSection, "RepLine", Color.clear);
-        LE(_repLine, 28f);
-        _repGroup = _repLine.gameObject.AddComponent<CanvasGroup>();
-        _repText = CreateLabel(_repLine, "Rep", string.Empty, 16f, RepGold, FontStyles.Bold, 24f);
+        _moneyText = CreateLabel(rewardsRoot, "Money", string.Empty, 17f, MoneyGreen,
+            FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -30f), new Vector2(-24f, 24f));
+        _moneyText.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _futureRewardsHook = CreatePanel(_rewardsSection, "FutureRewardsHook", Color.clear);
-        LE(_futureRewardsHook, 0f);
+        _repText = CreateLabel(rewardsRoot, "Rep", string.Empty, 17f, RepGold,
+            FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -56f), new Vector2(-24f, 24f));
+        _repText.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _discoverySection = CreateSection(_card, "DiscoverySection", hooks.discoveryRoot);
-        _discoveryGroup = _discoverySection.gameObject.AddComponent<CanvasGroup>();
-        _discoveryTitleText = CreateLabel(_discoverySection, "DiscoveryTitle", Loc.Get(LocKeys.PremiereDiscoveryTitle), 13f, TextPrimary, FontStyles.Bold, 20f);
-        var discRow = CreatePanel(_discoverySection, "DiscRow", Color.clear);
-        LE(discRow, 56f);
-        var discHLG = discRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        discHLG.spacing = 10;
-        discHLG.childAlignment = TextAnchor.MiddleLeft;
-        discHLG.childControlWidth = discHLG.childControlHeight = true;
-        discHLG.childForceExpandWidth = discHLG.childForceExpandHeight = true;
-        var discPosterWrap = CreatePanel(discRow, "DiscPoster", BarBg);
-        LE(discPosterWrap, 48f, 36f);
-        _discoveryPoster = CreatePanel(discPosterWrap, "Poster", Color.clear).GetComponent<Image>();
-        Stretch(_discoveryPoster.rectTransform);
-        _discoveryNameText = CreateLabel(discRow, "DiscName", string.Empty, 14f, TextPrimary, FontStyles.Bold, 48f);
-        _discoveryNameText.alignment = TextAlignmentOptions.MidlineLeft;
-        _discoveryNameText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        _xpText = CreateLabel(rewardsRoot, "Xp", string.Empty, 15f, new Color(0.65f, 0.85f, 1f),
+            FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -82f), new Vector2(-24f, 22f));
+        _xpText.alignment = TextAlignmentOptions.MidlineLeft;
+
+        _extrasText = CreateLabel(_card, "Extras", string.Empty, 11f, TextSecondary,
+            FontStyles.Normal, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -518f), new Vector2(340f, 44f));
+        _extrasText.textWrappingMode = TextWrappingModes.Normal;
+        _extrasGroup = _extrasText.gameObject.AddComponent<CanvasGroup>();
 
         var btnGo = new GameObject("ContinueBtn", typeof(RectTransform), typeof(Image), typeof(Button), typeof(CanvasGroup));
         btnGo.transform.SetParent(_card, false);
+        var btnRT = btnGo.GetComponent<RectTransform>();
+        btnRT.anchorMin = btnRT.anchorMax = new Vector2(0.5f, 0f);
+        btnRT.pivot = new Vector2(0.5f, 0f);
+        btnRT.anchoredPosition = new Vector2(0f, 24f);
+        btnRT.sizeDelta = new Vector2(300f, 52f);
         HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<UIButtonScale>();
-        LE(btnGo.GetComponent<RectTransform>(), 40f);
         _continueGroup = btnGo.GetComponent<CanvasGroup>();
         _continueButton = btnGo.GetComponent<Button>();
         _continueButton.onClick.AddListener(TryDismiss);
-        var btnLbl = CreateLabel(btnGo.transform, "Label", Loc.Get(LocKeys.PremiereContinue), 13f, TextPrimary, FontStyles.Bold, 32f);
+        var btnLbl = CreateLabel(btnGo.transform, "Label", Loc.Get(LocKeys.PremiereContinue), 16f, TextPrimary,
+            FontStyles.Bold, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
         btnLbl.enableAutoSizing = true;
     }
 
@@ -195,16 +189,13 @@ public class PremiereOverlayView : MonoBehaviour
         _activeSequence = DOTween.Sequence().SetUpdate(true);
         _activeSequence.Append(PremiereAnimations.OverlayFadeIn(_overlayGroup));
         _activeSequence.Join(PremiereAnimations.CardScaleIn(_card, _cardGroup));
-        _activeSequence.Append(PremiereAnimations.PosterReveal(_posterWrap, _posterGroup, 0.05f));
-        _activeSequence.Append(PremiereAnimations.RevealGroup(_headlineGroup, _headlineText.rectTransform, 0.05f));
-        _activeSequence.Append(PremiereAnimations.RewardPop(_moneyLine, _moneyGroup, 0.05f));
-        _activeSequence.Append(PremiereAnimations.RewardPop(_repLine, _repGroup, 0.08f));
+        _activeSequence.Append(PremiereAnimations.RevealGroup(_headlineGroup, _headlineText.rectTransform, 0.04f));
+        _activeSequence.Append(PremiereAnimations.PosterReveal(_posterWrap, _posterGroup, 0.04f));
+        _activeSequence.Append(PremiereAnimations.RevealGroup(_titleGroup, _titleText.rectTransform, 0.03f));
+        _activeSequence.Append(PremiereAnimations.RevealGroup(_rewardsGroup, _posterWrap, 0.05f));
 
-        if (data.isFirstDiscovery)
-        {
-            _discoverySection.gameObject.SetActive(true);
-            _activeSequence.Append(PremiereAnimations.RevealGroup(_discoveryGroup, _discoverySection, 0.1f));
-        }
+        if (!string.IsNullOrEmpty(_extrasText.text))
+            _activeSequence.Append(PremiereAnimations.RevealGroup(_extrasGroup, _extrasText.rectTransform, 0.05f));
 
         _activeSequence.Append(PremiereAnimations.RevealGroup(_continueGroup, _continueButton.transform as RectTransform, 0.05f));
         _activeSequence.AppendCallback(() =>
@@ -222,12 +213,13 @@ public class PremiereOverlayView : MonoBehaviour
         MovieRarityVisual.ApplyBadge(_rarityText, data.rarity);
         MovieRarityVisual.ApplyFrame(_rarityFrame, data.rarity);
         MoviePosterVisual.Apply(_posterImage, data.posterSprite, data.posterColorHex);
-        MoviePosterVisual.Apply(_discoveryPoster, data.posterSprite, data.posterColorHex);
-        _headlineText.text = Loc.Get(LocKeys.PremiereCompleted);
+        _headlineText.text = Loc.Get(LocKeys.PremiereHeadline);
         _moneyText.text = PremiereLoc.FormatMoneyReward(data.moneyReward);
         _repText.text = PremiereLoc.FormatRepReward(data.repGain);
-        _discoveryTitleText.text = Loc.Get(LocKeys.PremiereDiscoveryTitle);
-        _discoveryNameText.text = data.movieName;
+        _xpText.text = data.xpGain > 0.01f ? $"+{data.xpGain:0} XP" : string.Empty;
+        _xpText.gameObject.SetActive(data.xpGain > 0.01f);
+        _extrasText.text = BuildExtrasLines(data);
+        _extrasText.gameObject.SetActive(!string.IsNullOrEmpty(_extrasText.text));
     }
 
     void ResetVisualState(PremierePresentationData data)
@@ -236,12 +228,33 @@ public class PremiereOverlayView : MonoBehaviour
         _cardGroup.alpha = 0f;
         _posterGroup.alpha = 0f;
         _headlineGroup.alpha = 0f;
-        _moneyGroup.alpha = 0f;
-        _repGroup.alpha = 0f;
+        _titleGroup.alpha = 0f;
+        _rewardsGroup.alpha = 0f;
+        _extrasGroup.alpha = 0f;
         _continueGroup.alpha = 0f;
-        _discoverySection.gameObject.SetActive(data.isFirstDiscovery);
+    }
+
+    static string BuildExtrasLines(PremierePresentationData data)
+    {
+        var lines = new System.Collections.Generic.List<string>();
+
+        if (data.varietyBonusPercent > 0.01f)
+            lines.Add($"Variedad +{data.varietyBonusPercent:0}%");
         if (data.isFirstDiscovery)
-            _discoveryGroup.alpha = 0f;
+            lines.Add("Película descubierta");
+
+        var contracts = GameHub.Instance?.contracts;
+        if (contracts != null && contracts.HasActiveContract && contracts.ActiveContracts.Count > 0)
+        {
+            var cfg = contracts.ActiveContracts[0];
+            float progress = contracts.GetProgress(cfg);
+            if (progress >= cfg.goalAmount - 0.01f)
+                lines.Add("Contrato completado");
+            else
+                lines.Add($"Contrato · {progress:0}/{cfg.goalAmount:0}");
+        }
+
+        return lines.Count > 0 ? string.Join("\n", lines) : string.Empty;
     }
 
     void TryDismiss()
@@ -265,19 +278,17 @@ public class PremiereOverlayView : MonoBehaviour
         });
     }
 
-    static RectTransform CreateSection(Transform parent, string name, RectTransform hook)
-    {
-        if (hook != null)
-            hook.gameObject.SetActive(false);
-        return CreatePanel(parent, name, Color.clear);
-    }
-
     static TextMeshProUGUI CreateLabel(Transform parent, string name, string text, float size, Color color,
-        FontStyles style, float height)
+        FontStyles style, Vector2 anchorMin, Vector2 anchorMax, Vector2 anchoredPos, Vector2 sizeDelta)
     {
         var tmp = RuntimeTmpText.Create(parent, text, size, color, style, TextAlignmentOptions.Center, name);
         tmp.raycastTarget = false;
-        LE(tmp.rectTransform, height);
+        var rt = tmp.rectTransform;
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = anchoredPos;
+        rt.sizeDelta = sizeDelta;
         return tmp;
     }
 
@@ -290,15 +301,11 @@ public class PremiereOverlayView : MonoBehaviour
         return go.GetComponent<RectTransform>();
     }
 
-    static void LE(RectTransform rt, float height, float width = -1f)
+    static void Inset(RectTransform rt, float inset)
     {
-        var le = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
-        le.preferredHeight = height;
-        if (width > 0f)
-        {
-            le.preferredWidth = width;
-            le.minWidth = width;
-        }
+        rt.anchorMin = new Vector2(inset, inset);
+        rt.anchorMax = new Vector2(1f - inset, 1f - inset);
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
     }
 
     static void Stretch(RectTransform rt)

@@ -1,0 +1,219 @@
+FASE 9.2 — STUDIO REDESIGN REPORT
+Generated: 2026-06-12
+====================================================
+
+OBJETIVO
+--------
+Transformar la pantalla Estudio de una "lista de elementos técnicos" a un
+"centro de mando del estudio cinematográfico". Cambios solo de UX/layout.
+Sin tocar lógica, progresión, datos ni recompensas.
+
+====================================================
+1. TABS PRINCIPALES (StudioSubTabBar)
+====================================================
+
+ANTES:
+  preferredHeight : 64 px
+  minHeight       : 48 px
+  fontSize        : 13 px
+  style           : Bold
+
+AHORA:
+  preferredHeight : 72 px   [HudLayoutConstants.StudioMainTabHeight]
+  minHeight       : 60 px
+  fontSize        : 15 px   [HudLayoutConstants.StudioMainTabFontSize]
+  style           : Bold
+
+IMPACTO:
+  - Los tabs "Departamentos / Mejoras / Contratos" son ahora 72 px de altura.
+  - Objetivo táctil mobile correcto (mínimo recomendado: 48dp = ~54–72px).
+  - Tipografía 15px bold asegura legibilidad a cualquier distancia.
+  - Patch aplicado en DefinitiveHudBootstrap.PatchStudioSubTabs() para todos
+    los objetos *SubTabBar / *TabBar bajo EstudioPanel.
+
+====================================================
+2. SUB-TABS INTERNOS
+====================================================
+
+ANTES:
+  SubTabBarHeight : 56 px
+  SubTabFontSize  : 11 px
+
+AHORA:
+  SubTabBarHeight : 60 px   [HudLayoutConstants.SubTabBarHeight]
+  SubTabFontSize  : 14 px   [HudLayoutConstants.SubTabFontSize]
+
+IMPACTO:
+  - Todos los sub-tabs internos (ej. Personal / Producción / Marketing
+    dentro de Mejoras) reciben las mismas dimensiones aumentadas.
+  - El mismo patch PatchStudioSubTabs() aplica a todos los niveles.
+
+====================================================
+3. STUDIO VISUAL STAGE
+====================================================
+
+ANTES (overlays oscuros):
+  StageHeaderOverlay : anchorMin=(0,0.45) anchorMax=(1,1)  alpha=0.35
+                       cubría 55% superior del stage
+  TopVignette        : anchorMin=(0,0.72) anchorMax=(1,1)  alpha=0.45
+                       cubría 28% superior (oscurecía aún más la imagen)
+  BottomFadeOverlay  : anchorMin=(0,0)    anchorMax=(1,0.62) alpha=0.94
+                       cubría 62% inferior — casi opaco
+  Resultado: ~90% del stage estaba cubierto por overlays oscuros.
+  La imagen de fondo prácticamente no se veía.
+
+AHORA:
+  StageHeaderOverlay : ELIMINADO (Destroy() en HideLegacyContent())
+  TopVignette        : ELIMINADO (Destroy() en HideLegacyContent())
+  BottomFadeOverlay  : anchorMax=(1,0.38) alpha=0.64
+                       Solo cubre el 38% inferior — imagen respira
+  StageTitleChrome   : anchorMax=(1,0.38) color=transparent
+                       Contenedor layout-only para título + subtítulo
+                       Título: "CENTRO DE OPERACIONES" 15px bold blanco
+                       Subtítulo: "Nv. X · Y REP" 12px dorado
+
+  StudioVisualFixedHeight: 192 → 216 px  (+24 px)
+  StudioVisualMinHeight  :  88 → 96 px
+
+IMPACTO:
+  - El 62% superior del stage ahora muestra directamente la imagen/skin.
+  - La identidad visual del estudio cinematográfico es inmediata.
+  - El título se lee sobre el fade del 38% inferior, sin bloquear la imagen.
+  - 24px extra de altura refuerza aún más la presencia del stage.
+
+====================================================
+4. BONIFICACIONES (panel premium)
+====================================================
+
+ANTES (124 px):
+  AccentLine   : 2 px
+  Header       : 44 px (título pequeño + "Nv.X · Y REP" + "Próximo: X/Y XP")
+  StatsRow     : 58 px (6 celdas de 14px icono + 12px valor + 7px etiqueta)
+  Total visible: Studio level / REP en texto pequeño, no prominente.
+
+AHORA (172 px):
+  AccentLine   : 2 px
+  StudioBlock  : 68 px  [NUEVO — sección premium prominente]
+    LevelBadge :   64×68 px  — cuadrado dedicado, color BG_BADGE oscuro
+      LevelNum :     26 px bold, color acento verde
+      NivelLbl :     8 px  "NIVEL"
+    InfoCol    :   flex width, VLG
+      SectionTitle:  9 px  "BONIFICACIONES ACTIVAS"
+      MetaRow  :    18 px  HLG
+        RepLine:      13 px gold  "★  X REP"  (prominente)
+        Objective:     9 px dim   "Sig.: X/Y XP"
+      XpBar    :     6 px slider de progresión (verde)
+  Separator    : 2 px  (verde 25% alpha)
+  StatsRow     : 60 px  (6 celdas, icono 14px + valor 13px + label 7px)
+  rootVLG padding: (10, 10, 8, 8), spacing: 8 px
+
+CAMPOS VISIBLES EN EL PANEL:
+  ✓ Nivel del estudio (número grande, badge dedicado)
+  ✓ Reputación (prominente, en gold)
+  ✓ Bonificaciones activas (6 celdas: Calidad, Velocidad, Taquilla, REP, XP, Costes)
+  ✓ Próximo objetivo (XP progress bar + texto "Sig.: X/Y XP")
+
+ARCHIVOS MODIFICADOS:
+  BonificationsBarUI.cs — EnsureBuilt() reescrito por completo
+  DefinitiveHudBootstrap.cs — PatchStudioLayoutExpansion():
+    barLE.minHeight actualizado a 140 (desde 108)
+
+====================================================
+5. DEPARTAMENTOS (cards compactas mejoradas)
+====================================================
+
+DIMENSIONES MANTENIDAS:
+  CardWidth  : 160 px (sin cambio)
+  CardHeight : 108 px (sin cambio)
+
+NUEVO — Accent Strip:
+  Posición : left edge, absolutamente posicionado
+  Ancho    : 5 px, altura completa del card
+  Color    : badgeColor (color del departamento, igual que el badge circular)
+  Nombre   : "AccentStrip" GO
+  API      : DepartmentMiniCardLayoutBuilder.ApplyAccentStrip(rt, color)
+  Bootstrap: PatchStudioDepartmentCards() la añade a TODOS los cards
+             (baked y nuevos), usando el color de Image "Content/HeaderRow/Badge"
+
+TIPOGRAFÍA MEJORADA:
+  DeptName   : fontSizeMax 12 → 13 px
+  LevelText  : fontSizeMax 14 → 15 px  / preferredHeight 18 → 13 px
+  EffectText : fontSizeMax 10 (mantenido) / preferredHeight 22 → 16 px
+
+LAYOUT AJUSTADO (contenido cabe en 108 px sin desbordamiento):
+  VLG padding : L8→L13 (13 = 5 strip + 8 gap), T8→T6, B8→B6
+  VLG spacing : 4 → 3 px
+  HeaderRow   : 28 → 22 px
+  Badge       : 24×24 → 20×20 px
+  LevelText   : 18 → 13 px
+  ProgressBar : 6 → 5 px
+  EffectText  : 22 → 16 px
+  UpgradeBtn  : 34 → 28 px
+  Total items : 22+13+5+16+28 = 84 px
+  + spacings  : 4×3    = 12 px
+  + padding   : 12     = 12 px (top 6 + bottom 6)
+  TOTAL       : 108 px ✓  (sin desbordamiento)
+
+====================================================
+6. CONSTANTES ACTUALIZADAS (HudLayoutConstants.cs)
+====================================================
+
+  StudioMainTabHeight    : NEW  72 f   (tab bar altura principal)
+  StudioMainTabFontSize  : NEW  15 f   (font size tab principal)
+  SubTabBarHeight        :  56 → 60 f
+  SubTabFontSize         :  11 → 14 f
+  StudioVisualFixedHeight: 192 → 216 f
+  StudioVisualMinHeight  :  88 → 96 f
+  StudioBonificationsHeight: 124 → 172 f
+
+====================================================
+7. ARCHIVOS MODIFICADOS
+====================================================
+
+  Assets/Scripts/UI/Hub/Hud/HudLayoutConstants.cs
+    - Nuevas constantes StudioMainTabHeight / StudioMainTabFontSize
+    - Alturas actualizadas para Stage y Bonificaciones
+
+  Assets/Scripts/UI/Hub/Hud/DefinitiveHudBootstrap.cs
+    - PatchStudioSubTabs():  64→72 px, 13→15 px font
+    - PatchStudioDepartmentCards(): añade AccentStrip a cada card bakeada
+    - PatchStudioLayoutExpansion(): minHeight bonificaciones 108→140
+
+  Assets/Scripts/UI/Hub/Hud/StudioVisualStage.cs
+    - HideLegacyContent(): destruye StageHeaderOverlay + TopVignette
+    - EnsureStageChrome(): BottomFade reducido (62%/0.94 → 38%/0.64)
+                           StageTitleChrome: title 15px + subtitle 12px
+    - RefreshHeader(): find path actualizado "StageTitleChrome"
+
+  Assets/Scripts/UI/Hub/BonificationsBarUI.cs
+    - EnsureBuilt(): panel premium completo (LevelBadge + InfoCol + XpBar)
+    - AutoWire(): busca nuevos nombres (LevelNum, RepLine, Objective, XpBar)
+    - Refresh(): actualiza level badge, rep, XP slider, stats
+
+  Assets/Scripts/UI/Hub/DepartmentMiniCardLayoutBuilder.cs
+    - Build(): ApplyAccentStrip(), padding ajustado, tamaños reducidos
+    - ApplyAccentStrip(): nuevo método público para bootstrap patch
+
+====================================================
+8. RESULTADO ESPERADO
+====================================================
+
+ANTES:
+  "Estudio = lista de departamentos + barra pequeña de bonos"
+
+DESPUÉS:
+  Stage (216 px)   : imagen del estudio visible + título cinematográfico
+  Bonificaciones   : panel premium (172 px) con nivel grande, REP, barra XP
+  Tabs             : 72 px, font 15px → inequívocamente botones importantes
+  Departamentos    : cards 108 px con strip de color, jerarquía mejorada,
+                     tipografía más legible, contenido que NO desborda
+
+  El jugador abre Estudio y ve:
+    ① "Este es mi estudio cinematográfico" (stage visual)
+    ② "Nivel X, Y REP, próximo objetivo" (bonificaciones panel)
+    ③ Tabs grandes y claros para navegar
+    ④ Cards compactas pero ordenadas de departamentos
+
+  STATUS: IMPLEMENTADO ✓ — compilación limpia, sin errores ni warnings.
+
+====================================================

@@ -223,7 +223,55 @@ public class MovieTabUI : MonoBehaviour
         yield return null;
         Canvas.ForceUpdateCanvases();
         layout?.Apply();
+        ExpandOfferCardsToFill();
         _layoutRoutine = null;
+    }
+
+    void ExpandOfferCardsToFill()
+    {
+        if (slotsRow == null) return;
+
+        int slotCount = 0;
+        for (int i = 0; i < slotsRow.childCount; i++)
+        {
+            if (slotsRow.GetChild(i).gameObject.activeSelf)
+                slotCount++;
+        }
+        if (slotCount <= 0) return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(slotsRow);
+
+        float rowHeight = slotsRow.rect.height;
+        if (rowHeight < 120f) return;
+
+        var vlg = slotsRow.GetComponent<VerticalLayoutGroup>();
+        float spacing = vlg != null ? vlg.spacing : HudLayoutConstants.SectionSpacing;
+        float padding = vlg != null ? vlg.padding.top + vlg.padding.bottom : 28f;
+
+        float perCard = (rowHeight - padding - spacing * (slotCount - 1)) / slotCount;
+        perCard = Mathf.Clamp(perCard, HudLayoutConstants.OfferCardBaseHeight, HudLayoutConstants.OfferCardMaxExpanded);
+
+        for (int i = 0; i < slotsRow.childCount; i++)
+        {
+            var card = slotsRow.GetChild(i) as RectTransform;
+            if (card == null) continue;
+
+            var le = card.GetComponent<LayoutElement>() ?? card.gameObject.AddComponent<LayoutElement>();
+            le.flexibleHeight = 0f;
+            le.preferredHeight = perCard;
+            le.minHeight = Mathf.Min(perCard, HudLayoutConstants.OfferCardBaseHeight);
+
+            if (!card.name.Contains("Empty"))
+            {
+                MovieOfferCardLayoutBuilder.ApplyExpandedLayout(card, perCard);
+                var ui = card.GetComponent<MovieButtonUI>();
+                MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(card, ui?.movieConfig?.rarity ?? MovieRarity.Common,
+                    ui?.movieConfig?.genre ?? MovieGenre.Drama);
+            }
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(slotsRow);
     }
 
     MovieButtonUI CreateSlotCard(MovieConfig cfg, string emptyLabel)
@@ -234,8 +282,8 @@ public class MovieTabUI : MonoBehaviour
         var le = cardGo.AddComponent<LayoutElement>();
         le.flexibleWidth   = 1f;
         le.flexibleHeight  = 0f;
-        le.preferredHeight = MovieOfferCardLayoutBuilder.CardPreferredHeight; // Phase 8.5C: explicit height for VLG
-        le.minHeight       = 180f;
+        le.preferredHeight = MovieOfferCardLayoutBuilder.CardPreferredHeight;
+        le.minHeight       = HudLayoutConstants.OfferCardBaseHeight - 60f;
 
         if (cfg == null)
         {

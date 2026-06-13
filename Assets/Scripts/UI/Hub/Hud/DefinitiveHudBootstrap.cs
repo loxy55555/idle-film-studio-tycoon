@@ -21,10 +21,13 @@ public static class DefinitiveHudBootstrap
         {
             // Phase 8.5C: always patch nav labels and production layout even for baked scenes
             ApplyBakedSceneVisualPatches(switcher);
-            return;
+        }
+        else
+        {
+            HudDefinitiveStructureBuilder.Apply(switcher, showProductionTab: true);
         }
 
-        HudDefinitiveStructureBuilder.Apply(switcher, showProductionTab: true);
+        RemoveLegacyCollectionSubTabs(switcher);
     }
 
     /// <summary>
@@ -35,13 +38,293 @@ public static class DefinitiveHudBootstrap
     {
         PatchBottomNavLabels();
         PatchTopBarSettingsButton();
+
         EnsureBonificationsBar(switcher);
         EnsureStorePanel(switcher);
+
+        PatchStudioVisualFinal(switcher);
         PatchStudioSubTabs(switcher);
+        PatchStudioDepartmentCards(switcher);
+        PatchStudioLayoutExpansion(switcher);
+        PatchDeptScrollHandling(switcher);
+        PatchMejorasScrollHandling(switcher);
+        PatchProductionLayout(switcher);
+        PatchProductionRemovePosters(switcher);
+        PatchVisualGridConsistency(switcher);
 
         var hub = switcher.GetComponent<StudioHubUI>();
         if (hub != null)
             HudNavigationCleanup.NormalizeBottomNav(hub);
+    }
+
+    /// <summary>
+    /// COLLECTION-FIX: MovieCollectionUI owns L1/L2/L3 navigation.
+    /// The baked CollectionSubTabBar has no parent VLG and floats at screen center,
+    /// rendering ghost Tab_COLECCIÓN / Tab_SAGAS / Tab_LEGENDARIAS over the genre grid.
+    /// </summary>
+    static void RemoveLegacyCollectionSubTabs(RectTransform switcher)
+    {
+        var coleccion = FindChildPanel(switcher, "ColeccionPanel");
+        if (coleccion == null) return;
+
+        var tabBar = coleccion.Find("CollectionSubTabBar");
+        if (tabBar != null)
+            Object.Destroy(tabBar.gameObject);
+
+        var subContent = coleccion.Find("CollectionSubContent") as RectTransform;
+        if (subContent == null) return;
+
+        StretchRect(subContent);
+
+        var album = subContent.Find("CollectionPanel_COLECCIÓN");
+        if (album != null)
+            album.gameObject.SetActive(true);
+    }
+
+    static void StretchRect(RectTransform rt)
+    {
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+    }
+
+    static void PatchStudioDepartmentCards(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        foreach (var card in estudio.GetComponentsInChildren<DepartmentMiniCardUI>(true))
+        {
+            var rt = card.transform as RectTransform;
+            if (rt == null) continue;
+
+            DepartmentMiniCardLayoutBuilder.NormalizeParentRowHeight(rt);
+            var le = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
+            le.preferredHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
+            le.minHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
+            le.flexibleWidth = 1f;
+            le.preferredWidth = -1f;
+
+            // Phase 9.2: accent strip — use badge image colour if available
+            var badge = rt.Find("Content/HeaderRow/Badge")?.GetComponent<Image>();
+            var accentColor = badge != null ? badge.color : new Color(0.18f, 0.80f, 0.44f);
+            DepartmentMiniCardLayoutBuilder.ApplyAccentStrip(rt, accentColor);
+        }
+
+        var bar = estudio.GetComponentInChildren<BonificationsBarUI>(true);
+        if (bar != null)
+            bar.SendMessage("EnsureBuilt", SendMessageOptions.DontRequireReceiver);
+
+        var stage = estudio.GetComponentInChildren<StudioVisualStage>(true);
+        stage?.ApplyLayout();
+    }
+
+    static void PatchStudioLayoutExpansion(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        var stage = estudio.Find("StudioVisualStage");
+        var bar = estudio.Find("BonificationsBar");
+        if (stage != null && bar != null)
+            bar.SetSiblingIndex(stage.GetSiblingIndex() + 1);
+
+        if (bar != null)
+        {
+            var barLE = bar.GetComponent<LayoutElement>() ?? bar.gameObject.AddComponent<LayoutElement>();
+            barLE.preferredHeight = HudLayoutConstants.StudioSummaryHeight;
+            barLE.minHeight = 100f;
+            barLE.flexibleHeight = 0f;
+            bar.gameObject.SetActive(true);
+        }
+
+        var deptBar = estudio.Find("StudioSubContent/StudioPanel_DEPARTAMENTOS/DeptBar") as RectTransform
+                   ?? estudio.Find("DeptBar") as RectTransform;
+        if (deptBar != null)
+        {
+            var deptLE = deptBar.GetComponent<LayoutElement>() ?? deptBar.gameObject.AddComponent<LayoutElement>();
+            deptLE.minHeight = 0f;
+            deptLE.preferredHeight = -1f;
+            deptLE.flexibleHeight = 1f;
+
+            PatchDeptSingleColumn(deptBar);
+
+            var content = deptBar.Find("DeptScroll/Viewport/Content");
+            var deptVLG = content != null ? content.GetComponent<VerticalLayoutGroup>() : null;
+            if (deptVLG != null)
+            {
+                deptVLG.padding = new RectOffset(12, 12, 8, 12);
+                deptVLG.spacing = 10;
+                deptVLG.childForceExpandWidth = true;
+            }
+        }
+
+        var subContent = estudio.Find("StudioSubContent") as RectTransform;
+        if (subContent != null)
+        {
+            var subLE = subContent.GetComponent<LayoutElement>() ?? subContent.gameObject.AddComponent<LayoutElement>();
+            subLE.flexibleHeight = 1f;
+        }
+    }
+
+    static void PatchDeptScrollHandling(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        var deptBar = estudio.Find("StudioSubContent/StudioPanel_DEPARTAMENTOS/DeptBar")
+                   ?? estudio.Find("DeptBar");
+        if (deptBar == null) return;
+
+        var scroll = deptBar.Find("DeptScroll")?.GetComponent<ScrollRect>();
+        if (scroll == null) return;
+
+        if (scroll.viewport != null)
+        {
+            var vpImg = scroll.viewport.GetComponent<Image>() ?? scroll.viewport.gameObject.AddComponent<Image>();
+            vpImg.color = new Color(0f, 0f, 0f, 0f);
+            vpImg.raycastTarget = true;
+        }
+
+        scroll.vertical = true;
+        scroll.horizontal = false;
+        scroll.scrollSensitivity = 35f;
+
+        foreach (var card in deptBar.GetComponentsInChildren<DepartmentMiniCardUI>(true))
+        {
+            if (card.GetComponent<ScrollDragForwarder>() == null)
+                card.gameObject.AddComponent<ScrollDragForwarder>();
+            UpgradeUiRaycastPolicy.ApplyDepartmentCard(card.transform, card.upgradeButton);
+        }
+    }
+
+    static void PatchMejorasScrollHandling(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        var mejoras = estudio.Find("StudioSubContent/StudioPanel_MEJORAS")
+                   ?? estudio.Find("StudioPanel_MEJORAS");
+        if (mejoras == null) return;
+
+        foreach (var scroll in mejoras.GetComponentsInChildren<ScrollRect>(true))
+        {
+            if (scroll.content == null) continue;
+
+            var panel = scroll.transform.parent;
+            if (panel == null) continue;
+            if (panel.name is not ("EquipoPanel" or "PersonalPanel" or "InstPanel" or "MktPanel"))
+                continue;
+
+            if (scroll.viewport != null)
+            {
+                var vpImg = scroll.viewport.GetComponent<Image>() ?? scroll.viewport.gameObject.AddComponent<Image>();
+                vpImg.color = new Color(0f, 0f, 0f, 0f);
+                vpImg.raycastTarget = true;
+            }
+
+            scroll.vertical = true;
+            scroll.horizontal = false;
+            scroll.scrollSensitivity = 35f;
+
+            foreach (var card in scroll.content.GetComponentsInChildren<UpgradeCardUI>(true))
+            {
+                if (card.GetComponent<ScrollDragForwarder>() == null)
+                    card.gameObject.AddComponent<ScrollDragForwarder>();
+                UpgradeUiRaycastPolicy.ApplyDepartmentCard(card.transform, card.buyButton);
+            }
+        }
+    }
+
+    static void PatchProductionRemovePosters(RectTransform switcher)
+    {
+        var prod = FindChildPanel(switcher, "ProduccionPanel");
+        if (prod == null) return;
+
+        foreach (var ui in prod.GetComponentsInChildren<MovieButtonUI>(true))
+        {
+            var cfg = ui.movieConfig;
+            MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(
+                ui.transform,
+                cfg?.rarity ?? MovieRarity.Common,
+                cfg?.genre ?? MovieGenre.Drama);
+        }
+    }
+
+    static void PatchVisualGridConsistency(RectTransform switcher)
+    {
+        ApplyPanelPadding(FindChildPanel(switcher, "EstudioPanel"));
+        ApplyPanelPadding(FindChildPanel(switcher, "ProduccionPanel"));
+        ApplyPanelPadding(FindChildPanel(switcher, "ColeccionPanel"));
+        ApplyPanelPadding(FindChildPanel(switcher, "PremiosPanel"));
+        ApplyPanelPadding(FindChildPanel(switcher, "MenuPanel", "TiendaPanel"));
+    }
+
+    static void ApplyPanelPadding(RectTransform panel)
+    {
+        if (panel == null) return;
+
+        var vlg = panel.GetComponent<VerticalLayoutGroup>();
+        if (vlg != null)
+        {
+            vlg.padding = new RectOffset(
+                (int)HudLayoutConstants.ScreenPaddingH,
+                (int)HudLayoutConstants.ScreenPaddingH,
+                (int)HudLayoutConstants.ScreenPaddingV,
+                (int)HudLayoutConstants.ScreenPaddingV);
+            vlg.spacing = HudLayoutConstants.SectionSpacing;
+        }
+    }
+
+    static void PatchProductionLayout(RectTransform switcher)
+    {
+        var prod = FindChildPanel(switcher, "ProduccionPanel");
+        if (prod == null) return;
+
+        var prodVLG = prod.GetComponent<VerticalLayoutGroup>();
+        if (prodVLG != null)
+        {
+            prodVLG.padding = HudLayoutConstants.SectionPadding;
+            prodVLG.spacing = HudLayoutConstants.SectionSpacing;
+        }
+
+        var widget = prod.Find("ProductionWidget") as RectTransform;
+        if (widget != null)
+        {
+            var widgetLE = widget.GetComponent<LayoutElement>() ?? widget.gameObject.AddComponent<LayoutElement>();
+            widgetLE.preferredHeight = HudLayoutConstants.ProductionWidgetHeight;
+            widgetLE.minHeight = 180f;
+            widgetLE.flexibleHeight = 0f;
+        }
+
+        var slotsRow = prod.Find("MovieSlotsRow") as RectTransform;
+        if (slotsRow != null)
+        {
+            var rowLE = slotsRow.GetComponent<LayoutElement>() ?? slotsRow.gameObject.AddComponent<LayoutElement>();
+            rowLE.flexibleHeight = 2f;
+        }
+
+        var newBtn = prod.Find("NewProductionBtn");
+        if (newBtn != null)
+        {
+            var btnLE = newBtn.GetComponent<LayoutElement>() ?? newBtn.gameObject.AddComponent<LayoutElement>();
+            btnLE.preferredHeight = HudLayoutConstants.ProductionActionHeight;
+            btnLE.minHeight = HudLayoutConstants.ProductionActionHeight;
+        }
+
+        var movieTab = prod.GetComponent<MovieTabUI>();
+        if (movieTab?.slotsRow != null)
+        {
+            for (int i = 0; i < movieTab.slotsRow.childCount; i++)
+            {
+                var card = movieTab.slotsRow.GetChild(i);
+                var ui = card.GetComponent<MovieButtonUI>();
+                var rarity = ui?.movieConfig?.rarity ?? MovieRarity.Common;
+                var genre  = ui?.movieConfig?.genre ?? MovieGenre.Drama;
+                MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(card, rarity, genre);
+            }
+        }
     }
 
     /// <summary>
@@ -69,19 +352,18 @@ public static class DefinitiveHudBootstrap
                 hlg.spacing = 0;
             }
 
-            // Update LayoutElement
+            // Update LayoutElement — Phase 9.2: 72 px for mobile tap targets
             var barLE = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
-            barLE.preferredHeight = 64f;   // ESTUDIO-TUNING: taller tabs (was 52)
-            barLE.minHeight       = 48f;
+            barLE.preferredHeight = HudLayoutConstants.StudioMainTabHeight;
+            barLE.minHeight       = 60f;
             barLE.flexibleHeight  = 0f;
 
-            // Upscale tab labels
+            // Upscale tab labels — Phase 9.2: 15 px bold
             foreach (var tmp in rt.GetComponentsInChildren<TextMeshProUGUI>(true))
             {
-                tmp.fontSize = 13f;
+                tmp.fontSize = HudLayoutConstants.StudioMainTabFontSize;
                 tmp.enableAutoSizing = false;
                 tmp.fontStyle = FontStyles.Bold;
-                // Ensure the label rect fills its button
                 var le = tmp.GetComponent<LayoutElement>() ?? tmp.gameObject.AddComponent<LayoutElement>();
                 le.minHeight = 0f;
             }
@@ -95,6 +377,213 @@ public static class DefinitiveHudBootstrap
                 le.preferredWidth = -1f;
             }
         }
+    }
+
+    /// <summary>Phase 10.0 — restore existing studio panels; remove dashboard artifacts.</summary>
+    static void PatchStudioVisualFinal(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        DestroyIfExists(estudio, "StudioDashContent");
+        DestroyIfExists(estudio, "StudioHomeBlock");
+        DestroyIfExists(estudio, "StudioLowerSpacer");
+
+        var subTabBar = estudio.Find("StudioSubTabBar");
+        var subContent = estudio.Find("StudioSubContent");
+        if (subTabBar != null) subTabBar.gameObject.SetActive(true);
+        if (subContent != null) subContent.gameObject.SetActive(true);
+
+        var bar = estudio.Find("BonificationsBar");
+        if (bar != null) bar.gameObject.SetActive(true);
+
+        EnsureStudioChildOrder(estudio);
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(estudio);
+        var stage = estudio.GetComponentInChildren<StudioVisualStage>(true);
+        stage?.ApplyLayout();
+
+        PatchMejorasReadability(estudio);
+        PatchContractProgressBars(estudio);
+        PatchContractActiveCards(estudio);
+    }
+
+    static void EnsureStudioChildOrder(RectTransform estudio)
+    {
+        var header     = estudio.Find("StudioHeader");
+        var stage      = estudio.Find("StudioVisualStage");
+        var bar        = estudio.Find("BonificationsBar");
+        var subTabBar  = estudio.Find("StudioSubTabBar");
+        var subContent = estudio.Find("StudioSubContent");
+
+        int idx = 0;
+        if (header     != null) header.SetSiblingIndex(idx++);
+        if (stage      != null) stage.SetSiblingIndex(idx++);
+        if (bar        != null) bar.SetSiblingIndex(idx++);
+        if (subTabBar  != null) subTabBar.SetSiblingIndex(idx++);
+        if (subContent != null) subContent.SetSiblingIndex(idx++);
+    }
+
+    static void PatchDeptSingleColumn(Transform deptBar)
+    {
+        var content = deptBar.Find("DeptScroll/Viewport/Content");
+        if (content == null) return;
+
+        var grid = content.GetComponent<GridLayoutGroup>();
+        if (grid != null) Object.Destroy(grid);
+
+        var rowHLG = content.GetComponent<HorizontalLayoutGroup>();
+        if (rowHLG != null) Object.Destroy(rowHLG);
+
+        var cards = content.GetComponentsInChildren<DepartmentMiniCardUI>(true);
+        foreach (var card in cards)
+            card.transform.SetParent(content, false);
+
+        for (int i = content.childCount - 1; i >= 0; i--)
+        {
+            var child = content.GetChild(i);
+            if (child.GetComponent<DepartmentMiniCardUI>() == null)
+                Object.Destroy(child.gameObject);
+        }
+    }
+
+    static void PatchMejorasReadability(RectTransform estudio)
+    {
+        var mejoras = estudio.Find("StudioSubContent/StudioPanel_MEJORAS");
+        if (mejoras == null) return;
+
+        PatchMejorasSubTabs(mejoras);
+
+        foreach (var vlg in mejoras.GetComponentsInChildren<VerticalLayoutGroup>(true))
+        {
+            vlg.padding = new RectOffset(12, 12, 10, 12);
+            vlg.spacing = 10;
+        }
+
+        foreach (var tmp in mejoras.GetComponentsInChildren<TextMeshProUGUI>(true))
+        {
+            if (tmp.name.Contains("Name") || tmp.name == "Title")
+                tmp.fontSize = Mathf.Max(tmp.fontSize, 15f);
+            else if (tmp.name.Contains("Desc") || tmp.name.Contains("Effect"))
+                tmp.fontSize = Mathf.Max(tmp.fontSize, 12f);
+        }
+    }
+
+    static readonly string[] MejorasSubTabLabels =
+    {
+        "PRODUCCIÓN",
+        "PERSONAL",
+        "INVESTIGACIÓN",
+        "MARKETING",
+    };
+
+    static void PatchMejorasSubTabs(Transform mejorasRoot)
+    {
+        var tabBar = mejorasRoot.Find("MejorasPanel/MejorasSubTabBar") as RectTransform
+                  ?? mejorasRoot.Find("MejorasSubTabBar") as RectTransform;
+        if (tabBar == null) return;
+
+        var squareLayout = tabBar.GetComponent<SquareTileRowLayout>();
+        if (squareLayout != null) Object.Destroy(squareLayout);
+
+        var barLE = tabBar.GetComponent<LayoutElement>() ?? tabBar.gameObject.AddComponent<LayoutElement>();
+        barLE.preferredHeight = HudLayoutConstants.MejorasSubTabBarHeight;
+        barLE.minHeight       = HudLayoutConstants.MejorasSubTabBarHeight;
+        barLE.flexibleHeight  = 0f;
+
+        var hlg = tabBar.GetComponent<HorizontalLayoutGroup>();
+        if (hlg != null)
+        {
+            hlg.padding = new RectOffset(4, 4, 4, 4);
+            hlg.spacing = 6;
+            hlg.childForceExpandWidth  = true;
+            hlg.childForceExpandHeight = true;
+        }
+
+        int tabIndex = 0;
+        for (int i = 0; i < tabBar.childCount; i++)
+        {
+            var tab = tabBar.GetChild(i) as RectTransform;
+            if (tab == null || tab.GetComponent<Button>() == null) continue;
+
+            var tabLE = tab.GetComponent<LayoutElement>() ?? tab.gameObject.AddComponent<LayoutElement>();
+            tabLE.flexibleWidth   = 1f;
+            tabLE.preferredWidth  = -1f;
+            tabLE.preferredHeight = HudLayoutConstants.MejorasSubTabBarHeight - 8f;
+            tabLE.minHeight       = 56f;
+
+            var label = tab.Find("Label")?.GetComponent<TextMeshProUGUI>()
+                     ?? tab.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (label != null && tabIndex < MejorasSubTabLabels.Length)
+            {
+                label.text = MejorasSubTabLabels[tabIndex];
+                label.fontSize = HudLayoutConstants.MejorasSubTabFontSize;
+                label.fontStyle = FontStyles.Bold;
+                label.enableAutoSizing = false;
+                label.overflowMode = TextOverflowModes.Overflow;
+                label.textWrappingMode = TextWrappingModes.NoWrap;
+            }
+
+            tabIndex++;
+        }
+    }
+
+    static void PatchContractProgressBars(RectTransform estudio)
+    {
+        var contratos = estudio.Find("StudioSubContent/StudioPanel_CONTRATOS");
+        if (contratos == null) return;
+
+        foreach (var row in contratos.GetComponentsInChildren<Transform>(true))
+        {
+            if (row.name != "ProgRow") continue;
+            var le = row.GetComponent<LayoutElement>() ?? row.gameObject.AddComponent<LayoutElement>();
+            le.preferredHeight = 6f;
+        }
+
+        foreach (var slider in contratos.GetComponentsInChildren<Slider>(true))
+        {
+            if (slider.name != "ProgBar") continue;
+            var le = slider.GetComponent<LayoutElement>() ?? slider.gameObject.AddComponent<LayoutElement>();
+            le.preferredHeight = 6f;
+            le.minHeight = 6f;
+        }
+    }
+
+    static void PatchContractActiveCards(RectTransform estudio)
+    {
+        var contratos = estudio.Find("StudioSubContent/StudioPanel_CONTRATOS");
+        if (contratos == null) return;
+
+        foreach (var card in contratos.GetComponentsInChildren<ContractCardUI>(true))
+        {
+            if (card.isCandidateMode || card.isHistoryMode) continue;
+
+            var cardLE = card.GetComponent<LayoutElement>();
+            if (cardLE != null)
+            {
+                cardLE.preferredHeight = ContractsPanelUI.ActiveCardHeight;
+                cardLE.minHeight = ContractsPanelUI.ActiveCardHeight;
+            }
+
+            foreach (var row in card.GetComponentsInChildren<Transform>(true))
+            {
+                if (row.name != "ProgRow") continue;
+                var le = row.GetComponent<LayoutElement>() ?? row.gameObject.AddComponent<LayoutElement>();
+                le.preferredHeight = 6f;
+            }
+
+            if (card.rewardText != null)
+                card.rewardText.gameObject.SetActive(false);
+            if (card.descText != null)
+                card.descText.gameObject.SetActive(false);
+        }
+    }
+
+    static void DestroyIfExists(Transform parent, string name)
+    {
+        var t = parent.Find(name);
+        if (t != null) Object.Destroy(t.gameObject);
     }
 
     /// <summary>

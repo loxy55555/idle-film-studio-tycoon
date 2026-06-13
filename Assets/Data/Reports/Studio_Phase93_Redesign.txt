@@ -1,0 +1,67 @@
+FASE 9.3 — STUDIO COMPLETE VISUAL OVERHAUL
+==========================================
+Date: 2026-06-13
+
+ROOT CAUSES FIXED
+-----------------
+Problem: Old StudioSubTabBar + dept panels + BonificationsBar were all rendering
+simultaneously alongside the new dashboard tiles. Multiple nav layers stacked visually.
+
+Fix: StudioDashboard.EnsureBuilt() now iterates ALL direct children of EstudioPanel
+and forcibly hides everything EXCEPT StudioHeader and StudioVisualStage. This is
+bulletproof regardless of scene hierarchy naming.
+
+ARCHITECTURAL CHANGES
+---------------------
+
+1. HudLayoutConstants.cs
+   - StudioVisualFixedHeight: 260px → 580px (~34% of 1700px canvas)
+   - This makes the hero section the dominant visual element as required.
+
+2. StudioVisualStage.cs — COMPLETE REWRITE of EnsureStageChrome()
+   - Replaces old StageTitleChrome + BottomFadeOverlay with new HeroStatsChrome
+   - HeroFade: covers bottom 42% of stage with 86% alpha dark gradient
+   - HeroStatsChrome: anchored to bottom 38% of stage (220px of 580px)
+     ├── Row 1: Studio name (20px bold) + Level chip (green badge "Nv. X")
+     ├── Accent line (1px green 35% opacity)
+     ├── Row 2: REP (14px gold) + XP text (10px dim)
+     └── Row 3: XP progress bar (6px, green fill)
+   - RefreshHeader() now updates all 5 labels/bar
+
+3. StudioDashboard.cs — COMPLETE REWRITE
+   - Removed: 4-module grid (EQUIPO/PRODUCCIÓN/TÉCNICO/GESTIÓN) — was a placeholder
+   - Removed: StatsCard (stats moved into the hero stage)
+   - New: 3 premium navigation tiles filling available height equally
+     * DEPARTAMENTOS (blue accent) → dept detail panel
+     * MEJORAS (orange accent) → restores existing StudioPanel_MEJORAS
+     * CONTRATOS (purple accent) → restores existing StudioPanel_CONTRATOS
+   - Each tile: 7px accent strip + icon (32px) + title (22px bold) + subtitle (11px) + chip
+   - DEPARTAMENTOS detail view: category filter bar (TODOS/EQUIPO/PRODUCCIÓN/TÉCNICO/GESTIÓN)
+     + scrollable department cards with re-parented DepartmentMiniCardUI components
+   - MEJORAS / CONTRATOS detail views: back bar + existing baked panel (flexibleHeight=1)
+   - All detail panels have a 60px back bar with ← VOLVER button
+
+4. DefinitiveHudBootstrap.cs — reordered calls
+   - EnsureBonificationsBar + EnsureStorePanel run FIRST
+   - InstallStudioDashboard runs AFTER → its Awake hides the newly created bar too
+
+SCREEN LAYOUT (1700px canvas, after top bar ~64px and bottom nav ~80px = ~1556px)
+---------
+[StudioHeader: 64px]
+[StudioVisualStage: 580px hero]
+  └── HeroFade (bottom 42% = dark gradient)
+  └── HeroStatsChrome (bottom 38% = premium stats card overlay)
+[StudioDashContent: flex fill ≈ 912px]
+  └── DashGrid (when grid shown): 3 tiles × ~290px each
+  └── DetailDepts / DetailMejoras / DetailContratos (when detail shown): full 912px
+
+WHAT CHANGED FOR THE USER
+-------------------------
+✅ FIXED: Mejoras accessible again via dedicated premium tile
+✅ FIXED: Contratos accessible again via dedicated premium tile
+✅ FIXED: Old navigation layers no longer stack/overlap
+✅ NEW: Stage is now 580px (~34% of screen) — the visual protagonist
+✅ NEW: Studio name + level + REP + XP integrated into stage hero (movie poster style)
+✅ NEW: 3 large touch-friendly tiles replace the old 4-tile placeholder grid
+✅ NEW: Each tile has colored accent strip, icon (32px), title (22px), subtitle, chip
+✅ NEW: Department filter bar (TODOS + 4 categories) for focused browsing

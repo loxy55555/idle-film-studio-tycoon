@@ -13,10 +13,16 @@ public enum FtueStep
 
 public static class FtueState
 {
-    const string DisabledPrefKey = "idlefilm.ftue.disabled";
+    const string DisabledPrefKey  = "idlefilm.ftue.disabled";
+    const string CompletedPrefKey = "idlefilm.ftue.completed";
 
     public static bool Completed { get; set; }
     public static FtueStep Step { get; set; } = FtueStep.Welcome;
+
+    static FtueState()
+    {
+        LoadFromPlayerPrefs();
+    }
 
     /// <summary>Runtime kill-switch (debug / recovery). Not stored in game save.</summary>
     public static bool Disabled
@@ -29,25 +35,44 @@ public static class FtueState
         }
     }
 
+    public static bool IsPersistedCompleted =>
+        PlayerPrefs.GetInt(CompletedPrefKey, 0) == 1;
+
+    public static void LoadFromPlayerPrefs()
+    {
+        if (!IsPersistedCompleted) return;
+
+        Completed = true;
+        Step = FtueStep.Done;
+    }
+
     public static void Reset()
     {
+        if (IsPersistedCompleted)
+        {
+            Completed = true;
+            Step = FtueStep.Done;
+            return;
+        }
+
         Completed = false;
         Step = FtueStep.Welcome;
     }
 
     public static void ApplySave(bool completed, int step)
     {
-        Completed = completed;
-
-        if (completed)
+        if (IsPersistedCompleted || completed)
         {
+            Completed = true;
             Step = FtueStep.Done;
+            PersistCompleted();
             FtueLog.LoadedCompleted(true);
             FtueLog.LoadedStep((int)FtueStep.Done);
             FtueLog.State("ApplySave");
             return;
         }
 
+        Completed = false;
         int clamped = Mathf.Clamp(step, (int)FtueStep.Welcome, (int)FtueStep.AwaitCompletion);
         Step = (FtueStep)clamped;
 
@@ -62,5 +87,21 @@ public static class FtueState
     {
         Completed = true;
         Step = FtueStep.Done;
+        PersistCompleted();
+    }
+
+    static void PersistCompleted()
+    {
+        PlayerPrefs.SetInt(CompletedPrefKey, 1);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>Debug only — clears persisted completion and restarts the tutorial.</summary>
+    public static void ResetTutorial()
+    {
+        Completed = false;
+        Step = FtueStep.Welcome;
+        PlayerPrefs.DeleteKey(CompletedPrefKey);
+        PlayerPrefs.Save();
     }
 }

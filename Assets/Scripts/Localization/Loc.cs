@@ -79,6 +79,8 @@ public static class Loc
             { LocKeys.ProdNoActive, "Sin producción activa" },
             { LocKeys.ProdStartMovie, "Inicia una película" },
             { LocKeys.ProdStatusProducing, "Produciendo" },
+            { LocKeys.ProdStatusComplete, "Producción completada" },
+            { LocKeys.ProdDiscoverButton, "DESCUBRIR PELÍCULA" },
             { LocKeys.ProdSelect, "SELECCIONAR" },
             { LocKeys.ProdCatalogComplete, "Catálogo completado" },
             { LocKeys.ProdNoOffer, "Sin oferta disponible" },
@@ -142,7 +144,8 @@ public static class Loc
             { LocKeys.FtueContinue, "Continuar" },
             { LocKeys.FtueSkip, "Saltar" },
 
-            { LocKeys.PremiereCompleted, "Estreno completado" },
+            { LocKeys.PremiereCompleted, "PELÍCULA COMPLETADA" },
+            { LocKeys.PremiereHeadline, "ESTRENO" },
             { LocKeys.PremiereRewardsTitle, "Recompensas" },
             { LocKeys.PremiereMoneyReward, "+{0}" },
             { LocKeys.PremiereRepReward, "+{0} REP" },

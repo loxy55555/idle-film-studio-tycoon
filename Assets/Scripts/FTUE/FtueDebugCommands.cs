@@ -16,6 +16,13 @@ public static class FtueDebugCommands
         EnsureController()?.DebugResetFtue();
     }
 
+    /// <summary>Debug only — clears PlayerPrefs tutorial completion.</summary>
+    public static void ResetTutorial()
+    {
+        FtueState.ResetTutorial();
+        EnsureController()?.DebugResetFtue();
+    }
+
     public static void DisableFtue()
     {
         EnsureController()?.DebugDisableFtue();

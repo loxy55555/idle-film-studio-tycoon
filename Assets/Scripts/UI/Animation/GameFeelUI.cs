@@ -72,31 +72,17 @@ public class GameFeelUI : MonoBehaviour
         _studio    = GameHub.Instance?.studio;
         _prestige  = GameHub.Instance?.prestige;
         _contracts = GameHub.Instance?.contracts;
-        if (_studio != null)    _studio.OnMovieCompleted += OnMovieCompleted;
         if (_prestige != null)  _prestige.OnOscarGained  += OnOscarGained;
         if (_contracts != null) _contracts.OnContractClaimed += OnContractClaimed;
     }
 
     void Unbind()
     {
-        if (_studio != null)    _studio.OnMovieCompleted -= OnMovieCompleted;
         if (_prestige != null)  _prestige.OnOscarGained  -= OnOscarGained;
         if (_contracts != null) _contracts.OnContractClaimed -= OnContractClaimed;
     }
 
     // ─── Event handlers ───────────────────────────────────────────────────────
-
-    void OnMovieCompleted(MovieCompletePayload p)
-    {
-        PremiereSequenceController.TryPresent(p);
-
-        if (productionWidget != null)
-        {
-            productionWidget.DOKill();
-            productionWidget.localScale = Vector3.one;
-            productionWidget.DOPunchScale(Vector3.one * 0.08f, 0.35f, 8, 0.5f).SetUpdate(true);
-        }
-    }
 
     void OnContractClaimed(ContractConfig contract)
     {

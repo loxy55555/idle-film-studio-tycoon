@@ -114,7 +114,7 @@ public class ContractCardUI : MonoBehaviour
         if (contract == null) return;
 
         if (titleText != null)
-            titleText.text = contract.contractTitle;
+            titleText.text = isCandidateMode || isHistoryMode ? contract.contractTitle : "CONTRATO ACTIVO";
 
         if (isHistoryMode) return;
 
@@ -125,10 +125,18 @@ public class ContractCardUI : MonoBehaviour
             if (_contracts == null) return;
         }
 
-        if (descText != null) descText.text = contract.description;
+        if (descText != null)
+        {
+            descText.text = contract.description;
+            descText.gameObject.SetActive(isCandidateMode);
+        }
         if (objectiveText != null)
             objectiveText.text = Loc.Format(LocKeys.ContractActiveObjective, ContractSystem.BuildObjectiveLabel(contract));
-        if (rewardText != null) rewardText.text = BuildRewardString();
+        if (rewardText != null)
+        {
+            rewardText.text = BuildRewardString();
+            rewardText.gameObject.SetActive(isCandidateMode);
+        }
 
         if (isCandidateMode)
         {

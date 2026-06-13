@@ -87,8 +87,8 @@ public class StorePanelUI : MonoBehaviour
         sr.content = cRT;
 
         var vlg = content.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(14, 14, 14, 20);
-        vlg.spacing = 14;
+        vlg.padding = HudLayoutConstants.SectionPadding;
+        vlg.spacing = HudLayoutConstants.SectionSpacing;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
         content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;

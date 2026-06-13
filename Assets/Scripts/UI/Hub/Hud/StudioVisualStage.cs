@@ -1,29 +1,22 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Reserved central area for future studio visuals (background, crew, animations).</summary>
+/// <summary>
+/// Phase 10.0 — clean hero stage (~38 % of Estudio panel).
+/// Background render only; no overlays. Summary lives in BonificationsBar below.
+/// </summary>
 public class StudioVisualStage : MonoBehaviour
 {
     public static StudioVisualStage Instance { get; private set; }
 
     public RectTransform StageRoot { get; private set; }
 
-    /// <summary>Future city backgrounds — bottom-most layer.</summary>
     public RectTransform BackgroundLayer { get; private set; }
-
-    /// <summary>Future studio set dressing and environment props.</summary>
     public RectTransform SetLayer { get; private set; }
-
-    /// <summary>Future character silhouettes / crew on stage.</summary>
     public RectTransform CharacterLayer { get; private set; }
-
-    /// <summary>Future department equipment overlays.</summary>
     public RectTransform EquipmentLayer { get; private set; }
-
-    /// <summary>Future VFX / particles (DOTween-friendly container).</summary>
     public RectTransform EffectsLayer { get; private set; }
-
-    /// <summary>Future HUD-adjacent stage overlays (labels, highlights).</summary>
     public RectTransform OverlayLayer { get; private set; }
 
     void Awake()
@@ -37,7 +30,8 @@ public class StudioVisualStage : MonoBehaviour
             gameObject.AddComponent<StudioVisualThemeController>();
         if (GetComponent<StudioVisualManager>() == null)
             gameObject.AddComponent<StudioVisualManager>();
-        HideLegacyPlaceholderText();
+        HideLegacyContent();
+        RemoveStageOverlays();
     }
 
     void OnDestroy()
@@ -45,11 +39,23 @@ public class StudioVisualStage : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
+    void Start() => StartCoroutine(ApplyLayoutWhenReady());
+
+    IEnumerator ApplyLayoutWhenReady()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        ApplyLayout();
+    }
+
     public void ApplyLayout()
     {
         var le = GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
-        // Phase 8.5C: fixed height — stage is decorative, not dominant
-        le.preferredHeight  = HudLayoutConstants.StudioVisualFixedHeight;
+        var panel = transform.parent as RectTransform;
+        float heroH = panel != null && panel.rect.height > 200f
+            ? Mathf.Round(panel.rect.height * HudLayoutConstants.StudioVisualShare)
+            : HudLayoutConstants.StudioVisualFixedHeight;
+        le.preferredHeight  = heroH;
         le.minHeight        = HudLayoutConstants.StudioVisualMinHeight;
         le.flexibleHeight   = 0f;
         le.flexibleWidth    = 0f;
@@ -86,39 +92,27 @@ public class StudioVisualStage : MonoBehaviour
         };
     }
 
-    void HideLegacyPlaceholderText()
+    void HideLegacyContent()
     {
-        var placeholder = transform.Find("ScenePlaceholder");
-        if (placeholder != null)
-            placeholder.gameObject.SetActive(false);
+        foreach (var name in new[] { "ScenePlaceholder", "SceneBorder" })
+        {
+            var t = transform.Find(name);
+            if (t != null) t.gameObject.SetActive(false);
+        }
 
-        var border = transform.Find("SceneBorder");
-        if (border != null)
-            border.gameObject.SetActive(false);
-
-        EnsureBottomFade();
+        foreach (var name in new[] { "StageHeaderOverlay", "TopVignette" })
+        {
+            var t = transform.Find(name);
+            if (t != null) Object.Destroy(t.gameObject);
+        }
     }
 
-    /// <summary>
-    /// Phase 8.6B: gradient fade at the bottom edge of the poster peek strip so it looks
-    /// intentional (teaser) rather than abruptly cropped.
-    /// </summary>
-    void EnsureBottomFade()
+    void RemoveStageOverlays()
     {
-        const string FadeName = "BottomFadeOverlay";
-        if (transform.Find(FadeName) != null) return;
-
-        var fade = new GameObject(FadeName, typeof(RectTransform), typeof(Image));
-        fade.transform.SetParent(transform, false);
-
-        var rt = fade.GetComponent<RectTransform>();
-        rt.anchorMin = new Vector2(0f, 0f);
-        rt.anchorMax = new Vector2(1f, 0.55f); // covers bottom 55% of the stage strip
-        rt.offsetMin = rt.offsetMax = Vector2.zero;
-
-        // Opaque-at-bottom dark overlay — simulates the poster fading into darkness
-        var img = fade.GetComponent<Image>();
-        img.color = new Color(0.04f, 0.04f, 0.08f, 0.92f);
-        img.raycastTarget = false;
+        foreach (var name in new[] { "HeroStatsChrome", "HeroFade", "StageTitleChrome", "BottomFadeOverlay" })
+        {
+            var t = transform.Find(name);
+            if (t != null) Object.Destroy(t.gameObject);
+        }
     }
 }

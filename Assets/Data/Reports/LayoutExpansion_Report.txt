@@ -1,0 +1,169 @@
+================================================================
+LAYOUT EXPANSION REPORT
+FASE 9.1 — Layout Expansion + Visual Consistency
+Generado: 2026-06-12
+================================================================
+
+ALCANCE
+-------
+Solo layout y consistencia visual.
+Sin cambios en lógica, datos, progresión ni recompensas.
+
+================================================================
+REJILLA VISUAL GLOBAL (HudLayoutConstants)
+================================================================
+
+Nueva rejilla unificada aplicada en Estudio, Producción, Colección,
+Premios, Tienda y Contratos:
+
+  ScreenPaddingH   = 14px
+  ScreenPaddingV   = 12px
+  SectionSpacing   = 10px
+  SectionPadding   = RectOffset(14, 14, 12, 16)
+  TightPadding     = RectOffset(14, 14, 10, 14)
+  AccentLineHeight = 2px
+
+Objetivo: bordes izquierdo/derecho alineados, separadores coherentes,
+márgenes consistentes entre pantallas.
+
+================================================================
+ESTUDIO
+================================================================
+
+ELEMENTOS MODIFICADOS
+  - HudLayoutConstants.cs
+  - StudioVisualStage.cs
+  - BonificationsBarUI.cs
+  - DepartmentMiniCardLayoutBuilder.cs (runtime patch vía bootstrap)
+  - DefinitiveHudBootstrap.cs → PatchStudioLayoutExpansion()
+
+TAMAÑOS ANTES → DESPUÉS
+
+  StudioVisualStage height     168px → 192px   (+24px)
+  BonificationsBar height      112px → 124px   (+12px)
+  DeptBar min visible area     310px → ~228px   (−82px recuperados)
+  Dept row spacing/padding     8/12px mix → 10/14px grid
+
+CAMBIOS DE LAYOUT
+
+  1. BonificationsBar reordenada justo debajo de StudioVisualStage
+     (antes: debajo de toda la lista de departamentos).
+
+  2. DeptBar limitada a ~2 filas visibles antes de scroll
+     (StudioDeptVisibleRows = 2.0).
+
+  3. BonificationsBar ampliada con:
+     - Nivel + reputación en cabecera
+     - Línea "Próximo objetivo: XP/XPToNext"
+     - Stats en rejilla alineada
+
+  4. StudioVisualStage: overlay cinematográfico con padding unificado.
+
+ESPACIO RECUPERADO / REASIGNADO
+  - ~82px menos de lista de departamentos visible sin scroll
+  - +24px cabecera visual
+  - +12px barra de bonificaciones
+  - Información clave (nivel, REP, bonos, objetivo) visible sin scroll
+
+================================================================
+PRODUCCIÓN
+================================================================
+
+ELEMENTOS MODIFICADOS
+  - MovieTabUI.cs → ExpandOfferCardsToFill()
+  - MovieOfferCardLayoutBuilder.cs → ApplyExpandedLayout()
+  - ProductionHudShell.cs
+  - DefinitiveHudBootstrap.cs → PatchProductionLayout()
+  - HudLayoutConstants.cs
+
+TAMAÑOS ANTES → DESPUÉS
+
+  ProductionWidget height        280px → 260px   (−20px → más espacio ofertas)
+  MovieSlotsRow flex             2 → 2 (mantenido, prioridad ofertas)
+  History section height         120px → 96px    (−24px)
+  Offer card base height         300px (base)
+  Offer card expanded max        320px fijo → 520px dinámico
+  Offer card padding             8px mix → 14/12/16 grid
+
+COMPORTAMIENTO NUEVO (solo layout)
+
+  ExpandOfferCardsToFill():
+  - Calcula altura disponible en MovieSlotsRow
+  - Divide entre número de slots visibles
+  - Escala póster, título, recompensas y botón PRODUCIR
+  - Rango: 300px (base) → 520px (máx. con pocas ofertas)
+
+  Con 1-2 ofertas: cards ocupan el espacio libre inferior.
+  Con 3+ ofertas: scroll vertical, altura base 300px.
+
+ESPACIO RECUPERADO
+  - ~44px de history + widget → reasignados a área de ofertas
+  - Eliminación de huecos vacíos bajo ofertas cuando hay pocas películas
+
+================================================================
+COLECCIÓN — PANTALLA DE GÉNEROS
+================================================================
+
+ELEMENTOS MODIFICADOS
+  - MovieCollectionUI.cs → ApplyGenreViewportFill()
+
+TAMAÑOS ANTES → DESPUÉS
+
+  Genre row height (fijo)        150px × 5 filas
+  Genre row height (dinámico)    → (viewport − header − padding) / 5
+  Ejemplo viewport 900px:       150px → ~152px por fila
+  Ejemplo viewport 1200px:      150px → ~210px por fila
+  Grid padding                   14/12/16 mix → SectionPadding unificado
+
+COMPORTAMIENTO NUEVO (solo layout)
+
+  - 10 géneros (sin cambios de catálogo)
+  - Filas expanden para llenar viewport
+  - Scroll desactivado si el contenido cabe
+  - Mínimo por fila: 132px
+
+ESPACIO RECUPERADO
+  - Todo el viewport vertical disponible utilizado
+  - Eliminados huecos grandes entre bloques de géneros
+
+================================================================
+CONSISTENCIA VISUAL — PANTALLAS CORREGIDAS
+================================================================
+
+PANTALLA          INCONSISTENCIA CORREGIDA
+─────────────────────────────────────────────────────────────────
+Estudio           Márgenes dept scroll desalineados → grid 14px
+Producción        Padding ofertas 8px vs resto 14px → unificado
+Colección         Padding L1 14/12/16 ad-hoc → SectionPadding
+Premios           Padding root 16/14/24 mix → 14/12/16 grid
+Tienda            Padding 14/14/20 mix → SectionPadding
+Contratos         Padding 10/8 mix → SectionPadding + spacing 10
+Estudio panels    VLG sin padding coherente → ApplyPanelPadding()
+
+ARCHIVOS TOCADOS (layout only)
+  HudLayoutConstants.cs
+  DefinitiveHudBootstrap.cs
+  StudioVisualStage.cs
+  BonificationsBarUI.cs
+  MovieTabUI.cs
+  MovieOfferCardLayoutBuilder.cs
+  ProductionHudShell.cs
+  MovieCollectionUI.cs
+  AwardsPanelUI.cs
+  StorePanelUI.cs
+  ContractsPanelUI.cs
+
+================================================================
+RESUMEN
+================================================================
+
+  ✓ Rejilla visual global definida y aplicada
+  ✓ Estudio: más presencia stage + bonificaciones, menos scroll dept
+  ✓ Producción: ofertas expanden dinámicamente, sin huecos vacíos
+  ✓ Colección: 10 géneros llenan viewport completo
+  ✓ 6 pantallas con padding/alineación unificados
+  ✓ Cero cambios en lógica, economía o progresión
+
+================================================================
+FIN DEL INFORME
+================================================================

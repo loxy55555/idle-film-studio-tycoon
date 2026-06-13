@@ -1,0 +1,317 @@
+================================================================
+UI FORENSICS REPORT
+FASE UI-FORENSICS — Runtime GameObject Traceability
+Generado: 2026-06-12
+================================================================
+
+METODOLOGÍA
+-----------
+Todos los datos fueron capturados EN PLAY MODE mediante execute_code.
+Se usó Canvas.ForceUpdateCanvases() donde se indica.
+Los GameObjects reportados son los EXACTOS observados en runtime,
+no estimaciones arquitecturales.
+
+================================================================
+SECCIÓN 1 — ESTUDIO: DEPARTMENT CARD
+================================================================
+
+CARD INSPECCIONADA
+  Nombre:  MiniCard_Maquillaje
+  deptType: Makeup
+
+JERARQUÍA COMPLETA
+  Canvas
+  └─ HubRoot
+     └─ MainContent
+        └─ ContentSwitcher
+           └─ EstudioPanel
+              └─ StudioSubContent
+                 └─ StudioPanel_DEPARTAMENTOS
+                    └─ DeptBar
+                       └─ DeptScroll
+                          └─ Viewport
+                             └─ Content
+                                └─ DeptRow_4
+                                   └─ MiniCard_Maquillaje  ← CARD
+
+LAYOUT DE LA CARD
+  RectTransform.rect:     526 × 140 px
+  LayoutElement:
+    preferredWidth  = 172
+    preferredHeight = 140   ← CardHeight correcto post-rebake
+    minHeight       = 140
+    flexibleWidth   = -1 (no flexible)
+    flexibleHeight  = -1 (no flexible)
+
+MARCADOR DE VERSIÓN
+  DeptCardLayout_v3: PRESENTE como hijo de la card.
+  Esto indica que DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded()
+  invocó DepartmentMiniCardLayoutBuilder.WireExisting() en Awake,
+  NO Build(). Los valores fueron LEÍDOS DEL BAKE, no recalculados.
+
+CADENA DE PARENT LAYOUTGROUPS (bottom-up)
+  [0] DeptRow_4
+      rect=1060×140  HLG spacing=8  forceExpandHeight=True  forceExpandWidth=True
+      LE: preferredHeight=140  minHeight=-1  flexibleHeight=-1
+  [1] Content (ScrollRect content)
+      rect=1080×896  VLG spacing=8  forceExpandHeight=False  CSF=PreferredSize
+  [2] Viewport
+      rect=1080×1350
+  [3] DeptScroll
+      rect=1080×1350
+  [4] DeptBar
+      rect=1080×1350  LE: preferredHeight=0  minHeight=310  flexibleHeight=1
+  [5] StudioPanel_DEPARTAMENTOS
+      rect=1080×1350
+  [6] StudioSubContent
+      rect=1080×1350  LE: flexibleHeight=1
+  [7] EstudioPanel
+      rect=1080×1700  VLG spacing=0  forceExpandHeight=False
+  [8] ContentSwitcher
+      rect=1080×1700
+  [9] MainContent
+      rect=1080×1700
+
+TAMAÑO FINAL RENDERIZADO
+  Card width:  526 px  (de 2 cards por row en 1060px con spacing=8)
+  Card height: 140 px  ← CORRECTO (era 192 pre-rebake)
+
+CREADOR
+  Origen:   ESCENA BAKEADA (MainGame.unity)
+  Builder:  StudioUIBuilder → DepartmentMiniCardLayoutBuilder.Build()
+  Runtime:  DepartmentMiniCardUI.EnsurePremiumLayoutIfNeeded() →
+            DepartmentMiniCardLayoutBuilder.WireExisting() (por marcador v3)
+  Marker detectado: sí → WireExisting() NO recrea, solo conecta.
+
+LAYOUT ESTUDIO COMPLETO (post-rebake)
+  StudioHeader:      1080×64   LE.prefH=64
+  StudioVisualStage: 1080×150  LE.prefH=150  ← CORRECTO (era 100)
+  StudioSubTabBar:   1080×64   LE.prefH=64   ← CORRECTO (tuning=64)
+  StudioSubContent:  1080×1350 LE.flexH=1    (rellena espacio restante)
+  BonificationsBar:  1080×72   LE.prefH=72
+  ManagementSplit:   INACTIVO
+
+CONCLUSIÓN ESTUDIO
+  Los valores del rebake son CORRECTOS:
+  - CardHeight 140px ✓ aplicado y visible
+  - StudioVisualStage 150px ✓
+  - SubTabBar 64px ✓ (patched por DefinitiveHudBootstrap)
+  Si el usuario percibe "igual", es percepción visual:
+  la reducción 192→140 sí ocurrió (−52px por card, −104px por row).
+
+================================================================
+SECCIÓN 2 — COLECCIÓN: BOTONES FANTASMA
+================================================================
+
+BOTONES IDENTIFICADOS
+  3 botones exactos de tipo Button dentro de CollectionSubTabBar:
+
+  ┌──────────────────────────────────────────────────────────┐
+  │ Botón 1: Tab_COLECCIÓN                                   │
+  │   rect:          100×100 px                              │
+  │   anchoredPos:   (0, 0)                                  │
+  │   Image.alpha:   1.0 (VISIBLE, no transparente)          │
+  │   Components:    Image, Button, UIButtonScale            │
+  │   label:         'COLECCIÓN'  fontSize=11                │
+  ├──────────────────────────────────────────────────────────┤
+  │ Botón 2: Tab_SAGAS                                       │
+  │   rect:          100×100 px                              │
+  │   anchoredPos:   (0, 0)                                  │
+  │   Image.alpha:   1.0                                     │
+  │   Components:    Image, Button, UIButtonScale            │
+  │   label:         'SAGAS'  fontSize=11                    │
+  ├──────────────────────────────────────────────────────────┤
+  │ Botón 3: Tab_LEGENDARIAS                                 │
+  │   rect:          100×100 px                              │
+  │   anchoredPos:   (0, 0)                                  │
+  │   Image.alpha:   1.0                                     │
+  │   Components:    Image, Button, UIButtonScale            │
+  │   label:         'LEGENDARIAS'  fontSize=11              │
+  └──────────────────────────────────────────────────────────┘
+
+JERARQUÍA DE CADA BOTÓN
+  ColeccionPanel
+  └─ CollectionSubTabBar    ← padre directo de los 3 botones
+     ├─ Tab_COLECCIÓN
+     ├─ Tab_SAGAS
+     └─ Tab_LEGENDARIAS
+
+POSICIÓN EN PANTALLA (world corners)
+  CollectionSubTabBar BL: (490, 910, 0)
+  CollectionSubTabBar TR: (590, 1010, 0)
+  → Los 3 botones ocupan la zona central de 100×100 px en pantalla
+  → Están ENCIMA de CollectionSubContent que cubre todo el panel
+
+PROPIEDADES DE CollectionSubTabBar
+  anchorMin:  (0.50, 0.50)   ← PIVOT CENTRAL, NO STRETCH
+  anchorMax:  (0.50, 0.50)
+  sizeDelta:  (100, 100)     ← TAMAÑO POR DEFECTO UNITY
+  LE:  preferredHeight=56  minHeight=56  flexibleHeight=0
+  HLG: spacing=4  padding=4/2/4/2
+  Components: HorizontalLayoutGroup, LayoutElement  (sin MB propio)
+
+PROPIEDADES DE ColeccionPanel
+  anchorMin:  (0.00, 0.00) → (1.00, 1.00)  (stretch correcto)
+  VerticalLayoutGroup: AUSENTE  ← CAUSA RAÍZ #1
+  CollectionHudShell: presente
+  StudioHubUI: presente (anomalía — componente de Studio en Collection)
+
+PROPIEDADES DE CollectionSubContent
+  anchorMin: (0.00, 0.00) → (1.00, 1.00)  (stretch total)
+  rect: 1080×1700  (OCUPA TODO EL PANEL)
+  LE: flexibleHeight=1
+  → Rellena el panel entero independientemente del tab bar
+
+SCRIPT PROPIETARIO
+  CollectionSubTabBar no tiene MonoBehaviour propio.
+  Su existencia viene del BAKE de escena.
+
+ORIGEN
+  ESCENA BAKEADA — creado por HudDefinitiveSceneBaker →
+  HudDefinitiveStructureBuilder.RestructureCollectionPanel()
+  durante la ejecución de "IdleFilm/Build Studio UI".
+
+QUIÉN LO INSTANCIA
+  Bakeo de escena (editor time). No es instanciado en runtime.
+
+QUIÉN LO ACTIVA
+  gameObject.activeSelf = True en el asset bakeado.
+  Nadie lo activa en runtime; nace activo desde la escena.
+
+CAUSA RAÍZ CONFIRMADA — POR QUÉ APARECEN COMO "FANTASMAS"
+  ① ColeccionPanel NO tiene VerticalLayoutGroup.
+     EstudioPanel SÍ tiene VLG → su StudioSubTabBar se posiciona
+     correctamente dentro de la pila vertical.
+     ColeccionPanel NO tiene VLG → CollectionSubTabBar NO está
+     en ninguna pila: usa su ancla absoluta (0.5, 0.5).
+
+  ② CollectionSubTabBar tiene anchorMin/Max = (0.5, 0.5).
+     Sin VLG padre que controle su posición, la barra flota
+     en el centro geométrico del panel (punto 540, 960 px).
+
+  ③ sizeDelta = (100, 100) → tamaño por defecto de Unity
+     cuando un RectTransform se crea sin stretch.
+     Aunque el LayoutElement dice prefH=56, nadie lo aplica
+     porque no hay VLG padre que procese LayoutElements.
+
+  ④ DefinitiveHudBootstrap.PatchStudioSubTabs() solo busca
+     SubTabBars DENTRO de EstudioPanel:
+       var estudio = FindChildPanel(switcher, "EstudioPanel");
+       foreach (var rt in estudio.GetComponentsInChildren<...>)
+     → ColeccionPanel nunca es patcheado.
+
+  ⑤ CollectionSubContent ocupa TODO el panel (0,0→1,1 stretch),
+     con MovieCollectionUI (_built=True) construyendo L1/L2/L3
+     correctamente. El contenido funciona bien.
+     Los tab buttons quedan flotando ENCIMA del contenido.
+
+FIX REQUERIDO (identificado, no ejecutado)
+  Opción A — Añadir VLG a ColeccionPanel y ajustar anchors de
+             CollectionSubTabBar a stretch (como EstudioPanel).
+  Opción B — Extender DefinitiveHudBootstrap para parchear
+             CollectionSubTabBar igual que StudioSubTabBar.
+  Opción recomendada: B (mínimo impacto, patrón ya existente).
+
+================================================================
+SECCIÓN 3 — PRODUCCIÓN: MOVIE CARD
+================================================================
+
+CARDS IDENTIFICADAS
+  3 instancias de MovieButtonUI en ProduccionPanel:
+  - Offer_Frontline Echo
+  - Offer_Crash Vector
+  - Offer_Wild Horizons
+
+JERARQUÍA (primera card)
+  ProduccionPanel
+  └─ MovieSlotsRow
+     └─ Offer_Frontline Echo   ← CARD
+
+LAYOUT DE LA CARD (POST Canvas.ForceUpdateCanvases)
+  RectTransform.rect:  1040×320 px
+  LayoutElement:
+    preferredHeight = 320
+    minHeight       = 180
+    flexibleWidth   = 1   (llena el ancho)
+    flexibleHeight  = 0   (altura fija por prefH)
+
+LAYOUT SIN ForceUpdateCanvases (inmediato)
+  RectTransform.rect: 100×100 px  ← sizeDelta por defecto
+  → Las cards se crean con sizeDelta=(100,100).
+  → El layout system de Unity las actualiza en el siguiente
+    layout pass del Canvas.
+
+PARENT: MovieSlotsRow
+  rect:             1056×1472 px
+  VerticalLayoutGroup:
+    childControlHeight:    True   ← VLG controla la altura
+    childControlWidth:     True
+    childForceExpandHeight: False  → usa prefH de LayoutElement
+    childForceExpandWidth:  True
+    spacing:               10
+    padding:               L8 R8 T4 B4
+
+CONSTRUCTOR EXACTO
+  Components en card: Image, LayoutElement, VerticalLayoutGroup, MovieButtonUI
+  → MovieButtonUI es el script propietario.
+  → Las cards son instanciadas en RUNTIME (no bakeadas):
+    no tienen DeptCardLayout_v3 ni ningún marcador de escena.
+  → El sistema de producción (ProductionHudShell / MovieTabUI)
+    añade estas cards como hijos de MovieSlotsRow en Awake/Start.
+
+LAYOUT INTERNO DE LA CARD (post-rebuild)
+  MovieOfferCard_v2:  1040×0    (backdrop, sin altura propia)
+  GenreStrip:         1040×5    LE.prefH=6
+  PosterWrap:         1040×155  LE.prefH=160
+  TitleWrap:          1040×48   LE.prefH=48
+  InfoRow:            1040×23   LE.prefH=26
+  RewardWrap:         1040×29   LE.prefH=32
+  Unlock:              200×50   LE.prefH=20
+  SelectBtn:          1040×52   LE.prefH=52
+  LockedOverlay:      1040×320  (overlay de pantalla completa)
+
+SCRIPT RESPONSABLE
+  MovieButtonUI (en cada card)
+  ProductionHudShell (en ProduccionPanel — gestiona la pantalla)
+  MovieTabUI (en ProduccionPanel — controla qué cards se muestran)
+
+LAYOUT GENERAL DE ProduccionPanel
+  ProductionWidget:   1056×108  LE.prefH=108  flexH=0
+  Hdr:               1056×20   LE.prefH=20   flexH=-1
+  MovieSlotsRow:     1056×1472 LE.flexH=2    (rellena espacio)
+  NewProductionBtn:  1056×52   LE.prefH=52   flexH=0
+  VLG spacing=8 → total ≈ 1700px ✓
+
+CONCLUSIÓN PRODUCCIÓN
+  Las cards SON correctas (1040×320) tras el layout pass.
+  El "sigue igual" es visual/estético: el script MovieButtonUI
+  no fue modificado en el rebake, así que el aspecto visual
+  de cada card es idéntico al pre-rebake.
+  No hay colapso de layout.
+
+================================================================
+RESUMEN EJECUTIVO
+================================================================
+
+PANTALLA       ESTADO              CAUSA
+─────────────────────────────────────────────────────────────────
+Estudio        ✓ CORRECTO          Rebake aplicó 140px/150px/64px.
+                                   El usuario percibe diferencia
+                                   mínima: los cambios son sutiles.
+
+Colección      ✗ BOTONES FANTASMA  BUG DE BAKE: ColeccionPanel
+  (Tab_COLECCIÓN,                  no tiene VLG. CollectionSubTabBar
+   Tab_SAGAS,                      tiene anchors (0.5,0.5) + size
+   Tab_LEGENDARIAS)                (100,100) → flota en el centro.
+                                   DefinitiveHudBootstrap NO parchea
+                                   Collection. Fix = extender el
+                                   bootstrap o añadir VLG.
+
+Producción     ~ VISUAL IGUAL      Layout es correcto (320px/card)
+                                   pero apariencia no cambió porque
+                                   MovieButtonUI no fue rediseñado.
+                                   No hay colapso de layout.
+
+================================================================
+FIN DEL INFORME
+================================================================

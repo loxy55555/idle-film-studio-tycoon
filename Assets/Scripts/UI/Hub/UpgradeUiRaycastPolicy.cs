@@ -6,7 +6,21 @@ public static class UpgradeUiRaycastPolicy
 {
     public static void ApplyCard(Transform cardRoot, Button buyButton)
     {
+        ApplyCard(cardRoot, buyButton, allowScrollDrag: false);
+    }
+
+    /// <summary>Department cards: buy button stays clickable; root forwards scroll drags.</summary>
+    public static void ApplyDepartmentCard(Transform cardRoot, Button buyButton)
+    {
+        ApplyCard(cardRoot, buyButton, allowScrollDrag: true);
+    }
+
+    static void ApplyCard(Transform cardRoot, Button buyButton, bool allowScrollDrag)
+    {
         if (cardRoot == null) return;
+
+        if (allowScrollDrag && cardRoot.GetComponent<ScrollDragForwarder>() == null)
+            cardRoot.gameObject.AddComponent<ScrollDragForwarder>();
 
         foreach (var graphic in cardRoot.GetComponentsInChildren<Graphic>(true))
         {
@@ -14,6 +28,14 @@ public static class UpgradeUiRaycastPolicy
                 (graphic.transform == buyButton.transform || graphic.transform.IsChildOf(buyButton.transform)))
             {
                 graphic.raycastTarget = graphic == buyButton.GetComponent<Image>();
+                continue;
+            }
+
+            if (allowScrollDrag &&
+                graphic.transform == cardRoot &&
+                cardRoot.GetComponent<ScrollDragForwarder>() != null)
+            {
+                graphic.raycastTarget = true;
                 continue;
             }
 

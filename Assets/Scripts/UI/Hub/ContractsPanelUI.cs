@@ -22,7 +22,7 @@ public class ContractsPanelUI : MonoBehaviour
 
     const float FixedSlotHeight = FixedSlotHeightPublic;
 
-    public const float ActiveCardHeight = FixedSlotHeight * 3f + 8f;
+    public const float ActiveCardHeight = 96f;
 
 
 
@@ -694,7 +694,8 @@ public static class ContractCardFactory
 
         var vlg = cardGo.AddComponent<VerticalLayoutGroup>();
 
-        vlg.padding = new RectOffset(10, 10, 8, 8);
+        vlg.padding = HudLayoutConstants.SectionPadding;
+        vlg.spacing = HudLayoutConstants.SectionSpacing;
 
         vlg.childAlignment = TextAnchor.MiddleCenter;
 
@@ -726,10 +727,10 @@ public static class ContractCardFactory
 
         bool candidateMode = mode == ContractCardMode.Candidate;
 
-        float cardHeight = mode == ContractCardMode.Active
+        bool activeMode = mode == ContractCardMode.Active;
 
-            ? ContractsPanelUI.ActiveCardHeight - 8f
-
+        float cardHeight = activeMode
+            ? ContractsPanelUI.ActiveCardHeight
             : ContractsPanelUI.FixedSlotHeightPublic;
 
 
@@ -754,9 +755,10 @@ public static class ContractCardFactory
 
         var vlg = cardGo.AddComponent<VerticalLayoutGroup>();
 
-        vlg.padding = new RectOffset(10, 10, 8, 8);
+        vlg.padding = activeMode ? new RectOffset(12, 12, 8, 8) : HudLayoutConstants.SectionPadding;
+        vlg.spacing = activeMode ? 2 : HudLayoutConstants.SectionSpacing;
 
-        vlg.spacing = 4;
+        vlg.spacing = activeMode ? 2 : 4;
 
         vlg.childControlWidth = vlg.childControlHeight = true;
 
@@ -766,9 +768,10 @@ public static class ContractCardFactory
 
 
 
-        var title = MakeText(cardGo.transform, cfg.contractTitle, 20, TEXT_PRI, FontStyles.Bold); // Phase 8.5C
+        var title = MakeText(cardGo.transform, activeMode ? "CONTRATO ACTIVO" : cfg.contractTitle,
+            activeMode ? 12f : 20f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
 
-        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 16f : 28f;
 
 
 
@@ -792,21 +795,22 @@ public static class ContractCardFactory
 
 
 
-        var desc = MakeText(cardGo.transform, cfg.description, 16, TEXT_SEC); // Phase 8.5C
+        var desc = MakeText(cardGo.transform, cfg.description, activeMode ? 11f : 16f, TEXT_SEC);
 
         desc.textWrappingMode = TextWrappingModes.Normal;
 
-        desc.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+        desc.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 0f : 24f;
+        if (activeMode) desc.gameObject.SetActive(false);
 
 
 
         var objective = MakeText(cardGo.transform, Loc.Format(LocKeys.ContractActiveObjective,
 
-            ContractSystem.BuildObjectiveLabel(cfg)), 14, ACCENT_GOLD);
+            ContractSystem.BuildObjectiveLabel(cfg)), activeMode ? 13f : 14f, ACCENT_GOLD);
 
         objective.textWrappingMode = TextWrappingModes.Normal;
 
-        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 20;
+        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 20f;
 
 
 
@@ -832,9 +836,7 @@ public static class ContractCardFactory
 
             hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
 
-            progRow.AddComponent<LayoutElement>().preferredHeight = 14;
-
-
+            progRow.AddComponent<LayoutElement>().preferredHeight = 6;
 
             var progGo = new GameObject("ProgBar", typeof(RectTransform), typeof(Image), typeof(Slider));
 
@@ -846,7 +848,8 @@ public static class ContractCardFactory
 
             progLE.flexibleWidth = 1;
 
-            progLE.preferredHeight = 12;
+            progLE.preferredHeight = 6;
+            progLE.minHeight = 6;
 
             slider = progGo.GetComponent<Slider>();
 
@@ -856,17 +859,18 @@ public static class ContractCardFactory
 
 
 
-            progTxt = MakeText(progRow.transform, "0/0", 14, TEXT_SEC);
+            progTxt = MakeText(progRow.transform, "0/0", activeMode ? 12f : 14f, TEXT_SEC);
 
-            progTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = 70;
+            progTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = activeMode ? 56f : 70f;
 
         }
 
 
 
-        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), 17, ACCENT_GOLD); // Phase 8.5C
+        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), activeMode ? 12f : 17f, ACCENT_GOLD);
 
-        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 24;
+        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 16f : 24f;
+        if (activeMode) rewardTxt.gameObject.SetActive(false);
 
 
 
@@ -910,7 +914,7 @@ public static class ContractCardFactory
 
             HudSkinProvider.ApplyButton(claimGo.GetComponent<Image>(), HudButtonVariant.Primary);
 
-            claimGo.AddComponent<LayoutElement>().preferredHeight = 42; // Phase 8.5C
+            claimGo.AddComponent<LayoutElement>().preferredHeight = activeMode ? 34f : 42f;
 
             claimGo.AddComponent<UIButtonScale>();
 

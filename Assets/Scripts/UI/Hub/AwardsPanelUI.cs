@@ -169,7 +169,7 @@ public class AwardsPanelUI : MonoBehaviour
         sr.content = cRT;
 
         var vlg = content.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(16, 16, 14, 24);
+        vlg.padding = new RectOffset(14, 14, 12, 16);
         vlg.spacing = 14;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
@@ -307,7 +307,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.AddComponent<LayoutElement>().preferredHeight = 68f;
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(16, 16, 12, 10);
+        vlg.padding = HudLayoutConstants.SectionPadding;
         vlg.spacing = 6;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
@@ -353,7 +353,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.AddComponent<LayoutElement>().preferredHeight = 112f;
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(16, 16, 12, 12);
+        vlg.padding = HudLayoutConstants.TightPadding;
         vlg.spacing = 6;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
@@ -396,7 +396,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.AddComponent<LayoutElement>().preferredHeight = 130f;
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(16, 16, 12, 12);
+        vlg.padding = HudLayoutConstants.TightPadding;
         vlg.spacing = 8;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;

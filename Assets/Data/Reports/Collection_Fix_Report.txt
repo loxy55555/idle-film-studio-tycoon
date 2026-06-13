@@ -1,0 +1,103 @@
+================================================================
+COLLECTION FIX REPORT
+FASE COLLECTION-FIX — Eliminación de botones fantasma
+Generado: 2026-06-12
+================================================================
+
+PROBLEMA
+--------
+Tres botones visibles flotando sobre la rejilla de géneros:
+  - Tab_COLECCIÓN
+  - Tab_SAGAS
+  - Tab_LEGENDARIAS
+
+Causa confirmada en UI_Forensics_Report:
+  CollectionSubTabBar bakeado sin VerticalLayoutGroup padre en ColeccionPanel,
+  con anchors (0.5, 0.5) y sizeDelta (100, 100) → posición central flotante.
+
+DECISIÓN
+--------
+Opción B elegida: eliminar CollectionSubTabBar completamente.
+
+Justificación:
+  MovieCollectionUI ya implementa navegación L1 (géneros) / L2 (películas) /
+  L3 (popup) de forma autónoma. Los sub-tabs COLECCIÓN/SAGAS/LEGENDARIAS
+  son restos del bake HudSubTabShell y no aportan funcionalidad activa.
+  SAGAS y LEGENDARIAS eran secciones placeholder sin contenido real.
+
+CAMBIO APLICADO
+---------------
+Archivo: Assets/Scripts/UI/Hub/Hud/DefinitiveHudBootstrap.cs
+
+1. Nuevo método RemoveLegacyCollectionSubTabs(RectTransform switcher):
+   - Localiza ColeccionPanel
+   - Object.Destroy(CollectionSubTabBar)  → elimina Tab_COLECCIÓN,
+     Tab_SAGAS, Tab_LEGENDARIAS junto con su contenedor
+   - StretchRect(CollectionSubContent)     → asegura fill completo del panel
+   - Activa CollectionPanel_COLECCIÓN      → garantiza visibilidad del album UI
+
+2. Install() modificado:
+   - RemoveLegacyCollectionSubTabs() se ejecuta SIEMPRE (baked y non-baked)
+   - Antes solo ApplyBakedSceneVisualPatches hacía return temprano;
+     ahora ambas ramas convergen en el fix de colección.
+
+CÓDIGO AÑADIDO (resumen)
+-------------------------
+  static void RemoveLegacyCollectionSubTabs(RectTransform switcher)
+  {
+      var coleccion = FindChildPanel(switcher, "ColeccionPanel");
+      if (coleccion == null) return;
+
+      var tabBar = coleccion.Find("CollectionSubTabBar");
+      if (tabBar != null)
+          Object.Destroy(tabBar.gameObject);
+
+      var subContent = coleccion.Find("CollectionSubContent") as RectTransform;
+      if (subContent == null) return;
+
+      StretchRect(subContent);
+
+      var album = subContent.Find("CollectionPanel_COLECCIÓN");
+      if (album != null)
+          album.gameObject.SetActive(true);
+  }
+
+VERIFICACIÓN EN PLAY MODE (post-compilación)
+---------------------------------------------
+Panel activo: ColeccionPanel
+
+ANTES (UI_Forensics_Report):
+  CollectionSubTabBar exists: True
+  Tab_COLECCIÓN / Tab_SAGAS / Tab_LEGENDARIAS: activos, rect=100×100
+  Posición world: centro pantalla (490–590, 910–1010)
+
+DESPUÉS (post-fix):
+  CollectionSubTabBar exists:          False
+  Tab_COLECCIÓN exists:              False
+  Tab_SAGAS exists:                  False
+  Tab_LEGENDARIAS exists:            False
+  MovieCollectionUI active:          True
+  Active buttons (10):               Genre_Action, Genre_Drama, Genre_Horror,
+                                     Genre_Comedy, Genre_Romance, Genre_SciFi,
+                                     Genre_Fantasy, Genre_Thriller,
+                                     Genre_Animation, Genre_Documentary
+  RemoveLegacyCollectionSubTabs compiled: True
+
+RESULTADO
+---------
+✓ Botones fantasma eliminados definitivamente en runtime.
+✓ Solo permanecen los botones de género generados por MovieCollectionUI.
+✓ CollectionSubContent ocupa el panel completo (1080×1700).
+✓ Sin cambios en escena bakeada — fix aplicado en cada sesión de Play Mode.
+
+NOTAS
+-----
+- No se modificó MainGame.unity; el rebake no es necesario para este fix.
+- StudioHubUI en ColeccionPanel puede conservar referencias serializadas
+  a tabButtons destruidos; Start() ya ignora botones null (if != null).
+- Si en el futuro se implementan SAGAS/LEGENDARIAS, la navegación debería
+  integrarse dentro de MovieCollectionUI, no restaurar CollectionSubTabBar.
+
+================================================================
+FIN DEL INFORME
+================================================================

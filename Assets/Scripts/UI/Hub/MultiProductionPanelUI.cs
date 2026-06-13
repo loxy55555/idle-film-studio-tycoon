@@ -9,7 +9,7 @@ public class MultiProductionPanelUI : MonoBehaviour
 {
     public static MultiProductionPanelUI Instance { get; private set; }
 
-    const float MaxWidgetHeight = 320f;
+    const float MaxWidgetHeight = 300f;
 
     RectTransform _slotsRoot;
     ScrollRect    _scroll;
@@ -147,7 +147,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         if (_catalog == null) _catalog = MoviePosterVisual.ResolveCatalog();
 
         var active = _studio.GetProductionSnapshots();
-        int displayCount = active.Count > 0 ? active.Count : 1;
+        int displayCount = Mathf.Max(active.Count, 2);
 
         EnsureSlotCount(displayCount);
         for (int i = 0; i < displayCount; i++)
@@ -198,44 +198,119 @@ public class MultiProductionPanelUI : MonoBehaviour
     {
         public RectTransform root;
         ActiveProductionSlotLayout.SlotRefs _refs;
+        string _movieKey;
 
         public static SlotView Create(Transform parent)
         {
             var view = new SlotView();
             view._refs = ActiveProductionSlotLayout.Create(parent);
             view.root = view._refs.root;
+            if (view._refs.discoverButton != null)
+            {
+                view._refs.discoverButton.onClick.RemoveAllListeners();
+                view._refs.discoverButton.onClick.AddListener(view.OnDiscoverClicked);
+            }
             return view;
+        }
+
+        void OnDiscoverClicked()
+        {
+            var studio = GameHub.Instance?.studio;
+            if (studio == null || string.IsNullOrEmpty(_movieKey)) return;
+            if (!studio.TryPrepareDiscovery(_movieKey, out var payload)) return;
+
+            _refs.discoverButton.interactable = false;
+            ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
+
+            PremiereSequenceController.TryPresent(payload, () =>
+            {
+                studio.FinalizeDiscovery(_movieKey);
+                if (GameFeelUI.Instance != null && GameFeelUI.Instance.productionWidget != null)
+                {
+                    var w = GameFeelUI.Instance.productionWidget;
+                    w.DOKill();
+                    w.localScale = Vector3.one;
+                    w.DOPunchScale(Vector3.one * 0.06f, 0.3f, 8, 0.5f).SetUpdate(true);
+                }
+            });
         }
 
         public void Apply(ProductionSlotSnapshot snap, MovieConfig[] catalog)
         {
-            var cfg = MoviePosterVisual.FindByName(catalog, snap.movieName);
+            _movieKey = snap.movieKey;
             _refs.titleText.text = snap.movieName;
-            _refs.statusText.text = Loc.Get(LocKeys.ProdStatusProducing);
-            _refs.timeText.text = ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
 
+            if (snap.awaitingDiscovery)
+            {
+                _refs.statusText.text = Loc.Get(LocKeys.ProdStatusComplete);
+                _refs.statusText.color = new Color(0.95f, 0.77f, 0.06f);
+                if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(false);
+                if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(false);
+                if (_refs.discoverButton != null)
+                {
+                    _refs.discoverButton.gameObject.SetActive(true);
+                    _refs.discoverButton.interactable = true;
+                }
+                ActiveProductionSlotLayout.SetDiscoverPulse(_refs, true);
+                if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(1f);
+                else if (_refs.progressBar != null) _refs.progressBar.value = 1f;
+            }
+            else
+            {
+                _refs.statusText.text = Loc.Get(LocKeys.ProdStatusProducing);
+                _refs.statusText.color = new Color(0.18f, 0.80f, 0.44f);
+                if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(true);
+                if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(true);
+                if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
+                ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
+                _refs.timeText.text = "⏱ " + ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+                if (_refs.rewardText != null)
+                    _refs.rewardText.text = $"💵 {AnimatedMoneyText.FormatMoney(snap.rewardMoney)} · +{snap.rewardRep:0.0} REP";
+                UpdateProgress(snap);
+            }
+
+            var cfg = MoviePosterVisual.FindByName(catalog, snap.movieName);
             if (cfg != null)
             {
-                MoviePosterVisual.Apply(_refs.posterImage, cfg);
+                if (_refs.rarityIconText != null)
+                {
+                    _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(cfg.rarity, cfg.genre);
+                    _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(cfg.rarity, cfg.genre);
+                }
+
                 MovieRarityVisual.ApplyFrame(_refs.rarityFrame, cfg.rarity);
             }
             else
             {
-                _refs.posterImage.color = new Color(0.15f, 0.18f, 0.28f);
+                if (_refs.rarityIconText != null)
+                {
+                    _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(MovieRarity.Common);
+                    _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(MovieRarity.Common);
+                }
+
                 if (_refs.rarityFrame != null)
                     _refs.rarityFrame.color = MovieRarityVisual.GetAccentColor(MovieRarity.Common);
             }
-
-            UpdateProgress(snap);
         }
 
         public void ApplyIdle()
         {
+            _movieKey = null;
+            ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
             _refs.titleText.text = Loc.Get(LocKeys.ProdNoActive);
-            _refs.statusText.text = string.Empty;
+            _refs.statusText.text = "SLOT LIBRE";
+            _refs.statusText.color = new Color(0.54f, 0.54f, 0.67f);
+            if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(true);
+            if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(true);
+            if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
             _refs.timeText.text = Loc.Get(LocKeys.ProdStartMovie);
-            _refs.posterImage.sprite = null;
-            _refs.posterImage.color = new Color(0.09f, 0.09f, 0.18f);
+            if (_refs.rewardText != null) _refs.rewardText.text = string.Empty;
+            if (_refs.rarityIconText != null)
+            {
+                _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(MovieRarity.Common);
+                _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(MovieRarity.Common);
+            }
+
             if (_refs.rarityFrame != null) _refs.rarityFrame.color = Color.clear;
             if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(0f);
             else if (_refs.progressBar != null) _refs.progressBar.value = 0f;
@@ -243,9 +318,12 @@ public class MultiProductionPanelUI : MonoBehaviour
 
         public void UpdateProgress(ProductionSlotSnapshot snap)
         {
+            if (snap.awaitingDiscovery) return;
             if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(snap.progress01);
             else if (_refs.progressBar != null) _refs.progressBar.value = snap.progress01;
-            _refs.timeText.text = ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+            _refs.timeText.text = "⏱ " + ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+            if (_refs.rewardText != null)
+                _refs.rewardText.text = $"💵 {AnimatedMoneyText.FormatMoney(snap.rewardMoney)} · +{snap.rewardRep:0.0} REP";
         }
     }
 }

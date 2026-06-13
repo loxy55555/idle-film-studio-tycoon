@@ -29,6 +29,8 @@ public static class LocKeys
     public const string ProdNoActive           = "prod.no_active";
     public const string ProdStartMovie         = "prod.start_movie";
     public const string ProdStatusProducing    = "prod.status_producing";
+    public const string ProdStatusComplete     = "prod.status_complete";
+    public const string ProdDiscoverButton     = "prod.discover_button";
     public const string ProdSelect             = "prod.select";
     public const string ProdCatalogComplete    = "prod.catalog_complete";
     public const string ProdNoOffer            = "prod.no_offer";
@@ -100,6 +102,7 @@ public static class LocKeys
     public const string FtueSkip               = "ftue.skip";
 
     public const string PremiereCompleted      = "premiere.completed";
+    public const string PremiereHeadline       = "premiere.headline";
     public const string PremiereRewardsTitle   = "premiere.rewards_title";
     public const string PremiereMoneyReward    = "premiere.money_reward";
     public const string PremiereRepReward      = "premiere.rep_reward";

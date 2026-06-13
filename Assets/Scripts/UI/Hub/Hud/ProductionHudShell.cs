@@ -63,8 +63,8 @@ public class ProductionHudShell : MonoBehaviour
 
         var vlg = row.gameObject.GetComponent<VerticalLayoutGroup>()
                   ?? row.gameObject.AddComponent<VerticalLayoutGroup>();
-        vlg.spacing              = 10f;
-        vlg.padding              = new RectOffset(8, 8, 4, 4);
+        vlg.spacing              = HudLayoutConstants.SectionSpacing;
+        vlg.padding              = HudLayoutConstants.SectionPadding;
         vlg.childControlWidth    = vlg.childControlHeight   = true;
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
@@ -80,6 +80,20 @@ public class ProductionHudShell : MonoBehaviour
 
         // Refresh cards so they are rendered with the new layout
         movieTab.RebuildAll();
+        PatchOfferRarityIcons(movieTab);
+    }
+
+    static void PatchOfferRarityIcons(MovieTabUI movieTab)
+    {
+        if (movieTab?.slotsRow == null) return;
+        for (int i = 0; i < movieTab.slotsRow.childCount; i++)
+        {
+            var card = movieTab.slotsRow.GetChild(i);
+            var ui = card.GetComponent<MovieButtonUI>();
+            var rarity = ui?.movieConfig?.rarity ?? MovieRarity.Common;
+            var genre  = ui?.movieConfig?.genre ?? MovieGenre.Drama;
+            MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(card, rarity, genre);
+        }
     }
 
     static void ConstrainHistorySection(Transform productionPanel)
@@ -107,8 +121,8 @@ public class ProductionHudShell : MonoBehaviour
         if (historyScroll != null)
         {
             var le = historyScroll.GetComponent<LayoutElement>() ?? historyScroll.gameObject.AddComponent<LayoutElement>();
-            le.preferredHeight  = 120f;
-            le.minHeight        = 80f;
+            le.preferredHeight  = HudLayoutConstants.ProductionHistoryHeight;
+            le.minHeight        = 72f;
             le.flexibleHeight   = 0f;
         }
     }
@@ -128,12 +142,12 @@ public class ProductionHudShell : MonoBehaviour
         if (label != null)
         {
             label.text = Loc.Get(LocKeys.ProdNewProduction);
-            label.fontSize = 16f;
+            label.fontSize = 17f;
+            label.fontStyle = FontStyles.Bold;
         }
 
-        // Make the button taller for mobile (P2 rule)
         var le = newProductionButton.GetComponent<LayoutElement>();
-        if (le != null) le.preferredHeight = Mathf.Max(le.preferredHeight, 52f);
+        if (le != null) le.preferredHeight = Mathf.Max(le.preferredHeight, HudLayoutConstants.ProductionActionHeight);
     }
 
     void OnNewProductionClicked()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,6 +48,10 @@ public class MovieCollectionUI : MonoBehaviour
 
     // ── L1 views ──────────────────────────────────────────────────────────────
     GameObject _l1Panel;
+    ScrollRect _genreScroll;
+    LayoutElement _genreHeaderLE;
+    readonly List<LayoutElement> _genreRows = new();
+    Coroutine _genreLayoutRoutine;
     readonly Dictionary<MovieGenre, TextMeshProUGUI> _genreProgressLabels = new();
     readonly Dictionary<MovieGenre, RectTransform>   _genreBarFills      = new();
 
@@ -105,6 +110,7 @@ public class MovieCollectionUI : MonoBehaviour
         TryBind();
         if (_l1Panel != null && _l2Panel != null && !_selectedGenre.HasValue)
             ShowGenreGrid();
+        RequestGenreViewportFill();
     }
 
     void Update()
@@ -214,16 +220,19 @@ public class MovieCollectionUI : MonoBehaviour
         sr.content = cRT;
 
         var vlg = content.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(14, 14, 12, 16);
-        vlg.spacing = 12;
+        HudLayoutConstants.ApplySectionPadding(vlg);
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
         content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
+        _genreRows.Clear();
+        _genreScroll = sr;
+
         // ── Header: title + global progress bar ──
         var hdrGo = new GameObject("Hdr", typeof(RectTransform));
         hdrGo.transform.SetParent(content.transform, false);
-        hdrGo.AddComponent<LayoutElement>().preferredHeight = 72f;
+        _genreHeaderLE = hdrGo.AddComponent<LayoutElement>();
+        _genreHeaderLE.preferredHeight = 72f;
         var hdrVLG = hdrGo.AddComponent<VerticalLayoutGroup>();
         hdrVLG.spacing = 6;
         hdrVLG.childControlWidth = hdrVLG.childControlHeight = true;
@@ -266,7 +275,9 @@ public class MovieCollectionUI : MonoBehaviour
         {
             var row = new GameObject("Row" + i, typeof(RectTransform));
             row.transform.SetParent(content.transform, false);
-            row.AddComponent<LayoutElement>().preferredHeight = 150f;
+            var rowLE = row.AddComponent<LayoutElement>();
+            rowLE.preferredHeight = 150f;
+            _genreRows.Add(rowLE);
             var rowHLG = row.AddComponent<HorizontalLayoutGroup>();
             rowHLG.spacing = 12;
             rowHLG.childControlWidth = rowHLG.childControlHeight = true;
@@ -563,6 +574,49 @@ public class MovieCollectionUI : MonoBehaviour
         if (_l3Popup  != null) _l3Popup.SetActive(false);
         RefreshGlobalProgress();
         RefreshGenreProgress();
+        RequestGenreViewportFill();
+    }
+
+    void RequestGenreViewportFill()
+    {
+        if (!isActiveAndEnabled || _l1Panel == null || !_l1Panel.activeSelf) return;
+        if (_genreLayoutRoutine != null) StopCoroutine(_genreLayoutRoutine);
+        _genreLayoutRoutine = StartCoroutine(ApplyGenreViewportFillDeferred());
+    }
+
+    IEnumerator ApplyGenreViewportFillDeferred()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        ApplyGenreViewportFill();
+        _genreLayoutRoutine = null;
+    }
+
+    void ApplyGenreViewportFill()
+    {
+        if (_genreScroll == null || _genreRows.Count == 0 || _genreScroll.viewport == null) return;
+
+        float viewportH = _genreScroll.viewport.rect.height;
+        if (viewportH < 200f) return;
+
+        float headerH = _genreHeaderLE != null ? _genreHeaderLE.preferredHeight : 72f;
+        int rowCount = _genreRows.Count;
+        float pad = HudLayoutConstants.SectionPadding.top + HudLayoutConstants.SectionPadding.bottom;
+        float spacing = HudLayoutConstants.SectionSpacing * Mathf.Max(0, rowCount - 1);
+        float rowH = Mathf.Max(132f, (viewportH - headerH - pad - spacing) / rowCount);
+
+        foreach (var rowLE in _genreRows)
+        {
+            rowLE.preferredHeight = rowH;
+            rowLE.minHeight = rowH;
+            rowLE.flexibleHeight = 0f;
+        }
+
+        float contentH = headerH + pad + rowCount * rowH + spacing;
+        _genreScroll.vertical = contentH > viewportH + 2f;
+
+        if (_genreScroll.content != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_genreScroll.content);
     }
 
     void ShowMovieGrid(MovieGenre genre)

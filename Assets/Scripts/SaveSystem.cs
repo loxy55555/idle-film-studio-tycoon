@@ -66,6 +66,7 @@ public class ProductionSaveEntry
     public long   pendingReward;
     public float  pendingRep;
     public float  pendingXp;
+    public bool   awaitingDiscovery;
 }
 
 [Serializable]

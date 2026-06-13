@@ -13,7 +13,7 @@ public class ProductionBudgetPickerUI : MonoBehaviour
     static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
 
     RectTransform _panel;
-    Image _posterImage;
+    TextMeshProUGUI _decorIconText;
     TextMeshProUGUI _titleText;
     Action<ProductionBudget> _onConfirm;
     MovieConfig _pendingConfig;
@@ -81,13 +81,11 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         sub.fontSizeMax = 12f;
         LE(sub.rectTransform, 28f);
 
-        var posterWrap = CreatePanel(_panel, "PosterWrap", new Color(0.09f, 0.09f, 0.18f));
-        LE(posterWrap, 120f);
-        _posterImage = CreatePanel(posterWrap, "Poster", Color.clear).GetComponent<Image>();
-        var posterRT = _posterImage.rectTransform;
-        posterRT.anchorMin = new Vector2(0.06f, 0.06f);
-        posterRT.anchorMax = new Vector2(0.94f, 0.94f);
-        posterRT.offsetMin = posterRT.offsetMax = Vector2.zero;
+        var iconWrap = CreatePanel(_panel, "DecorIconWrap", new Color(0.09f, 0.09f, 0.18f));
+        LE(iconWrap, 96f);
+        _decorIconText = RuntimeTmpText.Create(iconWrap.transform, "🎬", 44f, TextPrimary,
+            FontStyles.Normal, TextAlignmentOptions.Center, "DecorIcon");
+        Stretch(_decorIconText.rectTransform);
 
         _titleText = RuntimeTmpText.Create(_panel, string.Empty, 15f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "MovieTitle");
@@ -149,7 +147,11 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         _pendingConfig = config;
         _onConfirm = onConfirm;
         if (_titleText != null) _titleText.text = config.movieName;
-        MoviePosterVisual.Apply(_posterImage, config);
+        if (_decorIconText != null)
+        {
+            _decorIconText.text = ProductionDecorIcon.GetIcon(config.rarity, config.genre);
+            _decorIconText.color = ProductionDecorIcon.GetIconColor(config.rarity, config.genre);
+        }
         if (!gameObject.activeSelf)
         {
             gameObject.SetActive(true);

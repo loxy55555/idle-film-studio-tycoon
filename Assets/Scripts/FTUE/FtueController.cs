@@ -282,7 +282,7 @@ public class FtueController : MonoBehaviour
         PersistStep();
         ClearHighlight();
         _overlay?.Hide();
-        StartCompleteFallback();
+        EnterAwaitCompletion();
     }
 
     void OnPremiereDismissed()
@@ -603,7 +603,7 @@ public class FtueController : MonoBehaviour
         StopTargetWait();
         StopCompleteFallback();
         UnbindEvents();
-        FtueState.Reset();
+        FtueState.ResetTutorial();
         FtueState.Disabled = false;
         _step = FtueStep.Welcome;
         _loadedCompleted = false;

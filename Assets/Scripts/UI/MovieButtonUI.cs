@@ -119,9 +119,13 @@ public class MovieButtonUI : MonoBehaviour
         if (taglineText != null) taglineText.text = movieConfig.tagline;
         if (genreText != null) genreText.text = GenreLoc.GetLabel(movieConfig.genre);
 
-        MoviePosterVisual.Apply(posterImage ?? genreBadge, movieConfig);
+        if (rarityText != null)
+        {
+            rarityText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(movieConfig.rarity, movieConfig.genre);
+            rarityText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(movieConfig.rarity, movieConfig.genre);
+        }
+
         if (rarityFrame != null) MovieRarityVisual.ApplyFrame(rarityFrame, movieConfig.rarity);
-        if (rarityText != null) MovieRarityVisual.ApplyBadge(rarityText, movieConfig.rarity);
 
         if (locked)
         {
@@ -149,10 +153,10 @@ public class MovieButtonUI : MonoBehaviour
         float duration = movieConfig.duration / speed;
         float rep      = movieConfig.baseRep * quality;
 
-        if (durationText != null) durationText.text = ProductionLoc.FormatDuration(duration);
+        if (durationText != null) durationText.text = "⏱ " + ProductionLoc.FormatDuration(duration);
         if (costText != null) costText.text = AnimatedMoneyText.FormatMoney((long)realCost);
-        if (rewardText != null) rewardText.text = Loc.Format(LocKeys.ProdOfferMoney, AnimatedMoneyText.FormatMoney((long)reward));
-        if (repText != null) repText.text = Loc.Format(LocKeys.ProdOfferRep, rep.ToString("0.0"));
+        if (rewardText != null) rewardText.text = "💵 " + Loc.Format(LocKeys.ProdOfferMoney, AnimatedMoneyText.FormatMoney((long)reward));
+        if (repText != null) repText.text = "🏆 " + Loc.Format(LocKeys.ProdOfferRep, rep.ToString("0.0"));
 
         if (badgesText != null)
         {

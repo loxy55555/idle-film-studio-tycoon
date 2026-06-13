@@ -2,18 +2,20 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Premium movie offer card layout — mobile-first, tall, poster-dominant (Phase 8.5C).</summary>
+/// <summary>Premium movie offer card — tycoon-style production opportunity (Phase 9.0).</summary>
 public static class MovieOfferCardLayoutBuilder
 {
     public const string LayoutMarkerName = "MovieOfferCard_v2";
-    public const float TitleRowHeight    = 48f;
-    public const float CardPreferredHeight = 320f;
+    public const float RarityIconWidth   = 56f;
+    public const float TitleRowHeight    = 52f;
+    public const float CardPreferredHeight = HudLayoutConstants.OfferCardBaseHeight;
 
     static readonly Color TextPrimary    = Color.white;
     static readonly Color TextSecondary  = new Color(0.54f, 0.54f, 0.67f);
     static readonly Color BarBg          = new Color(0.09f, 0.09f, 0.18f);
     static readonly Color AccentGreen    = new Color(0.18f, 0.80f, 0.44f);
     static readonly Color AccentGold     = new Color(0.95f, 0.77f, 0.06f);
+    static readonly Color PanelDark      = new Color(0.06f, 0.06f, 0.12f, 0.92f);
 
     public struct WireResult
     {
@@ -48,19 +50,16 @@ public static class MovieOfferCardLayoutBuilder
         Stretch(marker.GetComponent<RectTransform>());
 
         var vlg = card.gameObject.GetComponent<VerticalLayoutGroup>() ?? card.gameObject.AddComponent<VerticalLayoutGroup>();
-        vlg.padding               = new RectOffset(0, 0, 0, 8);
+        vlg.padding               = HudLayoutConstants.SectionPadding;
         vlg.spacing               = 0;
         vlg.childAlignment        = TextAnchor.UpperCenter;
         vlg.childControlWidth     = vlg.childControlHeight    = true;
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        // Card preferred height so VLG container sizes it correctly
         var cardLE = card.GetComponent<LayoutElement>() ?? card.gameObject.AddComponent<LayoutElement>();
-        if (cardLE.preferredHeight < CardPreferredHeight)
-            cardLE.preferredHeight = CardPreferredHeight;
-        if (cardLE.minHeight < 180f)
-            cardLE.minHeight = 180f;
+        cardLE.preferredHeight = CardPreferredHeight;
+        cardLE.minHeight = 240f;
 
         if (isEmpty)
         {
@@ -79,134 +78,119 @@ public static class MovieOfferCardLayoutBuilder
             return result;
         }
 
-        // ── Genre color strip ────────────────────────────────────────────────────
         var genreStripGo = new GameObject("GenreStrip", typeof(RectTransform), typeof(Image));
         genreStripGo.transform.SetParent(card, false);
-        result.genreStrip         = genreStripGo.GetComponent<Image>();
-        result.genreStrip.color   = cfg != null ? GenreAccentColor(cfg.genre) : BarBg;
+        result.genreStrip = genreStripGo.GetComponent<Image>();
+        result.genreStrip.color = cfg != null ? GenreAccentColor(cfg.genre) : BarBg;
         result.genreStrip.raycastTarget = false;
-        LE(genreStripGo.GetComponent<RectTransform>(), 6f);
+        LE(genreStripGo.GetComponent<RectTransform>(), 5f);
 
-        // ── Poster area ──────────────────────────────────────────────────────────
-        var posterWrap = CreatePanel(card, "PosterWrap", BarBg);
-        LE(posterWrap, 160f, minHeight: 130f);
+        var bodyRow = new GameObject("BodyRow", typeof(RectTransform));
+        bodyRow.transform.SetParent(card, false);
+        var bodyLE = bodyRow.AddComponent<LayoutElement>();
+        bodyLE.preferredHeight = CardPreferredHeight - 70f;
+        bodyLE.minHeight = 210f;
+        bodyLE.flexibleHeight = 1f;
 
-        result.rarityFrame = CreatePanel(posterWrap.transform, "RarityFrame", cfg != null ? RarityFrameColor(cfg.rarity) : Color.clear).GetComponent<Image>();
-        Stretch(result.rarityFrame.rectTransform);
-        result.rarityFrame.raycastTarget = false;
+        var bodyHLG = bodyRow.AddComponent<HorizontalLayoutGroup>();
+        bodyHLG.padding = new RectOffset(10, 14, 10, 10);
+        bodyHLG.spacing = 10;
+        bodyHLG.childAlignment = TextAnchor.UpperLeft;
+        bodyHLG.childControlWidth = bodyHLG.childControlHeight = true;
+        bodyHLG.childForceExpandWidth = true;
+        bodyHLG.childForceExpandHeight = true;
 
-        result.posterImage = CreatePanel(posterWrap.transform, "Poster", cfg != null ? ParseHexColor(cfg.posterColorHex) : BarBg).GetComponent<Image>();
-        var posterRT = result.posterImage.rectTransform;
-        posterRT.anchorMin = new Vector2(0.03f, 0.04f);
-        posterRT.anchorMax = new Vector2(0.97f, 0.96f);
-        posterRT.offsetMin = posterRT.offsetMax = Vector2.zero;
-        result.posterImage.raycastTarget = false;
+        var infoCol = new GameObject("InfoCol", typeof(RectTransform));
+        infoCol.transform.SetParent(bodyRow.transform, false);
+        infoCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        var infoVLG = infoCol.AddComponent<VerticalLayoutGroup>();
+        infoVLG.padding = new RectOffset(0, 0, 0, 0);
+        infoVLG.spacing = 6;
+        infoVLG.childAlignment = TextAnchor.UpperLeft;
+        infoVLG.childControlWidth = infoVLG.childControlHeight = true;
+        infoVLG.childForceExpandWidth = true;
+        infoVLG.childForceExpandHeight = false;
 
-        // Rarity pill top-right inside poster
-        var rarityPill = new GameObject("RarityPill", typeof(RectTransform), typeof(Image));
-        rarityPill.transform.SetParent(posterWrap.transform, false);
-        rarityPill.GetComponent<Image>().color = cfg != null ? RarityPillColor(cfg.rarity) : BarBg;
-        rarityPill.GetComponent<Image>().raycastTarget = false;
-        var pillRT = rarityPill.GetComponent<RectTransform>();
-        pillRT.anchorMin = new Vector2(1f, 1f);
-        pillRT.anchorMax = new Vector2(1f, 1f);
-        pillRT.pivot     = new Vector2(1f, 1f);
-        pillRT.sizeDelta = new Vector2(72f, 24f);
-        pillRT.anchoredPosition = new Vector2(-6f, -6f);
+        var titleWrap = new GameObject("TitleWrap", typeof(RectTransform), typeof(Image));
+        titleWrap.transform.SetParent(infoCol.transform, false);
+        titleWrap.GetComponent<Image>().color = PanelDark;
+        titleWrap.GetComponent<Image>().raycastTarget = false;
+        LE(titleWrap.GetComponent<RectTransform>(), TitleRowHeight);
 
-        result.rarityText = RuntimeTmpText.Create(rarityPill.transform, cfg != null ? RarityLabel(cfg.rarity) : string.Empty,
-            11f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Rarity");
-        result.rarityText.raycastTarget = false;
-        Stretch(result.rarityText.rectTransform);
-
-        // ── Title + genre row ────────────────────────────────────────────────────
-        var titleBg = new GameObject("TitleWrap", typeof(RectTransform), typeof(Image));
-        titleBg.transform.SetParent(card, false);
-        titleBg.GetComponent<Image>().color = new Color(0.06f, 0.06f, 0.12f, 0.85f);
-        titleBg.GetComponent<Image>().raycastTarget = false;
-        var titleWrapLE = titleBg.AddComponent<LayoutElement>();
-        titleWrapLE.preferredHeight = TitleRowHeight;
-        titleWrapLE.minHeight = TitleRowHeight;
-
-        var titleVLG = titleBg.AddComponent<VerticalLayoutGroup>();
-        titleVLG.padding = new RectOffset(12, 12, 6, 4);
+        var titleVLG = titleWrap.AddComponent<VerticalLayoutGroup>();
+        titleVLG.padding = new RectOffset(10, 10, 6, 4);
         titleVLG.spacing = 2;
         titleVLG.childControlWidth = titleVLG.childControlHeight = true;
         titleVLG.childForceExpandWidth = true;
         titleVLG.childForceExpandHeight = false;
 
-        result.titleText = RuntimeTmpText.Create(titleBg.transform, cfg?.movieName ?? string.Empty,
-            16f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Title");
+        result.titleText = RuntimeTmpText.Create(titleWrap.transform, cfg?.movieName ?? string.Empty,
+            18f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Title");
         result.titleText.enableAutoSizing = true;
-        result.titleText.fontSizeMin = 13f;
-        result.titleText.fontSizeMax = 18f;
+        result.titleText.fontSizeMin = 14f;
+        result.titleText.fontSizeMax = 20f;
         result.titleText.textWrappingMode = TextWrappingModes.Normal;
         result.titleText.overflowMode = TextOverflowModes.Ellipsis;
-        result.titleText.maxVisibleLines = 1;
+        result.titleText.maxVisibleLines = 2;
         result.titleText.raycastTarget = false;
-        result.titleText.gameObject.AddComponent<LayoutElement>().preferredHeight = 22f;
+        result.titleText.gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
-        result.genreText = RuntimeTmpText.Create(titleBg.transform, cfg != null ? GenreLabel(cfg.genre) : string.Empty,
-            12f, cfg != null ? GenreAccentColor(cfg.genre) : TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Genre");
+        result.genreText = RuntimeTmpText.Create(titleWrap.transform, cfg != null ? GenreLabel(cfg.genre) : string.Empty,
+            11f, cfg != null ? GenreAccentColor(cfg.genre) : TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Genre");
         result.genreText.raycastTarget = false;
-        result.genreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
+        result.genreText.gameObject.AddComponent<LayoutElement>().preferredHeight = 14f;
 
-        // ── Info row: duration + badges ──────────────────────────────────────────
-        var infoRow = CreatePanel(card, "InfoRow", Color.clear);
-        LE(infoRow, 26f);
+        var infoRow = CreatePanel(infoCol.transform, "InfoRow", Color.clear);
+        LE(infoRow, 24f);
         var infoHLG = infoRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        infoHLG.padding = new RectOffset(12, 12, 4, 4);
+        infoHLG.padding = new RectOffset(0, 0, 0, 0);
         infoHLG.spacing = 8;
         infoHLG.childAlignment = TextAnchor.MiddleLeft;
         infoHLG.childControlWidth = infoHLG.childControlHeight = true;
         infoHLG.childForceExpandWidth = false;
         infoHLG.childForceExpandHeight = true;
 
-        result.durationText = RuntimeTmpText.Create(infoRow.transform, string.Empty,
-            13f, TextSecondary, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Duration");
+        result.durationText = RuntimeTmpText.Create(infoRow.transform, "⏱ —",
+            12f, TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Duration");
         result.durationText.raycastTarget = false;
         result.durationText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         result.badgesText = RuntimeTmpText.Create(infoRow.transform, string.Empty,
-            13f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Badges");
+            11f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Badges");
         result.badgesText.raycastTarget = false;
-        result.badgesText.gameObject.AddComponent<LayoutElement>().preferredWidth = 80f;
+        result.badgesText.gameObject.AddComponent<LayoutElement>().preferredWidth = 90f;
 
-        // ── Reward row: money + rep ──────────────────────────────────────────────
         var rewardWrap = new GameObject("RewardWrap", typeof(RectTransform), typeof(Image));
-        rewardWrap.transform.SetParent(card, false);
-        rewardWrap.GetComponent<Image>().color = new Color(0.06f, 0.06f, 0.12f, 0.85f);
+        rewardWrap.transform.SetParent(infoCol.transform, false);
+        rewardWrap.GetComponent<Image>().color = PanelDark;
         rewardWrap.GetComponent<Image>().raycastTarget = false;
-        LE(rewardWrap.GetComponent<RectTransform>(), 32f);
+        LE(rewardWrap.GetComponent<RectTransform>(), 40f);
 
-        var rewardRow = rewardWrap;
         var rewardHLG = rewardWrap.AddComponent<HorizontalLayoutGroup>();
-        rewardHLG.padding = new RectOffset(12, 12, 6, 6);
+        rewardHLG.padding = new RectOffset(10, 10, 8, 8);
         rewardHLG.spacing = 8;
         rewardHLG.childAlignment = TextAnchor.MiddleCenter;
         rewardHLG.childControlWidth = rewardHLG.childControlHeight = true;
         rewardHLG.childForceExpandWidth = rewardHLG.childForceExpandHeight = true;
 
-        result.rewardText = RuntimeTmpText.Create(rewardWrap.transform, string.Empty,
-            15f, AccentGreen, FontStyles.Bold, TextAlignmentOptions.Center, "Reward");
+        result.rewardText = RuntimeTmpText.Create(rewardWrap.transform, "💵 —",
+            14f, AccentGreen, FontStyles.Bold, TextAlignmentOptions.Center, "Reward");
         result.rewardText.raycastTarget = false;
         result.rewardText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        result.repText = RuntimeTmpText.Create(rewardWrap.transform, string.Empty,
-            15f, AccentGold, FontStyles.Bold, TextAlignmentOptions.Center, "Rep");
+        result.repText = RuntimeTmpText.Create(rewardWrap.transform, "🏆 —",
+            14f, AccentGold, FontStyles.Bold, TextAlignmentOptions.Center, "Rep");
         result.repText.raycastTarget = false;
-        result.repText.gameObject.AddComponent<LayoutElement>().preferredWidth = 90f;
+        result.repText.gameObject.AddComponent<LayoutElement>().preferredWidth = 100f;
 
-        // ── Unlock notice (hidden by default) ───────────────────────────────────
-        result.unlockText = CreateLabel(card, "Unlock", string.Empty, 12f, new Color(0.95f, 0.45f, 0.35f), 20f);
+        result.unlockText = CreateLabel(infoCol.transform, "Unlock", string.Empty, 11f, new Color(0.95f, 0.45f, 0.35f), 18f);
         result.unlockText.gameObject.SetActive(false);
 
-        // ── Select button ────────────────────────────────────────────────────────
         var btnGo = new GameObject("SelectBtn", typeof(RectTransform), typeof(Image), typeof(Button));
-        btnGo.transform.SetParent(card, false);
+        btnGo.transform.SetParent(infoCol.transform, false);
         HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<UIButtonScale>();
-        LE(btnGo.GetComponent<RectTransform>(), 52f, minHeight: 52f);
+        LE(btnGo.GetComponent<RectTransform>(), 58f, minHeight: 58f);
 
         var btnVLG = btnGo.AddComponent<VerticalLayoutGroup>();
         btnVLG.padding = new RectOffset(12, 12, 0, 0);
@@ -216,22 +200,132 @@ public static class MovieOfferCardLayoutBuilder
 
         result.selectButton = btnGo.GetComponent<Button>();
         result.selectLabelText = RuntimeTmpText.Create(btnGo.transform, Loc.Get(LocKeys.ProdSelect),
-            16f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.Center, "Label");
+            17f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.Center, "Label");
         result.selectLabelText.enableAutoSizing = true;
-        result.selectLabelText.fontSizeMin = 13f;
+        result.selectLabelText.fontSizeMin = 14f;
         result.selectLabelText.fontSizeMax = 18f;
         result.selectLabelText.raycastTarget = false;
 
-        // ── Locked overlay ───────────────────────────────────────────────────────
-        var overlay = CreatePanel(card, "LockedOverlay", new Color(0f, 0f, 0f, 0.55f));
+        var overlay = CreatePanel(card, "LockedOverlay", new Color(0f, 0f, 0f, 0.58f));
         Stretch(overlay);
         overlay.gameObject.SetActive(false);
         result.lockedOverlay = overlay.gameObject;
+        result.rarityText = null;
+
+        SetupRarityIconColumn(bodyRow.transform as RectTransform, cfg?.rarity ?? MovieRarity.Common, cfg?.genre ?? MovieGenre.Drama, ref result);
 
         return result;
     }
 
-    // ── Color helpers ────────────────────────────────────────────────────────────
+    static void SetupRarityIconColumn(RectTransform bodyRow, MovieRarity rarity, MovieGenre genre, ref WireResult result)
+    {
+        if (bodyRow == null) return;
+
+        var iconWrap = CreatePanel(bodyRow, "RarityIconWrap", PanelDark);
+        iconWrap.SetAsFirstSibling();
+        var iconLE = iconWrap.GetComponent<LayoutElement>() ?? iconWrap.gameObject.AddComponent<LayoutElement>();
+        iconLE.preferredWidth = RarityIconWidth;
+        iconLE.minWidth = RarityIconWidth;
+        iconLE.flexibleHeight = 1f;
+
+        var accent = RarityFrameColor(rarity);
+        result.rarityFrame = iconWrap.GetComponent<Image>();
+        result.rarityFrame.color = new Color(accent.r, accent.g, accent.b, 0.85f);
+        result.rarityFrame.raycastTarget = false;
+
+        result.rarityText = RuntimeTmpText.Create(iconWrap.transform, GetRarityIcon(rarity, genre),
+            30f, GetRarityIconColor(rarity, genre), FontStyles.Normal, TextAlignmentOptions.Center, "RarityIcon");
+        result.rarityText.raycastTarget = false;
+        Stretch(result.rarityText.rectTransform);
+
+        result.posterImage = null;
+    }
+
+    /// <summary>Phase 10.1 — replace legacy poster UI with decorative rarity icon.</summary>
+    public static void ApplyRarityIconLayout(Transform cardRoot, MovieRarity rarity, MovieGenre genre = MovieGenre.Drama)
+    {
+        if (cardRoot == null) return;
+        var bodyRow = cardRoot.Find("BodyRow") as RectTransform;
+        if (bodyRow == null) return;
+
+        var legacyPoster = bodyRow.Find("PosterWrap");
+        if (legacyPoster != null)
+        {
+            if (Application.isPlaying) Object.Destroy(legacyPoster.gameObject);
+            else Object.DestroyImmediate(legacyPoster.gameObject);
+        }
+
+        if (bodyRow.Find("RarityIconWrap") == null)
+        {
+            var wire = new WireResult();
+            SetupRarityIconColumn(bodyRow, rarity, genre, ref wire);
+        }
+        else
+        {
+            var icon = bodyRow.Find("RarityIconWrap/RarityIcon")?.GetComponent<TextMeshProUGUI>();
+            if (icon != null)
+            {
+                icon.text = GetRarityIcon(rarity, genre);
+                icon.color = GetRarityIconColor(rarity, genre);
+            }
+
+            var frame = bodyRow.Find("RarityIconWrap")?.GetComponent<Image>();
+            if (frame != null)
+            {
+                var accent = RarityFrameColor(rarity);
+                frame.color = new Color(accent.r, accent.g, accent.b, 0.85f);
+            }
+        }
+
+        var hlg = bodyRow.GetComponent<HorizontalLayoutGroup>();
+        if (hlg != null)
+        {
+            hlg.padding = new RectOffset(10, 14, 10, 10);
+            hlg.spacing = 10;
+        }
+    }
+
+    public static string GetRarityIcon(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama) =>
+        ProductionDecorIcon.GetIcon(rarity, genre);
+
+    public static Color GetRarityIconColor(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama) =>
+        ProductionDecorIcon.GetIconColor(rarity, genre);
+
+    /// <summary>Phase 9.1: expand card internals when few offers leave free vertical space.</summary>
+    public static void ApplyExpandedLayout(RectTransform card, float targetHeight)
+    {
+        if (card == null) return;
+
+        float scale = Mathf.Clamp(targetHeight / CardPreferredHeight, 1f, HudLayoutConstants.OfferCardMaxExpanded / CardPreferredHeight);
+
+        var bodyRow = card.Find("BodyRow") as RectTransform;
+        if (bodyRow != null)
+        {
+            var le = bodyRow.GetComponent<LayoutElement>() ?? bodyRow.gameObject.AddComponent<LayoutElement>();
+            le.preferredHeight = Mathf.Max(210f, targetHeight - 64f);
+            le.minHeight = 210f;
+        }
+
+        var title = card.Find("BodyRow/InfoCol/TitleWrap/Title")?.GetComponent<TextMeshProUGUI>();
+        if (title != null)
+        {
+            title.fontSizeMax = 20f * Mathf.Min(scale, 1.18f);
+            title.fontSizeMin = 14f;
+        }
+
+        var reward = card.Find("BodyRow/InfoCol/RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>();
+        if (reward != null) reward.fontSize = 14f * Mathf.Min(scale, 1.12f);
+
+        var rep = card.Find("BodyRow/InfoCol/RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>();
+        if (rep != null) rep.fontSize = 14f * Mathf.Min(scale, 1.12f);
+
+        var selectBtn = card.Find("BodyRow/InfoCol/SelectBtn") as RectTransform;
+        if (selectBtn != null)
+        {
+            var le = selectBtn.GetComponent<LayoutElement>();
+            if (le != null) le.preferredHeight = 58f * Mathf.Min(scale, 1.12f);
+        }
+    }
 
     static Color GenreAccentColor(MovieGenre g) => g switch
     {
@@ -265,10 +359,10 @@ public static class MovieOfferCardLayoutBuilder
 
     static Color RarityFrameColor(MovieRarity r) => r switch
     {
-        MovieRarity.Legendary => new Color(1.0f, 0.84f, 0.0f, 0.25f),
-        MovieRarity.Epic      => new Color(0.63f, 0.13f, 0.94f, 0.20f),
-        MovieRarity.Rare      => new Color(0.20f, 0.60f, 0.86f, 0.20f),
-        _                     => Color.clear,
+        MovieRarity.Legendary => new Color(1.0f, 0.84f, 0.0f, 0.35f),
+        MovieRarity.Epic      => new Color(0.63f, 0.13f, 0.94f, 0.28f),
+        MovieRarity.Rare      => new Color(0.20f, 0.60f, 0.86f, 0.28f),
+        _                     => new Color(0.20f, 0.22f, 0.30f, 0.20f),
     };
 
     static Color RarityPillColor(MovieRarity r) => r switch
@@ -298,26 +392,32 @@ public static class MovieOfferCardLayoutBuilder
     {
         return new WireResult
         {
-            posterImage     = card.Find("PosterWrap/Poster")?.GetComponent<Image>(),
-            rarityFrame     = card.Find("PosterWrap/RarityFrame")?.GetComponent<Image>(),
+            posterImage     = null,
+            rarityFrame     = card.Find("BodyRow/RarityIconWrap")?.GetComponent<Image>()
+                           ?? card.Find("RarityIconWrap")?.GetComponent<Image>(),
             genreStrip      = card.Find("GenreStrip")?.GetComponent<Image>(),
-            titleText       = card.Find("TitleWrap/Title")?.GetComponent<TextMeshProUGUI>()
+            titleText       = card.Find("BodyRow/InfoCol/TitleWrap/Title")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("TitleWrap/Title")?.GetComponent<TextMeshProUGUI>()
                            ?? card.Find("Title")?.GetComponent<TextMeshProUGUI>(),
-            genreText       = card.Find("TitleWrap/Genre")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("MetaRow/Genre")?.GetComponent<TextMeshProUGUI>(),
-            rarityText      = card.Find("PosterWrap/RarityPill/Rarity")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("MetaRow/Rarity")?.GetComponent<TextMeshProUGUI>(),
-            durationText    = card.Find("InfoRow/Duration")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("Duration")?.GetComponent<TextMeshProUGUI>(),
-            rewardText      = card.Find("RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("RewardRow/Reward")?.GetComponent<TextMeshProUGUI>(),
-            repText         = card.Find("RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("RewardRow/Rep")?.GetComponent<TextMeshProUGUI>(),
-            badgesText      = card.Find("InfoRow/Badges")?.GetComponent<TextMeshProUGUI>()
-                           ?? card.Find("Badges")?.GetComponent<TextMeshProUGUI>(),
-            unlockText      = card.Find("Unlock")?.GetComponent<TextMeshProUGUI>(),
-            selectButton    = card.Find("SelectBtn")?.GetComponent<Button>(),
-            selectLabelText = card.Find("SelectBtn/Label")?.GetComponent<TextMeshProUGUI>(),
+            genreText       = card.Find("BodyRow/InfoCol/TitleWrap/Genre")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("TitleWrap/Genre")?.GetComponent<TextMeshProUGUI>(),
+            rarityText      = card.Find("BodyRow/RarityIconWrap/RarityIcon")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("RarityIconWrap/RarityIcon")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("BodyRow/PosterWrap/RarityPill/Rarity")?.GetComponent<TextMeshProUGUI>(),
+            durationText    = card.Find("BodyRow/InfoCol/InfoRow/Duration")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("InfoRow/Duration")?.GetComponent<TextMeshProUGUI>(),
+            rewardText      = card.Find("BodyRow/InfoCol/RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>(),
+            repText         = card.Find("BodyRow/InfoCol/RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>(),
+            badgesText      = card.Find("BodyRow/InfoCol/InfoRow/Badges")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("InfoRow/Badges")?.GetComponent<TextMeshProUGUI>(),
+            unlockText      = card.Find("BodyRow/InfoCol/Unlock")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("Unlock")?.GetComponent<TextMeshProUGUI>(),
+            selectButton    = card.Find("BodyRow/InfoCol/SelectBtn")?.GetComponent<Button>()
+                           ?? card.Find("SelectBtn")?.GetComponent<Button>(),
+            selectLabelText = card.Find("BodyRow/InfoCol/SelectBtn/Label")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("SelectBtn/Label")?.GetComponent<TextMeshProUGUI>(),
             lockedOverlay   = card.Find("LockedOverlay")?.gameObject,
         };
     }
@@ -328,11 +428,11 @@ public static class MovieOfferCardLayoutBuilder
 
         titleText.fontStyle = FontStyles.Bold;
         titleText.enableAutoSizing = true;
-        titleText.fontSizeMin = 13f;
-        titleText.fontSizeMax = 18f;
+        titleText.fontSizeMin = 14f;
+        titleText.fontSizeMax = 20f;
         titleText.textWrappingMode = TextWrappingModes.Normal;
         titleText.overflowMode = TextOverflowModes.Ellipsis;
-        titleText.maxVisibleLines = 1;
+        titleText.maxVisibleLines = 2;
         titleText.alignment = alignment;
 
         var le = titleText.GetComponent<LayoutElement>() ?? titleText.gameObject.AddComponent<LayoutElement>();
@@ -357,12 +457,19 @@ public static class MovieOfferCardLayoutBuilder
         return go.GetComponent<RectTransform>();
     }
 
-    static void LE(RectTransform rt, float preferredHeight, float flexibleHeight = 0f, float minHeight = 0f)
+    static void LE(RectTransform rt, float preferredHeight, float flexibleHeight = 0f, float minHeight = 0f,
+        float preferredWidth = -1f)
     {
         var le = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
         le.preferredHeight = preferredHeight;
         le.flexibleHeight = flexibleHeight;
         if (minHeight > 0f) le.minHeight = minHeight;
+        if (preferredWidth > 0f)
+        {
+            le.preferredWidth = preferredWidth;
+            le.minWidth = preferredWidth;
+            le.flexibleWidth = 0f;
+        }
     }
 
     static void Stretch(RectTransform rt)
