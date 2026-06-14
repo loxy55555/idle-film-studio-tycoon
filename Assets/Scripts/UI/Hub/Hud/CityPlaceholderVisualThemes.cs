@@ -10,9 +10,35 @@ public abstract class PlaceholderCityVisualTheme : CityVisualTheme
     protected abstract Color EquipmentTint { get; }
     protected abstract string CityLabel { get; }
 
+    // Cached within a single Apply() cycle (BuildBackground is always called first).
+    Sprite _cachedSprite;
+    bool   _spriteCacheValid;
+
+    Sprite GetRegistrySprite()
+    {
+        if (!_spriteCacheValid)
+        {
+            _cachedSprite     = CityBackgroundRegistry.Load()?.GetBackground(Tier);
+            _spriteCacheValid = true;
+        }
+        return _cachedSprite;
+    }
+
     protected override void BuildBackground(CityVisualThemeContext ctx)
     {
-        var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Background);
+        // BuildBackground is always the first Build* call inside Apply(), so reset the cache here.
+        _spriteCacheValid = false;
+
+        var root   = ctx.CreateLayerRoot(StudioVisualLayerKind.Background);
+        var sprite = GetRegistrySprite();
+
+        if (sprite != null)
+        {
+            StudioVisualShapeUtil.CreateSpriteBlock(root, $"{ThemeId}_Background", sprite);
+            return;
+        }
+
+        // Procedural fallback
         StudioVisualShapeUtil.CreateBlock(root, $"{ThemeId}_Background", BackgroundTint,
             new Vector2(0f, 0.28f), new Vector2(1f, 1f));
         StudioVisualShapeUtil.CreateBlock(root, $"{ThemeId}_Floor", SetTint,
@@ -21,6 +47,9 @@ public abstract class PlaceholderCityVisualTheme : CityVisualTheme
 
     protected override void BuildSet(CityVisualThemeContext ctx)
     {
+        // Skip colored prop blocks when a real background sprite covers the scene.
+        if (GetRegistrySprite() != null) return;
+
         var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Set);
         StudioVisualShapeUtil.CreateBlock(root, $"{ThemeId}_SetProp", SetTint,
             new Vector2(0.30f, 0.12f), new Vector2(0.70f, 0.28f));
@@ -28,6 +57,8 @@ public abstract class PlaceholderCityVisualTheme : CityVisualTheme
 
     protected override void BuildCharacter(CityVisualThemeContext ctx)
     {
+        if (GetRegistrySprite() != null) return;
+
         var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Character);
         StudioVisualShapeUtil.CreateBlock(root, $"{ThemeId}_Character", CharacterTint,
             new Vector2(0.44f, 0.12f), new Vector2(0.56f, 0.42f));
@@ -35,6 +66,8 @@ public abstract class PlaceholderCityVisualTheme : CityVisualTheme
 
     protected override void BuildEquipment(CityVisualThemeContext ctx)
     {
+        if (GetRegistrySprite() != null) return;
+
         var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Equipment);
         StudioVisualShapeUtil.CreateBlock(root, $"{ThemeId}_Equipment", EquipmentTint,
             new Vector2(0.10f, 0.18f), new Vector2(0.22f, 0.34f));

@@ -64,6 +64,8 @@ public class AwardsPanelUI : MonoBehaviour
     CitySystem      _city;
     StudioLevelSystem _studioLevel;
     bool _bound;
+    ScrollRect _scrollRect;
+    RectTransform _scrollContent;
 
     // ── Legacy serialized refs (kept for any remaining scene references) ───────
     [HideInInspector] public TextMeshProUGUI oscarCountText;
@@ -93,6 +95,11 @@ public class AwardsPanelUI : MonoBehaviour
         EnsureBuilt();
         Bind();
         PatchCompactVitrina();
+        ResetScrollToTop();
+        // On every re-entry, force LateUpdate to re-sync the responsive vitrina height.
+        // RefreshStarGrid/PatchCompactVitrina reset it to a static 672px, but LateUpdate
+        // would normally skip the fix because grid cellSize hasn't changed.
+        _vitrinaLayoutDirty = true;
     }
 
     void OnDestroy()
@@ -174,6 +181,7 @@ public class AwardsPanelUI : MonoBehaviour
         var sr = scroll.GetComponent<ScrollRect>();
         sr.horizontal = false; sr.vertical = true;
         sr.scrollSensitivity = 36f; sr.inertia = true; sr.decelerationRate = 0.135f;
+        _scrollRect = sr;
 
         var vp = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
         vp.transform.SetParent(scroll.transform, false);
@@ -186,6 +194,7 @@ public class AwardsPanelUI : MonoBehaviour
         cRT.anchorMin = new Vector2(0f, 1f); cRT.anchorMax = new Vector2(1f, 1f);
         cRT.pivot = new Vector2(0.5f, 1f); cRT.offsetMin = cRT.offsetMax = Vector2.zero;
         sr.content = cRT;
+        _scrollContent = cRT;
 
         var vlg = content.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(14, 14, 12, 16);
@@ -310,7 +319,11 @@ public class AwardsPanelUI : MonoBehaviour
         if (availW < 10f) return;
         float cellW = (availW - SHOWCASE_CELL_SPACING * (SHOWCASE_COLS - 1)) / SHOWCASE_COLS;
         if (cellW < 10f) return;
-        if (Mathf.Approximately(_vitrinaGrid.cellSize.x, cellW)) return;
+        // Skip only when cell size is already correct AND no re-entry sync is pending.
+        // _vitrinaLayoutDirty is set on every OnEnable so the frame height is always
+        // corrected after RefreshStarGrid resets it to the static 672px constant.
+        if (!_vitrinaLayoutDirty && Mathf.Approximately(_vitrinaGrid.cellSize.x, cellW)) return;
+        _vitrinaLayoutDirty = false;
         // Square cells that fill the full width
         _vitrinaGrid.cellSize = new Vector2(cellW, cellW);
         // Update the vitrina frame's preferred height accordingly
@@ -319,6 +332,24 @@ public class AwardsPanelUI : MonoBehaviour
         {
             _vitrinaFrameLE.preferredHeight = totalH;
             _vitrinaFrameLE.minHeight = totalH;
+        }
+        // Resize star icons to match the new cell size so they fill the cell properly
+        float iconSize = cellW - 4f;
+        if (_starIcons != null)
+        {
+            foreach (var icon in _starIcons)
+            {
+                if (icon == null) continue;
+                CenterSquare(icon.rectTransform, iconSize);
+            }
+        }
+        if (_starLabels != null)
+        {
+            foreach (var lbl in _starLabels)
+            {
+                if (lbl == null) continue;
+                lbl.fontSize = iconSize * 0.55f;  // scale font with cell
+            }
         }
     }
 
@@ -695,12 +726,37 @@ public class AwardsPanelUI : MonoBehaviour
         // Throttled refresh (not every frame)
     }
 
+    /// <summary>Phase 13.4C — reset scroll position to top and force layout rebuild on re-entry.</summary>
+    void ResetScrollToTop()
+    {
+        // Recover refs if they were lost (e.g. domain reload in editor)
+        if (_scrollRect == null)
+            _scrollRect = GetComponentInChildren<ScrollRect>(true);
+        if (_scrollContent == null && _scrollRect != null)
+            _scrollContent = _scrollRect.content;
+
+        if (_scrollRect != null)
+        {
+            _scrollRect.StopMovement();
+            _scrollRect.normalizedPosition = new Vector2(0f, 1f);
+        }
+
+        if (_scrollContent != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollContent);
+    }
+
     bool _vitrinaCompactPatched;
+    // Set to true on every OnEnable so LateUpdate bypasses the cellSize early-exit guard
+    // and re-syncs the vitrina frame height (root-cause fix for re-entry layout break).
+    bool _vitrinaLayoutDirty;
 
     /// <summary>Phase 13.3C — remove glass overlays and gaps on already-built vitrinas.</summary>
     void PatchCompactVitrina()
     {
-        if (_vitrinaCompactPatched) return;
+        // Allow re-run on each OnEnable so grid layout is always correct after re-entry.
+        if (_vitrinaCompactPatched && _vitrinaGrid != null
+            && _vitrinaGrid.spacing == Vector2.zero
+            && _vitrinaGrid.padding.horizontal == 0) return;
         _vitrinaCompactPatched = true;
 
         var vitrina = transform.Find("Scroll/Viewport/Content/VitrinaFrame/VitrinaInner");
@@ -717,6 +773,13 @@ public class AwardsPanelUI : MonoBehaviour
         {
             innerVLG.padding = new RectOffset(0, 0, 0, 0);
             innerVLG.spacing = 0f;
+        }
+
+        // Guarantee grid has zero gaps on every re-entry
+        if (_vitrinaGrid != null)
+        {
+            _vitrinaGrid.spacing = Vector2.zero;
+            _vitrinaGrid.padding = new RectOffset(0, 0, 0, 0);
         }
 
         var frame = vitrina.parent;

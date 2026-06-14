@@ -387,10 +387,14 @@ public class UpgradeCardUI : MonoBehaviour
     {
         EnsureBadgeReadability();
 
-        // Font size overrides for mobile readability — Phase 13.4B hierarchy
-        if (nameText   != null) { nameText.fontSize   = 30f; nameText.fontStyle   = FontStyles.Bold; }
-        if (levelText  != null) { levelText.fontSize  = 26f; levelText.fontStyle  = FontStyles.Bold; }
+        // Font size overrides for mobile readability — Phase 13.4D hierarchy
+        // nameText reduced from 34→28 so long names (Social Media Manager, etc.) fit
+        // without wrapping into the level text. Level moves to its own row via EnsureNameLevelSeparation.
+        if (nameText   != null) { nameText.fontSize   = 28f; nameText.fontStyle   = FontStyles.Bold; nameText.color = CinematicTheme.TextPrimary; nameText.overflowMode = TextOverflowModes.Ellipsis; nameText.maxVisibleLines = 2; }
+        if (levelText  != null) { levelText.fontSize  = 20f; levelText.fontStyle  = FontStyles.Bold; levelText.color = CinematicTheme.GoldBase; }
         if (costText   != null) { costText.fontSize   = 26f; costText.fontStyle   = FontStyles.Bold; }
+
+        EnsureNameLevelSeparation();
 
         if (effectText != null)
         {
@@ -469,6 +473,45 @@ public class UpgradeCardUI : MonoBehaviour
     public const float BuyBtnHeight = 44f;
 
     /// <summary>Phase 12.4B — info left, buy button pinned right (no vertical legacy stack).</summary>
+    /// <summary>
+    /// Phase 13.4D — root-cause fix for name/level overlap.
+    /// In the baked scene, LevelText is a sibling of NameText inside TopRow (HLG).
+    /// Long names (e.g. "Social Media Manager") wrap into the level text area.
+    /// Move LevelText out of TopRow and place it as a standalone row in InfoColumn
+    /// so name and level never share horizontal space.
+    /// </summary>
+    void EnsureNameLevelSeparation()
+    {
+        if (nameText == null || levelText == null) return;
+
+        var topRow = nameText.transform.parent as RectTransform;
+        if (topRow == null) return;
+
+        // Only act when levelText is still inside TopRow (first call); idempotent after.
+        if (levelText.transform.parent != topRow) return;
+
+        var infoCol = topRow.parent;
+        if (infoCol == null) return;
+
+        // Move levelText to InfoColumn, right below TopRow
+        levelText.transform.SetParent(infoCol, false);
+        levelText.transform.SetSiblingIndex(topRow.GetSiblingIndex() + 1);
+
+        // Give levelText a thin dedicated row
+        var le = levelText.GetComponent<LayoutElement>() ?? levelText.gameObject.AddComponent<LayoutElement>();
+        le.enabled = true;
+        le.ignoreLayout = false;
+        le.preferredHeight = 24f;
+        le.minHeight = 22f;
+        le.flexibleWidth = 1f;
+        le.flexibleHeight = 0f;
+
+        // NameText now owns the full TopRow width (minus Badge) — no height constraint needed
+        var nameLE = nameText.GetComponent<LayoutElement>() ?? nameText.gameObject.AddComponent<LayoutElement>();
+        nameLE.flexibleWidth = 1f;
+        nameLE.minWidth = 40f;
+    }
+
     void EnsureHorizontalBuyLayout()
     {
         AutoWireReferences();
@@ -708,6 +751,9 @@ public class UpgradeCardUI : MonoBehaviour
             }
 
             Debug.Log($"[Upgrade] OnBuyClicked Purchase()=true id={id} newLevel={_upgrades.GetLevel(upgradeConfig)}");
+            // Inform the interaction gate so it blocks card reordering for PostPurchaseGraceSec.
+            // This is the root-cause fix: cards must not shuffle before the user sees what changed.
+            UpgradeUiInteractionGate.RegisterPurchaseComplete(id);
 
             int newLevel = _upgrades.GetLevel(upgradeConfig);
             GameFeelUI.Instance?.ShowUpgradePurchase(transform as RectTransform, upgradeConfig, newLevel);

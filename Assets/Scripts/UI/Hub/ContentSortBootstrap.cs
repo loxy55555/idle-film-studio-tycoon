@@ -167,7 +167,10 @@ public class UpgradeContentSorter : MonoBehaviour
         yield return null;
         yield return new WaitForEndOfFrame();
 
-        float deadline = Time.unscaledTime + 0.75f;
+        // Extend the deadline to cover any active post-purchase grace period so cards
+        // don't reorder before the user has had time to see what changed.
+        float grace    = UpgradeUiInteractionGate.GetPostPurchaseGraceRemaining();
+        float deadline = Time.unscaledTime + Mathf.Max(0.75f, grace + 0.5f);
         while (!UpgradeUiInteractionGate.CanReorderNow() && Time.unscaledTime < deadline)
             yield return null;
 

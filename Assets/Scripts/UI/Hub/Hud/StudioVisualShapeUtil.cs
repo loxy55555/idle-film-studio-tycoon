@@ -29,6 +29,36 @@ public static class StudioVisualShapeUtil
         return rt;
     }
 
+    /// <summary>
+    /// Creates a full-bleed Image using the supplied sprite.
+    /// Stretches to fill the parent with no aspect-ratio enforcement,
+    /// so the artist should pre-crop the source image to the stage ratio.
+    /// </summary>
+    public static RectTransform CreateSpriteBlock(
+        Transform parent,
+        string     name,
+        Sprite     sprite)
+    {
+        var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+        go.transform.SetParent(parent, false);
+
+        var rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = Vector2.zero;
+        rt.anchorMax = Vector2.one;
+        rt.offsetMin = Vector2.zero;
+        rt.offsetMax = Vector2.zero;
+        rt.pivot     = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;
+
+        var img = go.GetComponent<Image>();
+        img.sprite        = sprite;
+        img.type          = Image.Type.Simple;
+        img.preserveAspect = false;
+        img.color         = Color.white;
+        img.raycastTarget = false;
+        return rt;
+    }
+
     public static void StretchFull(RectTransform rt)
     {
         if (rt == null) return;

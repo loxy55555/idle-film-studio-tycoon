@@ -879,21 +879,68 @@ public static class ContractCardFactory
 
         Button selectBtn = null;
 
+        Button rerollBtn = null;
+
 
 
         if (candidateMode)
 
         {
 
+            // Phase 13.4D — action row: [REROLL 💎5] [SELECCIONAR]
+            var actionRow = new GameObject("ActionRow", typeof(RectTransform));
+
+            actionRow.transform.SetParent(cardGo.transform, false);
+
+            var actionHLG = actionRow.AddComponent<HorizontalLayoutGroup>();
+
+            actionHLG.spacing = 6;
+
+            actionHLG.childControlWidth = actionHLG.childControlHeight = true;
+
+            actionHLG.childForceExpandWidth = false;
+
+            actionHLG.childForceExpandHeight = true;
+
+            actionRow.AddComponent<LayoutElement>().preferredHeight = 48f;
+
+
+
+            var rerollGo = new GameObject("RerollBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+
+            rerollGo.transform.SetParent(actionRow.transform, false);
+
+            HudSkinProvider.ApplyButton(rerollGo.GetComponent<Image>(), HudButtonVariant.Secondary);
+
+            rerollGo.AddComponent<UIButtonScale>();
+
+            var rerollLE = rerollGo.AddComponent<LayoutElement>();
+
+            rerollLE.preferredWidth = 100f;
+
+            rerollLE.minWidth = 90f;
+
+            rerollLE.flexibleWidth = 0f;
+
+            var rerollLbl = MakeText(rerollGo.transform, "🔁 💎5", 14, TEXT_PRI, FontStyles.Bold);
+
+            rerollLbl.alignment = TextAlignmentOptions.Center;
+
+            Stretch(rerollLbl.rectTransform);
+
+            rerollBtn = rerollGo.GetComponent<Button>();
+
+
+
             var selectGo = new GameObject("SelectBtn", typeof(RectTransform), typeof(Image), typeof(Button));
 
-            selectGo.transform.SetParent(cardGo.transform, false);
+            selectGo.transform.SetParent(actionRow.transform, false);
 
             HudSkinProvider.ApplyButton(selectGo.GetComponent<Image>(), HudButtonVariant.Primary);
 
-            selectGo.AddComponent<LayoutElement>().preferredHeight = 48; // Phase 12.3: mobile touch target
-
             selectGo.AddComponent<UIButtonScale>();
+
+            selectGo.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
             var selectLbl = MakeText(selectGo.transform, Loc.Get(LocKeys.ContractSelect), 18, TEXT_PRI, FontStyles.Bold); // Phase 12.3
 
@@ -952,6 +999,8 @@ public static class ContractCardFactory
         ui.claimButton = claimBtn;
 
         ui.selectButton = selectBtn;
+
+        ui.rerollDiamondsButton = rerollBtn;
 
         ui.isCandidateMode = candidateMode;
 
@@ -1033,15 +1082,15 @@ public static class ContractCardFactory
 
         var p = new List<string>();
 
-        if (c.rewardMoney > 0) p.Add("$" + c.rewardMoney);
+        if (c.rewardMoney > 0)      p.Add("💵 +" + AnimatedMoneyText.FormatMoney(c.rewardMoney));
 
-        if (c.rewardDiamonds > 0) p.Add("[D]" + c.rewardDiamonds);
+        if (c.rewardDiamonds > 0)   p.Add("💎 +" + c.rewardDiamonds);
 
-        if (c.rewardReputation > 0) p.Add("+" + c.rewardReputation + " REP");
+        if (c.rewardReputation > 0) p.Add("⭐ +" + c.rewardReputation + " REP");
 
-        if (c.rewardStudioXP > 0) p.Add("+" + c.rewardStudioXP + " XP");
+        if (c.rewardStudioXP > 0)   p.Add("📈 +" + c.rewardStudioXP + " XP");
 
-        return string.Join(" · ", p);
+        return p.Count > 0 ? string.Join("  ", p) : "—";
 
     }
 

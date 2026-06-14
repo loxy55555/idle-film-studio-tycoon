@@ -19,7 +19,10 @@ public class ContractCardUI : MonoBehaviour
     public Slider          progressBar;
     public Button          claimButton;
     public Button          selectButton;
+    public Button          rerollDiamondsButton;   // Phase 13.4D: reroll via 5 diamonds
     public GameObject      completedBadge;
+
+    const int RerollDiamondCost = 5;
 
     ContractSystem    _contracts;
     StudioManager     _studio;
@@ -100,6 +103,11 @@ public class ContractCardUI : MonoBehaviour
         {
             selectButton.onClick.RemoveListener(OnSelectClicked);
             selectButton.onClick.AddListener(OnSelectClicked);
+        }
+        if (rerollDiamondsButton != null)
+        {
+            rerollDiamondsButton.onClick.RemoveListener(OnRerollDiamondsClicked);
+            rerollDiamondsButton.onClick.AddListener(OnRerollDiamondsClicked);
         }
     }
 
@@ -206,11 +214,11 @@ public class ContractCardUI : MonoBehaviour
     string BuildRewardString()
     {
         var parts = new System.Collections.Generic.List<string>();
-        if (contract.rewardMoney > 0) parts.Add(AnimatedMoneyText.FormatMoney(contract.rewardMoney));
-        if (contract.rewardDiamonds > 0) parts.Add($"[D]{contract.rewardDiamonds}");
-        if (contract.rewardReputation > 0) parts.Add($"+{contract.rewardReputation:0} REP");
-        if (contract.rewardStudioXP > 0) parts.Add($"+{contract.rewardStudioXP} XP");
-        return string.Join("  ", parts);
+        if (contract.rewardMoney > 0)      parts.Add($"💵 +{AnimatedMoneyText.FormatMoney(contract.rewardMoney)}");
+        if (contract.rewardDiamonds > 0)   parts.Add($"💎 +{contract.rewardDiamonds}");
+        if (contract.rewardReputation > 0) parts.Add($"⭐ +{contract.rewardReputation:0} REP");
+        if (contract.rewardStudioXP > 0)   parts.Add($"📈 +{contract.rewardStudioXP} XP");
+        return parts.Count > 0 ? string.Join("  ", parts) : "—";
     }
 
     void OnClaimClicked()
@@ -223,5 +231,31 @@ public class ContractCardUI : MonoBehaviour
     {
         if (contract == null || _contracts == null) return;
         _contracts.SelectCandidate(contract);
+    }
+
+    void OnRerollDiamondsClicked()
+    {
+        if (contract == null || _contracts == null) return;
+
+        var diamonds = GameHub.Instance?.diamonds;
+        if (diamonds == null) return;
+
+        if (diamonds.Balance < RerollDiamondCost)
+        {
+            Debug.Log($"[ContractCardUI] Reroll failed: not enough diamonds ({diamonds.Balance} < {RerollDiamondCost})");
+            return;
+        }
+
+        if (!diamonds.TrySpend(RerollDiamondCost))
+            return;
+
+        int level = _studioLevel?.Level ?? 1;
+        bool ok = _contracts.RerollCandidate(contract, level);
+        if (!ok)
+        {
+            // No alternatives available — refund
+            diamonds.Add(RerollDiamondCost);
+            Debug.Log("[ContractCardUI] Reroll refunded: no alternatives available.");
+        }
     }
 }

@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public static class MovieOfferCardLayoutBuilder
 {
     public const string LayoutMarkerName = "MovieOfferCard_v5";
-    public const float RarityIconWidth   = 84f;
-    public const float TitleRowHeight    = 34f;
-    public const float CompactBodyHeight = 248f;
-    public const float CardPreferredHeight = HudLayoutConstants.OfferCardBaseHeight;
+    public const float RarityIconWidth   = 98f;
+    // Phase 13.4D — increased font sizes for mobile legibility; card + body heights adjusted
+    public const float TitleRowHeight    = 38f;   // was 34
+    public const float CompactBodyHeight = 296f;  // was 248 — accommodates larger fonts
+    public const float CardPreferredHeight = 356f; // was HudLayoutConstants.OfferCardBaseHeight (300)
 
     static readonly Color TextPrimary    = Color.white;
     static readonly Color TextSecondary  = new Color(0.54f, 0.54f, 0.67f);
@@ -122,8 +123,9 @@ public static class MovieOfferCardLayoutBuilder
         SetupRarityIconColumn(bodyRow.transform as RectTransform, cfg?.rarity ?? MovieRarity.Common,
             cfg?.genre ?? MovieGenre.Drama, ref result);
 
+        // Phase 13.4D — larger fonts for comfortable mobile reading without zoom
         result.titleText = RuntimeTmpText.Create(bodyRow.transform, cfg?.movieName ?? string.Empty,
-            22f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Title");
+            28f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Title");
         result.titleText.textWrappingMode = TextWrappingModes.Normal;
         result.titleText.overflowMode = TextOverflowModes.Ellipsis;
         result.titleText.maxVisibleLines = 2;
@@ -131,18 +133,18 @@ public static class MovieOfferCardLayoutBuilder
         LE(result.titleText.rectTransform, TitleRowHeight);
 
         result.genreText = RuntimeTmpText.Create(bodyRow.transform, cfg != null ? GenreLabel(cfg.genre) : string.Empty,
-            13f, cfg != null ? GenreAccentColor(cfg.genre) : TextSecondary, FontStyles.Bold,
+            17f, cfg != null ? GenreAccentColor(cfg.genre) : TextSecondary, FontStyles.Bold,
             TextAlignmentOptions.MidlineLeft, "Genre");
         result.genreText.raycastTarget = false;
-        LE(result.genreText.rectTransform, 18f);
+        LE(result.genreText.rectTransform, 22f);
 
         result.durationText = RuntimeTmpText.Create(bodyRow.transform, "⏱ —",
-            15f, TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Duration");
+            18f, TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Duration");
         result.durationText.raycastTarget = false;
-        LE(result.durationText.rectTransform, 18f);
+        LE(result.durationText.rectTransform, 22f);
 
         var rewardRow = CreatePanel(bodyRow.transform, "RewardRow", Color.clear);
-        LE(rewardRow, 20f);
+        LE(rewardRow, 24f);
         var rewardHLG = rewardRow.gameObject.AddComponent<HorizontalLayoutGroup>();
         rewardHLG.spacing = 8;
         rewardHLG.childAlignment = TextAnchor.MiddleLeft;
@@ -151,14 +153,14 @@ public static class MovieOfferCardLayoutBuilder
         rewardHLG.childForceExpandHeight = false;
 
         result.rewardText = RuntimeTmpText.Create(rewardRow.transform, "💵 —",
-            14f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Reward");
+            17f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Reward");
         result.rewardText.raycastTarget = false;
         result.rewardText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         result.repText = RuntimeTmpText.Create(rewardRow.transform, "🏆 —",
-            14f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Rep");
+            17f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Rep");
         result.repText.raycastTarget = false;
-        result.repText.gameObject.AddComponent<LayoutElement>().preferredWidth = 72f;
+        result.repText.gameObject.AddComponent<LayoutElement>().preferredWidth = 80f;
 
         result.badgesText = RuntimeTmpText.Create(bodyRow.transform, string.Empty,
             11f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Badges");
@@ -564,16 +566,17 @@ public static class MovieOfferCardLayoutBuilder
     {
         if (bodyRow == null) return;
 
-        EnsureRowLE(bodyRow.Find("Title") as RectTransform, TitleRowHeight);
-        EnsureRowLE(bodyRow.Find("Genre") as RectTransform, 14f);
-        EnsureRowLE(bodyRow.Find("Duration") as RectTransform, 18f);
+        // Phase 13.4D — row heights match the increased font sizes
+        EnsureRowLE(bodyRow.Find("Title") as RectTransform, TitleRowHeight);      // 38
+        EnsureRowLE(bodyRow.Find("Genre") as RectTransform, 22f);                  // was 14
+        EnsureRowLE(bodyRow.Find("Duration") as RectTransform, 22f);               // was 18
 
         var rewardRow = bodyRow.Find("RewardRow") as RectTransform;
         if (rewardRow != null)
         {
             var rwLE = rewardRow.GetComponent<LayoutElement>() ?? rewardRow.gameObject.AddComponent<LayoutElement>();
-            rwLE.preferredHeight = 20f;
-            rwLE.minHeight = 20f;
+            rwLE.preferredHeight = 24f;   // was 20
+            rwLE.minHeight = 22f;
             rwLE.flexibleHeight = 0f;
         }
     }

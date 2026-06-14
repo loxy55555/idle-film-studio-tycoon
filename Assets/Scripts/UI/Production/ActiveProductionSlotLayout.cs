@@ -68,11 +68,11 @@ public static class ActiveProductionSlotLayout
 
         var iconWrap = CreatePanel(refs.bodyRow, "RarityIconWrap", Color.clear);
         var iconLE = iconWrap.gameObject.AddComponent<LayoutElement>();
-        iconLE.preferredWidth  = 60f;
-        iconLE.minWidth        = 60f;
+        iconLE.preferredWidth  = 70f;
+        iconLE.minWidth        = 70f;
         iconLE.flexibleWidth   = 0f;
-        iconLE.preferredHeight = 60f;
-        iconLE.minHeight       = 60f;
+        iconLE.preferredHeight = 70f;
+        iconLE.minHeight       = 70f;
         iconLE.flexibleHeight  = 0f;
         refs.rarityFrame = iconWrap.GetComponent<Image>();
         refs.rarityFrame.color = Color.clear;

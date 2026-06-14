@@ -32,8 +32,17 @@ public sealed class City1GarageTheme : CityVisualTheme
 
     protected override void BuildBackground(CityVisualThemeContext ctx)
     {
-        var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Background);
+        var root   = ctx.CreateLayerRoot(StudioVisualLayerKind.Background);
+        var sprite = CityBackgroundRegistry.Load()?.GetBackground(Tier);
 
+        if (sprite != null)
+        {
+            // Real background art — the procedural garage layers still render on top.
+            StudioVisualShapeUtil.CreateSpriteBlock(root, BackgroundMarker, sprite);
+            return;
+        }
+
+        // Procedural fallback: detailed garage scene.
         StudioVisualShapeUtil.CreateBlock(root, BackgroundMarker, WallDark,
             new Vector2(0f, 0.30f), new Vector2(1f, 1f));
         StudioVisualShapeUtil.CreateBlock(root, "Garage_WallAccentLeft", WallAccent,

@@ -32,28 +32,27 @@ public class ScreenshotCaptureHelper : MonoBehaviour
         FixCanvasGroups();
 
         // --- ESTUDIO (default) ---
-        CaptureSync(ScreenshotDir + "fase134b_ESTUDIO_s.png", "ESTUDIO");
+        CaptureSync(ScreenshotDir + "fase134c_estudio.png", "ESTUDIO");
 
         // --- MEJORAS tab ---
         ClickTab("MEJORAS");
         Canvas.ForceUpdateCanvases();
         FixCanvasGroups();
-        CaptureSync(ScreenshotDir + "fase134b_MEJORAS_s.png", "MEJORAS");
+        CaptureSync(ScreenshotDir + "fase134c_mejoras.png", "MEJORAS");
 
-        // --- PRODUCCION (bottom nav 1) ---
-        ClickBottomNav(1);
+        // --- PRODUCCION (bottom nav) ---
+        ClickBottomNavByLabel("PRODUCCIÓN");
         Canvas.ForceUpdateCanvases();
         FixCanvasGroups();
-        CaptureSync(ScreenshotDir + "fase134b_PRODUCCION_s.png", "PRODUCCION");
+        CaptureSync(ScreenshotDir + "fase134c_produccion.png", "PRODUCCION");
 
-        // --- PREMIOS (bottom nav 2) ---
-        ClickBottomNav(2);
+        // --- PREMIOS (bottom nav) ---
+        ClickBottomNavByLabel("PREMIOS");
         Canvas.ForceUpdateCanvases();
-        // Manually trigger grid resize (mimics LateUpdate from AwardsPanelUI)
         ForceAwardsPanelGridResize();
         Canvas.ForceUpdateCanvases();
         FixCanvasGroups();
-        CaptureSync(ScreenshotDir + "fase134b_PREMIOS_s.png", "PREMIOS");
+        CaptureSync(ScreenshotDir + "fase134c_premios.png", "PREMIOS");
 
         File.WriteAllText(Application.dataPath + "/SSH_done.txt",
             "Done " + System.DateTime.Now.ToString("HH:mm:ss"));
@@ -198,5 +197,33 @@ public class ScreenshotCaptureHelper : MonoBehaviour
             Debug.Log("[SSH] BottomNav[" + index + "] clicked");
         }
         else Debug.LogWarning("[SSH] BottomNav " + index + " OOB (" + btns.Length + ")");
+    }
+
+    static void ClickBottomNavByLabel(string label)
+    {
+        var allBtns = FindObjectsByType<Button>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        foreach (var btn in allBtns)
+        {
+            if (!btn.gameObject.activeInHierarchy) continue;
+            var lbl = btn.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+            if (lbl != null && lbl.text != null && lbl.text.ToUpper().Contains(label.ToUpper()))
+            {
+                // Only click bottom nav buttons (short names)
+                if (lbl.text.Length <= 15 && !lbl.text.Contains(" "))
+                {
+                    btn.onClick.Invoke();
+                    Debug.Log("[SSH] ClickBottomNavByLabel clicked: " + lbl.text);
+                    return;
+                }
+            }
+            // Also match by button name
+            if (btn.name != null && btn.name.ToUpper().Contains("TAB_" + label.Replace("Ó","O").Replace("ó","o").ToUpper()))
+            {
+                btn.onClick.Invoke();
+                Debug.Log("[SSH] ClickBottomNavByLabel (name) clicked: " + btn.name);
+                return;
+            }
+        }
+        Debug.LogWarning("[SSH] ClickBottomNavByLabel not found: " + label);
     }
 }

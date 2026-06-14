@@ -132,6 +132,52 @@ public class ContractSystem : MonoBehaviour
         OnContractUpdated?.Invoke();
     }
 
+    /// <summary>
+    /// Phase 13.4D — Reroll a single candidate contract without touching the others.
+    /// Replaces <paramref name="old"/> with a new random eligible contract drawn from
+    /// a pool that excludes every currently visible candidate and the old entry itself.
+    /// Returns false if there are no alternatives available.
+    /// </summary>
+    public bool RerollCandidate(ContractConfig old, int studioLevel)
+    {
+        if (old == null || HasActiveContract) return false;
+        int idx = _candidates.IndexOf(old);
+        if (idx < 0) return false;
+
+        // Build exclusion set: all current candidates + old itself
+        var exclude = new HashSet<string>();
+        foreach (var c in _candidates) exclude.Add(c.id);
+        foreach (var c in _active) exclude.Add(c.id);
+        foreach (var c in _history) exclude.Add(c.id);
+        foreach (var id in _permanentlyDone) exclude.Add(id);
+        foreach (var id in _readyToClaim) exclude.Add(id);
+
+        // Old candidate is already in exclude; try to find a replacement
+        var eligible = new List<ContractConfig>();
+        foreach (var c in allContracts)
+        {
+            if (c == null || exclude.Contains(c.id)) continue;
+            if (!c.repeatable && _permanentlyDone.Contains(c.id)) continue;
+            if (studioLevel < c.unlockStudioLevel) continue;
+            if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsContractUnlocked(c)) continue;
+            eligible.Add(c);
+        }
+
+        if (eligible.Count == 0)
+        {
+            Debug.LogWarning("[ContractSystem] Reroll: no alternative contracts available.");
+            return false;
+        }
+
+        var replacement = eligible[UnityEngine.Random.Range(0, eligible.Count)];
+        _candidates[idx] = replacement;
+
+        Debug.Log($"[ContractSystem] Rerolled [{old.contractTitle}] → [{replacement.contractTitle}]");
+        OnContractUpdated?.Invoke();
+        GameHub.Instance?.save?.Save("ContractReroll");
+        return true;
+    }
+
     public bool SelectCandidate(ContractConfig contract)
     {
         if (contract == null || HasActiveContract) return false;
@@ -524,16 +570,53 @@ public class ContractSystem : MonoBehaviour
         var eligible = new List<ContractConfig>();
         if (allContracts == null) return eligible;
 
+        var city = GameHub.Instance?.city;
+
         foreach (var c in allContracts)
         {
             if (c == null || exclude.Contains(c.id)) continue;
             if (!c.repeatable && _permanentlyDone.Contains(c.id)) continue;
             if (studioLevel < c.unlockStudioLevel) continue;
-            if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsContractUnlocked(c)) continue;
+            if (city != null && !city.IsContractUnlocked(c)) continue;
+
+            // Phase 13.4D — genre-feasibility guard:
+            // For ProduceMoviesByGenre contracts, verify the player can actually produce
+            // at least one movie of the target genre at the current city level.
+            // Without this check, contracts like "Produce Drama" appear when Drama movies
+            // are gated behind a higher city level the player has not yet reached.
+            if (c.goalType == ContractGoalType.ProduceMoviesByGenre && city != null)
+            {
+                bool anyMovieAvailable = false;
+                var catalog = GetCatalog();
+                if (catalog != null)
+                {
+                    foreach (var m in catalog)
+                    {
+                        if (m == null) continue;
+                        if (m.genre != c.targetGenre) continue;
+                        if (city.IsMovieUnlocked(m)) { anyMovieAvailable = true; break; }
+                    }
+                }
+                if (!anyMovieAvailable)
+                {
+                    Debug.Log($"[ContractSystem] Skipping '{c.id}' ({c.targetGenre}): no {c.targetGenre} movies available at current city level.");
+                    continue;
+                }
+            }
+
             eligible.Add(c);
         }
 
         return eligible;
+    }
+
+    static MovieConfig[] _catalogCache;
+    static MovieConfig[] GetCatalog()
+    {
+        if (_catalogCache != null) return _catalogCache;
+        var reg = UnityEngine.Resources.Load<MovieCatalogRuntimeRegistry>(MovieCatalogRuntimeRegistry.ResourceName);
+        _catalogCache = reg != null ? reg.movies : System.Array.Empty<MovieConfig>();
+        return _catalogCache;
     }
 
     ContractConfig FindContract(string id)
