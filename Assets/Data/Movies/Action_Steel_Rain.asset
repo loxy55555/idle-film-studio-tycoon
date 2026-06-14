@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: SteelRain.png
-  posterSprite: {fileID: 4567799771608425575, guid: 45308f539e340c04898bc20ca1675b03, type: 3}
+  posterSprite: {fileID: 21300000, guid: 45308f539e340c04898bc20ca1675b03, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

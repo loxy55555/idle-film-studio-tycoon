@@ -17,21 +17,27 @@ public class BonificationsBarUI : MonoBehaviour
     TextMeshProUGUI _objectiveText;
     Slider          _levelXpBar;
 
+    AnimatedValueText _repAnimator;
+    AnimatedValueText _xpAnimator;
+    SmoothProgressBar _xpBarAnimator;
+    int _lastLevel = -1;
+
     bool  _subscribed;
+    bool  _citySubscribed;
     float _nextPoll;
 
-    static readonly Color C_POSITIVE  = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color C_NEUTRAL   = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color C_GOLD      = new Color(0.95f, 0.77f, 0.06f);
-    static readonly Color BG_BAR      = new Color(0.08f, 0.09f, 0.16f);
-    static readonly Color BG_CELL     = new Color(0.11f, 0.13f, 0.22f);
-    static readonly Color BG_BADGE    = new Color(0.05f, 0.06f, 0.12f);
-    static readonly Color BG_INFO     = new Color(0.07f, 0.08f, 0.14f);
-    static readonly Color TEXT_DIM    = new Color(0.45f, 0.46f, 0.58f);
-    static readonly Color ACCENT_LINE = new Color(0.18f, 0.80f, 0.44f, 0.90f);
-    static readonly Color ACCENT_DIM  = new Color(0.18f, 0.80f, 0.44f, 0.25f);
-    static readonly Color BAR_BG      = new Color(0.10f, 0.11f, 0.20f);
-    static readonly Color BAR_FILL    = new Color(0.18f, 0.80f, 0.44f);
+    static readonly Color C_POSITIVE  = CinematicTheme.GoldBase;
+    static readonly Color C_NEUTRAL   = CinematicTheme.TextSecondary;
+    static readonly Color C_GOLD      = CinematicTheme.GoldBright;
+    static readonly Color BG_BAR      = CinematicTheme.DeepBg;
+    static readonly Color BG_CELL     = CinematicTheme.CardBg;
+    static readonly Color BG_BADGE    = CinematicTheme.DeepBg;
+    static readonly Color BG_INFO     = CinematicTheme.PanelBg;
+    static readonly Color TEXT_DIM    = CinematicTheme.TextDim;
+    static readonly Color ACCENT_LINE = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.90f);
+    static readonly Color ACCENT_DIM  = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.22f);
+    static readonly Color BAR_BG      = CinematicTheme.DeepBg;
+    static readonly Color BAR_FILL    = CinematicTheme.GoldBase;
 
     void Awake()
     {
@@ -57,6 +63,7 @@ public class BonificationsBarUI : MonoBehaviour
     void OnDestroy()
     {
         GameHub.OnGameReady -= OnGameReady;
+        UnbindCity();
         if (_subscribed && GameHub.Instance != null)
         {
             if (GameHub.Instance.studio      != null) GameHub.Instance.studio.OnProductionsChanged -= Refresh;
@@ -77,7 +84,27 @@ public class BonificationsBarUI : MonoBehaviour
         }
         Refresh();
         RefreshStudioHeader();
+        BindCity();
     }
+
+    void BindCity()
+    {
+        UnbindCity();
+        var city = GameHub.Instance?.city;
+        if (city == null) return;
+        city.OnCityLevelChanged += OnCityChanged;
+        _citySubscribed = true;
+    }
+
+    void UnbindCity()
+    {
+        var city = GameHub.Instance?.city;
+        if (city != null && _citySubscribed)
+            city.OnCityLevelChanged -= OnCityChanged;
+        _citySubscribed = false;
+    }
+
+    void OnCityChanged(int _) => RefreshStudioHeader();
 
     void OnLevelUp(int _) => Refresh();
 
@@ -101,9 +128,23 @@ public class BonificationsBarUI : MonoBehaviour
         bg.raycastTarget = false;
 
         var le = GetComponent<LayoutElement>() ?? gameObject.AddComponent<LayoutElement>();
-        le.preferredHeight = HudLayoutConstants.StudioSummaryHeight;
-        le.minHeight       = 100f;
+        le.preferredHeight = 118f;
+        le.minHeight       = 118f;
         le.flexibleHeight  = 0f;
+
+        var barHLG = GetComponent<HorizontalLayoutGroup>();
+        if (barHLG != null)
+        {
+            if (Application.isPlaying) Destroy(barHLG);
+            else DestroyImmediate(barHLG);
+        }
+
+        var barVLG = GetComponent<VerticalLayoutGroup>() ?? gameObject.AddComponent<VerticalLayoutGroup>();
+        barVLG.childAlignment = TextAnchor.UpperLeft;
+        barVLG.childForceExpandWidth = true;
+        barVLG.childForceExpandHeight = true;
+        barVLG.spacing = 0;
+        barVLG.padding = new RectOffset(0, 0, 0, 0);
 
         var marker = new GameObject(CompactMarker, typeof(RectTransform));
         marker.transform.SetParent(transform, false);
@@ -112,7 +153,9 @@ public class BonificationsBarUI : MonoBehaviour
         row.transform.SetParent(transform, false);
         row.GetComponent<Image>().color = BG_INFO;
         row.GetComponent<Image>().raycastTarget = false;
-        row.AddComponent<LayoutElement>().preferredHeight = HudLayoutConstants.StudioSummaryHeight - 6f;
+        var rowLE = row.AddComponent<LayoutElement>();
+        rowLE.preferredHeight = 112f;
+        rowLE.flexibleWidth = 1f;
 
         var hlg = row.AddComponent<HorizontalLayoutGroup>();
         hlg.padding = new RectOffset(12, 12, 8, 8);
@@ -120,15 +163,16 @@ public class BonificationsBarUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = true;
+        hlg.childAlignment = TextAnchor.MiddleLeft;
 
-        // Level badge
+        // Level badge — wider for mobile readability
         var badge = new GameObject("LevelBadge", typeof(RectTransform), typeof(Image));
         badge.transform.SetParent(row.transform, false);
         badge.GetComponent<Image>().color = BG_BADGE;
         badge.GetComponent<Image>().raycastTarget = false;
-        badge.AddComponent<LayoutElement>().preferredWidth = 56f;
+        badge.AddComponent<LayoutElement>().preferredWidth = 72f;
         _levelNumText = RuntimeTmpText.Create(badge.transform, "1",
-            22f, ACCENT_LINE, FontStyles.Bold, TextAlignmentOptions.Center, "LevelNum");
+            30f, ACCENT_LINE, FontStyles.Bold, TextAlignmentOptions.Center, "LevelNum");
         _levelNumText.raycastTarget = false;
 
         // Info column
@@ -137,31 +181,33 @@ public class BonificationsBarUI : MonoBehaviour
         info.AddComponent<LayoutElement>().flexibleWidth = 1f;
         var vlg = info.AddComponent<VerticalLayoutGroup>();
         vlg.spacing = 4;
+        vlg.childAlignment = TextAnchor.UpperLeft;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
         var meta = new GameObject("MetaRow", typeof(RectTransform));
         meta.transform.SetParent(info.transform, false);
-        meta.AddComponent<LayoutElement>().preferredHeight = 18f;
+        meta.AddComponent<LayoutElement>().preferredHeight = 26f;
         var metaHLG = meta.AddComponent<HorizontalLayoutGroup>();
         metaHLG.spacing = 8;
+        metaHLG.childAlignment = TextAnchor.MiddleLeft;
         metaHLG.childControlWidth = metaHLG.childControlHeight = true;
         metaHLG.childForceExpandWidth = false;
         metaHLG.childForceExpandHeight = true;
 
         _repLineText = RuntimeTmpText.Create(meta.transform, "★ 0 REP",
-            13f, C_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "RepLine");
+            16f, C_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "RepLine");
         _repLineText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         _xpLineText = RuntimeTmpText.Create(meta.transform, "0 / 120 XP",
-            11f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineRight, "XpLine");
-        _xpLineText.gameObject.AddComponent<LayoutElement>().preferredWidth = 110f;
+            13f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "XpLine");
+        _xpLineText.gameObject.AddComponent<LayoutElement>().preferredWidth = 120f;
 
         var xpBarGo = new GameObject("XpBar", typeof(RectTransform), typeof(Image), typeof(Slider));
         xpBarGo.transform.SetParent(info.transform, false);
         xpBarGo.GetComponent<Image>().color = BAR_BG;
-        xpBarGo.AddComponent<LayoutElement>().preferredHeight = 8f;
+        xpBarGo.AddComponent<LayoutElement>().preferredHeight = 10f;
         _levelXpBar = xpBarGo.GetComponent<Slider>();
         _levelXpBar.minValue = 0f;
         _levelXpBar.maxValue = 1f;
@@ -177,12 +223,33 @@ public class BonificationsBarUI : MonoBehaviour
         ReadOnlySlider.Configure(_levelXpBar);
 
         _bonusSummaryText = RuntimeTmpText.Create(info.transform, "Ingresos +0% · REP +0% · Vel +0%",
-            10f, C_POSITIVE, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "BonusSummary");
-        _bonusSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 14f;
+            12f, CinematicTheme.GoldBase, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "BonusSummary");
+        _bonusSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+
+        EnsureAnimatedStats(info.transform);
 
         _objectiveText = RuntimeTmpText.Create(info.transform, "Próximo nivel",
-            9f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Objective");
-        _objectiveText.gameObject.AddComponent<LayoutElement>().preferredHeight = 12f;
+            11f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Objective");
+        _objectiveText.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
+    }
+
+    void EnsureAnimatedStats(Transform infoRoot)
+    {
+        if (_repLineText != null && _repAnimator == null)
+        {
+            _repAnimator = _repLineText.gameObject.GetComponent<AnimatedValueText>()
+                        ?? _repLineText.gameObject.AddComponent<AnimatedValueText>();
+        }
+
+        if (_xpLineText != null && _xpAnimator == null)
+        {
+            _xpAnimator = _xpLineText.gameObject.GetComponent<AnimatedValueText>()
+                       ?? _xpLineText.gameObject.AddComponent<AnimatedValueText>();
+        }
+
+        if (_levelXpBar != null && _xpBarAnimator == null)
+            _xpBarAnimator = _levelXpBar.GetComponent<SmoothProgressBar>()
+                          ?? _levelXpBar.gameObject.AddComponent<SmoothProgressBar>();
     }
 
     static void StretchRT(RectTransform rt)
@@ -209,6 +276,8 @@ public class BonificationsBarUI : MonoBehaviour
             foreach (var s in GetComponentsInChildren<Slider>(true))
                 if (s.name == "XpBar") { _levelXpBar = s; break; }
         }
+
+        EnsureAnimatedStats(transform);
     }
 
     TextMeshProUGUI FindTmp(string n)
@@ -233,18 +302,47 @@ public class BonificationsBarUI : MonoBehaviour
         var ST = hub.studio;
 
         int stuLevel = SL != null ? SL.Level : 1;
-        if (_levelNumText != null) _levelNumText.text = stuLevel.ToString();
+        if (_levelNumText != null)
+        {
+            if (_lastLevel >= 0 && stuLevel > _lastLevel)
+                UIAnimationService.PlayUpgradeFeedback(_levelNumText.rectTransform, null, _levelNumText);
+            _levelNumText.text = stuLevel.ToString();
+            _lastLevel = stuLevel;
+        }
 
         float rep = ST != null ? ST.reputation : 0f;
-        if (_repLineText != null) _repLineText.text = $"★ {rep:0.#} REP";
+        if (_repLineText != null)
+        {
+            if (_repAnimator != null)
+            {
+                _repAnimator.Mode = AnimatedValueText.FormatMode.OneDecimal;
+                _repAnimator.Prefix = "★ ";
+                _repAnimator.Suffix = " REP";
+                _repAnimator.SetValue(rep);
+            }
+            else
+                _repLineText.text = $"★ {rep:0.#} REP";
+        }
 
         if (SL != null)
         {
             if (_xpLineText != null)
-                _xpLineText.text = $"{SL.XP:0} / {SL.XPToNext:0} XP";
+            {
+                if (_xpAnimator != null)
+                {
+                    _xpAnimator.Mode = AnimatedValueText.FormatMode.CustomPrefixSuffix;
+                    _xpAnimator.Prefix = "";
+                    _xpAnimator.Suffix = $" / {SL.XPToNext:0} XP";
+                    _xpAnimator.SetValue(SL.XP);
+                }
+                else
+                    _xpLineText.text = $"{SL.XP:0} / {SL.XPToNext:0} XP";
+            }
             if (_objectiveText != null)
                 _objectiveText.text = $"Próximo nivel · {Mathf.Max(0f, SL.XPToNext - SL.XP):0} XP restantes";
-            if (_levelXpBar != null)
+            if (_xpBarAnimator != null)
+                _xpBarAnimator.SetNormalized(SL.XPToNext > 0f ? Mathf.Clamp01(SL.XP / SL.XPToNext) : 0f);
+            else if (_levelXpBar != null)
                 _levelXpBar.value = SL.XPToNext > 0f ? Mathf.Clamp01(SL.XP / SL.XPToNext) : 0f;
         }
 
@@ -262,14 +360,37 @@ public class BonificationsBarUI : MonoBehaviour
         var estudio = GameObject.Find("EstudioPanel");
         if (estudio == null) return;
 
-        var levelLine = estudio.transform.Find("StudioHeader/XpBlock/LevelLineText")?.GetComponent<TextMeshProUGUI>();
-        var xpText    = estudio.transform.Find("StudioHeader/XpBlock/XPText")?.GetComponent<TextMeshProUGUI>();
-        var repText   = estudio.transform.Find("StudioHeader/RepBlock/RepText")?.GetComponent<TextMeshProUGUI>();
+        var header = estudio.transform.Find("StudioHeader");
+        var iconTxt = header?.Find("Icon/IconTxt")?.GetComponent<TextMeshProUGUI>();
+        var levelLine = header?.Find("XpBlock/LevelLineText")?.GetComponent<TextMeshProUGUI>();
+        var xpText    = header?.Find("XpBlock/XPText")?.GetComponent<TextMeshProUGUI>();
+        var repText   = header?.Find("RepBlock/RepText")?.GetComponent<TextMeshProUGUI>();
 
         var SL     = hub.studioLevel;
         var studio = hub.studio;
-        if (SL != null && levelLine != null) levelLine.text = $"Nv. {SL.Level}";
-        if (SL != null && xpText    != null) xpText.text    = $"{SL.XP:0}/{SL.XPToNext:0} XP";
+        var city   = hub.city;
+
+        if (iconTxt != null)
+        {
+            string cityName = city != null
+                ? CityLevelDatabase.GetLevel(city.Level).displayName
+                : "ESTUDIO";
+            iconTxt.text = cityName.ToUpperInvariant();
+            iconTxt.fontStyle = FontStyles.Bold;
+            iconTxt.color = CinematicTheme.TextPrimary;
+            // Font size is auto-sized between 14-20 by DefinitiveHudBootstrap
+        }
+
+        if (SL != null && levelLine != null)
+        {
+            levelLine.text = $"Nivel {SL.Level}";
+            levelLine.alignment = TextAlignmentOptions.MidlineLeft;
+        }
+        if (SL != null && xpText != null)
+        {
+            xpText.text = $"{SL.XP:0}/{SL.XPToNext:0} XP";
+            xpText.alignment = TextAlignmentOptions.MidlineLeft;
+        }
         if (studio != null && repText != null) repText.text = $"{studio.reputation:0} REP";
     }
 

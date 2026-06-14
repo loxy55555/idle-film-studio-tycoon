@@ -2,16 +2,16 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Smoothly tweens a Slider value instead of snapping.</summary>
+/// <summary>Smoothly tweens a Slider value via UIAnimationService.</summary>
 [RequireComponent(typeof(Slider))]
 public class SmoothProgressBar : MonoBehaviour
 {
-    [SerializeField] private float duration = 0.25f;
+    [SerializeField] float duration = UIAnimationService.BarDuration;
 
-    private Slider _slider;
-    private Tween  _tween;
+    Slider _slider;
+    Tween  _tween;
 
-    private void Awake()
+    void Awake()
     {
         _slider = GetComponent<Slider>();
         ReadOnlySlider.Configure(_slider);
@@ -20,15 +20,14 @@ public class SmoothProgressBar : MonoBehaviour
     public void SetTarget(float value, float max)
     {
         if (_slider == null) return;
-        _slider.maxValue = max;
         _tween?.Kill();
-        _tween = _slider.DOValue(value, duration).SetEase(Ease.OutCubic).SetUpdate(true);
+        _tween = UIAnimationService.AnimateProgressBar(_slider, value, max, duration);
     }
 
     public void SetNormalized(float normalized)
     {
         if (_slider == null) return;
         _tween?.Kill();
-        _tween = _slider.DOValue(normalized, duration).SetEase(Ease.OutCubic).SetUpdate(true);
+        _tween = UIAnimationService.AnimateProgressBarNormalized(_slider, normalized, duration);
     }
 }

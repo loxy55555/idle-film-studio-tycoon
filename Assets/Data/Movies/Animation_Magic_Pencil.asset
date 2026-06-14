@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: MagicPencil.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: c207e65b82d17e54698a86ef4e662c69, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

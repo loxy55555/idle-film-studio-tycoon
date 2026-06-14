@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 1
   genreIconKey: 
   posterFile: WhentheRiverSleeps.png
-  posterSprite: {fileID: -4609471194128046340, guid: dcc9079dae20daf48bef27af0bbe424a, type: 3}
+  posterSprite: {fileID: 21300000, guid: dcc9079dae20daf48bef27af0bbe424a, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

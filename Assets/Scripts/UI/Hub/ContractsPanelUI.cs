@@ -18,11 +18,11 @@ public class ContractsPanelUI : MonoBehaviour
 
     public const int VisibleSlotCount = 3;
 
-    public const float FixedSlotHeightPublic = 200f; // Phase 8.5C: taller contract cards (was 164)
+    public const float FixedSlotHeightPublic = 220f; // Phase 12.3: larger for mobile readability (was 200)
 
     const float FixedSlotHeight = FixedSlotHeightPublic;
 
-    public const float ActiveCardHeight = 96f;
+    public const float ActiveCardHeight = 110f; // Phase 12.3: larger for mobile readability (was 96)
 
 
 
@@ -656,15 +656,15 @@ public static class ContractCardFactory
 
 {
 
-    static readonly Color BG_SECTION = new Color(0.09f, 0.09f, 0.18f);
+    static readonly Color BG_SECTION = CinematicTheme.PanelBg;
 
-    static readonly Color BTN_GREEN  = new Color(0.15f, 0.68f, 0.38f);
+    static readonly Color BTN_GREEN  = CinematicTheme.ProgressFill;
 
-    static readonly Color TEXT_PRI   = Color.white;
+    static readonly Color TEXT_PRI   = CinematicTheme.TextPrimary;
 
-    static readonly Color TEXT_SEC   = new Color(0.54f, 0.54f, 0.67f);
+    static readonly Color TEXT_SEC   = CinematicTheme.TextSecondary;
 
-    static readonly Color ACCENT_GOLD = new Color(0.95f, 0.77f, 0.06f);
+    static readonly Color ACCENT_GOLD = CinematicTheme.GoldBright;
 
 
 
@@ -740,6 +740,7 @@ public static class ContractCardFactory
         cardGo.transform.SetParent(parent, false);
 
         HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), HudCardVariant.Primary);
+        CinematicTheme.ApplyPremiumMaterial(cardGo.GetComponent<RectTransform>());
 
         var le = cardGo.AddComponent<LayoutElement>();
 
@@ -769,9 +770,9 @@ public static class ContractCardFactory
 
 
         var title = MakeText(cardGo.transform, activeMode ? "CONTRATO ACTIVO" : cfg.contractTitle,
-            activeMode ? 12f : 20f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
+            activeMode ? 13f : 22f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
 
-        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 16f : 28f;
+        title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 30f;
 
 
 
@@ -795,22 +796,22 @@ public static class ContractCardFactory
 
 
 
-        var desc = MakeText(cardGo.transform, cfg.description, activeMode ? 11f : 16f, TEXT_SEC);
+        var desc = MakeText(cardGo.transform, cfg.description, activeMode ? 12f : 17f, TEXT_SEC);
 
         desc.textWrappingMode = TextWrappingModes.Normal;
 
-        desc.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 0f : 24f;
+        desc.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 0f : 26f;
         if (activeMode) desc.gameObject.SetActive(false);
 
 
 
         var objective = MakeText(cardGo.transform, Loc.Format(LocKeys.ContractActiveObjective,
 
-            ContractSystem.BuildObjectiveLabel(cfg)), activeMode ? 13f : 14f, ACCENT_GOLD);
+            ContractSystem.BuildObjectiveLabel(cfg)), activeMode ? 14f : 16f, ACCENT_GOLD);
 
         objective.textWrappingMode = TextWrappingModes.Normal;
 
-        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 20f;
+        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 20f : 22f;
 
 
 
@@ -836,7 +837,7 @@ public static class ContractCardFactory
 
             hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
 
-            progRow.AddComponent<LayoutElement>().preferredHeight = 6;
+            progRow.AddComponent<LayoutElement>().preferredHeight = 8;
 
             var progGo = new GameObject("ProgBar", typeof(RectTransform), typeof(Image), typeof(Slider));
 
@@ -848,8 +849,8 @@ public static class ContractCardFactory
 
             progLE.flexibleWidth = 1;
 
-            progLE.preferredHeight = 6;
-            progLE.minHeight = 6;
+            progLE.preferredHeight = 8;
+            progLE.minHeight = 8;
 
             slider = progGo.GetComponent<Slider>();
 
@@ -859,17 +860,17 @@ public static class ContractCardFactory
 
 
 
-            progTxt = MakeText(progRow.transform, "0/0", activeMode ? 12f : 14f, TEXT_SEC);
+            progTxt = MakeText(progRow.transform, "0/0", activeMode ? 13f : 15f, TEXT_SEC);
 
-            progTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = activeMode ? 56f : 70f;
+            progTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = activeMode ? 64f : 76f;
 
         }
 
 
 
-        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), activeMode ? 12f : 17f, ACCENT_GOLD);
+        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), activeMode ? 13f : 19f, ACCENT_GOLD);
 
-        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 16f : 24f;
+        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 26f;
         if (activeMode) rewardTxt.gameObject.SetActive(false);
 
 
@@ -890,11 +891,11 @@ public static class ContractCardFactory
 
             HudSkinProvider.ApplyButton(selectGo.GetComponent<Image>(), HudButtonVariant.Primary);
 
-            selectGo.AddComponent<LayoutElement>().preferredHeight = 42; // Phase 8.5C
+            selectGo.AddComponent<LayoutElement>().preferredHeight = 48; // Phase 12.3: mobile touch target
 
             selectGo.AddComponent<UIButtonScale>();
 
-            var selectLbl = MakeText(selectGo.transform, Loc.Get(LocKeys.ContractSelect), 16, TEXT_PRI, FontStyles.Bold); // Phase 8.5C
+            var selectLbl = MakeText(selectGo.transform, Loc.Get(LocKeys.ContractSelect), 18, TEXT_PRI, FontStyles.Bold); // Phase 12.3
 
             selectLbl.alignment = TextAlignmentOptions.Center;
 
@@ -914,11 +915,11 @@ public static class ContractCardFactory
 
             HudSkinProvider.ApplyButton(claimGo.GetComponent<Image>(), HudButtonVariant.Primary);
 
-            claimGo.AddComponent<LayoutElement>().preferredHeight = activeMode ? 34f : 42f;
+            claimGo.AddComponent<LayoutElement>().preferredHeight = activeMode ? 40f : 48f; // Phase 12.3
 
             claimGo.AddComponent<UIButtonScale>();
 
-            var lbl = MakeText(claimGo.transform, "RECLAMAR", 16, TEXT_PRI, FontStyles.Bold); // Phase 8.5C
+            var lbl = MakeText(claimGo.transform, "RECLAMAR", 18, TEXT_PRI, FontStyles.Bold); // Phase 12.3
 
             lbl.alignment = TextAlignmentOptions.Center;
 

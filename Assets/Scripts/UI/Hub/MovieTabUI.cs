@@ -249,8 +249,7 @@ public class MovieTabUI : MonoBehaviour
         float spacing = vlg != null ? vlg.spacing : HudLayoutConstants.SectionSpacing;
         float padding = vlg != null ? vlg.padding.top + vlg.padding.bottom : 28f;
 
-        float perCard = (rowHeight - padding - spacing * (slotCount - 1)) / slotCount;
-        perCard = Mathf.Clamp(perCard, HudLayoutConstants.OfferCardBaseHeight, HudLayoutConstants.OfferCardMaxExpanded);
+        float perCard = HudLayoutConstants.OfferCardBaseHeight;
 
         for (int i = 0; i < slotsRow.childCount; i++)
         {
@@ -260,10 +259,11 @@ public class MovieTabUI : MonoBehaviour
             var le = card.GetComponent<LayoutElement>() ?? card.gameObject.AddComponent<LayoutElement>();
             le.flexibleHeight = 0f;
             le.preferredHeight = perCard;
-            le.minHeight = Mathf.Min(perCard, HudLayoutConstants.OfferCardBaseHeight);
+            le.minHeight = perCard;
 
             if (!card.name.Contains("Empty"))
             {
+                MovieOfferCardLayoutBuilder.ApplyCompactOfferLayout(card);
                 MovieOfferCardLayoutBuilder.ApplyExpandedLayout(card, perCard);
                 var ui = card.GetComponent<MovieButtonUI>();
                 MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(card, ui?.movieConfig?.rarity ?? MovieRarity.Common,
@@ -283,7 +283,7 @@ public class MovieTabUI : MonoBehaviour
         le.flexibleWidth   = 1f;
         le.flexibleHeight  = 0f;
         le.preferredHeight = MovieOfferCardLayoutBuilder.CardPreferredHeight;
-        le.minHeight       = HudLayoutConstants.OfferCardBaseHeight - 60f;
+        le.minHeight       = HudLayoutConstants.OfferCardBaseHeight;
 
         if (cfg == null)
         {

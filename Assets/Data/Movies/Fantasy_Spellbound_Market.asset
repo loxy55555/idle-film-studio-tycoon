@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheGoldenstAG.png
-  posterSprite: {fileID: -7511593476299527282, guid: 5fefb5f997b09104887e9322b79c8147, type: 3}
+  posterSprite: {fileID: 21300000, guid: 5fefb5f997b09104887e9322b79c8147, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

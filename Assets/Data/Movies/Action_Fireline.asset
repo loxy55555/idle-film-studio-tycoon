@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: Fireline.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 291a624b26282e849bb747977c4fe168, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheUnmarked.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 960b29b1cd1584b429290dc467002d2a, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

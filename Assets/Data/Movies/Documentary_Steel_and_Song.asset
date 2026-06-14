@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: LifeAbovetheClouds.png
-  posterSprite: {fileID: 8511019797622936038, guid: 8179a313867903f4da8046cc8507339d, type: 3}
+  posterSprite: {fileID: 21300000, guid: 8179a313867903f4da8046cc8507339d, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

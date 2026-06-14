@@ -15,13 +15,13 @@ public class MovieCollectionUI : MonoBehaviour
 {
     // ── Palette ──────────────────────────────────────────────────────────────────
     static readonly Color BG_DEEP   = new Color(0.06f, 0.07f, 0.12f);
-    static readonly Color BG_CARD   = new Color(0.10f, 0.10f, 0.19f);
-    static readonly Color BG_DARK   = new Color(0.04f, 0.04f, 0.08f);
-    static readonly Color TEXT_PRI  = Color.white;
-    static readonly Color TEXT_SEC  = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GN = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color ACCENT_GL = new Color(0.95f, 0.77f, 0.06f);
-    static readonly Color BAR_BG    = new Color(0.09f, 0.09f, 0.18f);
+    static readonly Color BG_CARD   = CinematicTheme.CardBg;
+    static readonly Color BG_DARK   = CinematicTheme.DeepBg;
+    static readonly Color TEXT_PRI  = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_SEC  = CinematicTheme.TextSecondary;
+    static readonly Color ACCENT_GN = CinematicTheme.GoldDim;
+    static readonly Color ACCENT_GL = CinematicTheme.GoldBright;
+    static readonly Color BAR_BG    = CinematicTheme.DeepBg;
 
     // ── Genre definitions ─────────────────────────────────────────────────────
     static readonly (MovieGenre genre, string emoji, Color color)[] Genres =
@@ -73,6 +73,7 @@ public class MovieCollectionUI : MonoBehaviour
     Image           _l3StatusPill;
     TextMeshProUGUI _l3Status;
     TextMeshProUGUI _l3Synopsis;
+    TextMeshProUGUI _l3Stats;
 
     // ── Global progress (L1 header) ───────────────────────────────────────────
     TextMeshProUGUI _globalProgressText;
@@ -308,10 +309,10 @@ public class MovieCollectionUI : MonoBehaviour
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        // Album cover area — genre-tinted, big emoji centered
+        // Album cover area — neutral premium dark surface, genre identity via emoji only
         var cover = new GameObject("Cover", typeof(RectTransform), typeof(Image));
         cover.transform.SetParent(card.transform, false);
-        cover.GetComponent<Image>().color = Color.Lerp(def.color, BG_DARK, 0.62f);
+        cover.GetComponent<Image>().color = CinematicTheme.PanelBg;
         cover.GetComponent<Image>().raycastTarget = false;
         cover.AddComponent<LayoutElement>().flexibleHeight = 1f;
 
@@ -319,6 +320,9 @@ public class MovieCollectionUI : MonoBehaviour
             42f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Emoji");
         emojiTxt.raycastTarget = false;
         Stretch(emojiTxt.rectTransform);
+        var coverIcon = UIIconGraphic.ApplyCoverIcon(cover.transform, UIIconCatalog.GetGenre(def.genre), "CoverIcon", 56f);
+        if (coverIcon != null)
+            coverIcon.preserveAspect = true;
 
         // Info strip — name left, count right
         var info = new GameObject("Info", typeof(RectTransform), typeof(Image));
@@ -338,12 +342,12 @@ public class MovieCollectionUI : MonoBehaviour
         nameTxt.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         var progressTxt = RuntimeTmpText.Create(info.transform, "0 / 0",
-            13f, def.color, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Progress");
+            13f, ACCENT_GL, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Progress");
         progressTxt.raycastTarget = false;
         progressTxt.gameObject.AddComponent<LayoutElement>().preferredWidth = 64f;
         _genreProgressLabels[def.genre] = progressTxt;
 
-        // Progress fill bar — bottom edge, genre colored
+        // Progress fill bar — bottom edge, unified premium green
         var barBg = new GameObject("Bar", typeof(RectTransform), typeof(Image));
         barBg.transform.SetParent(card.transform, false);
         barBg.GetComponent<Image>().color = BAR_BG;
@@ -352,7 +356,7 @@ public class MovieCollectionUI : MonoBehaviour
 
         var fill = new GameObject("Fill", typeof(RectTransform), typeof(Image));
         fill.transform.SetParent(barBg.transform, false);
-        fill.GetComponent<Image>().color = def.color;
+        fill.GetComponent<Image>().color = CinematicTheme.GoldDim;
         fill.GetComponent<Image>().raycastTarget = false;
         var fillRT = fill.GetComponent<RectTransform>();
         SetFill(fillRT, 0f);
@@ -439,113 +443,121 @@ public class MovieCollectionUI : MonoBehaviour
         content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
 
-    // ── L3: Movie detail popup ────────────────────────────────────────────────
+    // ── L3: Movie detail popup (Phase 12.2 — premium collectible card) ──────────
 
     void BuildL3Popup(RectTransform parent)
     {
+        // Full-screen overlay
         _l3Popup = new GameObject("L3_Popup", typeof(RectTransform), typeof(Image));
         _l3Popup.transform.SetParent(parent, false);
         var popupImg = _l3Popup.GetComponent<Image>();
-        popupImg.color = new Color(0f, 0f, 0f, 0.82f);
+        popupImg.color = new Color(0f, 0f, 0f, 0.88f);
         Stretch(_l3Popup.GetComponent<RectTransform>());
-
-        // Close on backdrop tap
         popupImg.raycastTarget = true;
-        var backDrop = _l3Popup.AddComponent<Button>();
-        backDrop.onClick.AddListener(ClosePopup);
+        _l3Popup.AddComponent<Button>().onClick.AddListener(ClosePopup);
 
-        // Panel centered — image blocks clicks so they don't reach the backdrop
-        var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
-        panel.transform.SetParent(_l3Popup.transform, false);
-        var panelImg = panel.GetComponent<Image>();
-        panelImg.color = new Color(0.09f, 0.10f, 0.17f);
-        panelImg.raycastTarget = true;
-        var panelRT = panel.GetComponent<RectTransform>();
-        panelRT.anchorMin = new Vector2(0.06f, 0.10f);
-        panelRT.anchorMax = new Vector2(0.94f, 0.92f);
-        panelRT.offsetMin = panelRT.offsetMax = Vector2.zero;
-
-        var panelVLG = panel.AddComponent<VerticalLayoutGroup>();
-        panelVLG.padding = new RectOffset(18, 18, 12, 18);
-        panelVLG.spacing = 10;
-        panelVLG.childControlWidth = panelVLG.childControlHeight = true;
-        panelVLG.childForceExpandWidth = true; panelVLG.childForceExpandHeight = false;
-
-        // Close button row
-        var closeRow = new GameObject("CloseRow", typeof(RectTransform));
-        closeRow.transform.SetParent(panel.transform, false);
-        closeRow.AddComponent<LayoutElement>().preferredHeight = 36f;
-        var closeHLG = closeRow.AddComponent<HorizontalLayoutGroup>();
-        closeHLG.childControlWidth = closeHLG.childControlHeight = true;
-        closeHLG.childForceExpandWidth = false; closeHLG.childForceExpandHeight = true;
-
-        var spacerGo = new GameObject("Spacer", typeof(RectTransform));
-        spacerGo.transform.SetParent(closeRow.transform, false);
-        spacerGo.AddComponent<LayoutElement>().flexibleWidth = 1f;
-
-        var closeBtnGo = new GameObject("CloseBtn", typeof(RectTransform), typeof(Image), typeof(Button));
-        closeBtnGo.transform.SetParent(closeRow.transform, false);
-        closeBtnGo.GetComponent<Image>().color = new Color(0.30f, 0.10f, 0.10f);
-        closeBtnGo.AddComponent<LayoutElement>().preferredWidth = 44f;
-        var closeLbl = RuntimeTmpText.Create(closeBtnGo.transform, "✕",
-            16f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
-        closeLbl.raycastTarget = false;
-        Stretch(closeLbl.rectTransform);
-        closeBtnGo.GetComponent<Button>().onClick.AddListener(ClosePopup);
-
-        // Framed poster — outer frame colored by rarity
-        var frameGo = new GameObject("PosterFrame", typeof(RectTransform), typeof(Image));
-        frameGo.transform.SetParent(panel.transform, false);
-        _l3PosterFrame = frameGo.GetComponent<Image>();
+        // Gold border frame (rarity will override at runtime)
+        var frameBorder = new GameObject("FrameBorder", typeof(RectTransform), typeof(Image));
+        frameBorder.transform.SetParent(_l3Popup.transform, false);
+        _l3PosterFrame = frameBorder.GetComponent<Image>();
         _l3PosterFrame.raycastTarget = false;
-        frameGo.AddComponent<LayoutElement>().preferredHeight = 200f;
+        var fbRT = frameBorder.GetComponent<RectTransform>();
+        fbRT.anchorMin = new Vector2(0.06f, 0.07f);
+        fbRT.anchorMax = new Vector2(0.94f, 0.95f);
+        fbRT.offsetMin = fbRT.offsetMax = Vector2.zero;
+
+        // Card panel — sits inside the border (2px inset each side)
+        var panel = new GameObject("Panel", typeof(RectTransform), typeof(Image));
+        panel.transform.SetParent(frameBorder.transform, false);
+        panel.GetComponent<Image>().color = CinematicTheme.CardBg;
+        panel.GetComponent<Image>().raycastTarget = true;
+        panel.AddComponent<Button>().onClick.AddListener(() => {}); // absorb taps
+        var panelRT = panel.GetComponent<RectTransform>();
+        panelRT.anchorMin = Vector2.zero;
+        panelRT.anchorMax = Vector2.one;
+        panelRT.offsetMin = new Vector2(2f, 2f);
+        panelRT.offsetMax = new Vector2(-2f, -2f);
+        CinematicTheme.ApplyPremiumMaterial(panelRT);
+
+        // ── POSTER AREA (70% height — anchor split) ───────────────────────────
+        var posterArea = new GameObject("PosterArea", typeof(RectTransform), typeof(Image));
+        posterArea.transform.SetParent(panel.transform, false);
+        posterArea.GetComponent<Image>().color = CinematicTheme.DeepBg;
+        posterArea.GetComponent<Image>().raycastTarget = false;
+        var posterRT = posterArea.GetComponent<RectTransform>();
+        posterRT.anchorMin = new Vector2(0f, 0.30f);
+        posterRT.anchorMax = new Vector2(1f, 1f);
+        posterRT.offsetMin = posterRT.offsetMax = Vector2.zero;
 
         var posterGo = new GameObject("Poster", typeof(RectTransform), typeof(Image));
-        posterGo.transform.SetParent(frameGo.transform, false);
+        posterGo.transform.SetParent(posterArea.transform, false);
         _l3PosterImg = posterGo.GetComponent<Image>();
         _l3PosterImg.raycastTarget = false;
-        var posterRT = posterGo.GetComponent<RectTransform>();
-        Stretch(posterRT);
-        posterRT.offsetMin = new Vector2(4f, 4f);
-        posterRT.offsetMax = new Vector2(-4f, -4f);
+        _l3PosterImg.preserveAspect = true;
+        Stretch(posterGo.GetComponent<RectTransform>());
+
+        // Top highlight line (gold) over poster
+        var topHL = new GameObject("TopHL", typeof(RectTransform), typeof(Image));
+        topHL.transform.SetParent(posterArea.transform, false);
+        topHL.GetComponent<Image>().color = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.55f);
+        topHL.GetComponent<Image>().raycastTarget = false;
+        var topHLRT = topHL.GetComponent<RectTransform>();
+        topHLRT.anchorMin = new Vector2(0f, 1f);
+        topHLRT.anchorMax = new Vector2(1f, 1f);
+        topHLRT.pivot     = new Vector2(0.5f, 1f);
+        topHLRT.sizeDelta = new Vector2(0f, 2f);
+
+        // ── INFO AREA (30%) ───────────────────────────────────────────────────
+        var infoArea = new GameObject("InfoArea", typeof(RectTransform));
+        infoArea.transform.SetParent(panel.transform, false);
+        var infoRT = infoArea.GetComponent<RectTransform>();
+        infoRT.anchorMin = Vector2.zero;
+        infoRT.anchorMax = new Vector2(1f, 0.30f);
+        infoRT.offsetMin = infoRT.offsetMax = Vector2.zero;
+
+        var infoVLG = infoArea.AddComponent<VerticalLayoutGroup>();
+        infoVLG.padding = new RectOffset(12, 12, 8, 10);
+        infoVLG.spacing = 6;
+        infoVLG.childControlWidth = infoVLG.childControlHeight = true;
+        infoVLG.childForceExpandWidth = true;
+        infoVLG.childForceExpandHeight = false;
 
         // Movie title
-        _l3Title = RuntimeTmpText.Create(panel.transform, "—",
+        _l3Title = RuntimeTmpText.Create(infoArea.transform, "—",
             22f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "L3Title");
         _l3Title.raycastTarget = false;
         _l3Title.textWrappingMode = TextWrappingModes.Normal;
-        _l3Title.gameObject.AddComponent<LayoutElement>().preferredHeight = 56f;
+        _l3Title.enableAutoSizing = true;
+        _l3Title.fontSizeMin = 16f;
+        _l3Title.fontSizeMax = 22f;
+        _l3Title.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
 
-        // Badge row: genre | rarity
-        var badgeRow = new GameObject("BadgeRow", typeof(RectTransform));
-        badgeRow.transform.SetParent(panel.transform, false);
-        badgeRow.AddComponent<LayoutElement>().preferredHeight = 28f;
-        var bdHLG = badgeRow.AddComponent<HorizontalLayoutGroup>();
-        bdHLG.spacing = 8; bdHLG.childAlignment = TextAnchor.MiddleCenter;
-        bdHLG.childControlWidth = bdHLG.childControlHeight = true;
-        bdHLG.childForceExpandWidth = bdHLG.childForceExpandHeight = false;
+        // Rarity badge only
+        (_l3Rarity, _l3RarityBg) = BuildBadge(infoArea.transform, "RarityBadge", "—", CinematicTheme.CardBg2);
+        _l3Rarity.transform.parent.gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
 
-        (_l3Genre,  _l3GenreBg)  = BuildBadge(badgeRow.transform, "GenreBadge",  "—", new Color(0.20f, 0.50f, 0.80f));
-        (_l3Rarity, _l3RarityBg) = BuildBadge(badgeRow.transform, "RarityBadge", "—", new Color(0.50f, 0.10f, 0.75f));
-
-        // Status pill — full width
-        var pillGo = new GameObject("StatusPill", typeof(RectTransform), typeof(Image));
-        pillGo.transform.SetParent(panel.transform, false);
-        _l3StatusPill = pillGo.GetComponent<Image>();
-        _l3StatusPill.raycastTarget = false;
-        pillGo.AddComponent<LayoutElement>().preferredHeight = 32f;
-
-        _l3Status = RuntimeTmpText.Create(pillGo.transform, "—",
-            14f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
-        _l3Status.raycastTarget = false;
-        Stretch(_l3Status.rectTransform);
-
-        // Synopsis
-        _l3Synopsis = RuntimeTmpText.Create(panel.transform, "—",
-            12f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.Center, "L3Synopsis");
+        // Synopsis / tagline
+        _l3Synopsis = RuntimeTmpText.Create(infoArea.transform, "—",
+            11f, TEXT_SEC, FontStyles.Italic, TextAlignmentOptions.Center, "L3Synopsis");
         _l3Synopsis.raycastTarget = false;
         _l3Synopsis.textWrappingMode = TextWrappingModes.Normal;
-        _l3Synopsis.gameObject.AddComponent<LayoutElement>().preferredHeight = 56f;
+        _l3Synopsis.overflowMode = TextOverflowModes.Ellipsis;
+        _l3Synopsis.maxVisibleLines = 4;
+        var synopsisLE = _l3Synopsis.gameObject.AddComponent<LayoutElement>();
+        synopsisLE.flexibleHeight = 1f;
+        synopsisLE.minHeight = 32f;
+
+        // Close button — full width, bronze
+        var closeBtnGo = new GameObject("CloseBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+        closeBtnGo.transform.SetParent(infoArea.transform, false);
+        closeBtnGo.GetComponent<Image>().color = CinematicTheme.BronzeBase;
+        closeBtnGo.AddComponent<LayoutElement>().preferredHeight = 44f;
+        CinematicTheme.ApplyElevationButton(closeBtnGo.GetComponent<RectTransform>());
+        var closeLbl = RuntimeTmpText.Create(closeBtnGo.transform, "CERRAR",
+            14f, CinematicTheme.TextPrimary, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
+        closeLbl.raycastTarget = false;
+        Stretch(closeLbl.rectTransform);
+        closeBtnGo.GetComponent<Button>().onClick.AddListener(ClosePopup);
     }
 
     (TextMeshProUGUI, Image) BuildBadge(Transform parent, string name, string text, Color bg)
@@ -638,25 +650,70 @@ public class MovieCollectionUI : MonoBehaviour
         _l3Popup.SetActive(true);
 
         var completed = _studio?.CompletedMovieKeys;
-        bool done     = completed != null && completed.Contains(cfg.movieName);
+        bool done     = completed != null && completed.Contains(cfg.name);
 
-        if (_l3PosterFrame != null) _l3PosterFrame.color = RarityColor(cfg.rarity);
-        if (_l3PosterImg   != null) _l3PosterImg.color   = ParseHexColor(cfg.posterColorHex);
-        if (_l3Title       != null) _l3Title.text        = cfg.movieName;
-        if (_l3Genre       != null) _l3Genre.text        = GenreLabel(cfg.genre).ToUpper();
-        if (_l3GenreBg     != null) _l3GenreBg.color     = Color.Lerp(GenreColor(cfg.genre), BG_DARK, 0.35f);
-        if (_l3Rarity      != null) _l3Rarity.text       = RarityLabel(cfg.rarity);
-        if (_l3RarityBg    != null) _l3RarityBg.color    = Color.Lerp(RarityColor(cfg.rarity), BG_DARK, 0.30f);
-        if (_l3Status      != null)
+        // Poster frame border — rarity color
+        var rarityCol = RarityFrameColor(cfg.rarity);
+        if (_l3PosterFrame != null) _l3PosterFrame.color = rarityCol;
+
+        // Poster image — actual sprite if available, else posterColorHex placeholder
+        if (_l3PosterImg != null)
         {
-            _l3Status.text = done ? "✔ COMPLETADA" : "○ PENDIENTE";
+            if (done)
+                MoviePosterVisual.Apply(_l3PosterImg, cfg);
+            else
+            {
+                _l3PosterImg.sprite = null;
+                _l3PosterImg.color  = Color.Lerp(ParseHexColor(cfg.posterColorHex), BG_DARK, 0.55f);
+            }
+        }
+
+        // Title — gold for legendary, primary otherwise
+        if (_l3Title != null)
+        {
+            _l3Title.text  = cfg.movieName;
+            _l3Title.color = cfg.rarity == MovieRarity.Legendary ? CinematicTheme.GoldBright : TEXT_PRI;
+        }
+
+        if (_l3Genre   != null) _l3Genre.text   = GenreLabel(cfg.genre).ToUpper();
+        if (_l3GenreBg != null) _l3GenreBg.color = CinematicTheme.CardBg2;
+        if (_l3Rarity  != null) _l3Rarity.text  = RarityLabel(cfg.rarity).ToUpper();
+        if (_l3RarityBg != null) _l3RarityBg.color = Color.Lerp(rarityCol, BG_DARK, 0.45f);
+
+        if (_l3Status != null)
+        {
+            _l3Status.text  = done ? "✔ COMPLETADA" : "○ PENDIENTE";
+            _l3Status.color = done ? CinematicTheme.GoldBright : CinematicTheme.TextDim;
             if (_l3StatusPill != null)
                 _l3StatusPill.color = done
-                    ? new Color(0.10f, 0.40f, 0.22f)
-                    : new Color(0.14f, 0.15f, 0.24f);
+                    ? new Color(CinematicTheme.GoldDim.r, CinematicTheme.GoldDim.g, CinematicTheme.GoldDim.b, 0.55f)
+                    : new Color(0.10f, 0.12f, 0.20f);
         }
-        if (_l3Synopsis    != null) _l3Synopsis.text = BuildSynopsis(cfg);
+
+        if (_l3Synopsis != null) _l3Synopsis.text = BuildSynopsis(cfg);
+
+        if (_l3Stats != null)
+        {
+            var reward   = cfg.baseReward > 0 ? $"💰 {AnimatedMoneyText.FormatMoney(cfg.baseReward)}" : "";
+            var duration = cfg.duration > 0f  ? $"⏱ {cfg.duration:0}min" : "";
+            var lvl      = cfg.unlockStudioLevel > 0 ? $"★ Nv.{cfg.unlockStudioLevel}" : "";
+            var parts    = new System.Collections.Generic.List<string>();
+            if (!string.IsNullOrEmpty(reward))   parts.Add(reward);
+            if (!string.IsNullOrEmpty(duration)) parts.Add(duration);
+            if (!string.IsNullOrEmpty(lvl))      parts.Add(lvl);
+            _l3Stats.text = string.Join("  ·  ", parts);
+        }
     }
+
+    /// <summary>Returns the border/frame color for each rarity level.</summary>
+    static Color RarityFrameColor(MovieRarity r) => r switch
+    {
+        MovieRarity.Common    => CinematicTheme.BorderSubtle,
+        MovieRarity.Rare      => CinematicTheme.SilverDim,
+        MovieRarity.Epic      => CinematicTheme.GoldBase,
+        MovieRarity.Legendary => CinematicTheme.GoldBright,
+        _                     => CinematicTheme.BorderSubtle,
+    };
 
     void ClosePopup()
     {
@@ -683,7 +740,7 @@ public class MovieCollectionUI : MonoBehaviour
         {
             if (m == null || m.genre != genre) continue;
             filtered.Add(m);
-            if (completed != null && completed.Contains(m.movieName)) doneCount++;
+            if (completed != null && completed.Contains(m.name)) doneCount++;
         }
 
         // Phase 8.6B: group by rarity — Legendary first, then Epic, Rare, Common
@@ -692,12 +749,14 @@ public class MovieCollectionUI : MonoBehaviour
         if (_l2CountLabel != null)
             _l2CountLabel.text = $"{doneCount} / {filtered.Count}";
 
-        const int cols = 3;
+        const int cols = 3; // RULE: always 3 columns, uniform cell size
         for (int i = 0; i < filtered.Count; i += cols)
         {
             var row = new GameObject("Row" + i, typeof(RectTransform));
             row.transform.SetParent(_l2GridContent, false);
-            row.AddComponent<LayoutElement>().preferredHeight = 172f;
+            var rowLE = row.AddComponent<LayoutElement>();
+            rowLE.preferredHeight = 185f; // phase 12.3: slightly taller for mobile readability
+            rowLE.minHeight = 185f;
             var rowHLG = row.AddComponent<HorizontalLayoutGroup>();
             rowHLG.spacing = 10;
             rowHLG.childControlWidth = rowHLG.childControlHeight = true;
@@ -712,6 +771,9 @@ public class MovieCollectionUI : MonoBehaviour
                 {
                     var spacer = new GameObject("Spacer", typeof(RectTransform));
                     spacer.transform.SetParent(row.transform, false);
+                    var spacerLE = spacer.AddComponent<LayoutElement>();
+                    spacerLE.flexibleWidth = 1f;
+                    spacerLE.minWidth = 0f;
                 }
             }
         }
@@ -719,35 +781,54 @@ public class MovieCollectionUI : MonoBehaviour
 
     void BuildMovieCell(Transform parent, MovieConfig cfg, IReadOnlyCollection<string> completed)
     {
-        bool done = completed != null && completed.Contains(cfg.movieName);
+        bool done = completed != null && completed.Contains(cfg.name);
 
-        // Cell — background acts as rarity frame (3px border via padding)
-        var cell = new GameObject("Movie_" + cfg.movieName, typeof(RectTransform), typeof(Image), typeof(Button));
+        // Cell — uniform width in 3-column row (discovered or not)
+        var cell = new GameObject("Movie_" + cfg.name, typeof(RectTransform), typeof(Image), typeof(Button));
         cell.transform.SetParent(parent, false);
         cell.GetComponent<Image>().color = done
             ? RarityColor(cfg.rarity)
             : Color.Lerp(RarityColor(cfg.rarity), BG_DARK, 0.55f);
 
+        var cellLE = cell.AddComponent<LayoutElement>();
+        cellLE.flexibleWidth  = 1f;
+        cellLE.minWidth       = 0f;
+        cellLE.flexibleHeight = 1f;
+
         var vlg = cell.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(3, 3, 3, 3);
         vlg.spacing = 0;
         vlg.childControlWidth = vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
 
-        // Poster — dominant area; dimmed when not completed
-        var posterColor = ParseHexColor(cfg.posterColorHex);
+        // Poster area — fixed height; sprite cannot drive row width
+        var posterWrap = new GameObject("PosterWrap", typeof(RectTransform));
+        posterWrap.transform.SetParent(cell.transform, false);
+        var wrapLE = posterWrap.AddComponent<LayoutElement>();
+        wrapLE.flexibleWidth  = 1f;
+        wrapLE.minWidth       = 0f;
+        wrapLE.preferredHeight = 130f;
+        wrapLE.flexibleHeight  = 0f;
+        wrapLE.minHeight       = 130f;
+
         var poster = new GameObject("Poster", typeof(RectTransform), typeof(Image));
-        poster.transform.SetParent(cell.transform, false);
-        poster.GetComponent<Image>().color = done ? posterColor : Color.Lerp(posterColor, BG_DARK, 0.65f);
-        poster.GetComponent<Image>().raycastTarget = false;
-        poster.AddComponent<LayoutElement>().flexibleHeight = 1f;
+        poster.transform.SetParent(posterWrap.transform, false);
+        var posterImg = poster.GetComponent<Image>();
+        posterImg.raycastTarget = false;
+        Stretch(poster.GetComponent<RectTransform>());
+        poster.AddComponent<LayoutElement>().ignoreLayout = true;
+        if (done)
+            MoviePosterVisual.Apply(posterImg, cfg);
+        else
+            posterImg.color = Color.Lerp(ParseHexColor(cfg.posterColorHex), BG_DARK, 0.65f);
 
         if (done)
         {
             // ✔ badge anchored to poster top-right
             var badge = new GameObject("Done", typeof(RectTransform), typeof(Image));
             badge.transform.SetParent(poster.transform, false);
-            badge.GetComponent<Image>().color = new Color(0.12f, 0.62f, 0.32f, 0.95f);
+            badge.GetComponent<Image>().color = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.95f);
             badge.GetComponent<Image>().raycastTarget = false;
             var bRT = badge.GetComponent<RectTransform>();
             bRT.anchorMin = bRT.anchorMax = new Vector2(1f, 1f);
@@ -773,10 +854,16 @@ public class MovieCollectionUI : MonoBehaviour
         nameStrip.transform.SetParent(cell.transform, false);
         nameStrip.GetComponent<Image>().color = BG_DARK;
         nameStrip.GetComponent<Image>().raycastTarget = false;
-        nameStrip.AddComponent<LayoutElement>().preferredHeight = 34f;
+        var nameStripLE = nameStrip.AddComponent<LayoutElement>();
+        nameStripLE.preferredHeight = 40f;
+        nameStripLE.flexibleWidth = 1f;
+        nameStripLE.minWidth = 0f;
 
         var nameTxt = RuntimeTmpText.Create(nameStrip.transform, cfg.movieName,
-            10f, done ? TEXT_PRI : TEXT_SEC, FontStyles.Bold, TextAlignmentOptions.Center, "Name");
+            12f, done ? TEXT_PRI : TEXT_SEC, FontStyles.Bold, TextAlignmentOptions.Center, "Name");
+        nameTxt.enableAutoSizing = true;
+        nameTxt.fontSizeMin = 9f;
+        nameTxt.fontSizeMax = 12f;
         nameTxt.textWrappingMode = TextWrappingModes.Normal;
         nameTxt.overflowMode = TextOverflowModes.Ellipsis;
         nameTxt.maxVisibleLines = 2;
@@ -804,7 +891,7 @@ public class MovieCollectionUI : MonoBehaviour
         {
             if (m == null) continue;
             total++;
-            if (completed != null && completed.Contains(m.movieName)) done++;
+            if (completed != null && completed.Contains(m.name)) done++;
         }
         _globalProgressText.text = $"{done} / {total}";
         if (_globalBarFill != null)
@@ -824,7 +911,7 @@ public class MovieCollectionUI : MonoBehaviour
         {
             if (m == null) continue;
             totalByGenre.TryAdd(m.genre, 0); totalByGenre[m.genre]++;
-            if (completed != null && completed.Contains(m.movieName))
+            if (completed != null && completed.Contains(m.name))
             { countByGenre.TryAdd(m.genre, 0); countByGenre[m.genre]++; }
         }
 
@@ -837,7 +924,27 @@ public class MovieCollectionUI : MonoBehaviour
 
             if (_genreBarFills.TryGetValue(kv.Key, out var fill) && fill != null)
                 SetFill(fill, total > 0 ? (float)disc / total : 0f);
+
+            RefreshGenreCoverIcon(kv.Key);
         }
+    }
+
+    void RefreshGenreCoverIcon(MovieGenre genre)
+    {
+        // Search deep because cards are nested inside Scroll/Viewport/Content/Row
+        var genreName = "Genre_" + genre;
+        Transform card = null;
+        foreach (var t in GetComponentsInChildren<Transform>(true))
+        {
+            if (t.name == genreName) { card = t; break; }
+        }
+        if (card == null) return;
+
+        var cover = card.Find("Cover");
+        if (cover == null) return;
+
+        var sprite = UIIconCatalog.GetGenre(genre);
+        UIIconGraphic.ApplyCoverIcon(cover, sprite, "CoverIcon", 56f);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

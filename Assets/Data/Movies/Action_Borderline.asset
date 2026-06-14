@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: SilentExtraction.png
-  posterSprite: {fileID: 1726754564894737869, guid: b428c39332ace6d4c9aa2f12de48600d, type: 3}
+  posterSprite: {fileID: 21300000, guid: b428c39332ace6d4c9aa2f12de48600d, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

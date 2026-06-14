@@ -26,13 +26,23 @@ public class ContractCardUI : MonoBehaviour
     StudioLevelSystem _studioLevel;
     SmoothProgressBar _smoothBar;
     bool              _eventsBound;
+    bool              _wasReadyToClaim;
+    bool              _rewardRevealPlayed;
 
     void Awake()
     {
         GameHub.OnGameReady += Bind;
         WireButtons();
         if (progressBar != null)
+        {
             _smoothBar = progressBar.gameObject.AddComponent<SmoothProgressBar>();
+            // Override baked green fill with premium palette
+            if (progressBar.fillRect != null)
+            {
+                var fillImg = progressBar.fillRect.GetComponent<Image>();
+                if (fillImg != null) fillImg.color = CinematicTheme.ProgressFill;
+            }
+        }
     }
 
     void OnEnable()
@@ -136,6 +146,11 @@ public class ContractCardUI : MonoBehaviour
         {
             rewardText.text = BuildRewardString();
             rewardText.gameObject.SetActive(isCandidateMode);
+            if (isCandidateMode && !_rewardRevealPlayed)
+            {
+                _rewardRevealPlayed = true;
+                UIAnimationService.PlayContractRewardReveal(rewardText.rectTransform);
+            }
         }
 
         if (isCandidateMode)
@@ -173,6 +188,10 @@ public class ContractCardUI : MonoBehaviour
         }
 
         if (completedBadge != null) completedBadge.SetActive(ready);
+
+        if (ready && !_wasReadyToClaim)
+            UIAnimationService.PlayContractCompleteHighlight(transform as RectTransform);
+        _wasReadyToClaim = ready;
 
         if (claimButton != null)
         {

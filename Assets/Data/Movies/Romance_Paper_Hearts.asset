@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: MidNightInVerOnA.png
-  posterSprite: {fileID: -5989337155907330625, guid: 39dd2e64bd9f9fc45b750baeb195f8d2, type: 3}
+  posterSprite: {fileID: 21300000, guid: 39dd2e64bd9f9fc45b750baeb195f8d2, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

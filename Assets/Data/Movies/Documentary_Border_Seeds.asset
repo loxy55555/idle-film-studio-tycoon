@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BeneaththeIce.png
-  posterSprite: {fileID: 7819310554162586609, guid: 56bb2d2b6e3eb354db6dd34347359b0a, type: 3}
+  posterSprite: {fileID: 21300000, guid: 56bb2d2b6e3eb354db6dd34347359b0a, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheWeightofRain.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 864cbdb1179fb7244940212f9ccafb10, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

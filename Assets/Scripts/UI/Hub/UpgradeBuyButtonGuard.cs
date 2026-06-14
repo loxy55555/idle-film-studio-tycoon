@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>Tracks pointer down/up on a single upgrade buy button (Phase 8.4).</summary>
-public class UpgradeBuyButtonGuard : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class UpgradeBuyButtonGuard : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, ICancelHandler
 {
     Func<string> _getUpgradeId;
 
@@ -17,5 +17,12 @@ public class UpgradeBuyButtonGuard : MonoBehaviour, IPointerDownHandler, IPointe
     public void OnPointerUp(PointerEventData eventData)
     {
         UpgradeUiInteractionGate.RegisterPointerUp(_getUpgradeId?.Invoke() ?? name);
+        GetComponent<UIButtonScale>()?.ResetScale();
+    }
+
+    public void OnCancel(BaseEventData eventData)
+    {
+        UpgradeUiInteractionGate.ClearPointerState();
+        GetComponent<UIButtonScale>()?.ResetScale();
     }
 }

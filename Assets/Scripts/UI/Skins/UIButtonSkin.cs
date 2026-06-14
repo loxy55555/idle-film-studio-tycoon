@@ -16,36 +16,35 @@ public class UIButtonSkin : ScriptableObject
     public Sprite readySprite;
 
     [Header("Fallback Colors")]
-    public Color primaryColor = HudSkinDefaults.BTN_PRIMARY;
-    public Color secondaryColor = HudSkinDefaults.BG_CARD2;
-    public Color successColor = HudSkinDefaults.BTN_SUCCESS;
-    public Color dangerColor = HudSkinDefaults.Hex("#E74C3C");
-    public Color ghostColor = HudSkinDefaults.BG_SECTION;
-    public Color disabledColor = HudSkinDefaults.BTN_DISABLED;
-    public Color lockedColor = HudSkinDefaults.BTN_LOCKED;
-    public Color readyColor = HudSkinDefaults.BTN_SUCCESS;
-    public Color cantAffordColor = HudSkinDefaults.BTN_CANT_AFFORD;
+    public Color primaryColor    = CinematicTheme.ButtonSuccess;
+    public Color secondaryColor  = CinematicTheme.CardBg2;
+    public Color successColor    = CinematicTheme.ButtonSuccess;
+    public Color dangerColor     = HudSkinDefaults.Hex("#C0392B");
+    public Color ghostColor      = CinematicTheme.PanelBg;
+    public Color disabledColor   = CinematicTheme.ButtonDisabled;
+    public Color lockedColor     = CinematicTheme.TextDim;
+    public Color readyColor      = CinematicTheme.ButtonReady;
+    public Color cantAffordColor = CinematicTheme.ButtonDisabled;
 
     public void Apply(Image image, HudButtonVariant variant)
     {
         if (image == null) return;
 
+        // Always source from CinematicTheme — stale GameHudSkins.asset serialization must not win.
         switch (variant)
         {
             case HudButtonVariant.Primary:
-                HudSkinUtil.ApplySpriteOrColor(image, primarySprite, primaryColor);
+            case HudButtonVariant.Success:
+                HudSkinUtil.ApplySpriteOrColor(image, successSprite ?? primarySprite, CinematicTheme.ButtonSuccess);
                 break;
             case HudButtonVariant.Secondary:
-                HudSkinUtil.ApplySpriteOrColor(image, secondarySprite, secondaryColor);
-                break;
-            case HudButtonVariant.Success:
-                HudSkinUtil.ApplySpriteOrColor(image, successSprite, successColor);
+                HudSkinUtil.ApplySpriteOrColor(image, secondarySprite, CinematicTheme.CardBg2);
                 break;
             case HudButtonVariant.Danger:
                 HudSkinUtil.ApplySpriteOrColor(image, dangerSprite, dangerColor);
                 break;
             case HudButtonVariant.Ghost:
-                HudSkinUtil.ApplySpriteOrColor(image, ghostSprite, ghostColor);
+                HudSkinUtil.ApplySpriteOrColor(image, ghostSprite, CinematicTheme.PanelBg);
                 break;
         }
     }
@@ -60,10 +59,10 @@ public class UIButtonSkin : ScriptableObject
                 Apply(image, HudButtonVariant.Primary);
                 break;
             case HudButtonState.Ready:
-                HudSkinUtil.ApplySpriteOrColor(image, readySprite ?? successSprite ?? primarySprite, readyColor);
+                HudSkinUtil.ApplySpriteOrColor(image, readySprite ?? successSprite ?? primarySprite, CinematicTheme.ButtonReady);
                 break;
             case HudButtonState.Disabled:
-                HudSkinUtil.ApplySpriteOrColor(image, disabledSprite, disabledColor);
+                HudSkinUtil.ApplySpriteOrColor(image, disabledSprite, CinematicTheme.ButtonDisabled);
                 break;
             case HudButtonState.Locked:
                 HudSkinUtil.ApplySpriteOrColor(image, lockedSprite, lockedColor);
@@ -80,7 +79,7 @@ public class UIButtonSkin : ScriptableObject
         else if (locked)
             ApplyState(image, HudButtonState.Locked);
         else
-            HudSkinUtil.ApplySpriteOrColor(image, disabledSprite, cantAffordColor);
+            HudSkinUtil.ApplySpriteOrColor(image, disabledSprite, CinematicTheme.ButtonDisabled);
     }
 
     public static void ApplyFallback(Image image, HudButtonVariant variant)
@@ -89,11 +88,11 @@ public class UIButtonSkin : ScriptableObject
 
         switch (variant)
         {
-            case HudButtonVariant.Primary:   HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BTN_PRIMARY); break;
-            case HudButtonVariant.Secondary: HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_CARD2); break;
-            case HudButtonVariant.Success:   HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BTN_SUCCESS); break;
-            case HudButtonVariant.Danger:    HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.Hex("#E74C3C")); break;
-            case HudButtonVariant.Ghost:     HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_SECTION); break;
+            case HudButtonVariant.Primary:   HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.ButtonSuccess); break;
+            case HudButtonVariant.Secondary: HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.CardBg2); break;
+            case HudButtonVariant.Success:   HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.ButtonSuccess); break;
+            case HudButtonVariant.Danger:    HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.Hex("#C0392B")); break;
+            case HudButtonVariant.Ghost:     HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.PanelBg); break;
         }
     }
 
@@ -104,9 +103,9 @@ public class UIButtonSkin : ScriptableObject
         switch (state)
         {
             case HudButtonState.Normal:   ApplyFallback(image, HudButtonVariant.Primary); break;
-            case HudButtonState.Ready:    HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BTN_SUCCESS); break;
-            case HudButtonState.Disabled: HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BTN_DISABLED); break;
-            case HudButtonState.Locked:   HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BTN_LOCKED); break;
+            case HudButtonState.Ready:    HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.ButtonReady); break;
+            case HudButtonState.Disabled: HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.ButtonDisabled); break;
+            case HudButtonState.Locked:   HudSkinUtil.ApplySpriteOrColor(image, null, CinematicTheme.TextDim); break;
         }
     }
 }

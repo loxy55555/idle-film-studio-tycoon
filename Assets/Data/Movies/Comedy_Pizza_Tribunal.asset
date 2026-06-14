@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheNewneighbors.png
-  posterSprite: {fileID: 2885367507459535034, guid: 59410962bf7f6c44da919278956820d9, type: 3}
+  posterSprite: {fileID: 21300000, guid: 59410962bf7f6c44da919278956820d9, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 1
   genreIconKey: 
   posterFile: LittleGiants.png
-  posterSprite: {fileID: -4634820168750560282, guid: 512ee5e0d64e3e14faecf037f6a75c53, type: 3}
+  posterSprite: {fileID: 21300000, guid: 512ee5e0d64e3e14faecf037f6a75c53, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

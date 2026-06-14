@@ -11,29 +11,42 @@ using UnityEngine.UI;
 public class AwardsPanelUI : MonoBehaviour
 {
     // ── Constants ─────────────────────────────────────────────────────────────
-    const int SHOWCASE_COLS  = 7;
-    const int SHOWCASE_ROWS  = 4;
+    const int SHOWCASE_COLS  = 4;
+    const int SHOWCASE_ROWS  = 7;
     const int SHOWCASE_SLOTS = SHOWCASE_COLS * SHOWCASE_ROWS; // 28
+    const float SHOWCASE_CELL_HEIGHT   = 96f;
+    const float SHOWCASE_CELL_SPACING  = 0f;
+    const float SHOWCASE_FRAME_PADDING = 0f;
+    const float SHOWCASE_FRAME_BORDER  = 0f;
+    const float SHOWCASE_STAR_FONT     = 46f;
 
-    // ── Palette ──────────────────────────────────────────────────────────────
-    static readonly Color BG_DEEP     = new Color(0.04f, 0.04f, 0.08f);
-    static readonly Color BG_PANEL    = new Color(0.07f, 0.08f, 0.14f);
-    static readonly Color BG_VITRINA  = new Color(0.05f, 0.05f, 0.10f);
-    static readonly Color GOLD_BRIGHT = new Color(0.97f, 0.82f, 0.18f);
-    static readonly Color GOLD_GLOW   = new Color(0.90f, 0.65f, 0.05f, 0.30f);
-    static readonly Color AMBER       = new Color(0.85f, 0.55f, 0.05f);
-    static readonly Color FRAME_GOLD  = new Color(0.70f, 0.55f, 0.10f);
-    static readonly Color STAR_DARK   = new Color(0.20f, 0.20f, 0.26f);
-    static readonly Color STAR_DIMFG  = new Color(0.28f, 0.28f, 0.35f);
-    static readonly Color TEXT_PRI    = Color.white;
-    static readonly Color TEXT_SEC    = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color TEXT_GOLD   = new Color(0.95f, 0.80f, 0.30f);
-    static readonly Color BAR_BG      = new Color(0.09f, 0.09f, 0.18f);
-    static readonly Color BTN_READY   = new Color(0.68f, 0.48f, 0.06f);
-    static readonly Color BTN_WAIT    = new Color(0.14f, 0.15f, 0.24f);
+    // ── Palette (aligned with CinematicTheme) ────────────────────────────────
+    static readonly Color BG_DEEP     = CinematicTheme.DeepBg;
+    static readonly Color BG_PANEL    = CinematicTheme.CardBg;
+    static readonly Color BG_VITRINA  = CinematicTheme.PanelBg;
+    static readonly Color GOLD_BRIGHT = CinematicTheme.GoldBright;
+    static readonly Color GOLD_GLOW   = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.28f);
+    static readonly Color AMBER       = CinematicTheme.GoldBase;
+    static readonly Color FRAME_GOLD  = CinematicTheme.BorderGold;
+    static readonly Color STAR_DARK   = CinematicTheme.CardBg2;
+    static readonly Color STAR_DIMFG  = CinematicTheme.TextDim;
+    static readonly Color SLOT_LOCKED_BG  = new Color(CinematicTheme.CardBg2.r, CinematicTheme.CardBg2.g, CinematicTheme.CardBg2.b, 0.92f);
+    static readonly Color SLOT_EARNED_BG  = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.14f);
+    static readonly Color FRAME_LOCKED    = CinematicTheme.BorderSubtle;
+    static readonly Color STAR_LOCKED_FG  = new Color(CinematicTheme.SilverDim.r, CinematicTheme.SilverDim.g, CinematicTheme.SilverDim.b, 0.62f);
+    static readonly Color TEXT_PRI    = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_SEC    = CinematicTheme.TextSecondary;
+    static readonly Color TEXT_GOLD   = CinematicTheme.GoldBright;
+    static readonly Color BAR_BG      = CinematicTheme.DeepBg;
+    static readonly Color BTN_READY   = CinematicTheme.GoldBase;
+    static readonly Color BTN_WAIT    = CinematicTheme.CardBg2;
 
     // ── Live refs ─────────────────────────────────────────────────────────────
+    LayoutElement   _vitrinaFrameLE;
+    Image[]         _slotBgs;
+    Image[]         _slotFrames;
     Image[]         _starGlows;
+    Image[]         _starIcons;
     TextMeshProUGUI[] _starLabels;
     RectTransform   _barFill;
     TextMeshProUGUI _progressLabel;
@@ -79,6 +92,7 @@ public class AwardsPanelUI : MonoBehaviour
     {
         EnsureBuilt();
         Bind();
+        PatchCompactVitrina();
     }
 
     void OnDestroy()
@@ -111,6 +125,7 @@ public class AwardsPanelUI : MonoBehaviour
         if (_claimBtnLabel != null) prestigeButtonLabel = _claimBtnLabel;
 
         RefreshAll();
+        PatchCompactVitrina();
     }
 
     void OnOscarGained()
@@ -125,7 +140,11 @@ public class AwardsPanelUI : MonoBehaviour
     // Replace body with DOTween calls when available (8.6C+ polish pass).
     void AnimateStarEarned(int slotIndex)
     {
-        Debug.Log($"[ShowcaseUI] AnimateStarEarned slot={slotIndex} — DOTween hook ready");
+        if (_starGlows == null || slotIndex < 0 || slotIndex >= _starGlows.Length) return;
+        var glow = _starGlows[slotIndex];
+        TextMeshProUGUI label = _starLabels != null && slotIndex < _starLabels.Length ? _starLabels[slotIndex] : null;
+        var rt = glow != null ? glow.rectTransform : label?.rectTransform;
+        UIAnimationService.PlayStarEarned(rt, glow, label);
     }
 
     // ── Build ─────────────────────────────────────────────────────────────────
@@ -205,15 +224,15 @@ public class AwardsPanelUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = false;
 
-        Tmp(row.transform, "★", 28f, GOLD_BRIGHT, FontStyles.Normal).gameObject
-            .AddComponent<LayoutElement>().preferredWidth = 32f;
+        Tmp(row.transform, "★", 36f, GOLD_BRIGHT, FontStyles.Normal).gameObject
+            .AddComponent<LayoutElement>().preferredWidth = 36f;
 
         var t = Tmp(row.transform, "ESTRELLAS DE ORO", 22f, TEXT_PRI, FontStyles.Bold);
         t.alignment = TextAlignmentOptions.Center;
         t.gameObject.AddComponent<LayoutElement>().flexibleWidth = 0f;
 
-        Tmp(row.transform, "★", 28f, GOLD_BRIGHT, FontStyles.Normal).gameObject
-            .AddComponent<LayoutElement>().preferredWidth = 32f;
+        Tmp(row.transform, "★", 36f, GOLD_BRIGHT, FontStyles.Normal).gameObject
+            .AddComponent<LayoutElement>().preferredWidth = 36f;
 
         _studioPanelLabel = Tmp(hdr.transform, "—", 14f, TEXT_GOLD, FontStyles.Normal);
         _studioPanelLabel.alignment = TextAlignmentOptions.Center;
@@ -222,79 +241,141 @@ public class AwardsPanelUI : MonoBehaviour
 
     // ── Section 1: Vitrina ────────────────────────────────────────────────────
 
+    GridLayoutGroup _vitrinaGrid;
+
+    static float ComputeVitrinaInnerHeight()
+    {
+        float rowsHeight = SHOWCASE_ROWS * SHOWCASE_CELL_HEIGHT;
+        float glgGaps = (SHOWCASE_ROWS - 1) * SHOWCASE_CELL_SPACING;
+        return rowsHeight + glgGaps + SHOWCASE_FRAME_PADDING * 2f;
+    }
+
+    static float ComputeVitrinaFrameHeight()
+        => ComputeVitrinaInnerHeight() + SHOWCASE_FRAME_BORDER * 2f;
+
     void BuildVitrina(Transform parent)
     {
-        // Outer frame — gold-tinted border
+        // Outer frame — gold-tinted border; height drives panel growth (not just star font).
         var frame = new GameObject("VitrinaFrame", typeof(RectTransform), typeof(Image));
         frame.transform.SetParent(parent, false);
-        frame.GetComponent<Image>().color = FRAME_GOLD;
-        frame.AddComponent<LayoutElement>().preferredHeight = 316f;
+        frame.GetComponent<Image>().color = BG_VITRINA;
+        _vitrinaFrameLE = frame.AddComponent<LayoutElement>();
+        ApplyVitrinaFrameLayout(_vitrinaFrameLE);
 
         var frameVLG = frame.AddComponent<VerticalLayoutGroup>();
-        frameVLG.padding = new RectOffset(3, 3, 3, 3);
+        frameVLG.padding = new RectOffset(
+            (int)SHOWCASE_FRAME_BORDER, (int)SHOWCASE_FRAME_BORDER,
+            (int)SHOWCASE_FRAME_BORDER, (int)SHOWCASE_FRAME_BORDER);
         frameVLG.childControlWidth = frameVLG.childControlHeight = true;
-        frameVLG.childForceExpandWidth = true; frameVLG.childForceExpandHeight = true;
+        frameVLG.childForceExpandWidth = true;
+        frameVLG.childForceExpandHeight = false;
 
-        // Inner vitrina panel — very dark, premium
+        // Inner vitrina panel — collection backdrop
         var vitrina = new GameObject("VitrinaInner", typeof(RectTransform), typeof(Image));
         vitrina.transform.SetParent(frame.transform, false);
         vitrina.GetComponent<Image>().color = BG_VITRINA;
+        vitrina.AddComponent<LayoutElement>().preferredHeight = ComputeVitrinaInnerHeight();
 
-        var vInnerVLG = vitrina.AddComponent<VerticalLayoutGroup>();
-        vInnerVLG.padding = new RectOffset(12, 12, 12, 12);
-        vInnerVLG.spacing = 8;
-        vInnerVLG.childControlWidth = vInnerVLG.childControlHeight = true;
-        vInnerVLG.childForceExpandWidth = true; vInnerVLG.childForceExpandHeight = false;
-
-        // Glass reflection strip at top — very subtle white horizontal line
-        var shine = new GameObject("GlassShine", typeof(RectTransform), typeof(Image));
-        shine.transform.SetParent(vitrina.transform, false);
-        shine.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.07f);
-        shine.GetComponent<Image>().raycastTarget = false;
-        shine.AddComponent<LayoutElement>().preferredHeight = 3f;
-
-        // ── Star grid: SHOWCASE_ROWS rows × SHOWCASE_COLS cols ──
+        // ── Star grid: SHOWCASE_ROWS rows × SHOWCASE_COLS cols (fixed square cells, single layout group) ──
+        _slotBgs    = new Image[SHOWCASE_SLOTS];
+        _slotFrames = new Image[SHOWCASE_SLOTS];
         _starGlows  = new Image[SHOWCASE_SLOTS];
+        _starIcons  = new Image[SHOWCASE_SLOTS];
         _starLabels = new TextMeshProUGUI[SHOWCASE_SLOTS];
         int slot = 0;
 
-        for (int r = 0; r < SHOWCASE_ROWS; r++)
+        _vitrinaGrid = vitrina.AddComponent<GridLayoutGroup>();
+        _vitrinaGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        _vitrinaGrid.constraintCount = SHOWCASE_COLS;
+        _vitrinaGrid.cellSize = new Vector2(SHOWCASE_CELL_HEIGHT, SHOWCASE_CELL_HEIGHT);
+        _vitrinaGrid.spacing = new Vector2(SHOWCASE_CELL_SPACING, SHOWCASE_CELL_SPACING);
+        _vitrinaGrid.childAlignment = TextAnchor.UpperLeft;
+        _vitrinaGrid.padding = new RectOffset(0, 0, 0, 0);
+
+        for (int i = 0; i < SHOWCASE_SLOTS; i++)
         {
-            var row = new GameObject("Row" + r, typeof(RectTransform));
-            row.transform.SetParent(vitrina.transform, false);
-            row.AddComponent<LayoutElement>().preferredHeight = 62f;
-            var rowHLG = row.AddComponent<HorizontalLayoutGroup>();
-            rowHLG.spacing = 8;
-            rowHLG.childControlWidth = rowHLG.childControlHeight = true;
-            rowHLG.childForceExpandWidth = true; rowHLG.childForceExpandHeight = true;
-
-            for (int c = 0; c < SHOWCASE_COLS; c++)
-            {
-                var cell = new GameObject($"Star_{slot}", typeof(RectTransform), typeof(Image));
-                cell.transform.SetParent(row.transform, false);
-                _starGlows[slot] = cell.GetComponent<Image>();
-                _starGlows[slot].raycastTarget = false;
-
-                var lbl = Tmp(cell.transform, "★", 26f, STAR_DIMFG, FontStyles.Normal);
-                lbl.alignment = TextAlignmentOptions.Center;
-                lbl.raycastTarget = false;
-                Stretch(lbl.rectTransform);
-                _starLabels[slot] = lbl;
-
-                slot++;
-            }
+            BuildStarCell(vitrina.transform, slot);
+            slot++;
         }
+    }
 
-        // Glass overlay — barely-there white tint over the whole vitrina
-        var glassOverlay = new GameObject("GlassOverlay", typeof(RectTransform), typeof(Image));
-        glassOverlay.transform.SetParent(vitrina.transform, false);
-        glassOverlay.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.025f);
-        glassOverlay.GetComponent<Image>().raycastTarget = false;
-        // Stretch to cover the full vitrina
-        var goRT = glassOverlay.GetComponent<RectTransform>();
-        Stretch(goRT);
-        // Pull it out of the VLG by removing layout participation
-        glassOverlay.AddComponent<LayoutElement>().ignoreLayout = true;
+    void LateUpdate()
+    {
+        if (_vitrinaGrid == null) return;
+        var vitrinaRt = _vitrinaGrid.transform as RectTransform;
+        if (vitrinaRt == null) return;
+        // Read parent (VitrinaFrame) width — vitrina's own rect is constrained by GridLayoutGroup preferred size
+        var parentRt = vitrinaRt.parent as RectTransform;
+        float availW = parentRt != null ? parentRt.rect.width : vitrinaRt.rect.width;
+        if (availW < 10f) return;
+        float cellW = (availW - SHOWCASE_CELL_SPACING * (SHOWCASE_COLS - 1)) / SHOWCASE_COLS;
+        if (cellW < 10f) return;
+        if (Mathf.Approximately(_vitrinaGrid.cellSize.x, cellW)) return;
+        // Square cells that fill the full width
+        _vitrinaGrid.cellSize = new Vector2(cellW, cellW);
+        // Update the vitrina frame's preferred height accordingly
+        float totalH = SHOWCASE_ROWS * cellW + (SHOWCASE_ROWS - 1) * SHOWCASE_CELL_SPACING;
+        if (_vitrinaFrameLE != null)
+        {
+            _vitrinaFrameLE.preferredHeight = totalH;
+            _vitrinaFrameLE.minHeight = totalH;
+        }
+    }
+
+    void BuildStarCell(Transform row, int slotIndex)
+    {
+        var cell = new GameObject($"Star_{slotIndex}", typeof(RectTransform));
+        cell.transform.SetParent(row, false);
+
+        var cellLE = cell.AddComponent<LayoutElement>();
+        cellLE.flexibleWidth = 0f;
+        cellLE.minWidth = SHOWCASE_CELL_HEIGHT;
+        cellLE.preferredWidth = SHOWCASE_CELL_HEIGHT;
+        cellLE.preferredHeight = SHOWCASE_CELL_HEIGHT;
+        cellLE.minHeight = SHOWCASE_CELL_HEIGHT;
+
+        var bg = new GameObject("SlotBg", typeof(RectTransform), typeof(Image));
+        bg.transform.SetParent(cell.transform, false);
+        Stretch(bg.GetComponent<RectTransform>());
+        _slotBgs[slotIndex] = bg.GetComponent<Image>();
+        _slotBgs[slotIndex].raycastTarget = false;
+
+        var frame = new GameObject("SlotFrame", typeof(RectTransform), typeof(Image));
+        frame.transform.SetParent(cell.transform, false);
+        Stretch(frame.GetComponent<RectTransform>());
+        _slotFrames[slotIndex] = frame.GetComponent<Image>();
+        _slotFrames[slotIndex].color = Color.clear;
+        _slotFrames[slotIndex].raycastTarget = false;
+
+        var glow = new GameObject("Glow", typeof(RectTransform), typeof(Image));
+        glow.transform.SetParent(cell.transform, false);
+        Stretch(glow.GetComponent<RectTransform>());
+        _starGlows[slotIndex] = glow.GetComponent<Image>();
+        _starGlows[slotIndex].color = Color.clear;
+        _starGlows[slotIndex].raycastTarget = false;
+
+        var lbl = Tmp(cell.transform, "☆", SHOWCASE_STAR_FONT, STAR_LOCKED_FG, FontStyles.Normal);
+        lbl.alignment = TextAlignmentOptions.Center;
+        lbl.raycastTarget = false;
+        lbl.enableAutoSizing = false;
+        lbl.margin = Vector4.zero;
+        Stretch(lbl.rectTransform);
+        _starLabels[slotIndex] = lbl;
+
+        var iconWrap = new GameObject("StarIconWrap", typeof(RectTransform));
+        iconWrap.transform.SetParent(cell.transform, false);
+        Stretch(iconWrap.GetComponent<RectTransform>());
+        var icon = UIIconGraphic.EnsureChildIcon(iconWrap.transform, "StarIcon", SHOWCASE_CELL_HEIGHT - 8f);
+        CenterSquare(icon.rectTransform, SHOWCASE_CELL_HEIGHT - 8f);
+        icon.preserveAspect = true;
+        _starIcons[slotIndex] = icon;
+    }
+
+    static void ApplyVitrinaFrameLayout(LayoutElement le)
+    {
+        float h = ComputeVitrinaFrameHeight();
+        le.preferredHeight = h;
+        le.minHeight = h;
     }
 
     // ── Section 2: Progress bar ───────────────────────────────────────────────
@@ -305,6 +386,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.transform.SetParent(parent, false);
         section.GetComponent<Image>().color = BG_PANEL;
         section.AddComponent<LayoutElement>().preferredHeight = 68f;
+        CinematicTheme.ApplyElevationPanel(section.GetComponent<RectTransform>());
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
         vlg.padding = HudLayoutConstants.SectionPadding;
@@ -351,6 +433,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.transform.SetParent(parent, false);
         section.GetComponent<Image>().color = BG_PANEL;
         section.AddComponent<LayoutElement>().preferredHeight = 112f;
+        CinematicTheme.ApplyElevationPanel(section.GetComponent<RectTransform>());
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
         vlg.padding = HudLayoutConstants.TightPadding;
@@ -394,6 +477,7 @@ public class AwardsPanelUI : MonoBehaviour
         section.transform.SetParent(parent, false);
         section.GetComponent<Image>().color = BG_PANEL;
         section.AddComponent<LayoutElement>().preferredHeight = 130f;
+        CinematicTheme.ApplyElevationPanel(section.GetComponent<RectTransform>());
 
         var vlg = section.AddComponent<VerticalLayoutGroup>();
         vlg.padding = HudLayoutConstants.TightPadding;
@@ -473,15 +557,45 @@ public class AwardsPanelUI : MonoBehaviour
 
     void RefreshStarGrid(int earned)
     {
-        if (_starGlows == null) return;
+        if (_starLabels == null) return;
         int display = Mathf.Min(earned, SHOWCASE_SLOTS);
 
         for (int i = 0; i < SHOWCASE_SLOTS; i++)
         {
             bool lit = i < display;
-            if (_starGlows[i]  != null) _starGlows[i].color  = lit ? GOLD_GLOW   : new Color(STAR_DARK.r, STAR_DARK.g, STAR_DARK.b, 0.60f);
-            if (_starLabels[i] != null) _starLabels[i].color = lit ? GOLD_BRIGHT : STAR_DIMFG;
+
+            // Phase 13.3D: no individual per-star backgrounds — stars float on the vitrina surface
+            if (_slotBgs != null && _slotBgs[i] != null)
+                _slotBgs[i].color = Color.clear;
+
+            if (_slotFrames != null && _slotFrames[i] != null)
+                _slotFrames[i].color = Color.clear;
+
+            if (_starGlows != null && _starGlows[i] != null)
+                _starGlows[i].color = Color.clear;
+
+            if (_starLabels[i] != null)
+            {
+                _starLabels[i].text = lit ? "★" : "☆";
+                _starLabels[i].color = lit ? GOLD_BRIGHT : STAR_LOCKED_FG;
+                _starLabels[i].fontStyle = lit ? FontStyles.Bold : FontStyles.Normal;
+                _starLabels[i].alpha = 1f;
+            }
+
+            if (_starIcons != null && _starIcons[i] != null)
+            {
+                var sprite = lit ? UIIconCatalog.GetAwardStar() : UIIconCatalog.GetAwardStarLocked();
+                UIIconGraphic.Apply(_starIcons[i], sprite, lit ? GOLD_BRIGHT : STAR_LOCKED_FG);
+                _starIcons[i].preserveAspect = true;
+                if (sprite != null && _starLabels[i] != null)
+                    _starLabels[i].gameObject.SetActive(false);
+                else if (_starLabels[i] != null)
+                    _starLabels[i].gameObject.SetActive(true);
+            }
         }
+
+        if (_vitrinaFrameLE != null)
+            ApplyVitrinaFrameLayout(_vitrinaFrameLE);
     }
 
     void RefreshProgressBar(int earned)
@@ -553,7 +667,14 @@ public class AwardsPanelUI : MonoBehaviour
 
     void SetClaimButton(bool ready, string label)
     {
-        if (_claimBtnImg   != null) _claimBtnImg.color  = ready ? BTN_READY : BTN_WAIT;
+        if (_claimBtnImg   != null)
+        {
+            _claimBtnImg.color = ready ? BTN_READY : BTN_WAIT;
+            if (ready)
+                CinematicTheme.ApplyElevationButton(_claimBtnImg.rectTransform);
+            else
+                CinematicTheme.RemoveMaterialLayers(_claimBtnImg.rectTransform);
+        }
         if (_claimBtn      != null) _claimBtn.interactable = ready;
         if (_claimBtnLabel != null) _claimBtnLabel.text  = label;
     }
@@ -572,6 +693,64 @@ public class AwardsPanelUI : MonoBehaviour
         if (!_bound) Bind();
         if (_prestige == null || _studio == null) return;
         // Throttled refresh (not every frame)
+    }
+
+    bool _vitrinaCompactPatched;
+
+    /// <summary>Phase 13.3C — remove glass overlays and gaps on already-built vitrinas.</summary>
+    void PatchCompactVitrina()
+    {
+        if (_vitrinaCompactPatched) return;
+        _vitrinaCompactPatched = true;
+
+        var vitrina = transform.Find("Scroll/Viewport/Content/VitrinaFrame/VitrinaInner");
+        if (vitrina == null) return;
+
+        foreach (var overlayName in new[] { "GlassOverlay", "GlassShine" })
+        {
+            var overlay = vitrina.Find(overlayName);
+            if (overlay != null) Destroy(overlay.gameObject);
+        }
+
+        var innerVLG = vitrina.GetComponent<VerticalLayoutGroup>();
+        if (innerVLG != null)
+        {
+            innerVLG.padding = new RectOffset(0, 0, 0, 0);
+            innerVLG.spacing = 0f;
+        }
+
+        var frame = vitrina.parent;
+        if (frame != null)
+        {
+            var frameImg = frame.GetComponent<Image>();
+            if (frameImg != null) frameImg.color = BG_VITRINA;
+
+            var frameVLG = frame.GetComponent<VerticalLayoutGroup>();
+            if (frameVLG != null)
+                frameVLG.padding = new RectOffset(0, 0, 0, 0);
+        }
+
+        if (_slotFrames != null)
+        {
+            for (int i = 0; i < _slotFrames.Length; i++)
+            {
+                if (_slotFrames[i] == null) continue;
+                _slotFrames[i].color = Color.clear;
+                var rt = _slotFrames[i].rectTransform;
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = rt.offsetMax = Vector2.zero;
+            }
+        }
+
+        if (_slotBgs != null)
+        {
+            for (int i = 0; i < _slotBgs.Length; i++)
+                if (_slotBgs[i] != null) _slotBgs[i].color = Color.clear;
+        }
+
+        if (_vitrinaFrameLE != null)
+            ApplyVitrinaFrameLayout(_vitrinaFrameLE);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -598,5 +777,13 @@ public class AwardsPanelUI : MonoBehaviour
     {
         rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
         rt.offsetMin = rt.offsetMax = Vector2.zero;
+    }
+
+    static void CenterSquare(RectTransform rt, float size)
+    {
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(size, size);
+        rt.anchoredPosition = Vector2.zero;
     }
 }

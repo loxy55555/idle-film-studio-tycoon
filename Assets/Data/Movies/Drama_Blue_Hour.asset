@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: APlACecALledTomorrow.png
-  posterSprite: {fileID: 2638357750424797023, guid: ee7cb64ec5e088647b13966e1e5f4d2d, type: 3}
+  posterSprite: {fileID: 21300000, guid: ee7cb64ec5e088647b13966e1e5f4d2d, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

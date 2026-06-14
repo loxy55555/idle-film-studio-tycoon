@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: Silenceevidence.png
-  posterSprite: {fileID: 7724029208365071511, guid: 5bac09781d5f330488ec1a3a6c23ca16, type: 3}
+  posterSprite: {fileID: 21300000, guid: 5bac09781d5f330488ec1a3a6c23ca16, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: DeadFrequency.png
-  posterSprite: {fileID: -5986353991653224663, guid: 6fa9cc373ed5abf418bf8935c8be6b58, type: 3}
+  posterSprite: {fileID: 21300000, guid: 6fa9cc373ed5abf418bf8935c8be6b58, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: project_avalanche

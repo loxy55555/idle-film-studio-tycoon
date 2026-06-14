@@ -2,14 +2,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>Soft thematic backdrop hook per department — placeholder until art assets arrive.</summary>
+/// <summary>Department identity via icon/motif only — no card background tint (Phase 11.5).</summary>
 public class DepartmentThemeVisual : MonoBehaviour
 {
     [SerializeField] Image backdropImage;
     [SerializeField] TextMeshProUGUI motifText;
     [SerializeField] Image motifIcon;
     [SerializeField] Sprite themeSprite;
-    [SerializeField] float backdropAlpha = 0.07f;
 
     public void Configure(DepartmentType type, Image backdrop, TextMeshProUGUI motif, Image iconHook = null)
     {
@@ -23,42 +22,36 @@ public class DepartmentThemeVisual : MonoBehaviour
     {
         var theme = DepartmentThemeCatalog.Get(type);
 
-        if (backdropImage != null)
+        if (motifIcon == null)
         {
-            if (themeSprite != null)
-            {
-                backdropImage.sprite = themeSprite;
-                backdropImage.color = new Color(1f, 1f, 1f, backdropAlpha);
-            }
-            else
-            {
-                backdropImage.sprite = null;
-                backdropImage.color = new Color(theme.tint.r, theme.tint.g, theme.tint.b, backdropAlpha);
-            }
+            var iconT = transform.Find("Content/CardMainRow/IconColumn/Badge/IconImage")
+                     ?? transform.Find("Content/CardMainRow/InfoColumn/HeaderRow/Badge/IconImage");
+            if (iconT != null) motifIcon = iconT.GetComponent<Image>();
         }
 
+        if (backdropImage != null)
+        {
+            backdropImage.sprite = null;
+            backdropImage.color = Color.clear;
+        }
+
+        var sprite = UIIconCatalog.GetDepartment(type);
         if (motifIcon != null)
         {
-            if (themeSprite != null)
-            {
-                motifIcon.sprite = themeSprite;
-                motifIcon.color = new Color(1f, 1f, 1f, backdropAlpha * 1.2f);
-                motifIcon.gameObject.SetActive(true);
-            }
-            else
-            {
-                motifIcon.sprite = null;
-                motifIcon.gameObject.SetActive(false);
-            }
+            // Use Color.white so the icon renders in its natural colors without a tint filter
+            UIIconGraphic.Apply(motifIcon, sprite, Color.white);
+            if (sprite != null && motifText != null)
+                motifText.gameObject.SetActive(false);
         }
 
         if (motifText != null)
         {
+            if (sprite == null)
+                motifText.gameObject.SetActive(true);
             motifText.text = theme.motifSymbol;
-            motifText.color = new Color(theme.tint.r, theme.tint.g, theme.tint.b, backdropAlpha * 2.5f);
-            motifText.enableAutoSizing = true;
-            motifText.fontSizeMin = 28f;
-            motifText.fontSizeMax = 72f;
+            motifText.color = theme.tint;
+            motifText.enableAutoSizing = false;
+            motifText.fontSize = 28f;
         }
     }
 }

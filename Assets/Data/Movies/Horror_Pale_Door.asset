@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheEmptyChAPel.png
-  posterSprite: {fileID: 1523533411359630919, guid: f9c49918c652f5f4b9e66e50d3c1f458, type: 3}
+  posterSprite: {fileID: 21300000, guid: f9c49918c652f5f4b9e66e50d3c1f458, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: CitiesOfTomorrow.png
-  posterSprite: {fileID: 21482425989829907, guid: 32a5b0fdda12ffd40892baf1d56c3962, type: 3}
+  posterSprite: {fileID: 21300000, guid: 32a5b0fdda12ffd40892baf1d56c3962, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: EchoChamber.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 635fe4ecfd56e704fb15bb8f35855c4c, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

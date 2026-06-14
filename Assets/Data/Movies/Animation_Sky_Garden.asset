@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: CaptainAcorn.png
-  posterSprite: {fileID: 4341986464037164238, guid: e9c83f6cd610a1b42984d631767361af, type: 3}
+  posterSprite: {fileID: 21300000, guid: e9c83f6cd610a1b42984d631767361af, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

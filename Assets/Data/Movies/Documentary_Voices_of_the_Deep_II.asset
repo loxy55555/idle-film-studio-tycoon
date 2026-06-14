@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: EdgeOfTheVolcano.png
-  posterSprite: {fileID: 3047639176981963447, guid: 9eb3fa6c39f547f4fa9b4e81f72cd666, type: 3}
+  posterSprite: {fileID: 21300000, guid: 9eb3fa6c39f547f4fa9b4e81f72cd666, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

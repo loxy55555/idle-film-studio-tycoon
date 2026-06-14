@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: SignalFromBelow.png
-  posterSprite: {fileID: 606522891200642746, guid: 631bc13894254924aa6f63f8ab9b4149, type: 3}
+  posterSprite: {fileID: 21300000, guid: 631bc13894254924aa6f63f8ab9b4149, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_last_colony

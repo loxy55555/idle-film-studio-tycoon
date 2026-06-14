@@ -24,7 +24,7 @@ public class MovieGridUI : MonoBehaviour
     static readonly Color BG_CARD   = new Color(0.10f, 0.10f, 0.19f);
     static readonly Color TEXT_PRI  = Color.white;
     static readonly Color TEXT_SEC  = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
+    static readonly Color ACCENT_GOLD  = CinematicTheme.GoldBase;
 
     static Color GenreColor(MovieGenre g) => g switch
     {
@@ -115,6 +115,7 @@ public class MovieGridUI : MonoBehaviour
         cardGo.transform.SetParent(content, false);
         HudSkinProvider.ApplyCard(cardGo.GetComponent<Image>(), HudCardVariant.Primary);
         var cardRT = cardGo.GetComponent<RectTransform>();
+        CinematicTheme.ApplyPremiumMaterial(cardRT);
         var cardLE = cardGo.AddComponent<LayoutElement>();
         cardLE.preferredHeight = 110;
         cardLE.flexibleWidth   = 1;
@@ -126,10 +127,10 @@ public class MovieGridUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
 
-        // Genre color strip
+        // Genre accent strip — subtle border color, genre identity from badge text
         var strip = new GameObject("Strip", typeof(RectTransform), typeof(Image));
         strip.transform.SetParent(cardGo.transform, false);
-        strip.GetComponent<Image>().color = genreCol;
+        strip.GetComponent<Image>().color = CinematicTheme.BorderAccent;
         var stripLE = strip.AddComponent<LayoutElement>();
         stripLE.preferredWidth  = 8;
         stripLE.flexibleWidth   = 0;
@@ -161,7 +162,7 @@ public class MovieGridUI : MonoBehaviour
 
         var genreLblGo = new GameObject("GenreLbl", typeof(RectTransform), typeof(Image));
         genreLblGo.transform.SetParent(badgeRow.transform, false);
-        genreLblGo.GetComponent<Image>().color = genreCol;
+        genreLblGo.GetComponent<Image>().color = CinematicTheme.CardBg2;
         var genreLblLE = genreLblGo.AddComponent<LayoutElement>();
         genreLblLE.preferredWidth = 80; genreLblLE.preferredHeight = 20;
         // Text is a child of the badge (can't add TMP + Image to same object)
@@ -191,7 +192,7 @@ public class MovieGridUI : MonoBehaviour
         var srLE = statsRow.AddComponent<LayoutElement>(); srLE.preferredHeight = 20;
 
         var costTxt    = MakeText(statsRow.GetComponent<RectTransform>(), AnimatedMoneyText.FormatMoney((long)cfg.cost), 16, TEXT_SEC);
-        var rewardTxt  = MakeText(statsRow.GetComponent<RectTransform>(), "+" + AnimatedMoneyText.FormatMoney((long)cfg.baseReward), 16, ACCENT_GREEN);
+        var rewardTxt  = MakeText(statsRow.GetComponent<RectTransform>(), "+" + AnimatedMoneyText.FormatMoney((long)cfg.baseReward), 16, ACCENT_GOLD);
         var durationTxt= MakeText(statsRow.GetComponent<RectTransform>(), $"{cfg.duration:0.0}s", 16, TEXT_SEC);
 
         // Right: produce button

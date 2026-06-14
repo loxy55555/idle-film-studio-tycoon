@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: OfficePanic.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 14682d438b20f0a409e4f906ee26c798, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

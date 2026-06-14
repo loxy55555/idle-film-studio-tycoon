@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 1
   genreIconKey: 
   posterFile: RedFile27.png
-  posterSprite: {fileID: -3207370719157827385, guid: 8ccf5b9d6b96a1346ac6c4456f4d3a22, type: 3}
+  posterSprite: {fileID: 21300000, guid: 8ccf5b9d6b96a1346ac6c4456f4d3a22, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

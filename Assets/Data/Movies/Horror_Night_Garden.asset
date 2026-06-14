@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BeneAtHAShHill.png
-  posterSprite: {fileID: 7627894530733427220, guid: 22ea9cbc0ffb0584483b67a9bed2fe87, type: 3}
+  posterSprite: {fileID: 21300000, guid: 22ea9cbc0ffb0584483b67a9bed2fe87, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

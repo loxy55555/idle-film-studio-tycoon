@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 1
   genreIconKey: 
   posterFile: IronWolves.png
-  posterSprite: {fileID: -2903802406890141093, guid: fe1d270bc8cae75449e8d7c99626adb9, type: 3}
+  posterSprite: {fileID: 21300000, guid: fe1d270bc8cae75449e8d7c99626adb9, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

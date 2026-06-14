@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheMissInGwitness.png
-  posterSprite: {fileID: 5518408605149821495, guid: 49c8140e5c47b144992aeaf4d813eaa1, type: 3}
+  posterSprite: {fileID: 21300000, guid: 49c8140e5c47b144992aeaf4d813eaa1, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

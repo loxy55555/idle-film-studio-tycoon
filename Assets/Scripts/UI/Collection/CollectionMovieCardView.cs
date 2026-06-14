@@ -5,15 +5,15 @@ using UnityEngine.UI;
 /// <summary>Single movie card in the collection filmoteca (Phase 8.6 / 9.0 legendaries).</summary>
 public static class CollectionMovieCardView
 {
-    const float CellWidth  = 156f;
-    const float CellHeight = 248f;
-    const float PosterHeight = 112f;
+    const float CellWidth   = 108f;
+    const float CellHeight  = 190f;
+    const float PosterHeight = 90f;
 
-    static readonly Color BgPoster      = new Color(0.08f, 0.08f, 0.14f);
-    static readonly Color TextPrimary   = Color.white;
-    static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
+    static readonly Color BgPoster      = CinematicTheme.PanelBg;
+    static readonly Color TextPrimary   = CinematicTheme.TextPrimary;
+    static readonly Color TextSecondary = CinematicTheme.TextSecondary;
     static readonly Color LockRed       = new Color(0.95f, 0.45f, 0.35f);
-    static readonly Color DiscGreen     = new Color(0.18f, 0.80f, 0.44f);
+    static readonly Color DiscGold      = CinematicTheme.GoldBase;
 
     public static RectTransform Build(Transform parent, CollectionCatalogModel.MovieEntry entry)
     {
@@ -23,10 +23,12 @@ public static class CollectionMovieCardView
         var card = new GameObject("Movie_" + cfg.name, typeof(RectTransform), typeof(Image), typeof(LayoutElement));
         card.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
+        CinematicTheme.ApplyPremiumMaterial(card.GetComponent<RectTransform>());
 
         var le = card.GetComponent<LayoutElement>();
-        le.preferredWidth = le.minWidth = CellWidth;
-        le.preferredHeight = le.minHeight = isLegendary ? CellHeight : CellHeight - 20f;
+        le.preferredWidth = le.minWidth = 0f;
+        le.flexibleWidth = 1f;
+        le.preferredHeight = le.minHeight = CellHeight; // uniform height for all rarities (3-col grid)
 
         var vlg = card.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(8, 8, 8, 8);
@@ -113,7 +115,7 @@ public static class CollectionMovieCardView
 
         if (entry.discovered)
         {
-            CreateLabel(card, CollectionLoc.DiscoveredLabel(), 11f, DiscGreen, FontStyles.Bold, 16f);
+            CreateLabel(card, CollectionLoc.DiscoveredLabel(), 11f, DiscGold, FontStyles.Bold, 16f);
             CreateLabel(card, CollectionLoc.GetGenreLabel(cfg.genre), 10f, TextSecondary, FontStyles.Normal, 14f);
         }
     }
@@ -121,10 +123,10 @@ public static class CollectionMovieCardView
     public static void ConfigureGrid(GridLayoutGroup grid)
     {
         grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-        grid.constraintCount = 2;
+        grid.constraintCount = 3; // RULE: always 3 columns — no cell changes size regardless of rarity
         grid.cellSize = new Vector2(CellWidth, CellHeight);
-        grid.spacing = new Vector2(8f, 8f);
-        grid.childAlignment = TextAnchor.UpperCenter;
+        grid.spacing = new Vector2(6f, 6f);
+        grid.childAlignment = TextAnchor.UpperLeft;
     }
 
     static TextMeshProUGUI CreateLabel(Transform parent, string text, float size, Color color, FontStyles style, float height)

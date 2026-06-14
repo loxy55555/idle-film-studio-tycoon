@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BlackHorizon.png
-  posterSprite: {fileID: 1207439293065266581, guid: 82012c99ffdae374f93dd0ab9037701f, type: 3}
+  posterSprite: {fileID: 21300000, guid: 82012c99ffdae374f93dd0ab9037701f, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: shadow_trigger

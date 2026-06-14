@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheHiddenCrownIV.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 4287855637481401729, guid: 8b03078f49f33a84faa67be5be4d8500, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_hidden_crown

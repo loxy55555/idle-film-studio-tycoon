@@ -25,23 +25,24 @@ public static class UpgradeUiInteractionGate
 
         if (Time.frameCount <= _blockPurchaseUntilFrame)
         {
-            Debug.LogWarning($"[UpgradeUI] Click blocked (cooldown) UpgradeId={upgradeId}");
+            Debug.LogWarning($"[UpgradeUI] TryConsumeClick=false motivo=cooldown frame={Time.frameCount} blockUntil={_blockPurchaseUntilFrame} id={upgradeId}");
             return false;
         }
 
-        if (string.IsNullOrEmpty(_pointerDownId) || _pointerDownId != upgradeId)
-        {
-            Debug.LogWarning($"[UpgradeUI] Click rejected Down={_pointerDownId} Click={upgradeId}");
-            return false;
-        }
-
-        _pointerDownId = string.Empty;
-        Debug.Log($"[UpgradeUI] Clicked={upgradeId} UpgradeId={upgradeId}");
+        // Absorb layout-shift ghost taps (1 frame cooldown per purchase)
         _blockSortUntilFrame = Mathf.Max(_blockSortUntilFrame, Time.frameCount + 2);
         _blockPurchaseUntilFrame = Time.frameCount + 1;
+        _pointerDownId = string.Empty;
+        Debug.Log($"[UpgradeUI] Clicked={upgradeId}");
         return true;
     }
 
     public static bool CanReorderNow() =>
         Time.frameCount >= _blockSortUntilFrame && string.IsNullOrEmpty(_pointerDownId);
+
+    public static void ClearPointerState()
+    {
+        _pointerDownId = string.Empty;
+        _blockPurchaseUntilFrame = 0;
+    }
 }

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheYeAReverythInGbroke.png
-  posterSprite: {fileID: 8733610586624861250, guid: e6f159d5976b96741acadb2f3a44d2fd, type: 3}
+  posterSprite: {fileID: 21300000, guid: e6f159d5976b96741acadb2f3a44d2fd, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

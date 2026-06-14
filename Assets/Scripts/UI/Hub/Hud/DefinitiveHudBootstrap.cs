@@ -52,9 +52,36 @@ public static class DefinitiveHudBootstrap
         PatchProductionRemovePosters(switcher);
         PatchVisualGridConsistency(switcher);
 
+        PatchLegacyHudColors(switcher);
+        PatchCinematicChrome();
+
         var hub = switcher.GetComponent<StudioHubUI>();
         if (hub != null)
             HudNavigationCleanup.NormalizeBottomNav(hub);
+    }
+
+    /// <summary>
+    /// Apply dark palette to chrome only (top bar, bottom nav).
+    /// Per-component materials are applied by each card's own init — no global image scan.
+    /// Phase 11.5B: global overlay scan removed; it caused grain/shadow over large containers.
+    /// </summary>
+    static void PatchCinematicChrome()
+    {
+        var bottomNav = GameObject.Find("BottomNav");
+        if (bottomNav != null)
+        {
+            var bg = bottomNav.GetComponent<Image>() ?? bottomNav.GetComponentInParent<Image>(false);
+            if (bg != null)
+                HudSkinProvider.ApplyPanel(bg, HudPanelVariant.Nav);
+        }
+
+        var topBarGo = GameObject.Find("TopBar");
+        if (topBarGo != null)
+        {
+            var bg = topBarGo.GetComponent<Image>();
+            if (bg != null)
+                HudSkinProvider.ApplyPanel(bg, HudPanelVariant.TopBar);
+        }
     }
 
     /// <summary>
@@ -99,6 +126,9 @@ public static class DefinitiveHudBootstrap
             var rt = card.transform as RectTransform;
             if (rt == null) continue;
 
+            card.ForcePremiumLayoutRebuild();
+            DepartmentMiniCardLayoutBuilder.LogLayoutAudit(card);
+
             DepartmentMiniCardLayoutBuilder.NormalizeParentRowHeight(rt);
             var le = rt.GetComponent<LayoutElement>() ?? rt.gameObject.AddComponent<LayoutElement>();
             le.preferredHeight = DepartmentMiniCardLayoutBuilder.CardHeight;
@@ -106,10 +136,15 @@ public static class DefinitiveHudBootstrap
             le.flexibleWidth = 1f;
             le.preferredWidth = -1f;
 
-            // Phase 9.2: accent strip — use badge image colour if available
-            var badge = rt.Find("Content/HeaderRow/Badge")?.GetComponent<Image>();
-            var accentColor = badge != null ? badge.color : new Color(0.18f, 0.80f, 0.44f);
-            DepartmentMiniCardLayoutBuilder.ApplyAccentStrip(rt, accentColor);
+            // Phase 11.5: uniform premium material — no per-dept background colors
+            CinematicTheme.NeutralizeDepartmentCard(rt);
+            CinematicTheme.ApplyPremiumMaterial(rt);
+
+            var badge = rt.Find("Content/CardMainRow/IconColumn/Badge")?.GetComponent<Image>()
+                     ?? rt.Find("Content/CardMainRow/InfoColumn/HeaderRow/Badge")?.GetComponent<Image>()
+                     ?? rt.Find("Content/HeaderRow/Badge")?.GetComponent<Image>();
+            if (badge != null)
+                badge.color = Color.clear;
         }
 
         var bar = estudio.GetComponentInChildren<BonificationsBarUI>(true);
@@ -232,6 +267,7 @@ public static class DefinitiveHudBootstrap
             {
                 if (card.GetComponent<ScrollDragForwarder>() == null)
                     card.gameObject.AddComponent<ScrollDragForwarder>();
+                card.RefreshUI();
                 UpgradeUiRaycastPolicy.ApplyDepartmentCard(card.transform, card.buyButton);
             }
         }
@@ -322,9 +358,69 @@ public static class DefinitiveHudBootstrap
                 var ui = card.GetComponent<MovieButtonUI>();
                 var rarity = ui?.movieConfig?.rarity ?? MovieRarity.Common;
                 var genre  = ui?.movieConfig?.genre ?? MovieGenre.Drama;
+                MovieOfferCardLayoutBuilder.ApplyCompactOfferLayout(card);
                 MovieOfferCardLayoutBuilder.ApplyRarityIconLayout(card, rarity, genre);
             }
         }
+
+        PatchProductionProgressBars(prod);
+    }
+
+    static void PatchProductionProgressBars(RectTransform prod)
+    {
+        if (prod == null) return;
+
+        foreach (var slot in prod.GetComponentsInChildren<RectTransform>(true))
+        {
+            if (slot.name != "ProdSlot") continue;
+
+            var pc = slot.Find("ProgressContainer") as RectTransform
+                  ?? slot.Find("ProgressRow") as RectTransform;
+            if (pc == null) continue;
+
+            if (pc.parent != slot)
+            {
+                pc.SetParent(slot, false);
+                pc.SetAsLastSibling();
+            }
+
+            ApplyUnifiedProgressContainerLayout(pc);
+        }
+    }
+
+    static void ApplyUnifiedProgressContainerLayout(RectTransform pc)
+    {
+        var pcLE = pc.GetComponent<LayoutElement>() ?? pc.gameObject.AddComponent<LayoutElement>();
+        pcLE.preferredHeight = 8f;
+        pcLE.minHeight = 8f;
+        pcLE.flexibleWidth = 1f;
+        pcLE.minWidth = 0f;
+        pcLE.ignoreLayout = false;
+
+        bool legacyCentered = Mathf.Approximately(pc.anchorMin.x, pc.anchorMax.x)
+                           && pc.anchorMin.x > 0.1f && pc.anchorMin.x < 0.9f;
+        if (legacyCentered)
+        {
+            float y = pc.anchorMin.y;
+            pc.anchorMin = new Vector2(0f, y);
+            pc.anchorMax = new Vector2(1f, y);
+            pc.pivot = new Vector2(0.5f, 0.5f);
+            pc.sizeDelta = new Vector2(0f, 8f);
+        }
+
+        pc.offsetMin = new Vector2(8f, pc.offsetMin.y);
+        pc.offsetMax = new Vector2(-8f, pc.offsetMax.y);
+
+        var pad = pc.GetComponent<HorizontalLayoutGroup>() ?? pc.gameObject.AddComponent<HorizontalLayoutGroup>();
+        pad.padding = new RectOffset(8, 8, 0, 0);
+        pad.childControlWidth = pad.childControlHeight = true;
+        pad.childForceExpandWidth = true;
+        pad.childForceExpandHeight = true;
+
+        var bar = pc.Find("ProgressBar") as RectTransform;
+        if (bar == null) return;
+        var barLE = bar.GetComponent<LayoutElement>() ?? bar.gameObject.AddComponent<LayoutElement>();
+        barLE.preferredHeight = 4f;
     }
 
     /// <summary>
@@ -467,6 +563,24 @@ public static class DefinitiveHudBootstrap
                 tmp.fontSize = Mathf.Max(tmp.fontSize, 15f);
             else if (tmp.name.Contains("Desc") || tmp.name.Contains("Effect"))
                 tmp.fontSize = Mathf.Max(tmp.fontSize, 12f);
+
+            // Fix baked legacy green text colors — restore cinematic palette
+            if (CinematicTheme.IsLegacyGreen(tmp.color))
+                tmp.color = CinematicTheme.GoldBase;
+        }
+
+        // Fix baked green image backgrounds in Mejoras panel — use transparent so no colored box appears
+        foreach (var img in mejoras.GetComponentsInChildren<Image>(true))
+        {
+            if (img.GetComponent<Button>() != null) continue;
+            if (img.GetComponent<Slider>() != null) continue;
+            if (!CinematicTheme.IsLegacyGreen(img.color)) continue;
+
+            var name = img.gameObject.name;
+            // Card root backgrounds should keep a visible color — everything else (overlays, badges) → clear
+            var isCardRoot = img.GetComponent<UpgradeCardUI>() != null
+                          || img.GetComponentInParent<UpgradeCardUI>(false) == null;
+            img.color = isCardRoot ? CinematicTheme.CardBg : Color.clear;
         }
     }
 
@@ -654,6 +768,8 @@ public static class DefinitiveHudBootstrap
             var iconTmp  = tab.Find("Icon")?.GetComponent<TextMeshProUGUI>();
             if (labelTmp != null) labelTmp.text = labels[i];
             if (iconTmp  != null) iconTmp.text  = icons[i];
+            if (i < labels.Length)
+                UIIconGraphic.ApplyTabIcon(tab, UIIconCatalog.GetNavigation((MainHudTab)i));
         }
     }
 
@@ -661,6 +777,121 @@ public static class DefinitiveHudBootstrap
     {
         var topBar = Object.FindAnyObjectByType<TopBarUI>(FindObjectsInactive.Include);
         topBar?.PatchSettingsIcon();
+        topBar?.PatchTopBarVisuals();
+    }
+
+    /// <summary>
+    /// Phase 12.3B — root-cause color enforcement for baked scenes.
+    /// Fixes stale GameHudSkins.asset colors AND scene-baked #2ECC71 / #27AE60 that ignore CinematicTheme.
+    /// </summary>
+    static void PatchLegacyHudColors(RectTransform switcher)
+    {
+        PatchStudioHeaderAccentPanels(switcher);
+        PatchLegacyGreenActionButtons();
+    }
+
+    static void PatchStudioHeaderAccentPanels(RectTransform switcher)
+    {
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        var header = estudio.Find("StudioHeader");
+        if (header == null) return;
+
+        // CS logo block — city name badge with premium framing
+        var iconPanel = header.Find("Icon");
+        SetPanelColor(iconPanel, CinematicTheme.DeepRedBase);
+        if (iconPanel != null)
+        {
+            // Ensure the city badge auto-sizes: remove fixed width constraints
+            var iconLE = iconPanel.GetComponent<LayoutElement>();
+            if (iconLE != null)
+            {
+                iconLE.preferredWidth = -1f;
+                iconLE.minWidth = 100f;
+                iconLE.flexibleWidth = 0f;
+            }
+        }
+
+        // Mission block — GameObject "MissionCard"
+        SetPanelColor(header.Find("MissionCard"), CinematicTheme.DeepRedBase);
+
+        var iconTxt = header.Find("Icon/IconTxt")?.GetComponent<TextMeshProUGUI>();
+        if (iconTxt != null)
+        {
+            iconTxt.fontSize = 20f;
+            iconTxt.fontStyle = FontStyles.Bold;
+            iconTxt.color = CinematicTheme.TextPrimary;
+            // Ensure icon text has enough width for city names
+            var iconTxtLE = iconTxt.GetComponent<LayoutElement>() ?? iconTxt.gameObject.AddComponent<LayoutElement>();
+            iconTxtLE.flexibleWidth = 1f;
+            iconTxt.overflowMode = TextOverflowModes.Ellipsis;
+            iconTxt.enableAutoSizing = true;
+            iconTxt.fontSizeMax = 20f;
+            iconTxt.fontSizeMin = 14f;
+        }
+
+        // XP bar fill — functional progress, gold not green
+        var xpFill = header.Find("XpBlock/XPBar/Fill Area/Fill")?.GetComponent<Image>();
+        if (xpFill != null) xpFill.color = CinematicTheme.GoldBase;
+
+        var levelLine = header.Find("XpBlock/LevelLineText")?.GetComponent<TextMeshProUGUI>();
+        if (levelLine != null)
+        {
+            levelLine.color = CinematicTheme.GoldBright;
+            levelLine.alignment = TextAlignmentOptions.MidlineLeft;
+        }
+
+        var xpText = header.Find("XpBlock/XPText")?.GetComponent<TextMeshProUGUI>();
+        if (xpText != null)
+            xpText.alignment = TextAlignmentOptions.MidlineLeft;
+
+        var xpBlock = header.Find("XpBlock");
+        if (xpBlock != null)
+        {
+            var xpVLG = xpBlock.GetComponent<VerticalLayoutGroup>();
+            if (xpVLG != null)
+                xpVLG.childAlignment = TextAnchor.UpperLeft;
+        }
+
+        var headerHLG = header.GetComponent<HorizontalLayoutGroup>();
+        if (headerHLG != null)
+            headerHLG.childAlignment = TextAnchor.MiddleLeft;
+    }
+
+    static void SetPanelColor(Transform t, Color color)
+    {
+        if (t == null) return;
+        var img = t.GetComponent<Image>();
+        if (img != null) img.color = color;
+    }
+
+    static void PatchLegacyGreenActionButtons()
+    {
+        foreach (var btn in Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (btn == null) continue;
+            var img = btn.GetComponent<Image>();
+            if (img == null || !CinematicTheme.IsLegacyActionButtonGreen(img.color)) continue;
+
+            // Re-apply through skin pipeline so elevation layers stay consistent.
+            HudSkinProvider.ApplyButton(img, HudButtonVariant.Success);
+        }
+
+        // Also patch any non-button Image components using the legacy green (backgrounds, fills, etc.)
+        foreach (var img in Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (img == null) continue;
+            if (img.GetComponent<Button>() != null) continue;
+            if (img.GetComponent<Slider>() != null) continue;
+            if (!CinematicTheme.IsLegacyActionButtonGreen(img.color)) continue;
+
+            var name = img.gameObject.name;
+            // Only patch structural background images, not intentional fill/bar elements
+            if (name.Contains("Fill") || name.Contains("Bar") || name.Contains("Progress")) continue;
+
+            img.color = CinematicTheme.CardBg2;
+        }
     }
 
     static RectTransform FindContentSwitcher()

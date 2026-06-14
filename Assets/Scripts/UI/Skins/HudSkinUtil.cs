@@ -22,4 +22,16 @@ public static class HudSkinUtil
             image.color = fallbackColor;
         }
     }
+
+    /// <summary>
+    /// Sets the base color on a card background image — color only, no material layers.
+    /// Individual card components apply CinematicTheme.ApplyPremiumMaterial() themselves.
+    /// </summary>
+    public static void ApplyPremiumSurface(Image image, Color baseColor)
+    {
+        if (image == null) return;
+        image.sprite = null;
+        image.type = Image.Type.Simple;
+        image.color = baseColor;
+    }
 }

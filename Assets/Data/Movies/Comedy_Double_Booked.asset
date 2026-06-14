@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: MOnDayMornInG.png
-  posterSprite: {fileID: -3321353905752121019, guid: a84be7869ec21e340afa449570b76027, type: 3}
+  posterSprite: {fileID: 21300000, guid: a84be7869ec21e340afa449570b76027, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

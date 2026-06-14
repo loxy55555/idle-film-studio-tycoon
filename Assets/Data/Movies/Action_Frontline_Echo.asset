@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: FrontlineEcho.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: c9e49601696deb04c8cee3ca649d8cf7, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -15,6 +15,7 @@ public class MultiProductionPanelUI : MonoBehaviour
     ScrollRect    _scroll;
     LayoutElement _widgetLE;
     StudioManager _studio;
+    UpgradeSystem _upgrades;
     MovieConfig[] _catalog;
     readonly List<SlotView> _slots = new();
 
@@ -58,9 +59,12 @@ public class MultiProductionPanelUI : MonoBehaviour
     {
         Unbind();
         _studio = GameHub.Instance?.studio;
+        _upgrades = GameHub.Instance?.upgrades;
         _catalog = MoviePosterVisual.ResolveCatalog();
         if (_studio != null)
             _studio.OnProductionsChanged += Refresh;
+        if (_upgrades != null)
+            _upgrades.OnUpgradePurchased += Refresh;
         Refresh();
     }
 
@@ -68,6 +72,8 @@ public class MultiProductionPanelUI : MonoBehaviour
     {
         if (_studio != null)
             _studio.OnProductionsChanged -= Refresh;
+        if (_upgrades != null)
+            _upgrades.OnUpgradePurchased -= Refresh;
     }
 
     void Update()
@@ -147,13 +153,16 @@ public class MultiProductionPanelUI : MonoBehaviour
         if (_catalog == null) _catalog = MoviePosterVisual.ResolveCatalog();
 
         var active = _studio.GetProductionSnapshots();
-        int displayCount = Mathf.Max(active.Count, 2);
+        int maxSlots = Mathf.Max(1, _studio.maxMovieSlots);
+        int displayCount = Mathf.Max(active.Count, maxSlots, 2);
 
         EnsureSlotCount(displayCount);
         for (int i = 0; i < displayCount; i++)
         {
             if (i < active.Count)
                 _slots[i].Apply(active[i], _catalog);
+            else if (i >= maxSlots)
+                _slots[i].ApplyLocked();
             else
                 _slots[i].ApplyIdle();
         }
@@ -238,12 +247,13 @@ public class MultiProductionPanelUI : MonoBehaviour
         public void Apply(ProductionSlotSnapshot snap, MovieConfig[] catalog)
         {
             _movieKey = snap.movieKey;
+            ResetTitleTypography();
             _refs.titleText.text = snap.movieName;
 
             if (snap.awaitingDiscovery)
             {
                 _refs.statusText.text = Loc.Get(LocKeys.ProdStatusComplete);
-                _refs.statusText.color = new Color(0.95f, 0.77f, 0.06f);
+                _refs.statusText.color = CinematicTheme.GoldBright;
                 if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(false);
                 if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(false);
                 if (_refs.discoverButton != null)
@@ -258,7 +268,7 @@ public class MultiProductionPanelUI : MonoBehaviour
             else
             {
                 _refs.statusText.text = Loc.Get(LocKeys.ProdStatusProducing);
-                _refs.statusText.color = new Color(0.18f, 0.80f, 0.44f);
+                _refs.statusText.color = CinematicTheme.GoldBase;
                 if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(true);
                 if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(true);
                 if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
@@ -271,35 +281,57 @@ public class MultiProductionPanelUI : MonoBehaviour
 
             var cfg = MoviePosterVisual.FindByName(catalog, snap.movieName);
             if (cfg != null)
-            {
-                if (_refs.rarityIconText != null)
-                {
-                    _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(cfg.rarity, cfg.genre);
-                    _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(cfg.rarity, cfg.genre);
-                }
-
-                MovieRarityVisual.ApplyFrame(_refs.rarityFrame, cfg.rarity);
-            }
+                ShowSlotIcon(cfg);
             else
             {
-                if (_refs.rarityIconText != null)
-                {
-                    _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(MovieRarity.Common);
-                    _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(MovieRarity.Common);
-                }
-
-                if (_refs.rarityFrame != null)
-                    _refs.rarityFrame.color = MovieRarityVisual.GetAccentColor(MovieRarity.Common);
+                HideSlotIcon();
+                if (_refs.rarityFrame != null) _refs.rarityFrame.color = Color.clear;
+                MovieRarityVisual.ApplyCardBorder(_refs.root, MovieRarity.Common);
             }
+        }
+
+        void ShowSlotIcon(MovieConfig cfg)
+        {
+            var wrap = _refs.bodyRow != null ? _refs.bodyRow.Find("RarityIconWrap") : null;
+            if (wrap == null) return;
+
+            var sprite = UIIconCatalog.GetProductionIcon(cfg.rarity, cfg.genre);
+            if (sprite == null)
+            {
+                HideSlotIcon();
+                MovieRarityVisual.ApplyCardBorder(_refs.root, cfg.rarity);
+                return;
+            }
+
+            wrap.gameObject.SetActive(true);
+            if (_refs.rarityIconText != null)
+            {
+                _refs.rarityIconText.gameObject.SetActive(false);
+            }
+            UIIconGraphic.ApplyGenreRarityIcon(wrap, sprite, _refs.rarityIconText);
+            MovieRarityVisual.ApplyCardBorder(_refs.root, cfg.rarity);
+        }
+
+        void HideSlotIcon()
+        {
+            var wrap = _refs.bodyRow != null ? _refs.bodyRow.Find("RarityIconWrap") : null;
+            if (wrap != null) wrap.gameObject.SetActive(false);
+            if (_refs.rarityIconText != null) _refs.rarityIconText.gameObject.SetActive(false);
+            var iconSprite = wrap != null ? wrap.Find("RarityIconSprite") : null;
+            if (iconSprite != null) iconSprite.gameObject.SetActive(false);
         }
 
         public void ApplyIdle()
         {
             _movieKey = null;
             ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
+            ResetTitleTypography();
             _refs.titleText.text = Loc.Get(LocKeys.ProdNoActive);
             _refs.statusText.text = "SLOT LIBRE";
-            _refs.statusText.color = new Color(0.54f, 0.54f, 0.67f);
+            _refs.statusText.fontSize = 12f;
+            _refs.statusText.color = CinematicTheme.TextDim;
+            _refs.statusText.alignment = TextAlignmentOptions.MidlineRight;
+            if (_refs.bodyRow != null) _refs.bodyRow.gameObject.SetActive(true);
             if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(true);
             if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(true);
             if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
@@ -307,13 +339,54 @@ public class MultiProductionPanelUI : MonoBehaviour
             if (_refs.rewardText != null) _refs.rewardText.text = string.Empty;
             if (_refs.rarityIconText != null)
             {
-                _refs.rarityIconText.text = MovieOfferCardLayoutBuilder.GetRarityIcon(MovieRarity.Common);
-                _refs.rarityIconText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(MovieRarity.Common);
+                _refs.rarityIconText.text = string.Empty;
+                _refs.rarityIconText.gameObject.SetActive(false);
             }
-
+            HideSlotIcon();
+            MovieRarityVisual.ApplyCardBorder(_refs.root, MovieRarity.Common);
             if (_refs.rarityFrame != null) _refs.rarityFrame.color = Color.clear;
             if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(0f);
             else if (_refs.progressBar != null) _refs.progressBar.value = 0f;
+        }
+
+        public void ApplyLocked()
+        {
+            _movieKey = null;
+            ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
+            ResetTitleTypography();
+            _refs.titleText.text = "SLOT BLOQUEADO";
+            _refs.titleText.fontSize = 22f;
+            _refs.titleText.fontSizeMin = 18f;
+            _refs.titleText.fontSizeMax = 24f;
+            _refs.titleText.alignment = TextAlignmentOptions.MidlineLeft;
+            _refs.titleText.color = CinematicTheme.TextSecondary;
+            _refs.statusText.text = "Desbloquea en Mejoras → Instalaciones";
+            _refs.statusText.fontSize = 12f;
+            _refs.statusText.color = CinematicTheme.TextDim;
+            _refs.statusText.alignment = TextAlignmentOptions.MidlineRight;
+            if (_refs.bodyRow != null) _refs.bodyRow.gameObject.SetActive(true);
+            if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(false);
+            if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(false);
+            if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
+            if (_refs.rarityIconText != null)
+            {
+                _refs.rarityIconText.text = string.Empty;
+                _refs.rarityIconText.gameObject.SetActive(false);
+            }
+            HideSlotIcon();
+            if (_refs.rarityFrame != null) _refs.rarityFrame.color = Color.clear;
+            MovieRarityVisual.ApplyCardBorder(_refs.root, MovieRarity.Common);
+        }
+
+        void ResetTitleTypography()
+        {
+            if (_refs.titleText == null) return;
+            MovieOfferCardLayoutBuilder.ApplyTitleTypography(_refs.titleText, TextAlignmentOptions.MidlineLeft);
+            _refs.titleText.enableAutoSizing = true;
+            _refs.titleText.fontSizeMin = 14f;
+            _refs.titleText.fontSizeMax = 18f;
+            _refs.titleText.fontSize = 18f;
+            _refs.titleText.color = CinematicTheme.TextPrimary;
         }
 
         public void UpdateProgress(ProductionSlotSnapshot snap)

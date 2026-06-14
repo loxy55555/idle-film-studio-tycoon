@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: PaperHouse.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 3655bf73b7437d74695f01fc58050b35, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: MismatchedPair.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: f790cf24e53802d4a98235746b7eb5ea, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

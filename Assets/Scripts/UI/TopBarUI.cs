@@ -21,9 +21,10 @@ public class TopBarUI : MonoBehaviour
 
     [SerializeField] private StudioManager studio;
 
-    static readonly Color DIAMOND_COLOR = new Color(0.45f, 0.82f, 1f);
+    static readonly Color DIAMOND_COLOR = new Color(0.45f, 0.82f, 1f);  // diamond blue — intentional
 
     private AnimatedMoneyText _animatedMoney;
+    private AnimatedValueText _animatedRep;
     private DiamondWallet     _diamonds;
     private CitySystem        _city;
     private DepartmentSystem  D  => GameHub.Instance?.departments;
@@ -53,6 +54,10 @@ public class TopBarUI : MonoBehaviour
             _animatedMoney = moneyText.GetComponent<AnimatedMoneyText>()
                              ?? moneyText.gameObject.AddComponent<AnimatedMoneyText>();
 
+        if (reputationText != null)
+            _animatedRep = reputationText.GetComponent<AnimatedValueText>()
+                        ?? reputationText.gameObject.AddComponent<AnimatedValueText>();
+
         if (oscarsText != null)
             _oscarRT = oscarsText.GetComponent<RectTransform>();
 
@@ -65,6 +70,7 @@ public class TopBarUI : MonoBehaviour
         if (GameHub.Instance != null) BindCity();
         TrySubscribe();
         PatchSettingsIcon();
+        PatchTopBarVisuals();
     }
 
     private void OnDestroy()
@@ -100,6 +106,9 @@ public class TopBarUI : MonoBehaviour
             cityText = FindStatText(statsBlock, "CityText");
         if (levelText == null)
             levelText = FindStatText(statsBlock, "LevelText");
+        if (levelText != null)     levelText.color     = CinematicTheme.GoldBright;
+        if (oscarsText != null)    oscarsText.color    = CinematicTheme.GoldBase;
+        if (reputationText != null) reputationText.color = CinematicTheme.SilverBase;
         EnsureCityText(statsBlock as RectTransform);
     }
 
@@ -133,7 +142,7 @@ public class TopBarUI : MonoBehaviour
         vl.childForceExpandWidth = vl.childForceExpandHeight = true;
         vl.spacing = 0;
 
-        var label = RuntimeTmpText.Create(block.transform, "DIAM", 11, new Color(0.54f, 0.54f, 0.67f),
+        var label = RuntimeTmpText.Create(block.transform, "DIAM", 11, CinematicTheme.TextDim,
             FontStyles.Normal, TextAlignmentOptions.Center, "DiamondsLabel");
         label.gameObject.AddComponent<LayoutElement>().preferredHeight = 14;
 
@@ -195,7 +204,7 @@ public class TopBarUI : MonoBehaviour
     {
         if (cityText != null || statsBlock == null) return;
 
-        cityText = RuntimeTmpText.Create(statsBlock, "I1", 18, new Color(0.95f, 0.77f, 0.06f), FontStyles.Bold,
+        cityText = RuntimeTmpText.Create(statsBlock, "I1", 18, CinematicTheme.GoldBright, FontStyles.Bold,
             TextAlignmentOptions.Center, "CityText");
         cityText.gameObject.AddComponent<LayoutElement>().preferredWidth = 96f;
     }
@@ -264,8 +273,15 @@ public class TopBarUI : MonoBehaviour
 
     private void UpdateReputation(float rep)
     {
-        if (reputationText != null)
-            reputationText.text = "REP " + FormatReputation(rep);
+        if (_animatedRep != null)
+        {
+            _animatedRep.Mode = AnimatedValueText.FormatMode.OneDecimal;
+            _animatedRep.Prefix = "";
+            _animatedRep.Suffix = "";
+            _animatedRep.SetValue(rep);
+        }
+        else if (reputationText != null)
+            reputationText.text = FormatReputation(rep);
     }
 
     /// <summary>Whole numbers omit decimals; fractional rep shows one decimal (Phase 7.3).</summary>
@@ -298,7 +314,7 @@ public class TopBarUI : MonoBehaviour
         }
 
         if (P != null && oscarsText != null)
-            oscarsText.text = "★ " + P.oscars;
+            oscarsText.text = P.oscars.ToString("N0");
 
         if (_city != null && cityText != null)
             UpdateCity(_city.Level);
@@ -308,6 +324,299 @@ public class TopBarUI : MonoBehaviour
     }
 
     public RectTransform GetOscarRect() => _oscarRT;
+
+    // ── Phase 12.2 — TopBar visual patch ──────────────────────────────────────
+
+    bool _topBarPatched;
+
+    /// <summary>Phase 13.4A — icon-left / value-right rows, diamonds visible, balanced width.</summary>
+    public void PatchTopBarVisuals()
+    {
+        if (_topBarPatched) return;
+        _topBarPatched = true;
+
+        AutoWireMoneyTexts();
+        AutoWireStatsTexts();
+        AutoWireDiamondsText();
+
+        if (cityText != null)  cityText.gameObject.SetActive(false);
+        if (levelText != null) levelText.gameObject.SetActive(false);
+
+        ClearResourceBlockBg("MoneyBlock");
+        ClearResourceBlockBg("DiamondsBlock");
+        RestructureTopBarLayout();
+
+        if (moneyText != null)
+        {
+            moneyText.fontSize = 42f;
+            moneyText.fontStyle = FontStyles.Bold;
+            moneyText.color = CinematicTheme.TextPrimary;
+            moneyText.alignment = TextAlignmentOptions.MidlineLeft;
+        }
+        if (incomeText != null)
+        {
+            incomeText.color = CinematicTheme.GoldBase;
+            incomeText.fontSize = 17f;
+            incomeText.alignment = TextAlignmentOptions.MidlineLeft;
+            incomeText.gameObject.SetActive(true);
+        }
+        if (reputationText != null)
+        {
+            reputationText.color = CinematicTheme.SilverBase;
+            reputationText.fontSize = 24f;
+            reputationText.alignment = TextAlignmentOptions.MidlineLeft;
+        }
+        if (oscarsText != null)
+        {
+            oscarsText.color = CinematicTheme.GoldBase;
+            oscarsText.fontSize = 24f;
+            oscarsText.alignment = TextAlignmentOptions.MidlineLeft;
+        }
+        if (diamondsText != null)
+        {
+            diamondsText.color = CinematicTheme.TextPrimary;
+            diamondsText.fontSize = 32f;
+            diamondsText.fontStyle = FontStyles.Bold;
+            diamondsText.alignment = TextAlignmentOptions.MidlineLeft;
+            diamondsText.gameObject.SetActive(true);
+        }
+    }
+
+    void RestructureTopBarLayout()
+    {
+        var barHLG = GetComponent<HorizontalLayoutGroup>();
+        if (barHLG != null)
+        {
+            barHLG.childAlignment = TextAnchor.MiddleLeft;
+            barHLG.spacing = 8;
+            barHLG.padding = new RectOffset(12, 112, 6, 6);
+        }
+
+        RestructureMoneyBlock();
+        EnsureDiamondsStatBlock();
+        RestructureStatsBlock();
+
+        var spacer = transform.Find("TopBarSpacer");
+        if (spacer != null)
+        {
+            var le = spacer.GetComponent<LayoutElement>() ?? spacer.gameObject.AddComponent<LayoutElement>();
+            le.preferredWidth = 0f;
+            le.minWidth = 0f;
+            le.flexibleWidth = 1f;
+            le.ignoreLayout = false;
+        }
+    }
+
+    void RestructureMoneyBlock()
+    {
+        var moneyBlock = transform.Find("MoneyBlock");
+        if (moneyBlock == null) return;
+
+        ClearResourceBlockBg("MoneyBlock");
+
+        var blockLE = moneyBlock.GetComponent<LayoutElement>() ?? moneyBlock.gameObject.AddComponent<LayoutElement>();
+        blockLE.flexibleWidth = 1f;
+        blockLE.minWidth = 150f;
+        blockLE.preferredWidth = -1f;
+
+        var oldVLG = moneyBlock.GetComponent<VerticalLayoutGroup>();
+        if (oldVLG != null)
+        {
+            if (Application.isPlaying) Object.Destroy(oldVLG);
+            else Object.DestroyImmediate(oldVLG);
+        }
+
+        var blockVLG = moneyBlock.GetComponent<VerticalLayoutGroup>() ?? moneyBlock.gameObject.AddComponent<VerticalLayoutGroup>();
+        if (blockVLG == null) return;
+        blockVLG.childAlignment = TextAnchor.MiddleLeft;
+        blockVLG.spacing = 2;
+        blockVLG.childControlWidth = blockVLG.childControlHeight = true;
+        blockVLG.childForceExpandWidth = true;
+        blockVLG.childForceExpandHeight = false;
+        blockVLG.padding = new RectOffset(0, 0, 0, 0);
+
+        var row = moneyBlock.Find("MoneyRow");
+        if (row == null)
+        {
+            var rowGo = new GameObject("MoneyRow", typeof(RectTransform));
+            rowGo.transform.SetParent(moneyBlock, false);
+            row = rowGo.transform;
+        }
+
+        if (moneyText != null) moneyText.transform.SetParent(row, false);
+        if (incomeText != null) incomeText.transform.SetParent(moneyBlock, false);
+
+        SetupIconValueRow(row, moneyText != null ? moneyText.transform : null,
+            "MoneyIcon", UIIconCatalog.GetResourceMoney(), 52f);
+    }
+
+    void EnsureDiamondsStatBlock()
+    {
+        var statsBlock = transform.Find("StatsBlock");
+        if (statsBlock == null) return;
+
+        Transform diamondsBlock = null;
+        foreach (Transform child in statsBlock)
+        {
+            if (child.Find("DiamondsText") != null) { diamondsBlock = child; break; }
+        }
+
+        if (diamondsBlock == null)
+        {
+            var block = new GameObject("DiamondsBlock", typeof(RectTransform));
+            block.transform.SetParent(statsBlock, false);
+            diamondsBlock = block.transform;
+            diamondsText = RuntimeTmpText.Create(diamondsBlock, "0", 24f, DIAMOND_COLOR, FontStyles.Bold,
+                TextAlignmentOptions.MidlineLeft, "DiamondsText");
+        }
+
+        var label = diamondsBlock.Find("DiamondsLabel");
+        if (label != null)
+        {
+            if (Application.isPlaying) Object.Destroy(label.gameObject);
+            else Object.DestroyImmediate(label.gameObject);
+        }
+
+        if (diamondsText == null)
+            diamondsText = diamondsBlock.Find("DiamondsText")?.GetComponent<TextMeshProUGUI>();
+
+        SetupIconValueRow(diamondsBlock, diamondsText != null ? diamondsText.transform : null,
+            "DiamondIcon", UIIconCatalog.GetResourceDiamonds(), 44f);
+
+        var le = diamondsBlock.GetComponent<LayoutElement>() ?? diamondsBlock.gameObject.AddComponent<LayoutElement>();
+        le.minWidth = 120f;
+        le.preferredWidth = 140f;
+        le.flexibleWidth = 1f;
+        diamondsBlock.gameObject.SetActive(true);
+        UpdateDiamonds(_diamonds != null ? _diamonds.Balance : 0);
+    }
+
+    void RestructureStatsBlock()
+    {
+        var statsBlock = transform.Find("StatsBlock");
+        if (statsBlock == null) return;
+
+        var hlg = statsBlock.GetComponent<HorizontalLayoutGroup>() ?? statsBlock.gameObject.AddComponent<HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.MiddleLeft;
+        hlg.spacing = 12;
+        hlg.padding = new RectOffset(0, 0, 0, 0);
+        hlg.childControlWidth = hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+
+        var statsLE = statsBlock.GetComponent<LayoutElement>() ?? statsBlock.gameObject.AddComponent<LayoutElement>();
+        statsLE.flexibleWidth = 2f;
+        statsLE.minWidth = 220f;
+        statsLE.preferredWidth = -1f;
+
+        foreach (Transform child in statsBlock)
+        {
+            if (!child.gameObject.activeInHierarchy) continue;
+            if (child.name == "CityTextBlock") continue;
+
+            var repTxt = child.Find("RepText")?.GetComponent<TextMeshProUGUI>();
+            if (repTxt != null)
+            {
+                SetupIconValueRow(child, repTxt.transform, "RepIcon", UIIconCatalog.GetResourceReputation(), 44f);
+                continue;
+            }
+
+            var oscarTxt = child.Find("OscarsText")?.GetComponent<TextMeshProUGUI>();
+            if (oscarTxt != null)
+            {
+                SetupIconValueRow(child, oscarTxt.transform, "StarIcon", UIIconCatalog.GetResourceGoldStar(), 44f);
+                continue;
+            }
+
+            var diamTxt = child.Find("DiamondsText")?.GetComponent<TextMeshProUGUI>();
+            if (diamTxt != null)
+                SetupIconValueRow(child, diamTxt.transform, "DiamondIcon", UIIconCatalog.GetResourceDiamonds(), 44f);
+        }
+    }
+
+    static void SetupIconValueRow(Transform block, Transform valueTransform, string iconName, Sprite sprite, float iconSize)
+    {
+        if (block == null || block.gameObject == null || valueTransform == null) return;
+
+        var blockLE = block.GetComponent<LayoutElement>() ?? block.gameObject.AddComponent<LayoutElement>();
+        blockLE.minWidth = Mathf.Max(blockLE.minWidth, iconSize + 36f);
+
+        var row = block.Find("__IconValueRow");
+        if (row == null)
+        {
+            var rowGo = new GameObject("__IconValueRow", typeof(RectTransform));
+            rowGo.transform.SetParent(block, false);
+            row = rowGo.transform;
+        }
+
+        var rowLE = row.GetComponent<LayoutElement>() ?? row.gameObject.AddComponent<LayoutElement>();
+        rowLE.preferredHeight = iconSize;
+        rowLE.minHeight = iconSize;
+        rowLE.flexibleWidth = 1f;
+
+        var rowHLG = row.GetComponent<HorizontalLayoutGroup>() ?? row.gameObject.AddComponent<HorizontalLayoutGroup>();
+        if (rowHLG == null) return;
+
+        rowHLG.childAlignment = TextAnchor.MiddleLeft;
+        rowHLG.spacing = 6;
+        rowHLG.padding = new RectOffset(0, 0, 0, 0);
+        rowHLG.childControlWidth = rowHLG.childControlHeight = true;
+        rowHLG.childForceExpandWidth = false;
+        rowHLG.childForceExpandHeight = false;
+
+        valueTransform.SetParent(row, false);
+
+        if (sprite != null)
+        {
+            var icon = row.Find(iconName)?.GetComponent<Image>()
+                       ?? UIIconGraphic.EnsureChildIcon(row, iconName, iconSize);
+            if (icon != null)
+            {
+                var iconLE = icon.GetComponent<LayoutElement>() ?? icon.gameObject.AddComponent<LayoutElement>();
+                iconLE.preferredWidth = iconLE.preferredHeight = iconSize;
+                iconLE.minWidth = iconLE.minHeight = iconSize;
+                iconLE.flexibleWidth = 0f;
+                icon.transform.SetAsFirstSibling();
+                UIIconGraphic.Apply(icon, sprite);
+            }
+        }
+
+        valueTransform.SetAsLastSibling();
+        var tmp = valueTransform.GetComponent<TextMeshProUGUI>();
+        if (tmp != null)
+        {
+            tmp.alignment = TextAlignmentOptions.MidlineLeft;
+            tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+        var valueLE = valueTransform.GetComponent<LayoutElement>() ?? valueTransform.gameObject.AddComponent<LayoutElement>();
+        valueLE.flexibleWidth = 0f;
+        valueLE.minWidth = 48f;
+        valueLE.preferredWidth = -1f;
+    }
+
+    // Phase 13.3D: Remove any previously created __ResourceBg panel that shows as a visible blue box.
+    void ClearResourceBlockBg(string blockName)
+    {
+        var block = transform.Find(blockName);
+        if (block == null)
+        {
+            var statsBlock = transform.Find("StatsBlock");
+            if (statsBlock != null) block = statsBlock.Find(blockName);
+        }
+        if (block == null) return;
+
+        var existingBg = block.Find("__ResourceBg");
+        if (existingBg != null)
+        {
+            var img = existingBg.GetComponent<UnityEngine.UI.Image>();
+            if (img != null) img.color = Color.clear;
+        }
+
+        // Also clear any baked Image on the block itself that may be a legacy background
+        var blockImg = block.GetComponent<UnityEngine.UI.Image>();
+        if (blockImg != null && CinematicTheme.IsLegacyGreen(blockImg.color))
+            blockImg.color = Color.clear;
+    }
 
     /// <summary>Phase 10.1 — settings button pinned to top-right of the bar.</summary>
     public void PatchSettingsIcon()

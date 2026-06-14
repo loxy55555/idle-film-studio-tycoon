@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: UncleGaryIII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 718775660068186020, guid: fbb8793de82176046b22076b74286eba, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

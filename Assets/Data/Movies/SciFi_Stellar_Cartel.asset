@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: EventHorizonARrAY.png
-  posterSprite: {fileID: -452476240984958335, guid: 51d2061c16372ea458e71ca9b4d6f9eb, type: 3}
+  posterSprite: {fileID: 21300000, guid: 51d2061c16372ea458e71ca9b4d6f9eb, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

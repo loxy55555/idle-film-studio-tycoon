@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: LettersACrossTheSea.png
-  posterSprite: {fileID: -2507350094108321803, guid: 10c8f40f1284654478f2487226801505, type: 3}
+  posterSprite: {fileID: 21300000, guid: 10c8f40f1284654478f2487226801505, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -80,7 +80,7 @@ public static class Loc
             { LocKeys.ProdStartMovie, "Inicia una película" },
             { LocKeys.ProdStatusProducing, "Produciendo" },
             { LocKeys.ProdStatusComplete, "Producción completada" },
-            { LocKeys.ProdDiscoverButton, "DESCUBRIR PELÍCULA" },
+            { LocKeys.ProdDiscoverButton, "🎬 ESTRENO" },
             { LocKeys.ProdSelect, "SELECCIONAR" },
             { LocKeys.ProdCatalogComplete, "Catálogo completado" },
             { LocKeys.ProdNoOffer, "Sin oferta disponible" },

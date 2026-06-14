@@ -17,13 +17,13 @@ public class GameFeelUI : MonoBehaviour
     public RectTransform oscarTarget;
 
     [Header("Colors")]
-    public Color moneyColor    = new Color(0.18f, 0.80f, 0.44f);
-    public Color repColor        = new Color(0.95f, 0.77f, 0.06f);
-    public Color xpColor         = new Color(0.65f, 0.85f, 1f);
-    public Color diamondColor    = new Color(0.55f, 0.85f, 1f);
-    public Color titleColor      = Color.white;
-    public Color oscarTitleColor = new Color(0.95f, 0.77f, 0.06f);
-    public Color panelBgColor    = new Color(0.08f, 0.08f, 0.16f, 0.94f);
+    public Color moneyColor    = CinematicTheme.GoldBase;
+    public Color repColor      = CinematicTheme.GoldBright;
+    public Color xpColor       = new Color(0.65f, 0.85f, 1f);
+    public Color diamondColor  = new Color(0.55f, 0.85f, 1f);
+    public Color titleColor    = CinematicTheme.TextPrimary;
+    public Color oscarTitleColor = CinematicTheme.GoldBright;
+    public Color panelBgColor  = CinematicTheme.CardBg;
 
     static readonly Color UpgradeFlash = new Color(1f, 1f, 1f, 0.35f);
 
@@ -130,10 +130,7 @@ public class GameFeelUI : MonoBehaviour
 
         var target = oscarTarget != null ? oscarTarget : popupParent;
         if (target != null)
-        {
-            target.DOKill();
-            target.DOShakeAnchorPos(0.65f, 18f, 24, 90f, false, true).SetUpdate(true);
-        }
+            UIAnimationService.PlayStarEarned(target, null);
 
         EnqueuePanel(new PanelRequest
         {
@@ -183,21 +180,9 @@ public class GameFeelUI : MonoBehaviour
     {
         if (cardRoot != null)
         {
-            cardRoot.DOKill();
-            cardRoot.localScale = Vector3.one;
-            cardRoot.DOPunchScale(Vector3.one * 0.12f, 0.35f, 8, 0.5f).SetUpdate(true);
-
             var bg = cardRoot.GetComponent<Image>();
-            if (bg != null)
-            {
-                Color baseColor = bg.color;
-                bg.DOKill();
-                bg.color = baseColor;
-                bg.DOColor(Color.Lerp(baseColor, UpgradeFlash, 0.85f), 0.08f)
-                    .SetLoops(2, LoopType.Yoyo)
-                    .SetUpdate(true)
-                    .OnComplete(() => bg.color = baseColor);
-            }
+            var levelTxt = cardRoot.GetComponentInChildren<TextMeshProUGUI>();
+            UIAnimationService.PlayUpgradeFeedback(cardRoot, bg, levelTxt);
         }
 
         string effect = UpgradeEffectFormatter.FormatLevelEffects(cfg, newLevel);
@@ -257,6 +242,7 @@ public class GameFeelUI : MonoBehaviour
 
         var bg = go.GetComponent<Image>();
         bg.color = panelBgColor;
+        CinematicTheme.ApplyElevationPopup(rt);
 
         var cg = go.GetComponent<CanvasGroup>();
         cg.alpha = 0f;
@@ -285,17 +271,13 @@ public class GameFeelUI : MonoBehaviour
             AddPanelText(go.transform, req.lines[i], 20, c, FontStyles.Bold);
         }
 
-        var seq = DOTween.Sequence().SetUpdate(true);
-        seq.Append(cg.DOFade(1f, 0.18f));
-        seq.Join(rt.DOScale(enterScale, 0.28f).SetEase(Ease.OutBack));
-        if (req.prominent)
-            seq.Join(rt.DOPunchScale(Vector3.one * 0.06f, 0.45f, 6, 0.4f));
+        var seq = UIAnimationService.PlayRewardPopup(rt, cg, req.prominent);
 
         if (req.requireDismiss)
         {
             var dismissBtn = CreateDismissButton(go.transform, () =>
             {
-                cg.DOFade(0f, 0.22f).SetUpdate(true).OnComplete(() =>
+                UIAnimationService.PlayPopupClose(rt, cg, () =>
                 {
                     Destroy(go);
                     onComplete?.Invoke();
@@ -307,12 +289,13 @@ public class GameFeelUI : MonoBehaviour
         else
         {
             seq.AppendInterval(holdDuration);
-            seq.Append(cg.DOFade(0f, 0.28f));
-            seq.Join(rt.DOScale(enterScale * 0.92f, 0.28f).SetEase(Ease.InQuad));
-            seq.OnComplete(() =>
+            seq.AppendCallback(() =>
             {
-                Destroy(go);
-                onComplete?.Invoke();
+                UIAnimationService.PlayRewardPopupOut(rt, cg, enterScale, () =>
+                {
+                    Destroy(go);
+                    onComplete?.Invoke();
+                });
             });
         }
     }
@@ -321,7 +304,7 @@ public class GameFeelUI : MonoBehaviour
     {
         var btnGo = new GameObject("ContinueBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(parent, false);
-        btnGo.GetComponent<Image>().color = new Color(0.15f, 0.68f, 0.38f);
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         btnGo.AddComponent<LayoutElement>().preferredHeight = 36f;
         btnGo.AddComponent<UIButtonScale>();
 

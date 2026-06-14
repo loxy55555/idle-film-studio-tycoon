@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: PenguinExpress.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: dec2f1ec7bb81604e8f15b3ba40a1345, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

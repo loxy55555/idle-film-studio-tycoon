@@ -102,7 +102,7 @@ public static class HudNavigationCleanup
         {
             if (ordered[i] == null) continue;
             ordered[i].SetSiblingIndex(i);
-            RenameTab(ordered[i], MainHudTabLabels.BottomNav[i], MainHudTabLabels.BottomIcons[i]);
+            RenameTab(ordered[i], MainHudTabLabels.BottomNav[i], MainHudTabLabels.BottomIcons[i], (MainHudTab)i);
         }
 
         if (mainNavigation == null) return;
@@ -154,7 +154,7 @@ public static class HudNavigationCleanup
         return label != null ? label.text : string.Empty;
     }
 
-    static void RenameTab(Transform tab, string label, string icon)
+    static void RenameTab(Transform tab, string label, string icon, MainHudTab tabId)
     {
         tab.name = "Tab_" + label.Replace(" ", "_");
 
@@ -163,6 +163,8 @@ public static class HudNavigationCleanup
 
         var iconTmp = tab.Find("Icon")?.GetComponent<TextMeshProUGUI>();
         if (iconTmp != null) iconTmp.text = icon;
+
+        UIIconGraphic.ApplyTabIcon(tab, UIIconCatalog.GetNavigation(tabId));
     }
 
     static RectTransform FindPanel(Transform parent, params string[] names)

@@ -58,7 +58,7 @@ Animation_The_Last_Kite,The Last Kite,Animation,Rare,7,,0,0,TheLastKite.png,One 
 Animation_Tiny_Titans,Tiny Titans,Animation,Rare,7,,0,0,TinyTitans.png,Miniature gods argue over a sandbox world.
 Animation_Whisper_Woods,Whisper Woods,Animation,Epic,7,,0,0,WhisperWoods.png,Trees whisper advice to lost children.
 Animation_Legendary,Little Giants,Animation,Legendary,8,,0,1,LittleGiants.png,Small heroes carry the biggest hearts in the biggest adventure.
-Animation_Little_Giants_II,Little Giants II,Animation,Common,8,,0,0,LittleGiantsII.png,Giants return. Problems grew too.
+Animation_Little_Giants_II,Little Giants II,Animation,Common,8,,0,0,BigTroubleClub.png,Giants return. Problems grew too.
 Animation_Magic_Pencil,Magic Pencil,Animation,Common,8,,0,0,MagicPencil.png,Draw something. It comes alive briefly.
 Animation_Penguin_Express,Penguin Express,Animation,Common,8,,0,0,PenguinExpress.png,Express delivery across ice continents.
 Animation_Starlight_Parade,Starlight Parade,Animation,Rare,8,,0,0,StarlightParade.png,Annual parade lights up the night sky.
@@ -231,7 +231,7 @@ Romance_The_Long_Hello,The Long Hello,Romance,Epic,6,,0,0,TheLongHello.png,Goodb
 Romance_The_Matchbook,The Matchbook,Romance,Rare,6,,0,0,TheMatchbook.png,A matchbook from Paris starts everything.
 Romance_Two_Tickets,Two Tickets,Romance,Rare,6,,0,0,TwoTickets.png,Extra ticket. Unexpected companion.
 Romance_Winter_Bloom,Winter Bloom,Romance,Rare,6,,0,0,WinterBloom.png,Flowers in snow. Hearts thaw slowly.
-Romance_A_Sky_for_Two_II,A Sky for Two II,Romance,Common,7,,0,0,ASkyforTwoII.png,Same sky. Different cities. Same pull.
+Romance_A_Sky_for_Two_II,A Sky for Two II,Romance,Common,7,,0,0,HorizonsApart.png,Same sky. Different cities. Same pull.
 Romance_Love_in_Minor_Key,Love in Minor Key,Romance,Common,7,,0,0,LoveinMinorKey.png,Musicians compose a shared life.
 Romance_Legendary,A Sky for Two,Romance,Legendary,8,,0,1,ASkyforTwo.png,Two strangers share one horizon and one impossible choice.
 SciFi_Binary_Sun,Binary Sun,SciFi,Common,1,,0,0,BinarySun.png,Two stars. One habitable world. Many lies.

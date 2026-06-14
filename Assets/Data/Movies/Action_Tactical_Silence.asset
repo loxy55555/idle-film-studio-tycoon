@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TacticalSilence.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 44a20c800a3cb5547885c782e7a19e46, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

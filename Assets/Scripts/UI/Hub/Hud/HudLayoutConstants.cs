@@ -20,7 +20,7 @@ public static class HudLayoutConstants
 
     public const float StudioSummaryHeight = 100f;
     public const float StudioBonificationsHeight = 100f;
-    public const float StudioDeptCardHeight = 130f;
+    public const float StudioDeptCardHeight = 148f; // Phase 12.3: larger for mobile readability
     public const float StudioDeptVisibleRows     = 2.0f;
 
     public const float SectionHeaderHeight = 18f;

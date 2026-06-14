@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: NightRaid.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 034f0d08968535a46bf6590000190235, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

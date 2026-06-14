@@ -233,7 +233,7 @@ public static class StudioUIBuilder
         statsLE.preferredWidth = 340;
         statsLE.flexibleWidth = 0;
         var sbHLG = statsBlock.gameObject.AddComponent<HorizontalLayoutGroup>();
-        sbHLG.spacing = 8; sbHLG.childAlignment = TextAnchor.MiddleCenter;
+        sbHLG.spacing = 20; sbHLG.childAlignment = TextAnchor.MiddleCenter;
         sbHLG.childControlWidth = sbHLG.childControlHeight = true;
         sbHLG.childForceExpandWidth = sbHLG.childForceExpandHeight = true;
 
@@ -486,11 +486,11 @@ public static class StudioUIBuilder
         hlg.childForceExpandWidth = true;
         hlg.childForceExpandHeight = true;
 
-        // 1 — Logo
-        var icon = MakePanel(hdr, "Icon", ACCENT_GREEN);
+        // 1 — Logo (CS)
+        var icon = MakePanel(hdr, "Icon", CinematicTheme.DeepRedBase);
         SetRounded(icon, 8);
         SetFlexWidth(icon);
-        MakeText(icon, "IconTxt", "CS", 22, TEXT_PRI, TextAlignmentOptions.Center);
+        MakeText(icon, "IconTxt", "ESTUDIO", 18, TEXT_PRI, TextAlignmentOptions.Center);
 
         // 2 — Studio name
         var nameBlock = MakePanel(hdr, "NameBlock", BG_CARD2);
@@ -515,7 +515,7 @@ public static class StudioUIBuilder
         xpVLG.childControlWidth = xpVLG.childControlHeight = true;
         xpVLG.childForceExpandWidth = true;
         xpVLG.childForceExpandHeight = false;
-        var levelLine = MakeText(xpBlock, "LevelLineText", "Nv. 1", 13, ACCENT_GREEN, TextAlignmentOptions.Center);
+        var levelLine = MakeText(xpBlock, "LevelLineText", "Nv. 1", 13, CinematicTheme.GoldBright, TextAlignmentOptions.Center);
         levelLine.fontStyle = FontStyles.Bold;
         LE(levelLine.GetComponent<RectTransform>(), 16);
         var xpTxt = MakeText(xpBlock, "XPText", "0/120 XP", 10, TEXT_SEC, TextAlignmentOptions.Center);
@@ -535,7 +535,7 @@ public static class StudioUIBuilder
         faRT.offsetMin = faRT.offsetMax = Vector2.zero;
         var fill = new GameObject("Fill", typeof(RectTransform), typeof(Image));
         fill.transform.SetParent(fillArea.transform, false);
-        fill.GetComponent<Image>().color = ACCENT_GREEN;
+        fill.GetComponent<Image>().color = CinematicTheme.GoldBase;
         var fillRT = fill.GetComponent<RectTransform>();
         fillRT.anchorMin = Vector2.zero; fillRT.anchorMax = Vector2.one;
         fillRT.offsetMin = fillRT.offsetMax = Vector2.zero;
@@ -550,7 +550,7 @@ public static class StudioUIBuilder
         so.ApplyModifiedPropertiesWithoutUndo();
 
         // 4 — Mission
-        var mission = MakePanel(hdr, "MissionCard", ACCENT_GREEN);
+        var mission = MakePanel(hdr, "MissionCard", CinematicTheme.DeepRedBase);
         SetRounded(mission, 8);
         SetFlexWidth(mission);
         var mVLG = mission.gameObject.AddComponent<VerticalLayoutGroup>();
@@ -616,7 +616,7 @@ public static class StudioUIBuilder
     static void BuildMiniCard(RectTransform parent, DepartmentType deptType, string deptName, string hexColor)
     {
         var card = MakePanel(parent, "MiniCard_" + deptName, BG_CARD);
-        var wire = DepartmentMiniCardLayoutBuilder.Build(card, Hex(hexColor));
+        var wire = DepartmentMiniCardLayoutBuilder.Build(card, deptType);
 
         var miniUI = card.gameObject.GetComponent<DepartmentMiniCardUI>() ?? card.gameObject.AddComponent<DepartmentMiniCardUI>();
         var so = new SerializedObject(miniUI);
@@ -1136,14 +1136,34 @@ public static class StudioUIBuilder
         var effectTxt = MakeText(card, "EffectText", BuildEffectPreview(cfg), 18, ACCENT_BLUE, TextAlignmentOptions.MidlineLeft);
         LE(effectTxt.GetComponent<RectTransform>(), 22);
 
-        // Desc + cost + buy row
-        var bottom = MakeHGroup(card, "BotRow", 10, 0, 0, 0, 0);
-        LE(bottom, 36);
-        var costTxt = MakeText(bottom, "CostText", "$" + cfg.baseCost, 19, ACCENT_GOLD, TextAlignmentOptions.MidlineLeft);
+        // Phase 12.4B — info left, buy right
+        var mainRow = MakeHGroup(card, "CardMainRow", 12, 14, 10, 6, 0);
+        var mainLE = mainRow.gameObject.GetComponent<LayoutElement>() ?? mainRow.gameObject.AddComponent<LayoutElement>();
+        mainLE.flexibleHeight = 1f;
+        mainLE.minHeight = 88f;
+
+        var infoCol = new GameObject("InfoColumn", typeof(RectTransform));
+        Undo.RegisterCreatedObjectUndo(infoCol, "InfoColumn");
+        infoCol.transform.SetParent(mainRow, false);
+        var infoLE = infoCol.AddComponent<LayoutElement>();
+        infoLE.flexibleWidth = 1f;
+        infoLE.minWidth = 0f;
+        var infoVLG = infoCol.AddComponent<VerticalLayoutGroup>();
+        infoVLG.spacing = 4;
+        infoVLG.childControlWidth = infoVLG.childControlHeight = true;
+        infoVLG.childForceExpandWidth = true;
+        infoVLG.childForceExpandHeight = false;
+
+        effectTxt.transform.SetParent(infoCol.transform, false);
+        top.SetParent(infoCol.transform, false);
+        top.SetAsFirstSibling();
+
+        var costTxt = MakeText(infoCol.transform as RectTransform, "CostText", "$" + cfg.baseCost, 19, ACCENT_GOLD, TextAlignmentOptions.MidlineLeft);
         LE(costTxt.GetComponent<RectTransform>(), 30, 1f);
+
         var btnGo = new GameObject("BuyBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         Undo.RegisterCreatedObjectUndo(btnGo, "BuyBtn");
-        btnGo.transform.SetParent(bottom, false);
+        btnGo.transform.SetParent(mainRow, false);
         HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Primary);
         SetRounded(btnGo.GetComponent<RectTransform>(), 8);
         LE(btnGo.GetComponent<RectTransform>(), 36, 0, 172, 36);

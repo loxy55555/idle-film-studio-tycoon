@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: DesertKingdoms.png
-  posterSprite: {fileID: -1234228189903525100, guid: e3f89c21a27df994584b4579b2738938, type: 3}
+  posterSprite: {fileID: 21300000, guid: e3f89c21a27df994584b4579b2738938, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

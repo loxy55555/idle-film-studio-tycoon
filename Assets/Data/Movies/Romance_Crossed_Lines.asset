@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheLastTRainToPARis.png
-  posterSprite: {fileID: 3388097471902794214, guid: 77f3c163bf849d043a22922827a3bcb6, type: 3}
+  posterSprite: {fileID: 21300000, guid: 77f3c163bf849d043a22922827a3bcb6, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheLastBeacon.png
-  posterSprite: {fileID: -6217012706554648240, guid: 9cfe8d6efb560b34489af98360f06280, type: 3}
+  posterSprite: {fileID: 21300000, guid: 9cfe8d6efb560b34489af98360f06280, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: dominion

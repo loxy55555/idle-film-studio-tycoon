@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: GlassOrbit.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: ef346f93e6617674e8622bb0856f2ac4, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -64,13 +64,8 @@ public class AnimatedMoneyText : MonoBehaviour
         _snapTween?.Kill();
         double from = _displayed;
         _target = _studio.MoneyExact;
-        _snapTween = DOTween.To(() => (float)from, v =>
-        {
-            _displayed = v;
-            if (_text != null) _text.text = FormatMoney((long)_displayed);
-        }, (float)_target, snapDuration)
-            .SetEase(Ease.OutCubic)
-            .SetUpdate(true)
+        _snapTween = UIAnimationService.AnimateCurrency(_text, from, _target, snapDuration,
+            AnimatedMoneyText.FormatMoney, v => _displayed = v)
             .OnComplete(() => _useSmoothTick = true);
     }
 

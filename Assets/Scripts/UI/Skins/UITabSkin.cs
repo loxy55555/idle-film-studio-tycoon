@@ -16,61 +16,35 @@ public class UITabSkin : ScriptableObject
     public Sprite activeIndicatorSprite;
 
     [Header("Fallback Colors — Main Nav")]
-    public Color mainNavActiveBg = HudSkinDefaults.TAB_ACTIVE_BG;
-    public Color mainNavInactiveBg = HudSkinDefaults.TAB_INACTIVE_BG;
-    public Color mainNavActiveLabel = HudSkinDefaults.TAB_ACTIVE_LABEL;
+    public Color mainNavActiveBg      = HudSkinDefaults.TAB_ACTIVE_BG;
+    public Color mainNavInactiveBg    = HudSkinDefaults.TAB_INACTIVE_BG;
+    public Color mainNavActiveLabel   = HudSkinDefaults.TAB_ACTIVE_LABEL;   // gold
     public Color mainNavInactiveLabel = HudSkinDefaults.TAB_INACTIVE_LABEL;
 
     [Header("Fallback Colors — Sub Tab")]
-    public Color subTabActiveBg = new Color(0.14f, 0.14f, 0.28f);
-    public Color subTabInactiveBg = new Color(0.09f, 0.09f, 0.18f);
-    public Color subTabActiveLabel = Color.white;
-    public Color subTabInactiveLabel = new Color(0.55f, 0.55f, 0.70f);
+    public Color subTabActiveBg      = CinematicTheme.CardBg2;
+    public Color subTabInactiveBg    = CinematicTheme.PanelBg;
+    public Color subTabActiveLabel   = CinematicTheme.GoldBright;
+    public Color subTabInactiveLabel = CinematicTheme.TextDim;
 
     [Header("Fallback Colors — Category Tab")]
-    public Color categoryActiveBg = HudSkinDefaults.BG_CARD2;
-    public Color categoryInactiveBg = HudSkinDefaults.BG_CARD;
-    public Color categoryActiveLabel = Color.white;
-    public Color categoryInactiveLabel = HudSkinDefaults.TAB_INACTIVE_LABEL;
+    public Color categoryActiveBg    = CinematicTheme.CardBg2;
+    public Color categoryInactiveBg  = CinematicTheme.CardBg;
+    public Color categoryActiveLabel = CinematicTheme.TextPrimary;
+    public Color categoryInactiveLabel = CinematicTheme.TextDim;
 
     [Header("Active Indicator")]
-    public Color activeIndicatorColor = HudSkinDefaults.BTN_SUCCESS;
+    public Color activeIndicatorColor = CinematicTheme.GoldBase;
 
     public void Apply(Image background, TextMeshProUGUI label, bool active, HudTabVariant variant)
     {
-        if (background == null) return;
-
-        switch (variant)
-        {
-            case HudTabVariant.MainNav:
-                HudSkinUtil.ApplySpriteOrColor(background, active ? mainNavActiveSprite : mainNavInactiveSprite,
-                    active ? mainNavActiveBg : mainNavInactiveBg);
-                if (label != null)
-                    label.color = active ? mainNavActiveLabel : mainNavInactiveLabel;
-                break;
-            case HudTabVariant.SubTab:
-                HudSkinUtil.ApplySpriteOrColor(background, active ? subTabActiveSprite : subTabInactiveSprite,
-                    active ? subTabActiveBg : subTabInactiveBg);
-                if (label != null)
-                    label.color = active ? subTabActiveLabel : subTabInactiveLabel;
-                break;
-            case HudTabVariant.CategoryTab:
-                HudSkinUtil.ApplySpriteOrColor(background, active ? categoryActiveSprite : categoryInactiveSprite,
-                    active ? categoryActiveBg : categoryInactiveBg);
-                if (label != null)
-                    label.color = active ? categoryActiveLabel : categoryInactiveLabel;
-                break;
-        }
+        // Delegate to static fallbacks — always CinematicTheme / HudSkinDefaults, never stale asset colors.
+        ApplyFallback(background, label, active, variant);
     }
 
     public void ApplyIndicator(Image indicator, bool active)
     {
-        if (indicator == null) return;
-
-        indicator.gameObject.SetActive(active);
-        if (!active) return;
-
-        HudSkinUtil.ApplySpriteOrColor(indicator, activeIndicatorSprite, activeIndicatorColor);
+        ApplyIndicatorFallback(indicator, active);
     }
 
     public static void ApplyFallback(Image background, TextMeshProUGUI label, bool active, HudTabVariant variant)
@@ -81,15 +55,24 @@ public class UITabSkin : ScriptableObject
         {
             case HudTabVariant.MainNav:
                 HudSkinUtil.ApplySpriteOrColor(background, null, active ? HudSkinDefaults.TAB_ACTIVE_BG : HudSkinDefaults.TAB_INACTIVE_BG);
-                if (label != null) label.color = active ? HudSkinDefaults.TAB_ACTIVE_LABEL : HudSkinDefaults.TAB_INACTIVE_LABEL;
+                if (label != null)
+                {
+                    label.color = active ? HudSkinDefaults.TAB_ACTIVE_LABEL : HudSkinDefaults.TAB_INACTIVE_LABEL;
+                    label.fontStyle = active ? TMPro.FontStyles.Bold : TMPro.FontStyles.Normal;
+                }
                 break;
             case HudTabVariant.SubTab:
-                HudSkinUtil.ApplySpriteOrColor(background, null, active ? new Color(0.14f, 0.14f, 0.28f) : new Color(0.09f, 0.09f, 0.18f));
-                if (label != null) label.color = active ? Color.white : new Color(0.55f, 0.55f, 0.70f);
+                HudSkinUtil.ApplySpriteOrColor(background, null, active ? CinematicTheme.CardBg2 : CinematicTheme.PanelBg);
+                if (label != null)
+                {
+                    label.color = active ? CinematicTheme.GoldBright : CinematicTheme.TextDim;
+                    label.fontStyle = active ? TMPro.FontStyles.Bold : TMPro.FontStyles.Normal;
+                }
                 break;
             case HudTabVariant.CategoryTab:
-                HudSkinUtil.ApplySpriteOrColor(background, null, active ? HudSkinDefaults.BG_CARD2 : HudSkinDefaults.BG_CARD);
-                if (label != null) label.color = active ? Color.white : HudSkinDefaults.TAB_INACTIVE_LABEL;
+                HudSkinUtil.ApplySpriteOrColor(background, null, active ? CinematicTheme.CardBg2 : CinematicTheme.CardBg);
+                if (label != null)
+                    label.color = active ? CinematicTheme.TextPrimary : CinematicTheme.TextDim;
                 break;
         }
     }
@@ -101,6 +84,6 @@ public class UITabSkin : ScriptableObject
         indicator.gameObject.SetActive(active);
         if (!active) return;
 
-        HudSkinUtil.ApplySpriteOrColor(indicator, null, HudSkinDefaults.BTN_SUCCESS);
+        HudSkinUtil.ApplySpriteOrColor(indicator, null, CinematicTheme.GoldBase);
     }
 }

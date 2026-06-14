@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: EmpireOfAshes.png
-  posterSprite: {fileID: -5448058812320616161, guid: 48c4d745a02e0314bb6cdbf235f82673, type: 3}
+  posterSprite: {fileID: 21300000, guid: 48c4d745a02e0314bb6cdbf235f82673, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: project_avalanche

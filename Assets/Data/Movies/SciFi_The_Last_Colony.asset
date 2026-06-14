@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheAtLASParadox.png
-  posterSprite: {fileID: -1684543756518990293, guid: afb7933e45d577349ae3a6453c067987, type: 3}
+  posterSprite: {fileID: 21300000, guid: afb7933e45d577349ae3a6453c067987, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_last_colony

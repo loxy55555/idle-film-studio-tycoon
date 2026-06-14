@@ -17,11 +17,11 @@ public class SettingsOverlayUI : MonoBehaviour
     bool _isOpen;
 
     static readonly Color BG_OVERLAY   = new Color(0f, 0f, 0f, 0.88f);
-    static readonly Color BG_PANEL     = new Color(0.09f, 0.09f, 0.18f);
-    static readonly Color BG_ROW       = new Color(0.14f, 0.14f, 0.26f);
-    static readonly Color TEXT_PRIMARY = Color.white;
-    static readonly Color TEXT_DIM     = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
+    static readonly Color BG_PANEL     = CinematicTheme.CardBg;
+    static readonly Color BG_ROW       = CinematicTheme.CardBg2;
+    static readonly Color TEXT_PRIMARY = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_DIM     = CinematicTheme.SilverDim;
+    static readonly Color ACCENT_HEADER = CinematicTheme.CardBg2;
 
     static readonly (string icon, string label, bool placeholder)[] Entries =
     {
@@ -77,7 +77,7 @@ public class SettingsOverlayUI : MonoBehaviour
         // Header
         var header = new GameObject("Header", typeof(RectTransform), typeof(Image));
         header.transform.SetParent(panel.transform, false);
-        header.GetComponent<Image>().color = ACCENT_GREEN;
+        header.GetComponent<Image>().color = ACCENT_HEADER;
         SetRounded(header.GetComponent<RectTransform>(), 20);
         var headerLE = header.AddComponent<LayoutElement>();
         headerLE.preferredHeight = 72f;

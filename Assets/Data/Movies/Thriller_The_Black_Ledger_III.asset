@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheBlackLedgerIII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 5158292789185485195, guid: 797e6be1a37564c4fb53d6a89279c908, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_black_ledger

@@ -331,6 +331,17 @@ public class StudioManager : MonoBehaviour
 
     }
 
+    /// <summary>Refresh production slot cap after upgrade purchase (Phase 12.4G).</summary>
+    public void SyncMaxMovieSlotsFromUpgrades()
+    {
+        if (U == null) return;
+
+        int prev = maxMovieSlots;
+        maxMovieSlots = U.GetMaxMovieSlots();
+        if (prev != maxMovieSlots)
+            NotifyProductionsChanged();
+    }
+
 
 
     public void ApplyOfflinePassiveIncome(float offlineSeconds)

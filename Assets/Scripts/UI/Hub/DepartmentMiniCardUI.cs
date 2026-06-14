@@ -33,6 +33,7 @@ public class DepartmentMiniCardUI : MonoBehaviour
     void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+        EnsurePremiumMaterial();
         EnsurePremiumLayoutIfNeeded();
         WireUpgradeButton();
         GameHub.OnGameReady += OnGameReady;
@@ -85,23 +86,30 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
     void OnEnable()
     {
+        EnsurePremiumMaterial();
         WireUpgradeButton();
         Refresh();
     }
 
+    public void ForcePremiumLayoutRebuild() => EnsurePremiumLayoutIfNeeded();
+
     void EnsurePremiumLayoutIfNeeded()
     {
-        if (DepartmentMiniCardLayoutBuilder.HasPremiumLayout(transform))
+        if (!DepartmentMiniCardLayoutBuilder.HasPremiumLayout(transform))
         {
-            ApplyWire(DepartmentMiniCardLayoutBuilder.WireExisting(transform));
+            var wire = DepartmentMiniCardLayoutBuilder.EnsurePremiumLayout(this);
+            ApplyWire(wire);
             return;
         }
 
-        if (GetComponent<HorizontalLayoutGroup>() != null)
-            return;
+        ApplyWire(DepartmentMiniCardLayoutBuilder.WireExisting(transform));
+    }
 
-        var badgeColor = categoryBadge != null ? categoryBadge.color : new Color(0.55f, 0.27f, 0.90f);
-        ApplyWire(DepartmentMiniCardLayoutBuilder.Ensure(this, badgeColor));
+    void EnsurePremiumMaterial()
+    {
+        var rt = transform as RectTransform;
+        if (rt != null)
+            CinematicTheme.ApplyPremiumMaterial(rt);
     }
 
     void ApplyWire(DepartmentMiniCardLayoutBuilder.WireResult wire)
@@ -117,7 +125,41 @@ public class DepartmentMiniCardUI : MonoBehaviour
         themeBackdrop    = wire.themeBackdrop;
         themeVisual      = wire.themeVisual ?? GetComponent<DepartmentThemeVisual>();
 
+        EnsureProgressBarWired();
         themeVisual?.Apply(deptType);
+    }
+
+    void EnsureProgressBarWired()
+    {
+        if (levelProgressBar != null) return;
+        levelProgressBar = transform.Find("Content/LevelProgressBar")?.GetComponent<Slider>();
+        if (levelProgressBar == null) return;
+        ReadOnlySlider.Configure(levelProgressBar);
+        EnsureLevelBarLayout();
+    }
+
+    void EnsureLevelBarLayout()
+    {
+        if (levelProgressBar == null) return;
+
+        var barRt = levelProgressBar.transform as RectTransform;
+        if (barRt == null) return;
+
+        var barLE = barRt.GetComponent<LayoutElement>() ?? barRt.gameObject.AddComponent<LayoutElement>();
+        barLE.enabled = true;
+        barLE.ignoreLayout = false;
+        barLE.flexibleWidth = 1f;
+        barLE.minWidth = 0f;
+        if (barLE.preferredHeight < 8f) barLE.preferredHeight = 8f;
+        if (barLE.minHeight < 8f) barLE.minHeight = 8f;
+
+        var fillArea = barRt.Find("Fill Area") as RectTransform;
+        if (fillArea != null)
+        {
+            fillArea.anchorMin = Vector2.zero;
+            fillArea.anchorMax = Vector2.one;
+            fillArea.offsetMin = fillArea.offsetMax = Vector2.zero;
+        }
     }
 
     void WireUpgradeButton()
@@ -136,14 +178,23 @@ public class DepartmentMiniCardUI : MonoBehaviour
     void OnUpgradeClicked()
     {
         if (_purchaseInFlight || _personnelUpgrade == null || _upgrades == null || _studio == null) return;
-        if (!UpgradeUiInteractionGate.TryConsumeClick(_personnelUpgrade.id)) return;
+
+        Debug.Log($"[Upgrade] OnClick recibido id={_personnelUpgrade.id} dept={deptType}");
+        Debug.Log($"[Upgrade] OnBuyClicked ejecutado id={_personnelUpgrade.id}");
 
         _purchaseInFlight = true;
         if (upgradeButton != null) upgradeButton.interactable = false;
 
         try
         {
-            _upgrades.Purchase(_personnelUpgrade, _studio, _depts, _studioLevel?.Level ?? 1);
+            long cost = _upgrades.GetNextCost(_personnelUpgrade);
+            bool canBuy = _upgrades.CanPurchase(_personnelUpgrade, _studio.Money, _studioLevel?.Level ?? 1);
+            Debug.Log($"[Upgrade] pre-Purchase id={_personnelUpgrade.id} money={_studio.Money} cost={cost} CanPurchase={canBuy} block={_upgrades.GetPurchaseBlockReason(_personnelUpgrade, _studio.Money, _studioLevel?.Level ?? 1)}");
+
+            bool ok = _upgrades.Purchase(_personnelUpgrade, _studio, _depts, _studioLevel?.Level ?? 1);
+            Debug.Log($"[Upgrade] Purchase()={ok} id={_personnelUpgrade.id}");
+            if (ok)
+                UIAnimationService.PlayUpgradeFeedback(transform as RectTransform, GetComponent<Image>(), levelText);
         }
         finally
         {
@@ -204,9 +255,11 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
         if (_canvasGroup != null)
         {
-            _canvasGroup.alpha = locked ? 0.55f : 1f;
-            _canvasGroup.interactable = !locked;
+            _canvasGroup.alpha = locked ? 0.72f : 1f;
+            _canvasGroup.interactable = true;
         }
+
+        DepartmentMiniCardLayoutBuilder.LogLayoutAudit(this);
 
         _cachedLevel = level;
         _cachedLocked = locked;
@@ -214,10 +267,11 @@ public class DepartmentMiniCardUI : MonoBehaviour
 
     void UpdateProgressBar(int level, int maxLevel, bool locked)
     {
+        EnsureProgressBarWired();
         if (levelProgressBar == null) return;
 
-        float fill = locked || maxLevel <= 0 ? 0f : Mathf.Clamp01((float)level / maxLevel);
-        levelProgressBar.value = fill;
+        levelProgressBar.maxValue = locked || maxLevel <= 0 ? 1f : maxLevel;
+        levelProgressBar.value  = locked ? 0f : level;
     }
 
     void UpdateUpgradeButton(bool locked, int level, int maxLevel)
@@ -227,13 +281,18 @@ public class DepartmentMiniCardUI : MonoBehaviour
         bool hasUpgradeUi = upgradeLabelText != null && upgradeCostText != null;
         if (!hasUpgradeUi) return;
 
+        upgradeButton.gameObject.SetActive(true);
+        DepartmentMiniCardLayoutBuilder.EnsureUpgradeButtonLayout(upgradeButton.transform as RectTransform);
+
         if (locked)
         {
-            upgradeButton.gameObject.SetActive(false);
+            upgradeLabelText.text = Loc.Get(LocKeys.DeptUpgrade);
+            upgradeCostText.text = string.Empty;
+            upgradeButton.interactable = false;
+            var lockedImg = upgradeButton.GetComponent<Image>();
+            if (lockedImg != null) HudSkinProvider.ApplyButtonState(lockedImg, HudButtonState.Locked);
             return;
         }
-
-        upgradeButton.gameObject.SetActive(true);
 
         bool maxed = _personnelUpgrade != null && _upgrades != null && _upgrades.IsMaxLevel(_personnelUpgrade);
         if (maxed)

@@ -39,6 +39,10 @@ public static class HudSkinProvider
         var skin = Active?.panelSkin;
         if (skin != null) skin.Apply(image, variant);
         else UIPanelSkin.ApplyFallback(image, variant);
+
+        // Panels only receive color — elevation layers belong on discrete cards/buttons/popups.
+        if (CinematicTheme.ShouldSkipElevationSurface(image.rectTransform))
+            CinematicTheme.RemoveMaterialLayers(image.rectTransform);
     }
 
     public static void ApplyPanelFromColor(Image image, Color legacyColor)
@@ -56,7 +60,7 @@ public static class HudSkinProvider
         if (image == null) return;
 
         var skin = Active?.cardSkin;
-        if (skin != null) skin.Apply(image, variant);
+        if (skin != null) skin.ApplyVariant(image, variant);
         else UICardSkin.ApplyFallback(image, variant);
     }
 
@@ -77,6 +81,11 @@ public static class HudSkinProvider
         var skin = Active?.buttonSkin;
         if (skin != null) skin.Apply(image, variant);
         else UIButtonSkin.ApplyFallback(image, variant);
+
+        if (variant == HudButtonVariant.Ghost || variant == HudButtonVariant.Secondary)
+            CinematicTheme.RemoveMaterialLayers(image.rectTransform);
+        else
+            CinematicTheme.ApplyElevationButton(image.rectTransform);
     }
 
     public static void ApplyButtonFromColor(Image image, Color legacyColor)
@@ -92,6 +101,11 @@ public static class HudSkinProvider
         var skin = Active?.buttonSkin;
         if (skin != null) skin.ApplyState(image, state);
         else UIButtonSkin.ApplyStateFallback(image, state);
+
+        if (state == HudButtonState.Ready || state == HudButtonState.Normal)
+            CinematicTheme.ApplyElevationButton(image.rectTransform);
+        else
+            CinematicTheme.RemoveMaterialLayers(image.rectTransform);
     }
 
     public static void ApplyPurchaseButton(Image image, bool canBuy, bool locked)
@@ -106,6 +120,11 @@ public static class HudSkinProvider
             else if (locked) UIButtonSkin.ApplyStateFallback(image, HudButtonState.Locked);
             else image.color = HudSkinDefaults.BTN_CANT_AFFORD;
         }
+
+        if (canBuy)
+            CinematicTheme.ApplyElevationButton(image.rectTransform);
+        else
+            CinematicTheme.RemoveMaterialLayers(image.rectTransform);
     }
 
     public static void ApplyTab(Image background, TextMeshProUGUI label, bool active, HudTabVariant variant)

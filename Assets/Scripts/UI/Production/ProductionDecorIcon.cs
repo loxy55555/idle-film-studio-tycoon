@@ -3,6 +3,9 @@ using UnityEngine;
 /// <summary>Decorative production icons — no posters (Phase 10.2).</summary>
 public static class ProductionDecorIcon
 {
+    public static Sprite GetSprite(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama) =>
+        UIIconCatalog.GetProductionIcon(rarity, genre);
+
     public static string GetIcon(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama)
     {
         return rarity switch

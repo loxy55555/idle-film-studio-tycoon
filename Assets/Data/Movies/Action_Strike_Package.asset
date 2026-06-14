@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: StrikePackage.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: de959051702f20843af4ba72351ddad6, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheQuietshore.png
-  posterSprite: {fileID: -2424103063721114214, guid: 5fa8a7e1e394da6488840f8b48c94a94, type: 3}
+  posterSprite: {fileID: 21300000, guid: 5fa8a7e1e394da6488840f8b48c94a94, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

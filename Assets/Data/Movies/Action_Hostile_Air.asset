@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: HostileAir.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 3505b586ab62fa14bbdf7bb1b51c31ee, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

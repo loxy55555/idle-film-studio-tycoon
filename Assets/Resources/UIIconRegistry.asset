@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4182586aef12b54ba4fb03bb03dfab6, type: 3}
+  m_Name: UIIconRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::UIIconRegistry
+  deptEditor: {fileID: 4115848283974433413, guid: 0302f6c0658599646ba49975f981dae5, type: 3}
+  deptDirector: {fileID: -8929220166858472130, guid: e6063f5361a9dde4b93216b2a63d74c4, type: 3}
+  deptActors: {fileID: 8670145138071425503, guid: 357735dac6c42964786074f0846254ed, type: 3}
+  deptSound: {fileID: -6389137155892498352, guid: 4c618cf51904c8d4f84325dcc17644e3, type: 3}
+  deptCinematography: {fileID: 8535859000005493144, guid: 4d28adc936a87684ba90584ad2a53cbe, type: 3}
+  deptMakeup: {fileID: 389109205686194794, guid: 3d4a307751a26f744aa60209ee0a7cd8, type: 3}
+  deptCostume: {fileID: 8927603745433747624, guid: 331e7f4577ef25147971aed86e7871a6, type: 3}
+  deptArt: {fileID: -6015390655184315648, guid: 1a3a0516bac61ad4698742aafa9caea7, type: 3}
+  deptLighting: {fileID: 2691707587213530658, guid: d39abd6022cd02a4aa929ba50dc4fb93, type: 3}
+  deptGrip: {fileID: 5868255581431640272, guid: afc8490e980be4f4290377ca0e9716b3, type: 3}
+  deptProducer: {fileID: 8467183768694521960, guid: ac49365ee2b4a134c9d272a85bed6e67, type: 3}
+  deptMarketing: {fileID: 2078051955359083181, guid: d38c08ac0f23b48499dfc544a5cf4dcd, type: 3}
+  deptScript: {fileID: 3655677506034519528, guid: dec34ca07b7d4de45a3581e91336456e, type: 3}
+  genreAction: {fileID: 3763834429052838649, guid: 8a7632283fe067643aeebcb031d63048, type: 3}
+  genreDrama: {fileID: -8983364413107405337, guid: d0064d74ab9a5c24286e65ca1b349c5f, type: 3}
+  genreHorror: {fileID: -6108136496239892845, guid: d111863b98b2fad4a98797d8990d6349, type: 3}
+  genreComedy: {fileID: 2483746508220015439, guid: 251fd2df16fd42a4bb18e464a61c43ee, type: 3}
+  genreRomance: {fileID: 1502018219802517407, guid: 8f9cea7682f8b7446a8c551bbfa199b7, type: 3}
+  genreSciFi: {fileID: 2967997822200609142, guid: 5ab1b77bf75075846bb9747e42f8dbeb, type: 3}
+  genreFantasy: {fileID: 1783865538933550440, guid: 92c2be71654ee6e4ea574e1d0ed25724, type: 3}
+  genreThriller: {fileID: 570149239479436694, guid: f47aa0ab14539ca4890e5dfffbfb2e66, type: 3}
+  genreAnimation: {fileID: -2121200488147065327, guid: 1f5482cde1920f04291513e5847da8ca, type: 3}
+  genreDocumentary: {fileID: 5255465542268540441, guid: 0894e6f2e7f290f418b8516204bf9b06, type: 3}
+  navStudio: {fileID: -3473021356066190465, guid: cff3d37bc5b0aed45aa74fc514f87a71, type: 3}
+  navProduction: {fileID: -817032816567303462, guid: 460bf2ecc69dbf44fa1f20d2016dd871, type: 3}
+  navAwards: {fileID: -5121288797680298265, guid: a95039278d99d3a46831967fb83028fa, type: 3}
+  navCollection: {fileID: -4797469767115919546, guid: 9823d1b44134ca54d90f5a9cdb8711aa, type: 3}
+  navShop: {fileID: 1815379825295795947, guid: 96a891d93e1c4c04ca358bce76ad0039, type: 3}
+  navMissions: {fileID: 8178415766038161486, guid: 99a1fe0de331344458cd0d266abd347d, type: 3}
+  resMoney: {fileID: -4885926515217324694, guid: 9787235871950684ab54f118f572ea3d, type: 3}
+  resReputation: {fileID: -4642928441026180774, guid: d99a1971150d62448a25c56df53e3fa1, type: 3}
+  resGoldStar: {fileID: 3325820847222430698, guid: 276051288c188774aa906b92c81d4319, type: 3}
+  resTicket: {fileID: 4165712918697415239, guid: e75bac3bd9f1db5469fb7de67ace6cb4, type: 3}
+  resExperience: {fileID: 5098140718368970578, guid: 5239b6a0178de1c43bb6604f0e131473, type: 3}
+  resDecoCamera: {fileID: -6921472516709491865, guid: 4c9dd69f68a071a4db9cbcb3f06a3104, type: 3}
+  resFilmReel: {fileID: -2920641196101921639, guid: 9a8db3f859974234ea6256bf2abaf0bb, type: 3}
+  resDiamonds: {fileID: 8806872882384348625, guid: c00b8940c0ec74f43847b3c73f03a2cd, type: 3}
+  awardStar: {fileID: -581319534519059004, guid: b34957d6b3dff114c8dd06a1fdf5b852, type: 3}
+  awardStarLocked: {fileID: -5116095872701688047, guid: 69988005b726dad44b82bb7ec094c0ef, type: 3}
+  utilBoost: {fileID: 4956308460200291551, guid: 12f0bb39d3f687849a6709ccbc841daf, type: 3}
+  utilSpeedProduction: {fileID: 7620034532839297095, guid: db5a001bfc9dd20459c49210120532b1, type: 3}

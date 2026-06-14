@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheGlassForest.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 144a20c3920b91a4bbf8e29514c2e4a3, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_glass_forest

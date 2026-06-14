@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheMoonlightBakery.png
-  posterSprite: {fileID: 8794423873691932026, guid: e0cb2a05769cafc45b40e0a627ddc21c, type: 3}
+  posterSprite: {fileID: 21300000, guid: e0cb2a05769cafc45b40e0a627ddc21c, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

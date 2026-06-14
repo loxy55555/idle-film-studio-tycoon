@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: WinterLettersIII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 2106631302711039131, guid: 69a2b3c887a435748ac88cd25cefd73b, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

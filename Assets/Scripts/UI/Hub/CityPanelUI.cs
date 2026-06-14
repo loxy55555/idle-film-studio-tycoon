@@ -6,13 +6,13 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-155)]
 public class CityPanelUI : MonoBehaviour
 {
-    static readonly Color BG_DEEP   = new Color(0.04f, 0.04f, 0.10f);
-    static readonly Color BG_CARD  = new Color(0.10f, 0.10f, 0.19f);
-    static readonly Color TEXT_PRI = Color.white;
-    static readonly Color TEXT_DIM = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GOLD = new Color(0.95f, 0.77f, 0.06f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color BTN_GREEN = new Color(0.15f, 0.68f, 0.38f);
+    static readonly Color BG_DEEP      = CinematicTheme.DeepBg;
+    static readonly Color BG_CARD      = CinematicTheme.CardBg;
+    static readonly Color TEXT_PRI     = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_DIM     = CinematicTheme.TextSecondary;
+    static readonly Color ACCENT_GOLD  = CinematicTheme.GoldBright;
+    static readonly Color ACCENT_GREEN = CinematicTheme.ButtonSuccess;
+    static readonly Color BTN_GREEN    = CinematicTheme.ButtonSuccess;
 
     Image               _background;
     TextMeshProUGUI     _cityNameText;
@@ -170,7 +170,7 @@ public class CityPanelUI : MonoBehaviour
 
         var bonusCard = MakeCard(content.transform, "BonusCard", 0);
         AddCardHeader(bonusCard, "BONUS GLOBAL");
-        _bonusText = AddCardBody(bonusCard, "×1.00 ingreso", 22, ACCENT_GREEN, FontStyles.Bold);
+        _bonusText = AddCardBody(bonusCard, "×1.00 ingreso", 22, ACCENT_GOLD, FontStyles.Bold);
 
         var unlockCard = MakeCard(content.transform, "UnlockCard", 0);
         AddCardHeader(unlockCard, "DESBLOQUEOS ACTUALES");
@@ -256,6 +256,7 @@ public class CityPanelUI : MonoBehaviour
         var go = new GameObject(name, typeof(RectTransform), typeof(Image));
         go.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(go.GetComponent<Image>(), HudCardVariant.Primary);
+        CinematicTheme.ApplyPremiumMaterial(go.GetComponent<RectTransform>());
         var le = go.AddComponent<LayoutElement>();
         if (height > 0) le.preferredHeight = height;
         var vlg = go.AddComponent<VerticalLayoutGroup>();

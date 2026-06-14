@@ -17,17 +17,24 @@ public class UICardSkin : ScriptableObject
     public Color heroColor = HudSkinDefaults.BG_SECTION;
     public Color emptyColor = HudSkinDefaults.BG_DEEP;
 
-    public void Apply(Image image, HudCardVariant variant)
+    /// <summary>Applies this skin asset's sprite/color to the image.</summary>
+    public void ApplyVariant(Image image, HudCardVariant variant)
     {
         if (image == null) return;
 
         switch (variant)
         {
             case HudCardVariant.Primary:
-                HudSkinUtil.ApplySpriteOrColor(image, primarySprite, primaryColor);
+                if (primarySprite != null)
+                    HudSkinUtil.ApplySpriteOrColor(image, primarySprite, primaryColor);
+                else
+                    HudSkinUtil.ApplyPremiumSurface(image, primaryColor);
                 break;
             case HudCardVariant.Secondary:
-                HudSkinUtil.ApplySpriteOrColor(image, secondarySprite, secondaryColor);
+                if (secondarySprite != null)
+                    HudSkinUtil.ApplySpriteOrColor(image, secondarySprite, secondaryColor);
+                else
+                    HudSkinUtil.ApplyPremiumSurface(image, secondaryColor);
                 break;
             case HudCardVariant.Hero:
                 HudSkinUtil.ApplySpriteOrColor(image, heroSprite, heroColor);
@@ -44,10 +51,14 @@ public class UICardSkin : ScriptableObject
 
         switch (variant)
         {
-            case HudCardVariant.Primary:   HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_CARD); break;
-            case HudCardVariant.Secondary: HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_CARD2); break;
-            case HudCardVariant.Hero:      HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_SECTION); break;
-            case HudCardVariant.Empty:     HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_DEEP); break;
+            case HudCardVariant.Primary:
+                HudSkinUtil.ApplyPremiumSurface(image, HudSkinDefaults.BG_CARD); break;
+            case HudCardVariant.Secondary:
+                HudSkinUtil.ApplyPremiumSurface(image, HudSkinDefaults.BG_CARD2); break;
+            case HudCardVariant.Hero:
+                HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_SECTION); break;
+            case HudCardVariant.Empty:
+                HudSkinUtil.ApplySpriteOrColor(image, null, HudSkinDefaults.BG_DEEP); break;
         }
     }
 }

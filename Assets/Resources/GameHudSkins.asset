@@ -41,8 +41,8 @@ MonoBehaviour:
   activeIndicatorSprite: {fileID: 0}
   mainNavActiveBg: {r: 0.14, g: 0.14, b: 0.28, a: 1}
   mainNavInactiveBg: {r: 0.09, g: 0.09, b: 0.18, a: 1}
-  mainNavActiveLabel: {r: 0.18, g: 0.8, b: 0.44, a: 1}
-  mainNavInactiveLabel: {r: 0.55, g: 0.55, b: 0.7, a: 1}
+  mainNavActiveLabel: {r: 0.9411765, g: 0.7764706, b: 0.41568628, a: 1}
+  mainNavInactiveLabel: {r: 0.41960785, g: 0.49411765, b: 0.5803922, a: 1}
   subTabActiveBg: {r: 0.14, g: 0.14, b: 0.28, a: 1}
   subTabInactiveBg: {r: 0.09, g: 0.09, b: 0.18, a: 1}
   subTabActiveLabel: {r: 1, g: 1, b: 1, a: 1}
@@ -51,7 +51,7 @@ MonoBehaviour:
   categoryInactiveBg: {r: 0.101960786, g: 0.101960786, b: 0.1882353, a: 1}
   categoryActiveLabel: {r: 1, g: 1, b: 1, a: 1}
   categoryInactiveLabel: {r: 0.55, g: 0.55, b: 0.7, a: 1}
-  activeIndicatorColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+  activeIndicatorColor: {r: 0.8509804, g: 0.6431373, b: 0.25490198, a: 1}
 --- !u!114 &-1147037270995982508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,12 +115,12 @@ MonoBehaviour:
   disabledSprite: {fileID: 0}
   lockedSprite: {fileID: 0}
   readySprite: {fileID: 0}
-  primaryColor: {r: 0.15294118, g: 0.68235296, b: 0.3764706, a: 1}
+  primaryColor: {r: 0.5411765, g: 0.41568628, b: 0.23921569, a: 1}
   secondaryColor: {r: 0.12156863, g: 0.12156863, b: 0.22745098, a: 1}
-  successColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+  successColor: {r: 0.5411765, g: 0.41568628, b: 0.23921569, a: 1}
   dangerColor: {r: 0.90588236, g: 0.29803923, b: 0.23529412, a: 1}
   ghostColor: {r: 0.078431375, g: 0.078431375, b: 0.15686275, a: 1}
   disabledColor: {r: 0.11764706, g: 0.11764706, b: 0.20392157, a: 1}
   lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  readyColor: {r: 0.18039216, g: 0.8, b: 0.44313726, a: 1}
+  readyColor: {r: 0.7882353, g: 0.6431373, b: 0.41568628, a: 1}
   cantAffordColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}

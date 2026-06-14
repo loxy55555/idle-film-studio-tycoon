@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: AUtumnpromise.png
-  posterSprite: {fileID: 1563790039214287207, guid: 12c336856ed451d4caedd87e089f9a93, type: 3}
+  posterSprite: {fileID: 21300000, guid: 12c336856ed451d4caedd87e089f9a93, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

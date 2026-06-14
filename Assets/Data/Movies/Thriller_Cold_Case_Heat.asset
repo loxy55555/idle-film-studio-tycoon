@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BlackARchive.png
-  posterSprite: {fileID: -8958439567569599716, guid: 65abdba4cf89fa74b94ff7bbf383efa4, type: 3}
+  posterSprite: {fileID: 21300000, guid: 65abdba4cf89fa74b94ff7bbf383efa4, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: Northbound.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: e3dc2855c458cb84cbf30275dd0927c5, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_long_road

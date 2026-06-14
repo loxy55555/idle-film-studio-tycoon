@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: FAMilyemergency.png
-  posterSprite: {fileID: -471611379088783847, guid: c8eb7c444e031a744b1463f20fbef41e, type: 3}
+  posterSprite: {fileID: 21300000, guid: c8eb7c444e031a744b1463f20fbef41e, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

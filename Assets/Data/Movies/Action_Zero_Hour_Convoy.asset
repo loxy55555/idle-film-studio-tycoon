@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: KingdomOfDust.png
-  posterSprite: {fileID: -1438551025538954969, guid: 03827f1dbd6a7e74ab0089c58eee436f, type: 3}
+  posterSprite: {fileID: 21300000, guid: 03827f1dbd6a7e74ab0089c58eee436f, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: project_avalanche

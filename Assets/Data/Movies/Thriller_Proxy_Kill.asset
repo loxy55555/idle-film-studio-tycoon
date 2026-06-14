@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: ProjectlAZARus.png
-  posterSprite: {fileID: -5252800909485184616, guid: a359b0cb456f0c445b7bbaf851e973c1, type: 3}
+  posterSprite: {fileID: 21300000, guid: a359b0cb456f0c445b7bbaf851e973c1, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

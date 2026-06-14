@@ -13,13 +13,13 @@ public class StorePanelUI : MonoBehaviour
     static readonly Color BG_DEEP    = new Color(0.05f, 0.06f, 0.11f);
     static readonly Color BG_CARD    = new Color(0.10f, 0.11f, 0.19f);
     static readonly Color BG_DARK    = new Color(0.04f, 0.04f, 0.08f);
-    static readonly Color TEXT_PRI   = Color.white;
-    static readonly Color TEXT_SEC   = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color ACCENT_GOLD = new Color(0.95f, 0.77f, 0.06f);
+    static readonly Color TEXT_PRI   = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_SEC   = CinematicTheme.SilverBase;
+    static readonly Color ACCENT_GOLD = CinematicTheme.GoldBright;
     static readonly Color ACCENT_BLUE = new Color(0.25f, 0.55f, 0.90f);
     static readonly Color ACCENT_PURP = new Color(0.61f, 0.35f, 0.71f);
-    static readonly Color ACCENT_GREEN = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color BTN_BUY    = new Color(0.13f, 0.55f, 0.30f);
+    static readonly Color ACCENT_GREEN = CinematicTheme.BronzeBase;
+    static readonly Color BTN_BUY    = CinematicTheme.ButtonSuccess;
 
     bool _built;
 
@@ -238,7 +238,8 @@ public class StorePanelUI : MonoBehaviour
     {
         var card = new GameObject("Product_" + title, typeof(RectTransform), typeof(Image));
         card.transform.SetParent(parent, false);
-        card.GetComponent<Image>().color = BG_CARD;
+        HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
+        CinematicTheme.ApplyPremiumMaterial(card.GetComponent<RectTransform>());
 
         var vlg = card.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(8, 8, 0, 8);
@@ -282,7 +283,7 @@ public class StorePanelUI : MonoBehaviour
     {
         var btnGo = new GameObject("BuyBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         btnGo.transform.SetParent(parent, false);
-        btnGo.GetComponent<Image>().color = BTN_BUY;
+        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
         var le = btnGo.AddComponent<LayoutElement>();
         le.preferredHeight = 38f;
         if (width > 0f) { le.preferredWidth = width; le.flexibleWidth = 0f; }

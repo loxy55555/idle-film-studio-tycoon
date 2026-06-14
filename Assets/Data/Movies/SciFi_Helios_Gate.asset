@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: HeliosGate.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: e053c7e0dfcf0ee478e8cc603fc711bf, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

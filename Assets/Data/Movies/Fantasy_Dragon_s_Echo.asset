@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheSilvercrown.png
-  posterSprite: {fileID: 6544228112202296387, guid: 215aa739028b582449ed9cb844ee234f, type: 3}
+  posterSprite: {fileID: 21300000, guid: 215aa739028b582449ed9cb844ee234f, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

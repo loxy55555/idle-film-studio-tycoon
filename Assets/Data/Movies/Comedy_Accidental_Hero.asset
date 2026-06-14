@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: LAtEAGAIn.png
-  posterSprite: {fileID: 6567179074564213931, guid: fbcd1e3ccf007604eaad870320f88430, type: 3}
+  posterSprite: {fileID: 21300000, guid: fbcd1e3ccf007604eaad870320f88430, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

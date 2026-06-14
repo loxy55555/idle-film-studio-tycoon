@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheForgottenMAGe.png
-  posterSprite: {fileID: -7674809442857418500, guid: ca1d5d3b4b174f14aad885b768dab38a, type: 3}
+  posterSprite: {fileID: 21300000, guid: ca1d5d3b4b174f14aad885b768dab38a, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

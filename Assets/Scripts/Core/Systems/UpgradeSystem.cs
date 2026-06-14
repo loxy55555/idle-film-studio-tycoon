@@ -86,16 +86,48 @@ public class UpgradeSystem : MonoBehaviour
         return availableMoney >= GetNextCost(cfg);
     }
 
+    /// <summary>Phase 12.4H — first failing CanPurchase check (diagnostic).</summary>
+    public string GetPurchaseBlockReason(UpgradeConfig cfg, long availableMoney, int currentStudioLevel)
+    {
+        if (cfg == null) return "cfg_null";
+        if (IsMaxLevel(cfg)) return "max_level";
+        if (currentStudioLevel < cfg.unlockStudioLevel)
+            return $"studio_locked need={cfg.unlockStudioLevel} have={currentStudioLevel}";
+        if (GameHub.Instance?.city != null && !GameHub.Instance.city.IsUpgradeUnlocked(cfg))
+            return "city_locked";
+        long cost = GetNextCost(cfg);
+        if (availableMoney < cost)
+            return $"insufficient_money money={availableMoney} cost={cost}";
+        return string.Empty;
+    }
+
     public bool Purchase(UpgradeConfig cfg, StudioManager studio, DepartmentSystem departments, int studioLevel)
     {
-        if (cfg == null) return false;
-
-        Debug.Log($"[Upgrade] PurchaseAttempt UpgradeId={cfg.id}");
-
-        if (!CanPurchase(cfg, studio.Money, studioLevel)) return false;
+        if (cfg == null)
+        {
+            Debug.Log("[Upgrade] Purchase()=false motivo=cfg_null");
+            return false;
+        }
 
         long cost = GetNextCost(cfg);
-        if (!studio.TrySpendMoney(cost)) return false;
+        long money = studio != null ? studio.Money : 0;
+        double moneyExact = studio != null ? studio.MoneyExact : 0;
+        bool canPurchase = CanPurchase(cfg, money, studioLevel);
+        string blockReason = GetPurchaseBlockReason(cfg, money, studioLevel);
+
+        Debug.Log($"[Upgrade] Purchase() id={cfg.id} money={money} moneyExact={moneyExact:F2} cost={cost} CanPurchase={canPurchase} blockReason={blockReason}");
+
+        if (!canPurchase)
+        {
+            Debug.Log($"[Upgrade] Purchase()=false motivo=CanPurchase ({blockReason})");
+            return false;
+        }
+
+        if (!studio.TrySpendMoney(cost))
+        {
+            Debug.Log($"[Upgrade] Purchase()=false motivo=TrySpendMoney moneyExact={moneyExact:F2} cost={cost}");
+            return false;
+        }
 
         _levels[cfg.id] = GetLevel(cfg) + 1;
 
@@ -103,6 +135,7 @@ public class UpgradeSystem : MonoBehaviour
             SyncPersonnel(cfg, departments);
 
         studio.RecalculateIncome();
+        studio.SyncMaxMovieSlotsFromUpgrades();
         LogEffects($"Purchase:{cfg.id}");
 
         GameHub.Instance?.contracts?.OnMoneySpentOnUpgrade(cost);

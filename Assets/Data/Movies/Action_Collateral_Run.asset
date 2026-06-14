@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: ZeroContact.png
-  posterSprite: {fileID: 8461747905121357698, guid: fc1530b3a9a773b45a5501cd32314740, type: 3}
+  posterSprite: {fileID: 21300000, guid: fc1530b3a9a773b45a5501cd32314740, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheLanternParade.png
-  posterSprite: {fileID: -3223921494447962044, guid: f236901ab1a1fd9448185380c052b7ef, type: 3}
+  posterSprite: {fileID: 21300000, guid: f236901ab1a1fd9448185380c052b7ef, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheLastDominion.png
-  posterSprite: {fileID: 8908655541840781392, guid: ea5dda0a4fa284e45bafaab5bc1560ed, type: 3}
+  posterSprite: {fileID: 21300000, guid: ea5dda0a4fa284e45bafaab5bc1560ed, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

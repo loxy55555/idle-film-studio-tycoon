@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: DeadSilenceMotel.png
-  posterSprite: {fileID: -7618104726045363049, guid: e39d6baaaa45bb44aa79fef7fa118859, type: 3}
+  posterSprite: {fileID: 21300000, guid: e39d6baaaa45bb44aa79fef7fa118859, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

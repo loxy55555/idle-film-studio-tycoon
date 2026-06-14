@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheNInThfloor.png
-  posterSprite: {fileID: 5687064573560211719, guid: 5037925bfdeddb949a03d82f864b6e75, type: 3}
+  posterSprite: {fileID: 21300000, guid: 5037925bfdeddb949a03d82f864b6e75, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

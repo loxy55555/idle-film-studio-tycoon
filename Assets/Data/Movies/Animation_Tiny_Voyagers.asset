@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheLostBalloon.png
-  posterSprite: {fileID: 583846792264003535, guid: 0592842347458fd42bffd579c535ff31, type: 3}
+  posterSprite: {fileID: 21300000, guid: 0592842347458fd42bffd579c535ff31, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

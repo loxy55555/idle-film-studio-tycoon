@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: MoonkeeperII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: -7281673456155310115, guid: b0b00c10ee44be9428b610a151942f79, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: moonkeeper

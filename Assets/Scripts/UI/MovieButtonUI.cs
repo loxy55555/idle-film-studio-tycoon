@@ -125,7 +125,12 @@ public class MovieButtonUI : MonoBehaviour
             rarityText.color = MovieOfferCardLayoutBuilder.GetRarityIconColor(movieConfig.rarity, movieConfig.genre);
         }
 
-        if (rarityFrame != null) MovieRarityVisual.ApplyFrame(rarityFrame, movieConfig.rarity);
+        if (rarityFrame != null) rarityFrame.color = Color.clear;
+
+        var genreStrip = transform.Find("GenreStrip");
+        if (genreStrip != null) genreStrip.gameObject.SetActive(false);
+
+        MovieRarityVisual.ApplyCardBorder(transform as RectTransform, movieConfig.rarity);
 
         if (locked)
         {

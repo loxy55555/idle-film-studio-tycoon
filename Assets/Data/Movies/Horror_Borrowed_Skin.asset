@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BlackWoodRoad.png
-  posterSprite: {fileID: -2506207895071948820, guid: a06784238c3847c4380e90bd6a61f062, type: 3}
+  posterSprite: {fileID: 21300000, guid: a06784238c3847c4380e90bd6a61f062, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

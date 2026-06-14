@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheKingdomOfSilentMoonS.png
-  posterSprite: {fileID: -7007268626697035960, guid: 980ab7182e3c5774ca42724eb9ab0963, type: 3}
+  posterSprite: {fileID: 21300000, guid: 980ab7182e3c5774ca42724eb9ab0963, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

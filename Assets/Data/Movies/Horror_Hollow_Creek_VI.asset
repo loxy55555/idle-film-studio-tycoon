@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: HollowCreekVI.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: -8868915216769075976, guid: 54e9f44ac9ef57e469fc39135cf8f3da, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

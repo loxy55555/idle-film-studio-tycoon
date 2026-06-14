@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: OnEmoreSummer.png
-  posterSprite: {fileID: -2300558633172579474, guid: 39ef31ce767f6b64ab0621f519f972ac, type: 3}
+  posterSprite: {fileID: 21300000, guid: 39ef31ce767f6b64ab0621f519f972ac, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheClockworkFox.png
-  posterSprite: {fileID: -144250774218194525, guid: 0228dabd15a577c44a7947398a6eb887, type: 3}
+  posterSprite: {fileID: 21300000, guid: 0228dabd15a577c44a7947398a6eb887, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheAetherCollapse.png
-  posterSprite: {fileID: 7619521475321471865, guid: 6319eba77250e9247bd1932da63f04c5, type: 3}
+  posterSprite: {fileID: 21300000, guid: 6319eba77250e9247bd1932da63f04c5, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: the_last_colony

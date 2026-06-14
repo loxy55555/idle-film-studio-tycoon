@@ -5,11 +5,11 @@ using UnityEngine.UI;
 /// <summary>Expandable genre section — Genre → Rarity → movie grid (Phase 8.6).</summary>
 public class CollectionGenreSectionView : MonoBehaviour
 {
-    static readonly Color TextPrimary   = Color.white;
-    static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color AccentGreen   = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color BarBg         = new Color(0.09f, 0.09f, 0.18f);
-    static readonly Color BarFill       = new Color(0.15f, 0.68f, 0.38f);
+    static readonly Color TextPrimary   = CinematicTheme.TextPrimary;
+    static readonly Color TextSecondary = CinematicTheme.TextSecondary;
+    static readonly Color AccentGreen   = CinematicTheme.SilverDim;
+    static readonly Color BarBg         = CinematicTheme.DeepBg;
+    static readonly Color BarFill       = CinematicTheme.ProgressFill;
 
     RectTransform _body;
     TextMeshProUGUI _chevron;
@@ -20,6 +20,7 @@ public class CollectionGenreSectionView : MonoBehaviour
         var rootGo = new GameObject("Genre_" + group.genre, typeof(RectTransform), typeof(Image), typeof(CollectionGenreSectionView));
         rootGo.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(rootGo.GetComponent<Image>(), HudCardVariant.Primary);
+        CinematicTheme.ApplyElevationPanel(rootGo.GetComponent<RectTransform>());
         rootGo.AddComponent<LayoutElement>().preferredHeight = 0f;
 
         var view = rootGo.GetComponent<CollectionGenreSectionView>();

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: TheShadowNetwork.png
-  posterSprite: {fileID: -2509531463434038963, guid: cff1728984d923e478ec350eccbbe6b2, type: 3}
+  posterSprite: {fileID: 21300000, guid: cff1728984d923e478ec350eccbbe6b2, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

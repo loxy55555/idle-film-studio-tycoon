@@ -24,8 +24,8 @@ public class StudioHubUI : MonoBehaviour
     public Button premiosBtn;
 
     [Header("Style")]
-    public Color activeTabColor   = new Color(0.18f, 0.80f, 0.44f);
-    public Color inactiveTabColor = new Color(0.55f, 0.55f, 0.70f);
+    public Color activeTabColor   = CinematicTheme.GoldBright;
+    public Color inactiveTabColor = CinematicTheme.TextDim;
 
     [Header("Animation")]
     public float fadeDuration = 0.2f;
@@ -101,7 +101,8 @@ public class StudioHubUI : MonoBehaviour
                     else
                     {
                         _panelGroups[i].alpha = 0f;
-                        _panelGroups[i].DOFade(1f, fadeDuration).SetUpdate(true);
+                        var panelRt = tabPanels[i].GetComponent<RectTransform>();
+                        UIAnimationService.PlayPanelOpen(panelRt, _panelGroups[i]);
                     }
                 }
             }
@@ -109,7 +110,13 @@ public class StudioHubUI : MonoBehaviour
 
         if (tabButtons != null)
             for (int i = 0; i < tabButtons.Length; i++)
-                UpdateTabStyle(tabButtons[i], i == idx);
+            {
+                bool active = i == idx;
+                UpdateTabStyle(tabButtons[i], active);
+                if (instant || tabButtons[i] == null) continue;
+                var label = tabButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+                UIAnimationService.PlayTabSelect(tabButtons[i].transform as RectTransform, label, active);
+            }
     }
 
     private void UpdateTabStyle(Button btn, bool active)

@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: WhereTheOceanMeetsTheSky.png
-  posterSprite: {fileID: 308521123587094219, guid: 55e08af298a300c43a2cc7bc813f5b6f, type: 3}
+  posterSprite: {fileID: 21300000, guid: 55e08af298a300c43a2cc7bc813f5b6f, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

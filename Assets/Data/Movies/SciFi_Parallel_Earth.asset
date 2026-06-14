@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: ParallelEarth.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 21300000, guid: 8266dc1957a8e78428b6797ebfbaaacd, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: dominion

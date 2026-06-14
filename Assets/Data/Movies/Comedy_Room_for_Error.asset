@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: CityHALldisASter.png
-  posterSprite: {fileID: 4306535682310346103, guid: 013aba28eea4e2d478fbdee1419a5289, type: 3}
+  posterSprite: {fileID: 21300000, guid: 013aba28eea4e2d478fbdee1419a5289, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

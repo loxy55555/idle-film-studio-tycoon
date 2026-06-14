@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: HiddenRivers.png
-  posterSprite: {fileID: 7558071486366324860, guid: 75a5a72debff08142bf70e392edeaac9, type: 3}
+  posterSprite: {fileID: 21300000, guid: 75a5a72debff08142bf70e392edeaac9, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

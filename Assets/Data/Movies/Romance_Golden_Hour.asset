@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BeForESunRise.png
-  posterSprite: {fileID: -1463609034725801747, guid: eeb6d08e027241945955b98ed87fe7de, type: 3}
+  posterSprite: {fileID: 21300000, guid: eeb6d08e027241945955b98ed87fe7de, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

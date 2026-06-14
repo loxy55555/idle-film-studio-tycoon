@@ -1,0 +1,21 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.4/staging' branch; Version is '6000.4.10f1 (feeafc12a938) revision 16706300'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-elise" at "2026-06-13T16:34:28.0213022Z"
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 12244 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-06-13T16:34:28Z
+
+COMMAND LINE ARGUMENTS:
+D:\Games\proyectos unity\6000.4.10f1\Editor\Unity.exe
+-batchmode
+-nographics
+-quit
+-projectPath
+D:\UnityProjects\idlefilm
+-logFile
+D:\UnityProjects\idlefilm\compile_check.log
+Successfully changed project path to: D:\UnityProjects\idlefilm
+D:/UnityProjects/idlefilm
+Exiting without the bug reporter. Application will terminate with return code 1

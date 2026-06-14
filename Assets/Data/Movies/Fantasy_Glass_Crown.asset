@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: WhisperwInDVALley.png
-  posterSprite: {fileID: 1364569396755294860, guid: 50bb1a85ace3e0e4387e48b2c4db54d3, type: 3}
+  posterSprite: {fileID: 21300000, guid: 50bb1a85ace3e0e4387e48b2c4db54d3, type: 3}
   catalogTier: 1
   contentKind: 0
   sagaId: 

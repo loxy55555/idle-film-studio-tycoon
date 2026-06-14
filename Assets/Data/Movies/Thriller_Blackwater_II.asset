@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BlackwaterII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: -8894425766112294342, guid: 2446bafa6a99bcb4d9654157d590b752, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: blackwater

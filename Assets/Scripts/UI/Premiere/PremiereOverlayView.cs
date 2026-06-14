@@ -10,12 +10,14 @@ public class PremiereOverlayView : MonoBehaviour
     const string LayoutMarker = "PremiereLayout_v10_3";
 
     static readonly Color OverlayDim    = new Color(0f, 0f, 0f, 0.82f);
-    static readonly Color CardBg        = new Color(0.07f, 0.08f, 0.15f, 0.98f);
-    static readonly Color TextPrimary   = Color.white;
-    static readonly Color TextSecondary = new Color(0.54f, 0.54f, 0.67f);
-    static readonly Color MoneyGreen    = new Color(0.18f, 0.80f, 0.44f);
-    static readonly Color RepGold       = new Color(0.95f, 0.77f, 0.06f);
-    static readonly Color PosterBg      = new Color(0.09f, 0.09f, 0.18f);
+    static readonly Color CardBg        = CinematicTheme.CardBg;
+    static readonly Color TextPrimary   = CinematicTheme.TextPrimary;
+    static readonly Color TextSecondary = CinematicTheme.TextSecondary;
+    static readonly Color MoneyGold     = CinematicTheme.GoldBase;
+    static readonly Color RepGold       = CinematicTheme.GoldBright;
+    static readonly Color PosterBg      = CinematicTheme.PanelBg;
+    // Red Carpet accent — premiere headlines use cinematic red, not gold
+    static readonly Color HeadlineColor = CinematicTheme.RedCarpetBright;
 
     CanvasGroup _overlayGroup;
     CanvasGroup _cardGroup;
@@ -95,9 +97,10 @@ public class PremiereOverlayView : MonoBehaviour
         cardRT.sizeDelta = new Vector2(400f, 620f);
         cardRT.anchoredPosition = Vector2.zero;
         HudSkinProvider.ApplyPanel(_card.GetComponent<Image>(), HudPanelVariant.Card);
+        CinematicTheme.ApplyElevationPopup(_card);
         _cardGroup = _card.gameObject.AddComponent<CanvasGroup>();
 
-        _headlineText = CreateLabel(_card, "Headline", Loc.Get(LocKeys.PremiereHeadline), 22f, RepGold,
+        _headlineText = CreateLabel(_card, "Headline", Loc.Get(LocKeys.PremiereHeadline), 22f, HeadlineColor,
             FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(340f, 28f));
         _headlineGroup = _headlineText.gameObject.AddComponent<CanvasGroup>();
 
@@ -128,19 +131,20 @@ public class PremiereOverlayView : MonoBehaviour
             FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(1f, 1f), new Vector2(-24f, -358f), new Vector2(160f, 18f));
         _rarityText.alignment = TextAlignmentOptions.MidlineRight;
 
-        var rewardsRoot = CreatePanel(_card, "RewardsBlock", new Color(0.06f, 0.07f, 0.12f, 0.85f));
+        var rewardsRoot = CreatePanel(_card, "RewardsBlock", CinematicTheme.DeepBg);
         var rewardsRT = rewardsRoot;
         rewardsRT.anchorMin = rewardsRT.anchorMax = new Vector2(0.5f, 1f);
         rewardsRT.pivot = new Vector2(0.5f, 1f);
         rewardsRT.anchoredPosition = new Vector2(0f, -388f);
         rewardsRT.sizeDelta = new Vector2(340f, 118f);
+        CinematicTheme.ApplyElevationPanel(rewardsRoot);
         _rewardsGroup = rewardsRoot.gameObject.AddComponent<CanvasGroup>();
 
         var rewardsTitle = CreateLabel(rewardsRoot, "RewardsTitle", Loc.Get(LocKeys.PremiereRewardsTitle), 12f, TextSecondary,
             FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -8f), new Vector2(-24f, 16f));
         rewardsTitle.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _moneyText = CreateLabel(rewardsRoot, "Money", string.Empty, 17f, MoneyGreen,
+        _moneyText = CreateLabel(rewardsRoot, "Money", string.Empty, 17f, MoneyGold,
             FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -30f), new Vector2(-24f, 24f));
         _moneyText.alignment = TextAlignmentOptions.MidlineLeft;
 
@@ -265,11 +269,7 @@ public class PremiereOverlayView : MonoBehaviour
         _backdropButton.interactable = false;
 
         _activeSequence?.Kill();
-        var seq = DOTween.Sequence().SetUpdate(true);
-        seq.Append(PremiereAnimations.OverlayFadeOut(_overlayGroup));
-        if (_cardGroup != null)
-            seq.Join(_cardGroup.DOFade(0f, 0.18f));
-        seq.OnComplete(() =>
+        UIAnimationService.PlayPremiereOverlayOut(_overlayGroup, _cardGroup, () =>
         {
             gameObject.SetActive(false);
             var cb = _onClosed;

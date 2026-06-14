@@ -27,7 +27,7 @@ MonoBehaviour:
   posterColorHex: 0
   genreIconKey: 
   posterFile: BeneaththeSummerSkyII.png
-  posterSprite: {fileID: 0}
+  posterSprite: {fileID: 1695582124974839864, guid: 810a81942c913ba4a84f5923cbd9cb03, type: 3}
   catalogTier: 1
   contentKind: 4
   sagaId: beneath_the_summer_sky
