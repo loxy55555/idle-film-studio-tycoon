@@ -308,7 +308,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
         result.upgradeCostText.enableAutoSizing = true;
 
-        result.upgradeCostText.fontSizeMin = 13f;
+        result.upgradeCostText.fontSizeMin = 14f;
 
         result.upgradeCostText.fontSizeMax = 18f;
 
@@ -326,7 +326,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
         result.effectText.enableAutoSizing = true;
 
-        result.effectText.fontSizeMin = 12f;
+        result.effectText.fontSizeMin = 14f;
 
         result.effectText.fontSizeMax = 16f;
 

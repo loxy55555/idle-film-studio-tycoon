@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Mismatched Pair
   genre: 3
   tagline: Odd couple detectives solve absurd crimes.
-  synopsis: Odd couple detectives solve absurd crimes.
+  synopsis: "Personajes entra\xF1ables y situaciones imposibles se combinan en una
+    aventura tan ca\xF3tica como inolvidable."
   synopsisEn: When chance throws together incompatible characters, the result can
     only be the funniest chaos of the year.
   synopsisFr: "Quand le hasard r\xE9unit des personnages incompatibles, le r\xE9sultat

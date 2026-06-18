@@ -33,6 +33,17 @@ public class StudioHubUI : MonoBehaviour
     private int _currentTab = 0;
     private CanvasGroup[] _panelGroups;
 
+    public int CurrentTab => _currentTab;
+
+    public bool IsMainBottomNavigation
+    {
+        get
+        {
+            var shell = FindAnyObjectByType<DefinitiveHudShell>();
+            return shell != null && shell.mainNavigation == this;
+        }
+    }
+
     private void Start()
     {
         if ((tabPanels == null || tabPanels.Length == 0) &&
@@ -44,21 +55,23 @@ public class StudioHubUI : MonoBehaviour
 
         CachePanelGroups();
 
-        if (tabButtons != null)
-        {
-            for (int i = 0; i < tabButtons.Length; i++)
-            {
-                int idx = i;
-                if (tabButtons[i] != null)
-                {
-                    if (tabButtons[i].GetComponent<UIButtonScale>() == null)
-                        tabButtons[i].gameObject.AddComponent<UIButtonScale>();
-                    tabButtons[i].onClick.AddListener(() => ShowTab(idx));
-                }
-            }
-        }
+        RewireTabListeners();
 
         ShowTab(0, instant: true);
+    }
+
+    public void RewireTabListeners()
+    {
+        if (tabButtons == null) return;
+        for (int i = 0; i < tabButtons.Length; i++)
+        {
+            int idx = i;
+            if (tabButtons[i] == null) continue;
+            if (tabButtons[i].GetComponent<UIButtonScale>() == null)
+                tabButtons[i].gameObject.AddComponent<UIButtonScale>();
+            tabButtons[i].onClick.RemoveAllListeners();
+            tabButtons[i].onClick.AddListener(() => ShowTab(idx));
+        }
     }
 
     void CachePanelGroups()
@@ -130,15 +143,48 @@ public class StudioHubUI : MonoBehaviour
             }
         }
 
-        if (tabButtons != null)
+        UpdateTabButtonStyles(idx, instant);
+        RestoreMainNavHighlightIfSubHub();
+    }
+
+    void RestoreMainNavHighlightIfSubHub()
+    {
+        if (IsMainBottomNavigation) return;
+        var shell = FindAnyObjectByType<DefinitiveHudShell>();
+        var main = shell?.mainNavigation;
+        if (main == null || main == this) return;
+        main.SyncMainNavHighlight(main.CurrentTab, instant: true);
+    }
+
+    void UpdateTabButtonStyles(int idx, bool instant)
+    {
+        if (tabButtons == null) return;
+
+        if (IsMainBottomNavigation)
+        {
             for (int i = 0; i < tabButtons.Length; i++)
-            {
-                bool active = i == idx;
-                UpdateTabStyle(tabButtons[i], active);
-                if (instant || tabButtons[i] == null) continue;
-                var label = tabButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                UIAnimationService.PlayTabSelect(tabButtons[i].transform as RectTransform, label, active);
-            }
+                ApplyTabButtonStyle(tabButtons[i], i == idx, instant);
+            return;
+        }
+
+        for (int i = 0; i < tabButtons.Length; i++)
+            ApplyTabButtonStyle(tabButtons[i], i == idx, instant);
+    }
+
+    void ApplyTabButtonStyle(Button btn, bool active, bool instant)
+    {
+        if (btn == null) return;
+        UpdateTabStyle(btn, active);
+        if (instant) return;
+        var label = btn.GetComponentInChildren<TextMeshProUGUI>();
+        UIAnimationService.PlayTabSelect(btn.transform as RectTransform, label, active);
+    }
+
+    public void SyncMainNavHighlight(int tabIndex, bool instant = true)
+    {
+        if (!IsMainBottomNavigation) return;
+        _currentTab = tabIndex;
+        UpdateTabButtonStyles(tabIndex, instant);
     }
 
     private void UpdateTabStyle(Button btn, bool active)
@@ -148,7 +194,8 @@ public class StudioHubUI : MonoBehaviour
         var label = btn.transform.Find("Label")?.GetComponent<TextMeshProUGUI>()
                  ?? btn.GetComponentInChildren<TextMeshProUGUI>();
         var img = btn.GetComponent<Image>();
-        HudSkinProvider.ApplyTab(img, label, active, HudTabVariant.MainNav);
+        var variant = IsMainBottomNavigation ? HudTabVariant.MainNav : HudTabVariant.SubTab;
+        HudSkinProvider.ApplyTab(img, label, active, variant);
 
         var indicator = btn.transform.Find("ActiveLine")?.GetComponent<Image>();
         HudSkinProvider.ApplyTabIndicator(indicator, active);

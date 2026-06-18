@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Station Eos
   genre: 5
   tagline: Hold a station hostage from the inside.
-  synopsis: Hold a station hostage from the inside.
+  synopsis: "M\xE1s all\xE1 de los confines del mundo conocido aguardan respuestas
+    que la humanidad nunca estuvo preparada para escuchar."
   synopsisEn: When science reaches the unthinkable, the most important questions
     remain without a satisfying answer.
   synopsisFr: "Quand la science atteint l'impensable, les questions les plus importantes

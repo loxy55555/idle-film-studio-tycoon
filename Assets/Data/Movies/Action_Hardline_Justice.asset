@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Hardline Justice
   genre: 0
   tagline: A cop crosses every line to stop a syndicate.
-  synopsis: A cop crosses every line to stop a syndicate.
+  synopsis: "Una persecuci\xF3n implacable a trav\xE9s de entornos extremos donde
+    el l\xEDmite entre la victoria y el desastre es una l\xEDnea muy fina."
   synopsisEn: Hardline Justice tests the limits of human endurance in a mission where
     every second counts.
   synopsisFr: "Hardline Justice met \xE0 l'\xE9preuve les limites humaines dans une

@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Redshift
   genre: 5
   tagline: The universe is expanding faster than expected.
-  synopsis: The universe is expanding faster than expected.
+  synopsis: "Redshift plantea un escenario donde los l\xEDmites de lo posible se
+    desvanecen y la realidad misma se vuelve cuestionable."
   synopsisEn: Redshift builds a fascinating universe where every breakthrough carries
     a price not everyone is willing to pay.
   synopsisFr: "Redshift construit un univers fascinant o\xF9 chaque avanc\xE9e a

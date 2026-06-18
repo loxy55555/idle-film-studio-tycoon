@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Northbound
   genre: 1
   tagline: A bus ride north becomes a reckoning.
-  synopsis: A bus ride north becomes a reckoning.
+  synopsis: "Una traves\xEDa emocional que desaf\xEDa las convenciones y celebra
+    la resiliencia del esp\xEDritu humano."
   synopsisEn: A generational story spanning decades, lives, and legacies in a human
     portrait of monumental proportions.
   synopsisFr: "Une histoire g\xE9n\xE9rationnelle couvrant des d\xE9cennies, des

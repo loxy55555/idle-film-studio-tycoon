@@ -83,10 +83,10 @@ public static class CollectionMovieCardView
             BuildLegendaryLabels(card.transform, cfg, entry);
         else if (entry.discovered)
         {
-            var title = CreateLabel(card.transform, cfg.movieName, 13f, TextPrimary, FontStyles.Bold, 32f);
+            var title = CreateLabel(card.transform, cfg.movieName, 16f, TextPrimary, FontStyles.Bold, 32f);
             title.enableAutoSizing = true;
-            title.fontSizeMin = 10f;
-            title.fontSizeMax = 13f;
+            title.fontSizeMin = 14f;
+            title.fontSizeMax = 18f;
             title.textWrappingMode = TextWrappingModes.Normal;
             title.overflowMode = TextOverflowModes.Ellipsis;
             CreateLabel(card.transform, CollectionLoc.GetGenreLabel(cfg.genre), 10f, TextSecondary, FontStyles.Normal, 14f);
@@ -113,10 +113,10 @@ public static class CollectionMovieCardView
             return;
         }
 
-        var title = CreateLabel(card, cfg.movieName, 13f, TextPrimary, FontStyles.Bold, 36f);
+        var title = CreateLabel(card, cfg.movieName, 16f, TextPrimary, FontStyles.Bold, 36f);
         title.enableAutoSizing = true;
-        title.fontSizeMin = 10f;
-        title.fontSizeMax = 13f;
+        title.fontSizeMin = 14f;
+        title.fontSizeMax = 18f;
         title.textWrappingMode = TextWrappingModes.Normal;
         title.overflowMode = TextOverflowModes.Ellipsis;
 
@@ -172,12 +172,12 @@ public static class CollectionMovieCardView
         titleRT.offsetMax = new Vector2(-4f, 0f);
         // C3 (FASE 16.1): NoWrap prevents TMP from breaking words mid-character on narrow cards
         titleTMP.text = movieName.ToUpper();
-        titleTMP.fontSize = 12f;
+        titleTMP.fontSize = 16f;
         titleTMP.fontStyle = FontStyles.Bold;
         titleTMP.alignment = TextAlignmentOptions.BottomLeft;
         titleTMP.enableAutoSizing = true;
-        titleTMP.fontSizeMin = 8f;
-        titleTMP.fontSizeMax = 13f;
+        titleTMP.fontSizeMin = 14f;
+        titleTMP.fontSizeMax = 18f;
         titleTMP.overflowMode = TextOverflowModes.Ellipsis;
         titleTMP.color = TitleIvory;
         titleTMP.raycastTarget = false;

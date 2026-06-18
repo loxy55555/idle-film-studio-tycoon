@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Operation Coldfire
   genre: 0
   tagline: Power fails across the city during a prison break.
-  synopsis: Power fails across the city during a prison break.
+  synopsis: "La operaci\xF3n m\xE1s ambiciosa de la historia reciente enfrenta a
+    sus protagonistas con lo peor de la condici\xF3n humana."
   synopsisEn: When the clock runs out and the enemy is closer than expected, only
     sheer determination makes the difference.
   synopsisFr: "Quand le temps manque et l'ennemi est plus proche que pr\xE9vu, seule

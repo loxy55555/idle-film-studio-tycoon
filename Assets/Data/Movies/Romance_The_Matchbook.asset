@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: The Matchbook
   genre: 4
   tagline: A matchbook from Paris starts everything.
-  synopsis: A matchbook from Paris starts everything.
+  synopsis: "El amor, cuando es aut\xE9ntico, encuentra la manera de florecer incluso
+    en las condiciones m\xE1s adversas."
   synopsisEn: The Matchbook recounts with delicacy and emotion the story of two people
     who learn to truly see each other.
   synopsisFr: "The Matchbook raconte avec d\xE9licatesse et \xE9motion l'histoire

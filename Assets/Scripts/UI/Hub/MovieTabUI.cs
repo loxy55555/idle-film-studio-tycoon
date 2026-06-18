@@ -108,6 +108,14 @@ public class MovieTabUI : MonoBehaviour
         RebuildHistory();
     }
 
+    public void RefreshLocalization()
+    {
+        RefreshOfferDisplay();
+        RebuildHistory();
+        foreach (var btn in _slotButtons)
+            if (btn != null) btn.RefreshUI();
+    }
+
     public void RefreshOfferDisplay()
     {
         if (slotsRow == null) return;

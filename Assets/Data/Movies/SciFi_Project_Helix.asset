@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Project Helix
   genre: 5
   tagline: Genetic upgrades come with hidden clauses.
-  synopsis: Genetic upgrades come with hidden clauses.
+  synopsis: "En un futuro marcado por la incertidumbre, una expedici\xF3n arriesgada
+    revela verdades que cambian el curso de la historia."
   synopsisEn: When science reaches the unthinkable, the most important questions
     remain without a satisfying answer.
   synopsisFr: "Quand la science atteint l'impensable, les questions les plus importantes

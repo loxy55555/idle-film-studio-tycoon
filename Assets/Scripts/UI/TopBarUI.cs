@@ -144,7 +144,7 @@ public class TopBarUI : MonoBehaviour
         vl.childForceExpandWidth = vl.childForceExpandHeight = true;
         vl.spacing = 0;
 
-        var label = RuntimeTmpText.Create(block.transform, Loc.Get(LocKeys.TopBarDiam), 11, CinematicTheme.TextDim,
+        var label = RuntimeTmpText.Create(block.transform, Loc.Get(LocKeys.TopBarDiam), 14, CinematicTheme.TextDim,
             FontStyles.Normal, TextAlignmentOptions.Center, "DiamondsLabel");
         label.gameObject.AddComponent<LayoutElement>().preferredHeight = 14;
 

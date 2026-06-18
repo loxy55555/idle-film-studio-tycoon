@@ -65,9 +65,11 @@ public class HudLocalizationBridge : MonoBehaviour
         // 5. Refresh department mini-cards
         RefreshAll<DepartmentMiniCardUI>(p => p.RefreshLocalization());
 
-        // 6. Refresh production slots and production shell button
+        // 6. Refresh production slots, offers and production shell button
         RefreshAll<MultiProductionPanelUI>(p => p.RefreshLocalization());
         RefreshAll<ProductionHudShell>(p => p.RefreshLocalization());
+        RefreshAll<MovieTabUI>(p => p.RefreshLocalization());
+        RefreshAll<MovieButtonUI>(p => p.RefreshUI());
 
         // 7. Refresh contracts panel
         RefreshAll<ContractsPanelUI>(p => p.Rebuild());

@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Spellwright
   genre: 6
   tagline: Write magic into law. Watch law fight back.
-  synopsis: Write magic into law. Watch law fight back.
+  synopsis: "La fantas\xEDa como espejo del alma humana: una historia que habla de
+    qui\xE9nes somos a trav\xE9s de lo que imaginamos."
   synopsisEn: A universe built with the richness of myth and the depth of a saga
     that transcends generations.
   synopsisFr: "Un univers construit avec la richesse d'un mythe et la profondeur

@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Star Pup
   genre: 8
   tagline: A stray dog maps constellations for kids.
-  synopsis: A stray dog maps constellations for kids.
+  synopsis: "Con coraz\xF3n y determinaci\xF3n, incluso los m\xE1s peque\xF1os pueden
+    cambiar el rumbo de las cosas cuando se lo proponen."
   synopsisEn: An animated work that transcends its format to become a cinematic experience
     of the highest order.
   synopsisFr: "Une \u0153uvre anim\xE9e qui transcende son format pour devenir une

@@ -162,7 +162,7 @@ public static class MovieOfferCardLayoutBuilder
             16f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Reward");
         result.rewardText.raycastTarget = false;
         result.rewardText.enableAutoSizing = true;
-        result.rewardText.fontSizeMin = 12f;
+        result.rewardText.fontSizeMin = 14f;
         result.rewardText.fontSizeMax = 16f;
         result.rewardText.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
 
@@ -180,25 +180,25 @@ public static class MovieOfferCardLayoutBuilder
             14f, new Color(0.55f, 0.95f, 0.60f), FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "XP");
         result.xpText.raycastTarget = false;
         result.xpText.enableAutoSizing = true;
-        result.xpText.fontSizeMin = 11f;
-        result.xpText.fontSizeMax = 14f;
+        result.xpText.fontSizeMin = 14f;
+        result.xpText.fontSizeMax = 16f;
         result.xpText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         result.repText = RuntimeTmpText.Create(xpRepRow.transform, "—",
             14f, new Color(0.65f, 0.90f, 1f), FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Rep");
         result.repText.raycastTarget = false;
         result.repText.enableAutoSizing = true;
-        result.repText.fontSizeMin = 11f;
-        result.repText.fontSizeMax = 14f;
+        result.repText.fontSizeMin = 14f;
+        result.repText.fontSizeMax = 16f;
         result.repText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         result.badgesText = RuntimeTmpText.Create(bodyRow.transform, string.Empty,
-            11f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Badges");
+            14f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Badges");
         result.badgesText.raycastTarget = false;
         LE(result.badgesText.rectTransform, 0f);
         result.badgesText.gameObject.SetActive(false);
 
-        result.unlockText = CreateLabel(bodyRow.transform, "Unlock", string.Empty, 12f, new Color(0.95f, 0.45f, 0.35f), 0f);
+        result.unlockText = CreateLabel(bodyRow.transform, "Unlock", string.Empty, 14f, new Color(0.95f, 0.45f, 0.35f), 0f);
         result.unlockText.gameObject.SetActive(false);
 
         var btnGo = new GameObject("SelectBtn", typeof(RectTransform), typeof(Image), typeof(Button));
@@ -414,8 +414,11 @@ public static class MovieOfferCardLayoutBuilder
         }
     }
 
-    public static string GetRarityIcon(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama) =>
-        ProductionDecorIcon.GetIcon(rarity, genre);
+    public static string GetRarityIcon(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama)
+    {
+        if (UIIconCatalog.GetProductionIcon(rarity, genre) != null) return string.Empty;
+        return ProductionDecorIcon.GetIcon(rarity, genre);
+    }
 
     public static Color GetRarityIconColor(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama) =>
         ProductionDecorIcon.GetIconColor(rarity, genre);

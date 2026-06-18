@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Silent Extraction
   genre: 0
   tagline: Two nations. One fugitive. Total chaos.
-  synopsis: Two nations. One fugitive. Total chaos.
+  synopsis: "Una misi\xF3n de alcance global cuya resoluci\xF3n determinar\xE1 el
+    equilibrio de poder durante d\xE9cadas."
   synopsisEn: Silent Extraction follows an elite unit pushed to its limits in a race
     against time where failure is not an option.
   synopsisFr: "Silent Extraction suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses

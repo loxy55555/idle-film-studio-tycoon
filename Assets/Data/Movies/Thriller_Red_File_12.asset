@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Silenceevidence
   genre: 7
   tagline: Earlier file. Same handler. Worse secrets.
-  synopsis: Earlier file. Same handler. Worse secrets.
+  synopsis: "Cuando las apariencias enga\xF1an y la confianza es un lujo que nadie
+    puede permitirse, solo queda el instinto."
   synopsisEn: The truth is closer than it seems, but uncovering it may prove more
     dangerous than the lie itself.
   synopsisFr: "La v\xE9rit\xE9 est plus proche qu'il n'y para\xEEt, mais la d\xE9couvrir

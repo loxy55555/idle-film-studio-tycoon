@@ -187,9 +187,9 @@ public class BonificationsBarUI : MonoBehaviour
         badge.transform.SetParent(row.transform, false);
         badge.GetComponent<Image>().color = BG_BADGE;
         badge.GetComponent<Image>().raycastTarget = false;
-        badge.AddComponent<LayoutElement>().preferredWidth = 72f;
+        badge.AddComponent<LayoutElement>().preferredWidth = 80f;
         _levelNumText = RuntimeTmpText.Create(badge.transform, "1",
-            30f, ACCENT_LINE, FontStyles.Bold, TextAlignmentOptions.Center, "LevelNum");
+            38f, ACCENT_LINE, FontStyles.Bold, TextAlignmentOptions.Center, "LevelNum");
         _levelNumText.raycastTarget = false;
 
         // Info column
@@ -205,7 +205,7 @@ public class BonificationsBarUI : MonoBehaviour
 
         var meta = new GameObject("MetaRow", typeof(RectTransform));
         meta.transform.SetParent(info.transform, false);
-        meta.AddComponent<LayoutElement>().preferredHeight = 26f;
+        meta.AddComponent<LayoutElement>().preferredHeight = 28f;
         var metaHLG = meta.AddComponent<HorizontalLayoutGroup>();
         metaHLG.spacing = 8;
         metaHLG.childAlignment = TextAnchor.MiddleLeft;
@@ -218,8 +218,8 @@ public class BonificationsBarUI : MonoBehaviour
         _repLineText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         _xpLineText = RuntimeTmpText.Create(meta.transform, Loc.Format(LocKeys.StudioXPFormat, 0, 0),
-            13f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "XpLine");
-        _xpLineText.gameObject.AddComponent<LayoutElement>().preferredWidth = 120f;
+            18f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "XpLine");
+        _xpLineText.gameObject.AddComponent<LayoutElement>().preferredWidth = 140f;
 
         var xpBarGo = new GameObject("XpBar", typeof(RectTransform), typeof(Image), typeof(Slider));
         xpBarGo.transform.SetParent(info.transform, false);
@@ -240,14 +240,14 @@ public class BonificationsBarUI : MonoBehaviour
         ReadOnlySlider.Configure(_levelXpBar);
 
         _bonusSummaryText = RuntimeTmpText.Create(info.transform, Loc.Format(LocKeys.StudioBonusSummaryFmt, 0, 0, 0),
-            12f, CinematicTheme.GoldBase, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "BonusSummary");
-        _bonusSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+            18f, CinematicTheme.GoldBase, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "BonusSummary");
+        _bonusSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 22f;
 
         EnsureAnimatedStats(info.transform);
 
         _objectiveText = RuntimeTmpText.Create(info.transform, Loc.Get(LocKeys.StudioNextLevel),
-            11f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Objective");
-        _objectiveText.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
+            18f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Objective");
+        _objectiveText.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
     }
 
     void EnsureAnimatedStats(Transform infoRoot)

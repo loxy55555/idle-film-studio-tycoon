@@ -15,6 +15,7 @@ public class ContractCardUI : MonoBehaviour
     public TextMeshProUGUI descText;
     public TextMeshProUGUI objectiveText;
     public TextMeshProUGUI rewardText;
+    public TextMeshProUGUI timeText;
     public TextMeshProUGUI progressText;
     public Slider          progressBar;
     public Button          claimButton;
@@ -161,12 +162,20 @@ public class ContractCardUI : MonoBehaviour
         if (rewardText != null)
         {
             rewardText.text = BuildRewardString();
-            rewardText.gameObject.SetActive(isCandidateMode);
+            rewardText.gameObject.SetActive(isCandidateMode || !isHistoryMode);
             if (isCandidateMode && !_rewardRevealPlayed)
             {
                 _rewardRevealPlayed = true;
                 UIAnimationService.PlayContractRewardReveal(rewardText.rectTransform);
             }
+        }
+
+        if (timeText != null)
+        {
+            bool showTime = !isCandidateMode && !isHistoryMode && contract.timeLimit > 0f;
+            timeText.gameObject.SetActive(showTime);
+            if (showTime)
+                timeText.text = Loc.Format(LocKeys.ProdTimeFmt, ProductionLoc.FormatTimeRemaining(contract.timeLimit));
         }
 
         if (isCandidateMode)

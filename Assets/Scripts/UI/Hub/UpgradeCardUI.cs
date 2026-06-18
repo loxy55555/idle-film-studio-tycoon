@@ -21,7 +21,7 @@ public class UpgradeCardUI : MonoBehaviour
     public Image           badgeImage;
     public Slider          levelBar;
 
-    const float CardLayoutHeight = 200f; // Phase 13.4B — increased for mobile readability
+    const float CardLayoutHeight = 268f;
 
     UpgradeSystem     _upgrades;
     StudioManager     _studio;
@@ -426,15 +426,15 @@ public class UpgradeCardUI : MonoBehaviour
             effectText.textWrappingMode = TextWrappingModes.Normal;
             effectText.overflowMode = TextOverflowModes.Ellipsis;
             effectText.enableAutoSizing = true;
-            effectText.fontSizeMin = 14f * RuntimeTmpText.MobileScale;
-            effectText.fontSizeMax = 20f * RuntimeTmpText.MobileScale;
+            effectText.fontSizeMin = 14f;
+            effectText.fontSizeMax = 20f;
             effectText.lineSpacing = 2f;
             effectText.maxVisibleLines = 5;
 
             var effectLE = effectText.GetComponent<LayoutElement>()
                            ?? effectText.gameObject.AddComponent<LayoutElement>();
-            effectLE.preferredHeight = 140f;
-            effectLE.minHeight = 100f;
+            effectLE.preferredHeight = 88f;
+            effectLE.minHeight = 66f;
         }
 
         EnsureHorizontalBuyLayout();
@@ -558,8 +558,8 @@ public class UpgradeCardUI : MonoBehaviour
         var le = levelText.GetComponent<LayoutElement>() ?? levelText.gameObject.AddComponent<LayoutElement>();
         le.enabled = true;
         le.ignoreLayout = false;
-        le.preferredHeight = 24f;
-        le.minHeight = 22f;
+        le.preferredHeight = 28f;
+        le.minHeight = 26f;
         le.flexibleWidth = 1f;
         le.flexibleHeight = 0f;
 

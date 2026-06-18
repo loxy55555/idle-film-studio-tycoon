@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: The Final Horizon
   genre: 5
   tagline: Navigation fails. Instinct must succeed.
-  synopsis: Navigation fails. Instinct must succeed.
+  synopsis: "M\xE1s all\xE1 de los confines del mundo conocido aguardan respuestas
+    que la humanidad nunca estuvo preparada para escuchar."
   synopsisEn: The Final Horizon presents a scenario where the limits of the possible
     dissolve and reality itself becomes questionable.
   synopsisFr: "The Final Horizon pr\xE9sente un sc\xE9nario o\xF9 les limites du

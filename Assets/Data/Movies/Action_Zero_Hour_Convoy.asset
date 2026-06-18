@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Kingdom Of Dust
   genre: 0
   tagline: Supplies must reach the front before dawn.
-  synopsis: Supplies must reach the front before dawn.
+  synopsis: "Una misi\xF3n de alcance global cuya resoluci\xF3n determinar\xE1 el
+    equilibrio de poder durante d\xE9cadas."
   synopsisEn: Kingdom Of Dust follows an elite unit pushed to its limits in a race
     against time where failure is not an option.
   synopsisFr: "Kingdom Of Dust suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses limites

@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Hostile Air
   genre: 0
   tagline: Friendly skies turn hostile in seconds.
-  synopsis: Friendly skies turn hostile in seconds.
+  synopsis: "Una misi\xF3n de alcance global cuya resoluci\xF3n determinar\xE1 el
+    equilibrio de poder durante d\xE9cadas."
   synopsisEn: Hostile Air follows an elite unit pushed to its limits in a race against
     time where failure is not an option.
   synopsisFr: "Hostile Air suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses limites

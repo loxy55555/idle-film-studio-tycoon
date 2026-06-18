@@ -252,31 +252,39 @@ public class StorePanelUI : MonoBehaviour
         // ── Diamond Packs — sección secundaria, sin ruido dorado ─────────────
         BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionDiamonds));
         var dRow1 = BuildRow(content.transform, 200f);
-        BuildDiamondCard(dRow1, "100 ♦",  IapProductCatalog.Diamonds100);
-        BuildDiamondCard(dRow1, "550 ♦",  IapProductCatalog.Diamonds550);
+        BuildDiamondCard(dRow1, "100",  IapProductCatalog.Diamonds100);
+        BuildDiamondCard(dRow1, "550",  IapProductCatalog.Diamonds550);
         var dRow2 = BuildRow(content.transform, 200f);
-        BuildDiamondCard(dRow2, "1.500 ♦", IapProductCatalog.Diamonds1500);
-        BuildDiamondCard(dRow2, "5.000 ♦", IapProductCatalog.Diamonds5000);
+        BuildDiamondCard(dRow2, "1.500", IapProductCatalog.Diamonds1500);
+        BuildDiamondCard(dRow2, "5.000", IapProductCatalog.Diamonds5000);
 
-        // ── Premium Packs — jerarquía visual progresiva, header dorado ───────
+        // ── Premium Packs — 2 columns for mobile legibility ─────────────────
         BuildSectionHeader(content.transform, Loc.Get(LocKeys.StoreSectionPacks));
-        var pRow = BuildRow(content.transform, 310f);
-        BuildPackCard(pRow, PremiumPackCatalog.PackId.Supporter,         "♦", Loc.Get(LocKeys.StorePackSupporter), ACCENT_PURP, false, false);
-        BuildPackCard(pRow, PremiumPackCatalog.PackId.Producer,          "»", Loc.Get(LocKeys.StorePackProducer),  ACCENT_PURP, true,  false);
-        BuildPackCard(pRow, PremiumPackCatalog.PackId.ExecutiveProducer, "♥", Loc.Get(LocKeys.StorePackExecutive), ACCENT_PURP, false, true);
+        var pRow1 = BuildRow(content.transform, 310f);
+        BuildPackCard(pRow1, PremiumPackCatalog.PackId.Supporter,         null, Loc.Get(LocKeys.StorePackSupporter), ACCENT_PURP, false, false);
+        BuildPackCard(pRow1, PremiumPackCatalog.PackId.Producer,          null, Loc.Get(LocKeys.StorePackProducer),  ACCENT_PURP, true,  false);
+        var pRow2 = BuildRow(content.transform, 310f);
+        BuildPackCard(pRow2, PremiumPackCatalog.PackId.ExecutiveProducer, null, Loc.Get(LocKeys.StorePackExecutive), ACCENT_PURP, false, true);
+        var packPad = new GameObject("PackPad", typeof(RectTransform));
+        packPad.transform.SetParent(pRow2, false);
+        packPad.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        // ── Boost Ads — sección compacta, sin separador dorado ───────────────
+        // ── Boost Ads — 2 columns ────────────────────────────────────────────
         BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionBoosts));
-        var bRow = BuildRow(content.transform, 200f);
-        BuildAdBoostCard(bRow, "»", Loc.Get(LocKeys.StoreProdBoostInc),  BoostSystem.BoostType.Income, AdRewardSystem.PlacementBoostIncome, ACCENT_ORANGE);
-        BuildAdBoostCard(bRow, "+", Loc.Get(LocKeys.StoreProdBoostXP),   BoostSystem.BoostType.XP,     AdRewardSystem.PlacementBoostXP,     ACCENT_ORANGE);
-        BuildAdBoostCard(bRow, "♥", Loc.Get(LocKeys.StoreProdBoostRep),  BoostSystem.BoostType.Rep,    AdRewardSystem.PlacementBoostRep,    ACCENT_ORANGE);
+        var bRow1 = BuildRow(content.transform, 200f);
+        BuildAdBoostCard(bRow1, null, Loc.Get(LocKeys.StoreProdBoostInc),  BoostSystem.BoostType.Income, AdRewardSystem.PlacementBoostIncome, ACCENT_ORANGE);
+        BuildAdBoostCard(bRow1, null, Loc.Get(LocKeys.StoreProdBoostXP),   BoostSystem.BoostType.XP,     AdRewardSystem.PlacementBoostXP,     ACCENT_ORANGE);
+        var bRow2 = BuildRow(content.transform, 200f);
+        BuildAdBoostCard(bRow2, null, Loc.Get(LocKeys.StoreProdBoostRep),  BoostSystem.BoostType.Rep,    AdRewardSystem.PlacementBoostRep,    ACCENT_ORANGE);
+        var boostPad = new GameObject("BoostPad", typeof(RectTransform));
+        boostPad.transform.SetParent(bRow2, false);
+        boostPad.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         // ── Diamantes Gratis — sección ligera ─────────────────────────────────
         BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionFreeRewards));
         var fRow = BuildRow(content.transform, 200f);
-        BuildAdSimpleCard(fRow, "♦", Loc.Get(LocKeys.StoreProdFreeDiam),
-            $"+{AdRewardSystem.FreeDiamondsReward} ♦  (1/{AdRewardSystem.LimitFreeDiamonds}/día)",
+        BuildAdSimpleCard(fRow, null, Loc.Get(LocKeys.StoreProdFreeDiam),
+            $"+{AdRewardSystem.FreeDiamondsReward}  (1/{AdRewardSystem.LimitFreeDiamonds}/día)",
             ACCENT_GREEN, AdRewardSystem.PlacementFreeDiamonds);
         var freePadding = new GameObject("FreePad", typeof(RectTransform));
         freePadding.transform.SetParent(fRow, false);
@@ -296,37 +304,34 @@ public class StorePanelUI : MonoBehaviour
         var hero = new GameObject("InvestorHero", typeof(RectTransform), typeof(Image));
         hero.transform.SetParent(parent, false);
         hero.GetComponent<Image>().color = BG_CARD;
-        hero.AddComponent<LayoutElement>().preferredHeight = 240f;
+        hero.AddComponent<LayoutElement>().preferredHeight = 260f;
         CinematicTheme.ApplyElevationCard(hero.GetComponent<RectTransform>());
         hero.GetComponent<Image>().color = BG_CARD;
 
         var vlg = hero.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(16, 16, 14, 14);
-        vlg.spacing = 6;
+        vlg.spacing = 8;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        // Section label inside the card — provides context without a floating gold header
         var sectionLbl = RuntimeTmpText.Create(hero.transform, Loc.Get(LocKeys.StoreSectionInvestor),
-            10f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "SectionLbl");
+            14f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "SectionLbl");
         sectionLbl.raycastTarget = false;
-        sectionLbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 14f;
+        sectionLbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
 
-        // Main content row: icon | text column | button — mirrors Featured Supporter layout
         var contentRow = new GameObject("ContentRow", typeof(RectTransform));
         contentRow.transform.SetParent(hero.transform, false);
         contentRow.AddComponent<LayoutElement>().flexibleHeight = 1f;
         var hlg = contentRow.AddComponent<HorizontalLayoutGroup>();
-        hlg.spacing = 12;
-        hlg.childAlignment = TextAnchor.MiddleLeft;
+        hlg.spacing = 10;
+        hlg.childAlignment = TextAnchor.UpperLeft;
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = false;
 
-        // Left: large icon
         var iconCol = new GameObject("IconCol", typeof(RectTransform));
         iconCol.transform.SetParent(contentRow.transform, false);
-        iconCol.AddComponent<LayoutElement>().preferredWidth = 64f;
+        iconCol.AddComponent<LayoutElement>().preferredWidth = 48f;
         var iconVLG = iconCol.AddComponent<VerticalLayoutGroup>();
         iconVLG.childAlignment = TextAnchor.MiddleCenter;
         iconVLG.childControlWidth = iconVLG.childControlHeight = true;
@@ -335,22 +340,23 @@ public class StorePanelUI : MonoBehaviour
         var iconTmp = RuntimeTmpText.Create(iconCol.transform, "$",
             42f, ACCENT_GREEN, FontStyles.Bold, TextAlignmentOptions.Center, "Icon");
         iconTmp.raycastTarget = false;
-        iconTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
+        iconTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
 
-        // Center: name + detail
         var txtCol = new GameObject("TxtCol", typeof(RectTransform));
         txtCol.transform.SetParent(contentRow.transform, false);
         txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
         var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
-        txtVLG.spacing = 6;
-        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.spacing = 4;
+        txtVLG.childAlignment = TextAnchor.UpperLeft;
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
         var nameTmp = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StoreProdInvestor),
             30f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Name");
         nameTmp.raycastTarget = false;
-        nameTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 38f;
+        nameTmp.textWrappingMode = TextWrappingModes.Normal;
+        nameTmp.overflowMode = TextOverflowModes.Ellipsis;
+        nameTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
 
         float cooldown = AdRewardSystem.GetInvestorCooldownRemaining();
         bool onCooldown = cooldown > 0f;
@@ -373,24 +379,30 @@ public class StorePanelUI : MonoBehaviour
             22f, onCooldown ? TEXT_SEC : ACCENT_GREEN, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Detail");
         detailTmp.raycastTarget = false;
         detailTmp.textWrappingMode = TextWrappingModes.Normal;
-        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 50f;
+        detailTmp.overflowMode = TextOverflowModes.Ellipsis;
+        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 56f;
 
-        // H1: Register cooldown label for real-time updates
         if (onCooldown)
             _investorCooldownLabels.Add(detailTmp);
 
-        // Right: action button — same width/alignment as Featured Supporter below
+        var btnRow = new GameObject("BtnRow", typeof(RectTransform));
+        btnRow.transform.SetParent(hero.transform, false);
+        btnRow.AddComponent<LayoutElement>().preferredHeight = 48f;
+        var btnHLG = btnRow.AddComponent<HorizontalLayoutGroup>();
+        btnHLG.childControlWidth = btnHLG.childControlHeight = true;
+        btnHLG.childForceExpandWidth = true;
+        btnHLG.childForceExpandHeight = true;
+
         if (onCooldown)
         {
-            var coolBtn = MakeButton(contentRow.transform, detailText, BTN_OWNED, StorePromoButtonWidth);
+            var coolBtn = MakeButton(btnRow.transform, detailText, BTN_OWNED, -1f);
             coolBtn.interactable = false;
-            // H1: Also register the button label for real-time cooldown text
             var coolBtnLbl = coolBtn.GetComponentInChildren<TextMeshProUGUI>();
             if (coolBtnLbl != null) _investorCooldownLabels.Add(coolBtnLbl);
         }
         else
         {
-            var btn = MakeButton(contentRow.transform, Loc.Get(LocKeys.StoreWatchAd), ACCENT_GREEN, StorePromoButtonWidth);
+            var btn = MakeButton(btnRow.transform, Loc.Get(LocKeys.StoreWatchAd), ACCENT_GREEN, -1f);
             btn.onClick.AddListener(() =>
             {
                 AdRewardSystem.RequestReward(AdRewardSystem.PlacementInvestor);
@@ -422,55 +434,76 @@ public class StorePanelUI : MonoBehaviour
         var banner = new GameObject("Featured", typeof(RectTransform), typeof(Image));
         banner.transform.SetParent(parent, false);
         banner.GetComponent<Image>().color = BG_CARD;
-        banner.AddComponent<LayoutElement>().preferredHeight = 155f;
+        banner.AddComponent<LayoutElement>().preferredHeight = 188f;
         CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
         banner.GetComponent<Image>().color = BG_CARD;
 
-        var hlg = banner.AddComponent<HorizontalLayoutGroup>();
-        hlg.padding = new RectOffset(16, 16, 12, 12);
-        hlg.spacing = 12;
-        hlg.childAlignment = TextAnchor.MiddleLeft;
+        var vlg = banner.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(16, 16, 12, 12);
+        vlg.spacing = 8;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+
+        var contentRow = new GameObject("ContentRow", typeof(RectTransform));
+        contentRow.transform.SetParent(banner.transform, false);
+        contentRow.AddComponent<LayoutElement>().flexibleHeight = 1f;
+        var hlg = contentRow.AddComponent<HorizontalLayoutGroup>();
+        hlg.padding = new RectOffset();
+        hlg.spacing = 10;
+        hlg.childAlignment = TextAnchor.UpperLeft;
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = false;
 
-        var icon = RuntimeTmpText.Create(banner.transform, "♦",
+        var icon = RuntimeTmpText.Create(contentRow.transform, "♦",
             44f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
         icon.raycastTarget = false;
-        icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 64f;
+        icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 48f;
 
         var txtCol = new GameObject("Texts", typeof(RectTransform));
-        txtCol.transform.SetParent(banner.transform, false);
+        txtCol.transform.SetParent(contentRow.transform, false);
         txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
         var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
-        txtVLG.spacing = 2;
-        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.spacing = 4;
+        txtVLG.childAlignment = TextAnchor.UpperLeft;
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
         var t1 = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StorePackSupporter),
             28f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1");
         t1.raycastTarget = false;
-        t1.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
+        t1.textWrappingMode = TextWrappingModes.Normal;
+        t1.overflowMode = TextOverflowModes.Ellipsis;
+        t1.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
 
         var t2 = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.PackSupporterDesc),
             18f, TEXT_PRI, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
         t2.raycastTarget = false;
         t2.textWrappingMode = TextWrappingModes.Normal;
-        t2.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
+        t2.overflowMode = TextOverflowModes.Ellipsis;
+        t2.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
 
         var t3 = RuntimeTmpText.Create(txtCol.transform,
             BuildPackRewardLine(PremiumPackCatalog.Get(PremiumPackCatalog.PackId.Supporter)),
             14f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T3");
         t3.raycastTarget = false;
-        t3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
+        t3.textWrappingMode = TextWrappingModes.Normal;
+        t3.gameObject.AddComponent<LayoutElement>().preferredHeight = 22f;
+
+        var btnRow = new GameObject("BtnRow", typeof(RectTransform));
+        btnRow.transform.SetParent(banner.transform, false);
+        btnRow.AddComponent<LayoutElement>().preferredHeight = 48f;
+        var btnHLG = btnRow.AddComponent<HorizontalLayoutGroup>();
+        btnHLG.childControlWidth = btnHLG.childControlHeight = true;
+        btnHLG.childForceExpandWidth = true;
+        btnHLG.childForceExpandHeight = true;
 
         string bannerPrice = GetIapPrice(IapProductCatalog.PackSupporter,
             PremiumPackCatalog.Get(PremiumPackCatalog.PackId.Supporter)?.priceDisplay ?? "4,99 €");
-        BuildPackButton(banner.transform, owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : bannerPrice,
+        BuildPackButton(btnRow.transform, owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : bannerPrice,
             owned,
             () => { PurchaseManager.Instance?.Purchase(IapProductCatalog.PackSupporter); },
-            StorePromoButtonWidth, BTN_AD);
+            -1f, BTN_AD);
     }
 
     // ── Diamond pack card ─────────────────────────────────────────────────────
@@ -479,14 +512,13 @@ public class StorePanelUI : MonoBehaviour
     {
         var card = MakeCard(parent, ACCENT_BLUE, out _);
 
-        RuntimeTmpText.Create(card.transform, "♦", 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+        AddStoreSpriteIcon(card.transform, UIIconCatalog.GetResourceDiamonds(), 40f);
 
-        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreSectionDiamonds), 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreSectionDiamonds), 16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
-        RuntimeTmpText.Create(card.transform, amount, 26f, ACCENT_BLUE, FontStyles.Bold, TextAlignmentOptions.Center, "Detail")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+        RuntimeTmpText.Create(card.transform, amount, 22f, ACCENT_BLUE, FontStyles.Bold, TextAlignmentOptions.Center, "Detail")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 30f;
 
         var spacer = new GameObject("Spacer", typeof(RectTransform));
         spacer.transform.SetParent(card.transform, false);
@@ -518,7 +550,7 @@ public class StorePanelUI : MonoBehaviour
         if (popular)
         {
             var badge = RuntimeTmpText.Create(card.transform, "· POPULAR ·",
-                12f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+                14f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
             badge.raycastTarget = false;
             badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
         }
@@ -527,22 +559,21 @@ public class StorePanelUI : MonoBehaviour
         if (premium)
         {
             var badge = RuntimeTmpText.Create(card.transform, "· PREMIUM ·",
-                12f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+                14f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
             badge.raycastTarget = false;
             badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
         }
 
-        RuntimeTmpText.Create(card.transform, icon, 40f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
+        AddStoreSpriteIcon(card.transform, UIIconCatalog.GetResourceDiamonds(), 44f);
 
-        RuntimeTmpText.Create(card.transform, name, 18f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+        RuntimeTmpText.Create(card.transform, name, 16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
             .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
         string rewardLine = BuildPackRewardLine(pack);
-        var detailTmp = RuntimeTmpText.Create(card.transform, rewardLine, 16f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
+        var detailTmp = RuntimeTmpText.Create(card.transform, rewardLine, 14f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
         detailTmp.raycastTarget = false;
         detailTmp.textWrappingMode = TextWrappingModes.Normal;
-        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
 
         string descKey = packId switch
         {
@@ -551,10 +582,15 @@ public class StorePanelUI : MonoBehaviour
             PremiumPackCatalog.PackId.ExecutiveProducer => LocKeys.PackExecutiveDesc,
             _ => LocKeys.PackSupporterDesc,
         };
-        var descTmp = RuntimeTmpText.Create(card.transform, Loc.Get(descKey), 12f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.Center, "Desc");
+        var descTmp = RuntimeTmpText.Create(card.transform, Loc.Get(descKey), 14f, TEXT_SEC, FontStyles.Normal,
+            packId == PremiumPackCatalog.PackId.Producer
+                ? TextAlignmentOptions.MidlineLeft
+                : TextAlignmentOptions.Center, "Desc");
         descTmp.raycastTarget = false;
         descTmp.textWrappingMode = TextWrappingModes.Normal;
-        descTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
+        descTmp.overflowMode = TextOverflowModes.Ellipsis;
+        descTmp.gameObject.AddComponent<LayoutElement>().preferredHeight =
+            packId == PremiumPackCatalog.PackId.Producer ? 56f : 44f;
 
         var spacer = new GameObject("Spacer", typeof(RectTransform));
         spacer.transform.SetParent(card.transform, false);
@@ -570,7 +606,7 @@ public class StorePanelUI : MonoBehaviour
     {
         if (pack == null) return "";
         var sb = new System.Text.StringBuilder();
-        if (pack.diamonds > 0) sb.Append($"♦ {pack.diamonds:N0}");
+        if (pack.diamonds > 0) sb.Append($"{pack.diamonds:N0} {Loc.Get(LocKeys.StoreSectionDiamonds)}");
         if (pack.noAdsIncluded) { if (sb.Length > 0) sb.Append(" + "); sb.Append(Loc.Get(LocKeys.StoreNoAds)); }
         return sb.ToString().Trim();
     }
@@ -581,11 +617,21 @@ public class StorePanelUI : MonoBehaviour
     {
         var card = MakeCard(parent, accent, out _);
 
-        RuntimeTmpText.Create(card.transform, icon, 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+        var boostSprite = boostType switch
+        {
+            BoostSystem.BoostType.Income => UIIconCatalog.GetResourceMoney(),
+            BoostSystem.BoostType.XP     => UIIconCatalog.GetResourceExperience(),
+            BoostSystem.BoostType.Rep    => UIIconCatalog.GetResourceReputation(),
+            _                            => UIIconCatalog.GetUtilityBoost(),
+        };
+        if (boostSprite != null)
+            AddStoreSpriteIcon(card.transform, boostSprite, 36f);
+        else if (!string.IsNullOrEmpty(icon))
+            RuntimeTmpText.Create(card.transform, icon, 24f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Icon")
+                .gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
 
-        RuntimeTmpText.Create(card.transform, name, 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+        RuntimeTmpText.Create(card.transform, name, 16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
         var detail = BuildBoostDetailLabel(card.transform, boostType, placement, accent);
         detail.gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
@@ -621,7 +667,7 @@ public class StorePanelUI : MonoBehaviour
             text = uses > 0 ? $"×2  ·  {uses}/{GetLimit(placement)}/día" : Loc.Get(LocKeys.AdLimitReached);
         }
 
-        var tmp = RuntimeTmpText.Create(parent, text, 18f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
+        var tmp = RuntimeTmpText.Create(parent, text, 14f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
         tmp.raycastTarget = false;
         return tmp;
     }
@@ -632,11 +678,10 @@ public class StorePanelUI : MonoBehaviour
     {
         var card = MakeCard(parent, accent, out _);
 
-        RuntimeTmpText.Create(card.transform, icon, 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+        AddStoreSpriteIcon(card.transform, UIIconCatalog.GetResourceDiamonds(), 36f);
 
-        RuntimeTmpText.Create(card.transform, name, 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+        RuntimeTmpText.Create(card.transform, name, 16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
         int uses = AdRewardSystem.UsesRemaining(placement);
         string detailText = uses > 0 ? detail : Loc.Get(LocKeys.AdLimitReached);
@@ -664,7 +709,7 @@ public class StorePanelUI : MonoBehaviour
         RuntimeTmpText.Create(card.transform, "$", 26f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
             .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
 
-        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreProdInvestor), 12f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreProdInvestor), 14f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
             .gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
 
         float cooldown = AdRewardSystem.GetInvestorCooldownRemaining();
@@ -686,7 +731,7 @@ public class StorePanelUI : MonoBehaviour
         }
 
         var detail = RuntimeTmpText.Create(card.transform, detailText,
-            11f, onCooldown ? TEXT_SEC : accent, FontStyles.Normal, TextAlignmentOptions.Center, "Detail");
+            14f, onCooldown ? TEXT_SEC : accent, FontStyles.Normal, TextAlignmentOptions.Center, "Detail");
         detail.raycastTarget = false;
         detail.textWrappingMode = TextWrappingModes.Normal;
         detail.gameObject.AddComponent<LayoutElement>().preferredHeight = 28f;
@@ -719,19 +764,29 @@ public class StorePanelUI : MonoBehaviour
         var banner = new GameObject("OfflinePremium", typeof(RectTransform), typeof(Image));
         banner.transform.SetParent(parent, false);
         banner.GetComponent<Image>().color = BG_CARD;
-        banner.AddComponent<LayoutElement>().preferredHeight = 145f;
+        banner.AddComponent<LayoutElement>().preferredHeight = 168f;
         CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
         banner.GetComponent<Image>().color = BG_CARD;
 
-        var hlg = banner.AddComponent<HorizontalLayoutGroup>();
-        hlg.padding = new RectOffset(16, 16, 10, 10);
-        hlg.spacing = 12;
+        var vlg = banner.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(16, 16, 10, 10);
+        vlg.spacing = 8;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+
+        var contentRow = new GameObject("ContentRow", typeof(RectTransform));
+        contentRow.transform.SetParent(banner.transform, false);
+        contentRow.AddComponent<LayoutElement>().flexibleHeight = 1f;
+        var hlg = contentRow.AddComponent<HorizontalLayoutGroup>();
+        hlg.spacing = 10;
+        hlg.childAlignment = TextAnchor.UpperLeft;
         hlg.childControlWidth = hlg.childControlHeight = true;
-        hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
 
         var iconCol = new GameObject("IconCol", typeof(RectTransform));
-        iconCol.transform.SetParent(banner.transform, false);
-        iconCol.AddComponent<LayoutElement>().preferredWidth = 44f;
+        iconCol.transform.SetParent(contentRow.transform, false);
+        iconCol.AddComponent<LayoutElement>().preferredWidth = 40f;
         var iconVlg = iconCol.AddComponent<VerticalLayoutGroup>();
         iconVlg.childAlignment = TextAnchor.MiddleCenter;
         iconVlg.childControlWidth = iconVlg.childControlHeight = true;
@@ -740,20 +795,19 @@ public class StorePanelUI : MonoBehaviour
         var icon = RuntimeTmpText.Create(iconCol.transform, "»",
             28f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
         icon.raycastTarget = false;
-        icon.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+        icon.gameObject.AddComponent<LayoutElement>().preferredHeight = 32f;
 
-        // "PERMANENTE" micro-badge under the icon
         var badge = RuntimeTmpText.Create(iconCol.transform, "PERM.",
-            7f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+            14f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
         badge.raycastTarget = false;
-        badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 10f;
+        badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
 
         var txtCol = new GameObject("Texts", typeof(RectTransform));
-        txtCol.transform.SetParent(banner.transform, false);
+        txtCol.transform.SetParent(contentRow.transform, false);
         txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
         var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
-        txtVLG.spacing = 2;
-        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.spacing = 4;
+        txtVLG.childAlignment = TextAnchor.UpperLeft;
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
@@ -764,11 +818,22 @@ public class StorePanelUI : MonoBehaviour
         string descText = owned
             ? $"✓ {PremiumFeatures.PremiumOfflineHours:0}h — {Loc.Get(LocKeys.OfflinePremiumOwned)}"
             : Loc.Get(LocKeys.OfflinePremiumDesc);
-        RuntimeTmpText.Create(txtCol.transform, descText,
-            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
+        var descTmp = RuntimeTmpText.Create(txtCol.transform, descText,
+            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
+        descTmp.raycastTarget = false;
+        descTmp.textWrappingMode = TextWrappingModes.Normal;
+        descTmp.overflowMode = TextOverflowModes.Ellipsis;
+        descTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
 
-        BuildPackButton(banner.transform,
+        var btnRow = new GameObject("BtnRow", typeof(RectTransform));
+        btnRow.transform.SetParent(banner.transform, false);
+        btnRow.AddComponent<LayoutElement>().preferredHeight = 48f;
+        var btnHLG = btnRow.AddComponent<HorizontalLayoutGroup>();
+        btnHLG.childControlWidth = btnHLG.childControlHeight = true;
+        btnHLG.childForceExpandWidth = true;
+        btnHLG.childForceExpandHeight = true;
+
+        BuildPackButton(btnRow.transform,
             owned ? Loc.Get(LocKeys.OfflinePremiumOwned) : Loc.Get(LocKeys.OfflinePremiumCostPending),
             owned,
             () =>
@@ -777,7 +842,7 @@ public class StorePanelUI : MonoBehaviour
                 ShowToast(Loc.Get(LocKeys.OfflinePremiumName) + " ✓");
                 RefreshLocalization();
             },
-            92f, BTN_AD);
+            -1f, BTN_AD);
     }
 
     // ── No Ads banner ─────────────────────────────────────────────────────────
@@ -789,27 +854,37 @@ public class StorePanelUI : MonoBehaviour
         var banner = new GameObject("Premium", typeof(RectTransform), typeof(Image));
         banner.transform.SetParent(parent, false);
         banner.GetComponent<Image>().color = BG_CARD;
-        banner.AddComponent<LayoutElement>().preferredHeight = 135f;
+        banner.AddComponent<LayoutElement>().preferredHeight = 158f;
         CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
         banner.GetComponent<Image>().color = BG_CARD;
 
-        var hlg = banner.AddComponent<HorizontalLayoutGroup>();
-        hlg.padding = new RectOffset(16, 16, 12, 12);
-        hlg.spacing = 12;
-        hlg.childControlWidth = hlg.childControlHeight = true;
-        hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = true;
+        var vlg = banner.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(16, 16, 12, 12);
+        vlg.spacing = 8;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        var icon = RuntimeTmpText.Create(banner.transform, "X",
+        var contentRow = new GameObject("ContentRow", typeof(RectTransform));
+        contentRow.transform.SetParent(banner.transform, false);
+        contentRow.AddComponent<LayoutElement>().flexibleHeight = 1f;
+        var hlg = contentRow.AddComponent<HorizontalLayoutGroup>();
+        hlg.spacing = 10;
+        hlg.childAlignment = TextAnchor.UpperLeft;
+        hlg.childControlWidth = hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+
+        var icon = RuntimeTmpText.Create(contentRow.transform, "X",
             36f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
         icon.raycastTarget = false;
-        icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 56f;
+        icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 44f;
 
         var txtCol = new GameObject("Texts", typeof(RectTransform));
-        txtCol.transform.SetParent(banner.transform, false);
+        txtCol.transform.SetParent(contentRow.transform, false);
         txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
         var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
-        txtVLG.spacing = 2;
-        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.spacing = 4;
+        txtVLG.childAlignment = TextAnchor.UpperLeft;
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
@@ -818,15 +893,26 @@ public class StorePanelUI : MonoBehaviour
             26f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1")
             .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
 
-        RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StoreNoAdsDesc),
-            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2")
-            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+        var descTmp = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StoreNoAdsDesc),
+            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
+        descTmp.raycastTarget = false;
+        descTmp.textWrappingMode = TextWrappingModes.Normal;
+        descTmp.overflowMode = TextOverflowModes.Ellipsis;
+        descTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
 
-        BuildPackButton(banner.transform,
+        var btnRow = new GameObject("BtnRow", typeof(RectTransform));
+        btnRow.transform.SetParent(banner.transform, false);
+        btnRow.AddComponent<LayoutElement>().preferredHeight = 48f;
+        var btnHLG = btnRow.AddComponent<HorizontalLayoutGroup>();
+        btnHLG.childControlWidth = btnHLG.childControlHeight = true;
+        btnHLG.childForceExpandWidth = true;
+        btnHLG.childForceExpandHeight = true;
+
+        BuildPackButton(btnRow.transform,
             owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : GetIapPrice(IapProductCatalog.NoAds, "3,99 €"),
             owned,
             () => { PurchaseManager.Instance?.Purchase(IapProductCatalog.NoAds); },
-            92f, BTN_AD);
+            -1f, BTN_AD);
     }
 
     string GetIapPrice(string productId, string fallback = null) =>
@@ -897,6 +983,15 @@ public class StorePanelUI : MonoBehaviour
         return row.transform;
     }
 
+    static void AddStoreSpriteIcon(Transform card, Sprite sprite, float size)
+    {
+        var wrap = new GameObject("IconWrap", typeof(RectTransform));
+        wrap.transform.SetParent(card, false);
+        wrap.AddComponent<LayoutElement>().preferredHeight = size + 4f;
+        var img = UIIconGraphic.EnsureChildIcon(wrap.transform, "IconSprite", size);
+        UIIconGraphic.Apply(img, sprite);
+    }
+
     /// <summary>Creates a card with a colored accent strip at top, returns card transform.</summary>
     GameObject MakeCard(Transform parent, Color accent, out VerticalLayoutGroup vlg)
     {
@@ -952,6 +1047,7 @@ public class StorePanelUI : MonoBehaviour
         le.preferredHeight = 48f;
         le.flexibleHeight  = 0f;
         if (width > 0f) { le.preferredWidth = width; le.flexibleWidth = 0f; }
+        else { le.flexibleWidth = 1f; }
 
         CinematicTheme.ApplyElevationButton(go.GetComponent<RectTransform>());
         go.GetComponent<Image>().color = bgColor;   // restore desired colour after elevation pass

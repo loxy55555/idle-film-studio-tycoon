@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Uncle Gary V
   genre: 3
   tagline: Gary opens a food truck. Health code weeps.
-  synopsis: Gary opens a food truck. Health code weeps.
+  synopsis: "Personajes entra\xF1ables y situaciones imposibles se combinan en una
+    aventura tan ca\xF3tica como inolvidable."
   synopsisEn: What starts as a perfect plan quickly becomes the most hilarious chain
     of disasters imaginable.
   synopsisFr: "Ce qui commence comme un plan parfait devient rapidement la cha\xEEne

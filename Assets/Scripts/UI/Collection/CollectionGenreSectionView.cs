@@ -62,18 +62,18 @@ public class CollectionGenreSectionView : MonoBehaviour
         titleVLG.childForceExpandHeight = false;
 
         var genreTitle = RuntimeTmpText.Create(titleCol.transform,
-            CollectionLoc.GetGenreLabel(group.genre), 15f, TextPrimary, FontStyles.Bold,
+            CollectionLoc.GetGenreLabel(group.genre), 16f, TextPrimary, FontStyles.Bold,
             TextAlignmentOptions.MidlineLeft);
         genreTitle.enableAutoSizing = true;
-        genreTitle.fontSizeMin = 12f;
-        genreTitle.fontSizeMax = 15f;
+        genreTitle.fontSizeMin = 14f;
+        genreTitle.fontSizeMax = 18f;
 
         var progress = RuntimeTmpText.Create(titleCol.transform,
             CollectionLoc.FormatGenreProgress(group.genre, group.discovered, group.total),
-            11f, TextSecondary, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            14f, TextSecondary, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
         progress.enableAutoSizing = true;
-        progress.fontSizeMin = 9f;
-        progress.fontSizeMax = 11f;
+        progress.fontSizeMin = 14f;
+        progress.fontSizeMax = 16f;
 
         var barGo = new GameObject("ProgressBar", typeof(RectTransform), typeof(Image), typeof(Slider));
         barGo.transform.SetParent(transform, false);

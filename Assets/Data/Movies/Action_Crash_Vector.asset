@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Crash Vector
   genre: 0
   tagline: A pilot must land a failing jet in hostile territory.
-  synopsis: A pilot must land a failing jet in hostile territory.
+  synopsis: "Una misi\xF3n de alcance global cuya resoluci\xF3n determinar\xE1 el
+    equilibrio de poder durante d\xE9cadas."
   synopsisEn: Crash Vector follows an elite unit pushed to its limits in a race against
     time where failure is not an option.
   synopsisFr: "Crash Vector suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses limites

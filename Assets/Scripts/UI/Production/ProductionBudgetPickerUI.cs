@@ -19,6 +19,9 @@ public class ProductionBudgetPickerUI : MonoBehaviour
     Action<ProductionBudget> _onConfirm;
     MovieConfig _pendingConfig;
 
+    // FASE 16.2 — Tiempo producción: one stats label per budget option, updated in Open()
+    readonly TextMeshProUGUI[] _budgetStatsLabels = new TextMeshProUGUI[3]; // Cheap, Standard, Premium
+
     public static bool IsOpen => Instance != null && Instance.gameObject.activeSelf;
     public static event Action<bool> OnVisibilityChanged;
 
@@ -69,7 +72,7 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        float sc = RuntimeTmpText.MobileScale;
+        float sc = 1.0f;
         var hdr = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.ProdBudgetTitle), 18f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Title");
         hdr.enableAutoSizing = true;
@@ -77,29 +80,29 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         hdr.fontSizeMax = 20f * sc;
         LE(hdr.rectTransform, 44f);
 
-        var sub = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.ProdBudgetSubtitle), 11f, TextSecondary,
+        var sub = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.ProdBudgetSubtitle), 14f, TextSecondary,
             FontStyles.Normal, TextAlignmentOptions.Center, "Subtitle");
         sub.enableAutoSizing = true;
-        sub.fontSizeMin = 9f * sc;
-        sub.fontSizeMax = 12f * sc;
-        LE(sub.rectTransform, 50f);
+        sub.fontSizeMin = 14f * sc;
+        sub.fontSizeMax = 16f * sc;
+        LE(sub.rectTransform, 44f);
 
         var iconWrap = CreatePanel(_panel, "DecorIconWrap", new Color(0.09f, 0.09f, 0.18f));
         LE(iconWrap, 96f);
-        _decorIconText = RuntimeTmpText.Create(iconWrap.transform, "🎬", 44f, TextPrimary,
+        _decorIconText = RuntimeTmpText.Create(iconWrap.transform, string.Empty, 44f, TextPrimary,
             FontStyles.Normal, TextAlignmentOptions.Center, "DecorIcon");
         Stretch(_decorIconText.rectTransform);
 
-        _titleText = RuntimeTmpText.Create(_panel, string.Empty, 15f, TextPrimary,
+        _titleText = RuntimeTmpText.Create(_panel, string.Empty, 20f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "MovieTitle");
         _titleText.enableAutoSizing = true;
-        _titleText.fontSizeMin = 12f * sc;
-        _titleText.fontSizeMax = 16f * sc;
-        LE(_titleText.rectTransform, 54f);
+        _titleText.fontSizeMin = 18f * sc;
+        _titleText.fontSizeMax = 22f * sc;
+        LE(_titleText.rectTransform, 60f);
 
-        CreateBudgetOption(_panel, LocKeys.ProdBudgetCheap, ProductionBudget.Cheap, HudCardVariant.Secondary);
-        CreateBudgetOption(_panel, LocKeys.ProdBudgetStandard, ProductionBudget.Standard, HudCardVariant.Primary);
-        CreateBudgetOption(_panel, LocKeys.ProdBudgetPremium, ProductionBudget.Premium, HudCardVariant.Hero);
+        _budgetStatsLabels[0] = CreateBudgetOption(_panel, LocKeys.ProdBudgetCheap,    ProductionBudget.Cheap,    HudCardVariant.Secondary);
+        _budgetStatsLabels[1] = CreateBudgetOption(_panel, LocKeys.ProdBudgetStandard, ProductionBudget.Standard, HudCardVariant.Primary);
+        _budgetStatsLabels[2] = CreateBudgetOption(_panel, LocKeys.ProdBudgetPremium,  ProductionBudget.Premium,  HudCardVariant.Hero);
 
         var cancelGo = new GameObject("CancelBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         cancelGo.transform.SetParent(_panel, false);
@@ -107,18 +110,21 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         cancelGo.AddComponent<UIButtonScale>();
         LE(cancelGo.GetComponent<RectTransform>(), 36f);
         cancelGo.GetComponent<Button>().onClick.AddListener(Close);
-        var cancelLbl = RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 12f, TextPrimary,
+        var cancelLbl = RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 14f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
         cancelLbl.enableAutoSizing = true;
+        cancelLbl.fontSizeMin = 14f;
+        LE(cancelGo.GetComponent<RectTransform>(), 44f);
     }
 
-    void CreateBudgetOption(Transform parent, string locKey, ProductionBudget budget, HudCardVariant variant)
+    // Returns the stats label so it can be refreshed in Open() with actual duration
+    TextMeshProUGUI CreateBudgetOption(Transform parent, string locKey, ProductionBudget budget, HudCardVariant variant)
     {
         var go = new GameObject("Budget_" + budget, typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(go.GetComponent<Image>(), variant);
         go.AddComponent<UIButtonScale>();
-        LE(go.GetComponent<RectTransform>(), 108f);
+        LE(go.GetComponent<RectTransform>(), 84f);
         go.GetComponent<Button>().onClick.AddListener(() => Confirm(budget));
 
         var vlg = go.AddComponent<VerticalLayoutGroup>();
@@ -129,20 +135,22 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        var lbl = RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 14f, TextPrimary,
+        var lbl = RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 16f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
         lbl.enableAutoSizing = true;
-        lbl.fontSizeMin = 11f * RuntimeTmpText.MobileScale;
-        lbl.fontSizeMax = 15f * RuntimeTmpText.MobileScale;
-        lbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+        lbl.fontSizeMin = 16f;
+        lbl.fontSizeMax = 18f;
+        lbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
-        var stats = RuntimeTmpText.Create(go.transform, ProductionBudgetRules.FormatStatBlock(budget), 10f, TextSecondary,
+        var stats = RuntimeTmpText.Create(go.transform, ProductionBudgetRules.FormatStatBlock(budget), 16f, TextSecondary,
             FontStyles.Normal, TextAlignmentOptions.Center, "Stats");
         stats.enableAutoSizing = true;
-        stats.fontSizeMin = 8f * RuntimeTmpText.MobileScale;
-        stats.fontSizeMax = 11f * RuntimeTmpText.MobileScale;
+        stats.fontSizeMin = 16f;
+        stats.fontSizeMax = 18f;
         stats.textWrappingMode = TextWrappingModes.Normal;
-        stats.gameObject.AddComponent<LayoutElement>().preferredHeight = 60f;
+        stats.gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
+
+        return stats;
     }
 
     void Open(MovieConfig config, Action<ProductionBudget> onConfirm)
@@ -150,6 +158,18 @@ public class ProductionBudgetPickerUI : MonoBehaviour
         _pendingConfig = config;
         _onConfirm = onConfirm;
         if (_titleText != null) _titleText.text = config.movieName;
+
+        // FASE 16.2 — show real production time per budget option
+        var budgets = new[] { ProductionBudget.Cheap, ProductionBudget.Standard, ProductionBudget.Premium };
+        for (int i = 0; i < _budgetStatsLabels.Length && i < budgets.Length; i++)
+        {
+            var lbl = _budgetStatsLabels[i];
+            if (lbl == null) continue;
+            var mod = ProductionBudgetRules.GetModifiers(budgets[i]);
+            float dur = config.duration * mod.durationMultiplier;
+            string durStr = ProductionLoc.FormatTimeRemaining(dur);
+            lbl.text = $"{durStr}\n{ProductionBudgetRules.FormatStatBlock(budgets[i])}";
+        }
         if (_decorIconText != null)
         {
             // Apply sprite icon (same as offer cards); emoji text is hidden behind the sprite

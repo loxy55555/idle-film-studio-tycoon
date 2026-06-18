@@ -10,12 +10,11 @@ using UnityEngine;
 public static class RuntimeTmpText
 {
     /// <summary>
-    /// FASE 16.1 — A1: Global font scale factor applied to every TMP created through
-    /// this factory. 1.85 = +85% over previous sizes, improving legibility on mobile
-    /// (Xiaomi 13T Pro 1080×2400 and similar high-density screens).
-    /// Set to 1.0 to disable scaling.
+    /// Per-screen scale factor for targeted adjustments; kept at 1.0 after FASE 16.2
+    /// determined that a global multiplier caused cascading overflow across all panels.
+    /// Use screen-specific LE heights and explicit fontSizeMin/Max instead.
     /// </summary>
-    public const float MobileScale = 1.85f;
+    public const float MobileScale = 1.0f;
 
     static TMP_FontAsset _multilingualFont;
 

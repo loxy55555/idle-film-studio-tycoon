@@ -40,6 +40,27 @@ public static class GenerateMissingSynopsesEditor
         Debug.Log($"[GenerateMissingSynopses] Done. Updated {updated}/{guids.Length} MovieConfig assets.");
     }
 
+    /// <summary>FASE 16.4 — overwrite Spanish synopsis fields that contain English/tagline copy.</summary>
+    [MenuItem("Tools/Idle Film/Fix Mislabeled Spanish Synopses (Silent)")]
+    public static void FixMislabeledSpanishSilent()
+    {
+        var guids = AssetDatabase.FindAssets("t:MovieConfig", new[] { "Assets/Data/Movies" });
+        int fixedCount = 0;
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var cfg  = AssetDatabase.LoadAssetAtPath<MovieConfig>(path);
+            if (cfg == null) continue;
+            if (!SynopsisDataQuality.IsMislabeledSpanish(cfg.synopsis, cfg)) continue;
+            cfg.synopsis = GenerateFromTemplate(cfg, Language.ES);
+            EditorUtility.SetDirty(cfg);
+            fixedCount++;
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log($"[FixMislabeledSpanishSynopses] Fixed {fixedCount}/{guids.Length} MovieConfig assets.");
+    }
+
     [MenuItem("Tools/Idle Film/Generate Missing Synopses")]
     public static void Execute()
     {
@@ -138,8 +159,10 @@ public static class GenerateMissingSynopsesEditor
 
     static string BuildSynopsis(MovieConfig cfg, Language lang)
     {
-        // For Spanish (legacy path): try the tagline first
-        if (lang == Language.ES && !string.IsNullOrWhiteSpace(cfg.tagline) && cfg.tagline.Trim().Length > 30)
+        if (lang == Language.ES)
+            return GenerateFromTemplate(cfg, lang);
+
+        if (lang == Language.EN && !string.IsNullOrWhiteSpace(cfg.tagline) && cfg.tagline.Trim().Length > 30)
         {
             var t = cfg.tagline.Trim();
             if (!t.EndsWith(".") && !t.EndsWith("!") && !t.EndsWith("?")) t += ".";

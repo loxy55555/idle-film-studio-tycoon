@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Detective Potato
   genre: 3
   tagline: The city's strangest detective solves crimes with charm and starch.
-  synopsis: The city's strangest detective solves crimes with charm and starch.
+  synopsis: 'Malentendidos, coincidencias imposibles y decisiones cuestionables:
+    los ingredientes de una comedia que no da tregua.'
   synopsisEn: Detective Potato elevates comedy to a dimension of absurdity so precise
     and so well executed it borders on virtuoso.
   synopsisFr: "Detective Potato \xE9l\xE8ve la com\xE9die \xE0 une dimension d'absurde

@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Captain Acorn
   genre: 8
   tagline: Floating gardens need young caretakers.
-  synopsis: Floating gardens need young caretakers.
+  synopsis: "Lo que comienza como una peque\xF1a aventura pronto se convierte en
+    el viaje m\xE1s importante de sus protagonistas."
   synopsisEn: An animated work that transcends its format to become a cinematic experience
     of the highest order.
   synopsisFr: "Une \u0153uvre anim\xE9e qui transcende son format pour devenir une

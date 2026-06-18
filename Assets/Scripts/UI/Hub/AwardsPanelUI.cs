@@ -453,7 +453,7 @@ public class AwardsPanelUI : MonoBehaviour
         _progressLabel.alignment = TextAlignmentOptions.MidlineLeft;
         _progressLabel.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        var capLbl = Tmp(labelRow.transform, Loc.Get(LocKeys.AwardsTitle), 11f, TEXT_SEC, FontStyles.Bold);
+        var capLbl = Tmp(labelRow.transform, Loc.Get(LocKeys.AwardsTitle), 14f, TEXT_SEC, FontStyles.Bold);
         capLbl.alignment = TextAlignmentOptions.MidlineRight;
         capLbl.gameObject.AddComponent<LayoutElement>().preferredWidth = 160f;
 
@@ -488,13 +488,13 @@ public class AwardsPanelUI : MonoBehaviour
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        var sectionHeader = Tmp(section.transform, Loc.Get(LocKeys.AwardsNextStar), 12f, TEXT_SEC, FontStyles.Bold);
+        var sectionHeader = Tmp(section.transform, Loc.Get(LocKeys.AwardsNextStar), 14f, TEXT_SEC, FontStyles.Bold);
         sectionHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
 
         _nextLabel = Tmp(section.transform, "—", 18f, TEXT_PRI, FontStyles.Bold);
         _nextLabel.gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
 
-        _nextSubLabel = Tmp(section.transform, "—", 13f, AMBER, FontStyles.Normal);
+        _nextSubLabel = Tmp(section.transform, "—", 14f, AMBER, FontStyles.Normal);
         _nextSubLabel.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
 
         // Claim button
@@ -568,7 +568,7 @@ public class AwardsPanelUI : MonoBehaviour
         starsLbl.alignment = TextAlignmentOptions.MidlineLeft;
         starsLbl.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        var studioLvlLbl = Tmp(starsRow.transform, "—", 13f, TEXT_SEC, FontStyles.Normal);
+        var studioLvlLbl = Tmp(starsRow.transform, "—", 14f, TEXT_SEC, FontStyles.Normal);
         studioLvlLbl.alignment = TextAlignmentOptions.MidlineRight;
         studioLvlLbl.gameObject.AddComponent<LayoutElement>().preferredWidth = 140f;
 

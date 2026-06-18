@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Magic Pencil
   genre: 8
   tagline: Draw something. It comes alive briefly.
-  synopsis: Draw something. It comes alive briefly.
+  synopsis: "Con coraz\xF3n y determinaci\xF3n, incluso los m\xE1s peque\xF1os pueden
+    cambiar el rumbo de las cosas cuando se lo proponen."
   synopsisEn: Magic Pencil redefines what animation can tell with a story of uncommon
     emotional depth.
   synopsisFr: "Magic Pencil red\xE9finit ce que l'animation peut raconter avec une

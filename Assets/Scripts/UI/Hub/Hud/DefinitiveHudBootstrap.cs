@@ -102,7 +102,11 @@ public static class DefinitiveHudBootstrap
 
         var hub = switcher.GetComponent<StudioHubUI>();
         if (hub != null)
+        {
             HudNavigationCleanup.NormalizeBottomNav(hub);
+            hub.RewireTabListeners();
+            hub.SyncMainNavHighlight(hub.CurrentTab, instant: true);
+        }
     }
 
     /// <summary>
@@ -733,7 +737,10 @@ public static class DefinitiveHudBootstrap
             }
 
             if (card.rewardText != null)
-                card.rewardText.gameObject.SetActive(false);
+            {
+                card.rewardText.gameObject.SetActive(true);
+                card.rewardText.fontSize = Mathf.Max(card.rewardText.fontSize, 14f);
+            }
             if (card.descText != null)
                 card.descText.gameObject.SetActive(false);
         }

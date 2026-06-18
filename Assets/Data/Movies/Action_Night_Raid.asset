@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Night Raid
   genre: 0
   tagline: Special forces enter a fortress in darkness.
-  synopsis: Special forces enter a fortress in darkness.
+  synopsis: "Night Raid sigue a una unidad de \xE9lite que debe actuar en la sombra
+    para evitar una cat\xE1strofe de consecuencias imprevisibles."
   synopsisEn: Night Raid follows an elite unit pushed to its limits in a race against
     time where failure is not an option.
   synopsisFr: "Night Raid suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses limites

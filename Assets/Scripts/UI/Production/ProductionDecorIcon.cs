@@ -8,12 +8,14 @@ public static class ProductionDecorIcon
 
     public static string GetIcon(MovieRarity rarity, MovieGenre genre = MovieGenre.Drama)
     {
+        // Sprites are applied via UIIconGraphic — avoid emoji fallback (renders as □ on mobile).
+        if (UIIconCatalog.GetProductionIcon(rarity, genre) != null) return string.Empty;
         return rarity switch
         {
-            MovieRarity.Legendary => "🏆",
-            MovieRarity.Epic      => "🎥",
-            MovieRarity.Rare      => "📽️",
-            _                     => GetGenreIcon(genre),
+            MovieRarity.Legendary => "*",
+            MovieRarity.Epic      => "*",
+            MovieRarity.Rare      => "*",
+            _                     => "*",
         };
     }
 

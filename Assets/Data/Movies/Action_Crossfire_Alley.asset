@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Crossfire Alley
   genre: 0
   tagline: Every alley is an ambush waiting to happen.
-  synopsis: Every alley is an ambush waiting to happen.
+  synopsis: "Una misi\xF3n de alcance global cuya resoluci\xF3n determinar\xE1 el
+    equilibrio de poder durante d\xE9cadas."
   synopsisEn: A mission of global scope whose outcome will determine the balance
     of power for decades to come.
   synopsisFr: "Une mission d'envergure mondiale dont l'issue d\xE9terminera l'\xE9quilibre

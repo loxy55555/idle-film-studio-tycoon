@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Uncle Gary
   genre: 3
   tagline: Gary means well. Chaos follows anyway.
-  synopsis: Gary means well. Chaos follows anyway.
+  synopsis: "Uncle Gary eleva la comedia a una dimensi\xF3n de absurdo tan preciso
+    y tan bien ejecutado que resulta casi virtuoso."
   synopsisEn: Uncle Gary elevates comedy to a dimension of absurdity so precise and
     so well executed it borders on virtuoso.
   synopsisFr: "Uncle Gary \xE9l\xE8ve la com\xE9die \xE0 une dimension d'absurde

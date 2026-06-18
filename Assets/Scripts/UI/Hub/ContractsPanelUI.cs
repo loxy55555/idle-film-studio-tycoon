@@ -22,7 +22,7 @@ public class ContractsPanelUI : MonoBehaviour
 
     const float FixedSlotHeight = FixedSlotHeightPublic;
 
-    public const float ActiveCardHeight = 148f; // FASE 16.1 A4: larger for mobile readability (was 110)
+    public const float ActiveCardHeight = 196f;
 
 
 
@@ -770,7 +770,7 @@ public static class ContractCardFactory
 
 
         var title = MakeText(cardGo.transform, activeMode ? Loc.Get(LocKeys.ContractActive) : cfg.contractTitle,
-            activeMode ? 13f : 22f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
+            activeMode ? 17f : 22f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
 
         title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 30f;
 
@@ -807,11 +807,21 @@ public static class ContractCardFactory
 
         var objective = MakeText(cardGo.transform, Loc.Format(LocKeys.ContractActiveObjective,
 
-            ContractSystem.BuildObjectiveLabel(cfg)), activeMode ? 14f : 16f, ACCENT_GOLD);
+            ContractSystem.BuildObjectiveLabel(cfg)), activeMode ? 15f : 16f, ACCENT_GOLD);
 
         objective.textWrappingMode = TextWrappingModes.Normal;
 
-        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 20f : 22f;
+        objective.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 36f : 22f;
+
+        TextMeshProUGUI timeTxt = null;
+        if (activeMode && cfg.timeLimit > 0f)
+        {
+            timeTxt = MakeText(cardGo.transform,
+                Loc.Format(LocKeys.ProdTimeFmt, ProductionLoc.FormatTimeRemaining(cfg.timeLimit)),
+                14f, TEXT_SEC);
+            timeTxt.textWrappingMode = TextWrappingModes.Normal;
+            timeTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+        }
 
 
 
@@ -837,7 +847,7 @@ public static class ContractCardFactory
 
             hlg.childForceExpandWidth = hlg.childForceExpandHeight = true;
 
-            progRow.AddComponent<LayoutElement>().preferredHeight = 8;
+            progRow.AddComponent<LayoutElement>().preferredHeight = activeMode ? 22f : 8f;
 
             var progGo = new GameObject("ProgBar", typeof(RectTransform), typeof(Image), typeof(Slider));
 
@@ -849,8 +859,8 @@ public static class ContractCardFactory
 
             progLE.flexibleWidth = 1;
 
-            progLE.preferredHeight = 8;
-            progLE.minHeight = 8;
+            progLE.preferredHeight = activeMode ? 10f : 8;
+            progLE.minHeight = activeMode ? 10f : 8;
 
             slider = progGo.GetComponent<Slider>();
 
@@ -860,7 +870,7 @@ public static class ContractCardFactory
 
 
 
-            progTxt = MakeText(progRow.transform, "0/0", activeMode ? 13f : 15f, TEXT_SEC);
+            progTxt = MakeText(progRow.transform, "0/0", activeMode ? 16f : 15f, TEXT_SEC);
 
             progTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredWidth = activeMode ? 64f : 76f;
 
@@ -868,10 +878,9 @@ public static class ContractCardFactory
 
 
 
-        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), activeMode ? 13f : 19f, ACCENT_GOLD);
-
-        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 26f;
-        if (activeMode) rewardTxt.gameObject.SetActive(false);
+        var rewardTxt = MakeText(cardGo.transform, BuildReward(cfg), activeMode ? 15f : 19f, ACCENT_GOLD);
+        rewardTxt.textWrappingMode = TextWrappingModes.Normal;
+        rewardTxt.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 22f : 26f;
 
 
 
@@ -987,10 +996,10 @@ public static class ContractCardFactory
             var cancelGo = new GameObject("CancelAdBtn", typeof(RectTransform), typeof(Image), typeof(Button));
             cancelGo.transform.SetParent(cardGo.transform, false);
             HudSkinProvider.ApplyButton(cancelGo.GetComponent<Image>(), HudButtonVariant.Secondary);
-            cancelGo.AddComponent<LayoutElement>().preferredHeight = 36f;
+            cancelGo.AddComponent<LayoutElement>().preferredHeight = 40f;
             cancelGo.AddComponent<UIButtonScale>();
             var cancelLbl = MakeText(cancelGo.transform, Loc.Get(LocKeys.ContractCancelWithAd),
-                13, TEXT_SEC, FontStyles.Normal);
+                14, TEXT_SEC, FontStyles.Normal);
             cancelLbl.alignment = TextAlignmentOptions.Center;
             Stretch(cancelLbl.rectTransform);
             cancelAdBtn = cancelGo.GetComponent<Button>();
@@ -1011,6 +1020,7 @@ public static class ContractCardFactory
         ui.progressBar = slider;
 
         ui.rewardText = rewardTxt;
+        ui.timeText = timeTxt;
 
         ui.claimButton = claimBtn;
 

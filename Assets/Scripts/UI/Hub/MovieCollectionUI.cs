@@ -356,22 +356,33 @@ public class MovieCollectionUI : MonoBehaviour
         info.transform.SetParent(card.transform, false);
         info.GetComponent<Image>().color = BG_DARK;
         info.GetComponent<Image>().raycastTarget = false;
-        info.AddComponent<LayoutElement>().preferredHeight = 40f;
+        info.AddComponent<LayoutElement>().preferredHeight = 44f;
         var infoHLG = info.AddComponent<HorizontalLayoutGroup>();
-        infoHLG.padding = new RectOffset(10, 10, 4, 4);
-        infoHLG.spacing = 4;
+        infoHLG.padding = new RectOffset(8, 6, 4, 4);
+        infoHLG.spacing = 2;
         infoHLG.childControlWidth = infoHLG.childControlHeight = true;
         infoHLG.childForceExpandWidth = false; infoHLG.childForceExpandHeight = true;
 
         var nameTxt = RuntimeTmpText.Create(info.transform, GenreLabel(def.genre),
-            14f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Name");
+            16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Name");
         nameTxt.raycastTarget = false;
-        nameTxt.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        nameTxt.overflowMode = TextOverflowModes.Overflow;
+        nameTxt.textWrappingMode = TextWrappingModes.NoWrap;
+        nameTxt.enableAutoSizing = true;
+        nameTxt.fontSizeMin = 14f;
+        nameTxt.fontSizeMax = 16f;
+        var nameLE = nameTxt.gameObject.AddComponent<LayoutElement>();
+        nameLE.flexibleWidth = 1f;
+        nameLE.minWidth = 72f;
 
-        var progressTxt = RuntimeTmpText.Create(info.transform, "0 / 0",
-            13f, ACCENT_GL, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Progress");
+        var progressTxt = RuntimeTmpText.Create(info.transform, "0/0",
+            14f, ACCENT_GL, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Progress");
         progressTxt.raycastTarget = false;
-        progressTxt.gameObject.AddComponent<LayoutElement>().preferredWidth = 64f;
+        progressTxt.overflowMode = TextOverflowModes.Overflow;
+        var progLE = progressTxt.gameObject.AddComponent<LayoutElement>();
+        progLE.preferredWidth = 48f;
+        progLE.minWidth = 44f;
+        progLE.flexibleWidth = 0f;
         _genreProgressLabels[def.genre] = progressTxt;
 
         // Progress fill bar — bottom edge, unified premium green
@@ -568,9 +579,9 @@ public class MovieCollectionUI : MonoBehaviour
         _l3Title.raycastTarget = false;
         _l3Title.textWrappingMode = TextWrappingModes.Normal;
         _l3Title.enableAutoSizing = true;
-        _l3Title.fontSizeMin = 24f * RuntimeTmpText.MobileScale;
-        _l3Title.fontSizeMax = 40f * RuntimeTmpText.MobileScale;
-        _l3Title.gameObject.AddComponent<LayoutElement>().preferredHeight = 90f;
+        _l3Title.fontSizeMin = 24f;
+        _l3Title.fontSizeMax = 40f;
+        _l3Title.gameObject.AddComponent<LayoutElement>().preferredHeight = 58f;
 
         // Rarity badge only
         (_l3Rarity, _l3RarityBg) = BuildBadge(infoArea.transform, "RarityBadge", "—", CinematicTheme.CardBg2);
@@ -596,8 +607,8 @@ public class MovieCollectionUI : MonoBehaviour
         _l3Synopsis.textWrappingMode = TextWrappingModes.Normal;
         _l3Synopsis.overflowMode = TextOverflowModes.Overflow;
         _l3Synopsis.enableAutoSizing = true;
-        _l3Synopsis.fontSizeMin = 18f * RuntimeTmpText.MobileScale;
-        _l3Synopsis.fontSizeMax = 26f * RuntimeTmpText.MobileScale;
+        _l3Synopsis.fontSizeMin = 18f;
+        _l3Synopsis.fontSizeMax = 26f;
         _l3Synopsis.lineSpacing = 4f;
         var synopsisLE = _l3Synopsis.gameObject.AddComponent<LayoutElement>();
         synopsisLE.flexibleHeight = 1f;
@@ -626,7 +637,7 @@ public class MovieCollectionUI : MonoBehaviour
         le.preferredWidth = 120f; le.preferredHeight = 26f; le.flexibleWidth = 0f;
 
         var tmp = RuntimeTmpText.Create(go.transform, text,
-            11f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
+            14f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
         tmp.raycastTarget = false;
         Stretch(tmp.rectTransform);
         return (tmp, img);
@@ -992,7 +1003,7 @@ public class MovieCollectionUI : MonoBehaviour
             titleTMP.fontStyle = FontStyles.Bold;
             titleTMP.alignment = TextAlignmentOptions.BottomLeft;
             titleTMP.enableAutoSizing = true;
-            titleTMP.fontSizeMin = 10f;
+            titleTMP.fontSizeMin = 14f;
             titleTMP.fontSizeMax = 18f;
             titleTMP.overflowMode = TextOverflowModes.Ellipsis;
             titleTMP.color = new Color(0.96f, 0.94f, 0.87f);
@@ -1012,7 +1023,7 @@ public class MovieCollectionUI : MonoBehaviour
             bRT.sizeDelta = new Vector2(22f, 22f);
 
             var badgeLbl = RuntimeTmpText.Create(badge.transform, "✔",
-                12f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
+                14f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
             badgeLbl.raycastTarget = false;
             Stretch(badgeLbl.rectTransform);
         }
@@ -1037,10 +1048,10 @@ public class MovieCollectionUI : MonoBehaviour
             nameStripLE.minWidth = 0f;
 
             var nameTxt = RuntimeTmpText.Create(nameStrip.transform, cfg.movieName,
-                12f, TEXT_SEC, FontStyles.Bold, TextAlignmentOptions.Center, "Name");
+                14f, TEXT_SEC, FontStyles.Bold, TextAlignmentOptions.Center, "Name");
             nameTxt.enableAutoSizing = true;
-            nameTxt.fontSizeMin = 9f;
-            nameTxt.fontSizeMax = 12f;
+            nameTxt.fontSizeMin = 14f;
+            nameTxt.fontSizeMax = 16f;
             nameTxt.textWrappingMode = TextWrappingModes.Normal;
             nameTxt.overflowMode = TextOverflowModes.Ellipsis;
             nameTxt.maxVisibleLines = 2;
@@ -1192,9 +1203,15 @@ public class MovieCollectionUI : MonoBehaviour
 
     static string BuildSynopsis(MovieConfig cfg)
     {
-        // Use per-language synopsis fields when available; fall back to the
-        // canonical synopsis (Spanish), then tagline, then the "none" placeholder.
-        string langSynopsis = Loc.LanguageCode switch
+        string code = Loc.LanguageCode ?? "es";
+        if (code == "es")
+        {
+            var es = SynopsisDataQuality.ResolveSpanish(cfg);
+            if (!string.IsNullOrEmpty(es)) return es;
+            return Loc.Get(LocKeys.CollectionSynopsisNone);
+        }
+
+        string langSynopsis = code switch
         {
             "en" => cfg.synopsisEn,
             "fr" => cfg.synopsisFr,
@@ -1203,8 +1220,11 @@ public class MovieCollectionUI : MonoBehaviour
             _    => null,
         };
         if (!string.IsNullOrEmpty(langSynopsis)) return langSynopsis;
-        if (!string.IsNullOrEmpty(cfg.synopsis))  return cfg.synopsis;
-        if (!string.IsNullOrEmpty(cfg.tagline))   return cfg.tagline;
+
+        if (code == "en" && !string.IsNullOrEmpty(cfg.synopsisEn)) return cfg.synopsisEn;
+        if (!string.IsNullOrEmpty(cfg.synopsis) && !SynopsisDataQuality.IsMislabeledSpanish(cfg.synopsis, cfg))
+            return cfg.synopsis;
+        if (!string.IsNullOrEmpty(cfg.tagline)) return cfg.tagline;
         return Loc.Get(LocKeys.CollectionSynopsisNone);
     }
 

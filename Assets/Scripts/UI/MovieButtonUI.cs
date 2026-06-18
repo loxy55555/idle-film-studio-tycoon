@@ -114,7 +114,7 @@ public class MovieButtonUI : MonoBehaviour
         });
     }
 
-    void RefreshUI()
+    public void RefreshUI()
     {
         if (movieConfig == null) return;
 

@@ -80,7 +80,7 @@ public static class Loc
             { LocKeys.ProdStartMovie, "Inicia una película" },
             { LocKeys.ProdStatusProducing, "Produciendo" },
             { LocKeys.ProdStatusComplete, "Producción completada" },
-            { LocKeys.ProdDiscoverButton, "▶ ESTRENO" },
+            { LocKeys.ProdDiscoverButton, "ESTRENO" },
             { LocKeys.ProdSelect, "SELECCIONAR" },
             { LocKeys.ProdCatalogComplete, "Catálogo completado" },
             { LocKeys.ProdNoOffer, "Sin oferta disponible" },
@@ -336,7 +336,7 @@ public static class Loc
             { LocKeys.GameFeelUpgradeFallback, "Mejora adquirida" },
 
             // Store sections
-            { LocKeys.StoreSectionDiamonds, "♦ DIAMANTES" },
+            { LocKeys.StoreSectionDiamonds, "DIAMANTES" },
             { LocKeys.StoreSectionPacks,    "› PACKS" },
             { LocKeys.StoreSectionBoosts,   "› BOOSTS" },
             { LocKeys.StoreSectionPremium,  "› PREMIUM" },
@@ -498,7 +498,7 @@ public static class Loc
 
             // ── Ad reward feedback (FASE 15.2A) ──────────────────────────────
             { LocKeys.AdLimitReached,        "Límite diario alcanzado" },
-            { LocKeys.FreeDiamondsAwarded,   "+{0} ♦ añadidos" },
+            { LocKeys.FreeDiamondsAwarded,   "+{0} diamantes" },
             { LocKeys.BoostActivated,        "¡Boost activado! ×2 durante 10 min" },
             { LocKeys.BoostAlreadyActive,    "Ya tienes este boost activo" },
             { LocKeys.InvestorAwarded,       "+${0:N0} del inversor" },
@@ -509,7 +509,7 @@ public static class Loc
             { LocKeys.StoreSectionFreeRewards, "Recompensas Diarias" },
             { LocKeys.StoreProdBoostRep,       "Boost REP" },
             { LocKeys.StoreProdBoostXP,        "Boost XP" },
-            { LocKeys.StoreProdFreeDiam,       "♦ Gratis" },
+            { LocKeys.StoreProdFreeDiam,       "Gratis" },
             { LocKeys.StoreProdInvestor,       "Inversor" },
             { LocKeys.StoreProdOfflinePremium, "Productor Remoto" },
             { LocKeys.StoreBoostTimerFmt,      "{0}m {1}s" },
@@ -576,7 +576,7 @@ public static class Loc
             d[LocKeys.ProdStartMovie] = "Start a movie";
             d[LocKeys.ProdStatusProducing] = "Producing";
             d[LocKeys.ProdStatusComplete] = "Production complete";
-            d[LocKeys.ProdDiscoverButton] = "▶ PREMIERE";
+            d[LocKeys.ProdDiscoverButton] = "PREMIERE";
             d[LocKeys.ProdSelect] = "SELECT";
             d[LocKeys.ProdCatalogComplete] = "Catalog complete";
             d[LocKeys.ProdNoOffer] = "No offer available";
@@ -798,7 +798,7 @@ public static class Loc
             d[LocKeys.GameFeelUpgradeFallback] = "Upgrade acquired";
 
             // Store
-            d[LocKeys.StoreSectionDiamonds] = "♦ DIAMONDS";
+            d[LocKeys.StoreSectionDiamonds] = "DIAMONDS";
             d[LocKeys.StoreSectionPacks]    = "› PACKS";
             d[LocKeys.StoreSectionBoosts]   = "› BOOSTS";
             d[LocKeys.StoreSectionPremium]  = "› PREMIUM";
@@ -943,7 +943,7 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Daily limit reached";
-            d[LocKeys.FreeDiamondsAwarded]   = "+{0} ♦ added";
+            d[LocKeys.FreeDiamondsAwarded]   = "+{0} diamonds added";
             d[LocKeys.BoostActivated]        = "Boost activated! ×2 for 10 min";
             d[LocKeys.BoostAlreadyActive]    = "You already have this boost active";
             d[LocKeys.InvestorAwarded]       = "+${0:N0} from investor";
@@ -952,7 +952,7 @@ public static class Loc
             d[LocKeys.StoreSectionFreeRewards] = "Daily Rewards";
             d[LocKeys.StoreProdBoostRep]     = "REP Boost";
             d[LocKeys.StoreProdBoostXP]      = "XP Boost";
-            d[LocKeys.StoreProdFreeDiam]     = "♦ Free";
+            d[LocKeys.StoreProdFreeDiam]     = "Free";
             d[LocKeys.StoreProdInvestor]     = "Investor";
             d[LocKeys.StoreProdOfflinePremium] = "Remote Producer";
             d[LocKeys.StoreBoostTimerFmt]    = "{0}m {1}s";
@@ -1010,7 +1010,7 @@ public static class Loc
             d[LocKeys.ProdStartMovie] = "Lancez un film";
             d[LocKeys.ProdStatusProducing] = "En production";
             d[LocKeys.ProdStatusComplete] = "Production terminée";
-            d[LocKeys.ProdDiscoverButton] = "▶ AVANT-PREMIÈRE";
+            d[LocKeys.ProdDiscoverButton] = "AVANT-PREMIÈRE";
             d[LocKeys.ProdSelect] = "SÉLECTIONNER";
             d[LocKeys.ProdCatalogComplete] = "Catalogue terminé";
             d[LocKeys.ProdNoOffer] = "Aucune offre disponible";
@@ -1222,7 +1222,7 @@ public static class Loc
             d[LocKeys.GameFeelUpgradeFallback] = "Amélioration acquise";
 
             // Store
-            d[LocKeys.StoreSectionDiamonds] = "♦ DIAMANTS";
+            d[LocKeys.StoreSectionDiamonds] = "DIAMANTS";
             d[LocKeys.StoreSectionPacks]    = "› PACKS";
             d[LocKeys.StoreSectionBoosts]   = "› BOOSTS";
             d[LocKeys.StoreSectionPremium]  = "› PREMIUM";
@@ -1367,7 +1367,7 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Limite quotidienne atteinte";
-            d[LocKeys.FreeDiamondsAwarded]   = "+{0} ♦ ajoutés";
+            d[LocKeys.FreeDiamondsAwarded]   = "+{0} diamants ajoutés";
             d[LocKeys.BoostActivated]        = "Boost activé ! ×2 pendant 10 min";
             d[LocKeys.BoostAlreadyActive]    = "Ce boost est déjà actif";
             d[LocKeys.InvestorAwarded]       = "+{0:N0} $ de l'investisseur";
@@ -1376,7 +1376,7 @@ public static class Loc
             d[LocKeys.StoreSectionFreeRewards] = "Récompenses Quotidiennes";
             d[LocKeys.StoreProdBoostRep]     = "Boost REP";
             d[LocKeys.StoreProdBoostXP]      = "Boost XP";
-            d[LocKeys.StoreProdFreeDiam]     = "♦ Gratuit";
+            d[LocKeys.StoreProdFreeDiam]     = "Gratuit";
             d[LocKeys.StoreProdInvestor]     = "Investisseur";
             d[LocKeys.StoreProdOfflinePremium] = "Producteur à distance";
             d[LocKeys.StoreBoostTimerFmt]    = "{0}m {1}s";
@@ -1426,7 +1426,7 @@ public static class Loc
             d[LocKeys.ProdStartMovie] = "Starte einen Film";
             d[LocKeys.ProdStatusProducing] = "In Produktion";
             d[LocKeys.ProdStatusComplete] = "Produktion abgeschlossen";
-            d[LocKeys.ProdDiscoverButton] = "▶ PREMIERE";
+            d[LocKeys.ProdDiscoverButton] = "PREMIERE";
             d[LocKeys.ProdSelect] = "AUSWÄHLEN";
             d[LocKeys.ProdCatalogComplete] = "Katalog abgeschlossen";
             d[LocKeys.ProdNoOffer] = "Kein Angebot verfügbar";
@@ -1652,7 +1652,7 @@ public static class Loc
             d[LocKeys.GameFeelUpgradeFallback] = "Upgrade erworben";
 
             // Store
-            d[LocKeys.StoreSectionDiamonds] = "♦ DIAMANTEN";
+            d[LocKeys.StoreSectionDiamonds] = "DIAMANTEN";
             d[LocKeys.StoreSectionPacks]    = "› PACKS";
             d[LocKeys.StoreSectionBoosts]   = "› BOOSTS";
             d[LocKeys.StoreSectionPremium]  = "› PREMIUM";
@@ -1797,7 +1797,7 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Tageslimit erreicht";
-            d[LocKeys.FreeDiamondsAwarded]   = "+{0} ♦ hinzugefügt";
+            d[LocKeys.FreeDiamondsAwarded]   = "+{0} Diamanten hinzugefügt";
             d[LocKeys.BoostActivated]        = "Boost aktiviert! ×2 für 10 Min";
             d[LocKeys.BoostAlreadyActive]    = "Dieser Boost ist bereits aktiv";
             d[LocKeys.InvestorAwarded]       = "+{0:N0} $ vom Investor";
@@ -1806,7 +1806,7 @@ public static class Loc
             d[LocKeys.StoreSectionFreeRewards] = "Tagesbelohnungen";
             d[LocKeys.StoreProdBoostRep]     = "REP-Boost";
             d[LocKeys.StoreProdBoostXP]      = "XP-Boost";
-            d[LocKeys.StoreProdFreeDiam]     = "♦ Gratis";
+            d[LocKeys.StoreProdFreeDiam]     = "Gratis";
             d[LocKeys.StoreProdInvestor]     = "Investor";
             d[LocKeys.StoreProdOfflinePremium] = "Fernproduzent";
             d[LocKeys.StoreBoostTimerFmt]    = "{0}m {1}s";
@@ -1859,7 +1859,7 @@ public static class Loc
             d[LocKeys.ProdStartMovie] = "映画を開始";
             d[LocKeys.ProdStatusProducing] = "制作中";
             d[LocKeys.ProdStatusComplete] = "制作完了";
-            d[LocKeys.ProdDiscoverButton] = "▶ プレミア上映";
+            d[LocKeys.ProdDiscoverButton] = "プレミア上映";
             d[LocKeys.ProdSelect] = "選択";
             d[LocKeys.ProdCatalogComplete] = "カタログ完了";
             d[LocKeys.ProdNoOffer] = "オファーなし";
@@ -2087,7 +2087,7 @@ public static class Loc
             d[LocKeys.GameFeelUpgradeFallback] = "アップグレード獲得";
 
             // Store
-            d[LocKeys.StoreSectionDiamonds] = "♦ ダイヤモンド";
+            d[LocKeys.StoreSectionDiamonds] = "ダイヤモンド";
             d[LocKeys.StoreSectionPacks]    = "› パック";
             d[LocKeys.StoreSectionBoosts]   = "› ブースト";
             d[LocKeys.StoreSectionPremium]  = "› プレミアム";
@@ -2232,7 +2232,7 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "本日の上限に達しました";
-            d[LocKeys.FreeDiamondsAwarded]   = "+{0} ♦ を獲得";
+            d[LocKeys.FreeDiamondsAwarded]   = "+{0} ダイヤ獲得";
             d[LocKeys.BoostActivated]        = "ブースト起動！10分間 ×2";
             d[LocKeys.BoostAlreadyActive]    = "このブーストはすでに有効です";
             d[LocKeys.InvestorAwarded]       = "投資家から +${0:N0}";
@@ -2241,7 +2241,7 @@ public static class Loc
             d[LocKeys.StoreSectionFreeRewards] = "デイリー報酬";
             d[LocKeys.StoreProdBoostRep]     = "REPブースト";
             d[LocKeys.StoreProdBoostXP]      = "XPブースト";
-            d[LocKeys.StoreProdFreeDiam]     = "♦ 無料";
+            d[LocKeys.StoreProdFreeDiam]     = "無料";
             d[LocKeys.StoreProdInvestor]     = "投資家";
             d[LocKeys.StoreProdOfflinePremium] = "リモートプロデューサー";
             d[LocKeys.StoreBoostTimerFmt]    = "{0}分 {1}秒";

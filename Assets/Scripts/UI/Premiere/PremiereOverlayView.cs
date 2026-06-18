@@ -138,11 +138,11 @@ public class PremiereOverlayView : MonoBehaviour
         _titleText.fontSizeMax = 22f;
         _titleGroup = _titleText.gameObject.AddComponent<CanvasGroup>();
 
-        _genreText = CreateLabel(_card, "Genre", string.Empty, 13f, TextSecondary,
+        _genreText = CreateLabel(_card, "Genre", string.Empty, 14f, TextSecondary,
             FontStyles.Normal, new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(24f, -358f), new Vector2(160f, 20f));
         _genreText.alignment = TextAlignmentOptions.MidlineLeft;
 
-        _rarityText = CreateLabel(_card, "Rarity", string.Empty, 13f, TextSecondary,
+        _rarityText = CreateLabel(_card, "Rarity", string.Empty, 14f, TextSecondary,
             FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(1f, 1f), new Vector2(-24f, -358f), new Vector2(160f, 20f));
         _rarityText.alignment = TextAlignmentOptions.MidlineRight;
 
@@ -155,7 +155,7 @@ public class PremiereOverlayView : MonoBehaviour
         CinematicTheme.ApplyElevationPanel(rewardsRoot);
         _rewardsGroup = rewardsRoot.gameObject.AddComponent<CanvasGroup>();
 
-        _rewardsTitleText = CreateLabel(rewardsRoot, "RewardsTitle", Loc.Get(LocKeys.PremiereRewardsTitle), 12f, TextSecondary,
+        _rewardsTitleText = CreateLabel(rewardsRoot, "RewardsTitle", Loc.Get(LocKeys.PremiereRewardsTitle), 14f, TextSecondary,
             FontStyles.Bold, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(12f, -8f), new Vector2(-24f, 16f));
         _rewardsTitleText.alignment = TextAlignmentOptions.MidlineLeft;
 
@@ -175,7 +175,7 @@ public class PremiereOverlayView : MonoBehaviour
         _repLineGroup   = _repText.gameObject.AddComponent<CanvasGroup>();
         _xpLineGroup    = _xpText.gameObject.AddComponent<CanvasGroup>();
 
-        _extrasText = CreateLabel(_card, "Extras", string.Empty, 13f, TextSecondary,
+        _extrasText = CreateLabel(_card, "Extras", string.Empty, 14f, TextSecondary,
             FontStyles.Normal, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -518f), new Vector2(340f, 50f));
         _extrasText.textWrappingMode = TextWrappingModes.Normal;
         _extrasGroup = _extrasText.gameObject.AddComponent<CanvasGroup>();

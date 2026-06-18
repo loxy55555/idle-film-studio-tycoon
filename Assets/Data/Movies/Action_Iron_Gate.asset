@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: Iron Gate
   genre: 0
   tagline: Storm the gate or lose the hostages.
-  synopsis: Storm the gate or lose the hostages.
+  synopsis: "Cuando el tiempo se agota y el enemigo est\xE1 m\xE1s cerca de lo previsto,
+    solo la determinaci\xF3n marca la diferencia."
   synopsisEn: A mission of global scope whose outcome will determine the balance
     of power for decades to come.
   synopsisFr: "Une mission d'envergure mondiale dont l'issue d\xE9terminera l'\xE9quilibre

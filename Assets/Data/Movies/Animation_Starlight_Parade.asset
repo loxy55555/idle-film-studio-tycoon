@@ -15,7 +15,8 @@ MonoBehaviour:
   movieName: The Flying Orchard
   genre: 8
   tagline: Annual parade lights up the night sky.
-  synopsis: Annual parade lights up the night sky.
+  synopsis: "Lo que comienza como una peque\xF1a aventura pronto se convierte en
+    el viaje m\xE1s importante de sus protagonistas."
   synopsisEn: A story celebrating friendship, creativity, and the ability to find
     magic in the most everyday things.
   synopsisFr: "Une histoire c\xE9l\xE9brant l'amiti\xE9, la cr\xE9ativit\xE9 et la
