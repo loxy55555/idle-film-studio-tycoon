@@ -13,9 +13,28 @@ MonoBehaviour:
   m_Name: BigMovie
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
   movieName: "Pel\xEDcula Drama"
-  cost: 3000
-  baseReward: 4500
-  baseRep: 18
-  duration: 45
-  quality: 2.5
+  genre: 0
+  tagline: 
+  synopsis: 
+  synopsisEn: 
+  synopsisFr: 
+  synopsisDe: 
+  synopsisJa: 
+  cost: 95
+  baseReward: 170
+  baseRep: 1.4
+  duration: 60
+  quality: 1.07
+  unlockStudioLevel: 0
+  unlockCityLevel: 1
   unlockReputation: 60
+  rarity: 0
+  posterColorHex: '#3498DB'
+  genreIconKey: 
+  posterFile: 
+  posterSprite: {fileID: 0}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

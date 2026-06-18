@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Hidden Crown III
   genre: 6
   tagline: Three kingdoms. One crown. Zero peace.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Three kingdoms. One crown. Zero peace.
+  synopsisEn: When the forces of good and evil collide, the outcome will determine
+    the future of an entire world.
+  synopsisFr: "Quand les forces du bien et du mal s'affrontent, le r\xE9sultat d\xE9terminera
+    l'avenir d'un monde entier."
+  synopsisDe: "Als Gut und B\xF6se aufeinanderprallen, bestimmt das Ergebnis die
+    Zukunft einer ganzen Welt."
+  synopsisJa: "\u5584\u3068\u60AA\u304C\u3076\u3064\u304B\u3063\u305F\u3068\u304D\u3001\u305D\u306E\u7D50\u672B\u304C\u4E16\u754C\u5168\u4F53\u306E\u672A\u6765\u3092\u6C7A\u5B9A\u3059\u308B\u3002"
+  cost: 10500
+  baseReward: 18500
+  baseRep: 83
+  duration: 60
+  quality: 2.97
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheHiddenCrownIII.png
   posterSprite: {fileID: -9114667950132517668, guid: 8a84d5283f73fcb49a45775032ac5b5e, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 4
   sagaId: the_hidden_crown
   sagaEntryIndex: 3

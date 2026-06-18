@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Cold Communion
   genre: 2
   tagline: Communion wine tastes like river water.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Communion wine tastes like river water.
+  synopsisEn: Cold Communion builds an atmosphere of escalating tension that never
+    lets go until the very last frame.
+  synopsisFr: "Cold Communion construit une atmosph\xE8re de tension croissante qui
+    ne l\xE2che pas jusqu'au dernier instant."
+  synopsisDe: "Cold Communion baut eine Atmosph\xE4re wachsender Spannung auf, die
+    bis zum letzten Moment nicht losl\xE4sst."
+  synopsisJa: "Cold Communion\u306F\u6700\u5F8C\u306E\u4E00\u77AC\u307E\u3067\u624B\u3092\u653E\u3055\u306A\u3044\u3001\u9AD8\u307E\u308B\u7DCA\u5F35\u306E\u96F0\u56F2\u6C17\u3092\u4F5C\u308A\u4E0A\u3052\u308B\u3002"
+  cost: 1700
+  baseReward: 3100
+  baseRep: 16
+  duration: 60
+  quality: 2.2
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: ColdCommunion.png
   posterSprite: {fileID: 21300000, guid: 0603fa80ae6acc3459e7537c786b18d2, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

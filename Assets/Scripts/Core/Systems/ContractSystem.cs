@@ -169,7 +169,18 @@ public class ContractSystem : MonoBehaviour
             return false;
         }
 
-        var replacement = eligible[UnityEngine.Random.Range(0, eligible.Count)];
+        // Genre-balanced reroll: prefer a different genre from existing candidates
+        var existingGenres = new HashSet<MovieGenre>();
+        foreach (var c in _candidates)
+            if (c.goalType == ContractGoalType.ProduceMoviesByGenre)
+                existingGenres.Add(c.targetGenre);
+
+        var differentGenre = eligible.FindAll(c =>
+            c.goalType != ContractGoalType.ProduceMoviesByGenre ||
+            !existingGenres.Contains(c.targetGenre));
+
+        var pool = differentGenre.Count > 0 ? differentGenre : eligible;
+        var replacement = pool[UnityEngine.Random.Range(0, pool.Count)];
         _candidates[idx] = replacement;
 
         Debug.Log($"[ContractSystem] Rerolled [{old.contractTitle}] → [{replacement.contractTitle}]");
@@ -192,6 +203,28 @@ public class ContractSystem : MonoBehaviour
         OnContractSelected?.Invoke(contract);
         OnContractUpdated?.Invoke();
         GameHub.Instance?.save?.Save("ContractSelected");
+        return true;
+    }
+
+    /// <summary>
+    /// FASE 16.1 — D3: Cancels the current active contract without reward.
+    /// Generates three fresh candidates. Use only after the player watches an ad.
+    /// </summary>
+    public bool CancelActiveContract(int studioLevel)
+    {
+        if (!HasActiveContract) return false;
+
+        var cancelled = _active[0];
+        _active.Clear();
+        _progress.Remove(cancelled.id);
+        _readyToClaim.Remove(cancelled.id);
+
+        _candidates.Clear();
+        GenerateCandidates(studioLevel);
+
+        Debug.Log($"[ContractSystem] Active contract '{cancelled.contractTitle}' cancelled via ad.");
+        OnContractUpdated?.Invoke();
+        GameHub.Instance?.save?.Save("ContractCancelledViaAd");
         return true;
     }
 
@@ -546,13 +579,74 @@ public class ContractSystem : MonoBehaviour
         var exclude = BuildCandidateExcludeSet();
         var eligible = BuildEligiblePool(studioLevel, exclude);
 
-        for (int i = 0; i < count && eligible.Count > 0; i++)
+        // Genre-balanced selection: separate genre contracts by genre, shuffle genres,
+        // then interleave one contract per genre before falling back to random picks.
+        var byGenre = new Dictionary<MovieGenre, List<ContractConfig>>();
+        var nonGenre = new List<ContractConfig>();
+
+        foreach (var c in eligible)
         {
-            int idx = UnityEngine.Random.Range(0, eligible.Count);
-            var pick = eligible[idx];
+            if (c.goalType == ContractGoalType.ProduceMoviesByGenre)
+            {
+                if (!byGenre.ContainsKey(c.targetGenre))
+                    byGenre[c.targetGenre] = new List<ContractConfig>();
+                byGenre[c.targetGenre].Add(c);
+            }
+            else
+            {
+                nonGenre.Add(c);
+            }
+        }
+
+        // Shuffle genre keys for variety
+        var genreKeys = new List<MovieGenre>(byGenre.Keys);
+        for (int i = genreKeys.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (genreKeys[i], genreKeys[j]) = (genreKeys[j], genreKeys[i]);
+        }
+
+        // Build a balanced pick order: one per genre (shuffled), then non-genre
+        var pickOrder = new List<ContractConfig>();
+        foreach (var g in genreKeys)
+        {
+            var pool = byGenre[g];
+            pickOrder.Add(pool[UnityEngine.Random.Range(0, pool.Count)]);
+        }
+
+        // Shuffle non-genre pool
+        for (int i = nonGenre.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (nonGenre[i], nonGenre[j]) = (nonGenre[j], nonGenre[i]);
+        }
+        pickOrder.AddRange(nonGenre);
+
+        // Pick `count` candidates from the balanced order (already deduplicated)
+        for (int i = 0; i < count && i < pickOrder.Count; i++)
+        {
+            var pick = pickOrder[i];
+            if (exclude.Contains(pick.id)) continue;
             _candidates.Add(pick);
             exclude.Add(pick.id);
-            eligible.RemoveAt(idx);
+        }
+
+        // If we still need more candidates (rare edge case), fall back to remaining eligible
+        if (_candidates.Count < count)
+        {
+            var fallback = new List<ContractConfig>(eligible);
+            for (int i = fallback.Count - 1; i > 0; i--)
+            {
+                int j = UnityEngine.Random.Range(0, i + 1);
+                (fallback[i], fallback[j]) = (fallback[j], fallback[i]);
+            }
+            foreach (var c in fallback)
+            {
+                if (_candidates.Count >= count) break;
+                if (exclude.Contains(c.id)) continue;
+                _candidates.Add(c);
+                exclude.Add(c.id);
+            }
         }
     }
 

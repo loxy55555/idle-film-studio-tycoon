@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Black Ledger
   genre: 7
   tagline: Numbers that kill when audited.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Numbers that kill when audited.
+  synopsisEn: The Black Ledger is a tale of intrigue and betrayal where the line
+    between right and wrong blurs irreversibly.
+  synopsisFr: "The Black Ledger est un r\xE9cit d'intrigues et de trahisons o\xF9
+    la fronti\xE8re entre le bien et le mal s'estompe irr\xE9m\xE9diablement."
+  synopsisDe: "The Black Ledger ist ein Intrigen- und Verrats-Thriller, bei dem die
+    Grenze zwischen Gut und B\xF6se unwiderruflich verschwimmt."
+  synopsisJa: "The Black Ledger\u306F\u5584\u3068\u60AA\u306E\u5883\u754C\u304C\u53D6\u308A\u8FD4\u3057\u306E\u3064\u304B\u306A\u3044\u307B\u3069\u66D6\u6627\u306B\u306A\u308B\u3001\u8B00\u7565\u3068\u88CF\u5207\u308A\u306E\u7269\u8A9E\u3002"
+  cost: 5350
+  baseReward: 9600
+  baseRep: 47
+  duration: 60
+  quality: 2.8
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheBlackLedger.png
   posterSprite: {fileID: 21300000, guid: 72ba6a343e7e34e43b1dcac9ec3fb5bd, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 4
   sagaId: the_black_ledger
   sagaEntryIndex: 1

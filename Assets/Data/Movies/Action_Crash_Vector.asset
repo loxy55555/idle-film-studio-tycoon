@@ -15,10 +15,18 @@ MonoBehaviour:
   movieName: Crash Vector
   genre: 0
   tagline: A pilot must land a failing jet in hostile territory.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
+  synopsis: A pilot must land a failing jet in hostile territory.
+  synopsisEn: Crash Vector follows an elite unit pushed to its limits in a race against
+    time where failure is not an option.
+  synopsisFr: "Crash Vector suit une unit\xE9 d'\xE9lite pouss\xE9e \xE0 ses limites
+    dans une course contre la montre o\xF9 l'\xE9chec n'est pas une option."
+  synopsisDe: "Crash Vector folgt einer Eliteeinheit an den Grenzen des M\xF6glichen
+    \u2014 in einem Wettlauf gegen die Zeit, in dem Versagen keine Option ist."
+  synopsisJa: "Crash Vector\u306F\u30A8\u30EA\u30FC\u30C8\u90E8\u968A\u304C\u6642\u9593\u3068\u306E\u6226\u3044\u3092\u7E70\u308A\u5E83\u3052\u308B\u3001\u5931\u6557\u304C\u8A31\u3055\u308C\u306A\u3044\u6975\u9650\u306E\u30DF\u30C3\u30B7\u30E7\u30F3\u3092\u63CF\u304F\u3002"
+  cost: 45
+  baseReward: 80
+  baseRep: 0.8
+  duration: 60
   quality: 1
   unlockStudioLevel: 1
   unlockCityLevel: 1

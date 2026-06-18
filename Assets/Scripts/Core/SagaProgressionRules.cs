@@ -107,7 +107,7 @@ public static class SagaProgressionRules
         int discovered = CountDiscoveredInSaga(cfg.sagaId, completedKeys, allMovies);
 
         if (discovered >= total)
-            return $"{total}/{total} COMPLETADA";
+            return Loc.Format(LocKeys.SagaCompleted, total, total);
 
         return $"{entry}/{total}";
     }
@@ -119,7 +119,7 @@ public static class SagaProgressionRules
         int entryIndex = GetEffectiveEntryIndex(cfg, allMovies);
         if (entryIndex <= 1) return null;
 
-        return $"Completa la entrada {entryIndex - 1} de la saga primero";
+        return Loc.Format(LocKeys.SagaBlockReason, entryIndex - 1);
     }
 
     static bool IsSagaEntryDiscovered(

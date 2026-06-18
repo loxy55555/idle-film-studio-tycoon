@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Final Horizon
   genre: 5
   tagline: Navigation fails. Instinct must succeed.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Navigation fails. Instinct must succeed.
+  synopsisEn: The Final Horizon presents a scenario where the limits of the possible
+    dissolve and reality itself becomes questionable.
+  synopsisFr: "The Final Horizon pr\xE9sente un sc\xE9nario o\xF9 les limites du
+    possible s'effacent et la r\xE9alit\xE9 elle-m\xEAme devient discutable."
+  synopsisDe: "The Final Horizon entwirft ein Szenario, in dem die Grenzen des M\xF6glichen
+    verschwimmen und die Realit\xE4t selbst in Frage gestellt wird."
+  synopsisJa: "The Final Horizon\u306F\u53EF\u80FD\u6027\u306E\u9650\u754C\u304C\u6D88\u3048\u3001\u73FE\u5B9F\u305D\u306E\u3082\u306E\u304C\u554F\u308F\u308C\u308B\u30B7\u30CA\u30EA\u30AA\u3092\u63D0\u793A\u3059\u308B\u3002"
+  cost: 1400
+  baseReward: 2500
+  baseRep: 15
+  duration: 300
+  quality: 1.89
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheFinalHorizon.png
   posterSprite: {fileID: 21300000, guid: dd63ba23e6dc08048bbb59f9ebda7e30, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: atlas_signal
   sagaEntryIndex: 4

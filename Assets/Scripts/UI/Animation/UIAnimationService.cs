@@ -84,13 +84,14 @@ public static class UIAnimationService
         panel.DOKill(false);
         group?.DOKill(false);
 
-        var startPos = panel.anchoredPosition;
-        panel.anchoredPosition = startPos + new Vector2(0f, -slideY);
+        // Always start from absolute offset below zero and animate to zero — prevents
+        // cumulative drift caused by PlayPanelClose leaving the panel below its rest position.
+        panel.anchoredPosition = new Vector2(0f, -slideY);
         if (group != null) group.alpha = 0f;
 
         var seq = S(DOTween.Sequence());
         if (group != null) seq.Append(group.DOFade(1f, PanelFadeDuration));
-        seq.Join(panel.DOAnchorPos(startPos, PanelFadeDuration).SetEase(Ease.OutCubic));
+        seq.Join(panel.DOAnchorPos(Vector2.zero, PanelFadeDuration).SetEase(Ease.OutCubic));
         return seq;
     }
 

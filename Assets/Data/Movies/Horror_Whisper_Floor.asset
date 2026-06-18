@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Whisper Floor
   genre: 2
   tagline: Footsteps above an empty apartment.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Footsteps above an empty apartment.
+  synopsisEn: Whisper Floor leads the audience somewhere reason cannot reach, where
+    fear governs every moment.
+  synopsisFr: "Whisper Floor m\xE8ne le spectateur l\xE0 o\xF9 la raison ne peut
+    atteindre, l\xE0 o\xF9 la peur gouverne chaque instant."
+  synopsisDe: "Whisper Floor f\xFChrt das Publikum an einen Ort, den die Vernunft
+    nicht erreicht, wo Angst jeden Moment regiert."
+  synopsisJa: "Whisper Floor\u306F\u7406\u6027\u306E\u5C4A\u304B\u306A\u3044\u5834\u6240\u3078\u89B3\u5BA2\u3092\u8A98\u3044\u3001\u6050\u6016\u304C\u3059\u3079\u3066\u306E\u77AC\u9593\u3092\u652F\u914D\u3059\u308B\u4E16\u754C\u3092\u63CF\u304F\u3002"
+  cost: 1150
+  baseReward: 2100
+  baseRep: 12
+  duration: 60
+  quality: 1.85
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: WhisperFloor.png
   posterSprite: {fileID: 21300000, guid: 5f1ab934011c10f4fbe7f66d2412922a, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

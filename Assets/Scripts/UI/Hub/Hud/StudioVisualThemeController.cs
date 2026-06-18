@@ -63,14 +63,16 @@ public class StudioVisualThemeController : MonoBehaviour
         if (_city != null)
         {
             _city.OnCityLevelChanged += OnCityLevelChanged;
-            ApplyTheme(CityTierExtensions.FromLevel(_city.Level));
+            // force=true: guarantees the scene is rebuilt with the current compiled code,
+            // even if stale theme objects from an older session exist in the hierarchy.
+            ApplyTheme(CityTierExtensions.FromLevel(_city.Level), force: true);
             return;
         }
 
 #if UNITY_EDITOR
         if (!Application.isPlaying) return;
 #endif
-        ApplyTheme(CityTier.City1);
+        ApplyTheme(CityTier.City1, force: true);
     }
 
     void OnCityLevelChanged(int level) =>

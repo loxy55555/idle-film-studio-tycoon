@@ -99,17 +99,19 @@ public static class ActiveProductionSlotLayout
         topHLG.childControlWidth = topHLG.childControlHeight = true;
         topHLG.childForceExpandWidth = topHLG.childForceExpandHeight = true;
 
-        refs.titleText = CreateLabel(topRow.transform, "Title", string.Empty, 18f, TextPrimary, 28f);
+        refs.titleText = CreateLabel(topRow.transform, "Title", string.Empty, 18f, TextPrimary, 44f);
         MovieOfferCardLayoutBuilder.ApplyTitleTypography(refs.titleText, TextAlignmentOptions.MidlineLeft);
         refs.titleText.enableAutoSizing = true;
-        refs.titleText.fontSizeMin = 14f;
-        refs.titleText.fontSizeMax = 18f;
+        refs.titleText.fontSizeMin = 14f * RuntimeTmpText.MobileScale;
+        refs.titleText.fontSizeMax = 18f * RuntimeTmpText.MobileScale;
+        refs.titleText.textWrappingMode = TextWrappingModes.NoWrap;
+        refs.titleText.overflowMode = TextOverflowModes.Ellipsis;
         refs.titleText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        refs.statusText = CreateLabel(topRow.transform, "Status", string.Empty, 12f, StatusGreen, 20f);
+        refs.statusText = CreateLabel(topRow.transform, "Status", string.Empty, 14f, StatusGreen, 22f);
         refs.statusText.fontStyle = FontStyles.Bold;
         refs.statusText.alignment = TextAlignmentOptions.MidlineRight;
-        refs.statusText.gameObject.AddComponent<LayoutElement>().preferredWidth = 110f;
+        refs.statusText.gameObject.AddComponent<LayoutElement>().preferredWidth = 120f;
 
         var discoverGo = new GameObject("DiscoverBtn", typeof(RectTransform), typeof(Image), typeof(Button), typeof(CanvasGroup));
         discoverGo.transform.SetParent(content, false);
@@ -132,13 +134,21 @@ public static class ActiveProductionSlotLayout
         metaHLG.childForceExpandWidth = true;
         metaHLG.childForceExpandHeight = true;
 
-        refs.timeText = CreateLabel(refs.metaRow.transform, "Time", string.Empty, 13f, TextSecondary, 22f);
+        refs.timeText = CreateLabel(refs.metaRow.transform, "Time", string.Empty, 16f, TextSecondary, 36f);
         refs.timeText.alignment = TextAlignmentOptions.MidlineLeft;
+        refs.timeText.enableAutoSizing = true;
+        refs.timeText.fontSizeMin = 13f * RuntimeTmpText.MobileScale;
+        refs.timeText.fontSizeMax = 16f * RuntimeTmpText.MobileScale;
         refs.timeText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        refs.rewardText = CreateLabel(refs.metaRow.transform, "Reward", string.Empty, 14f, AccentGreen, 22f);
+        refs.rewardText = CreateLabel(refs.metaRow.transform, "Reward", string.Empty, 16f, AccentGreen, 36f);
         refs.rewardText.alignment = TextAlignmentOptions.MidlineRight;
-        refs.rewardText.gameObject.AddComponent<LayoutElement>().preferredWidth = 150f;
+        refs.rewardText.enableAutoSizing = true;
+        refs.rewardText.fontSizeMin = 12f * RuntimeTmpText.MobileScale;
+        refs.rewardText.fontSizeMax = 16f * RuntimeTmpText.MobileScale;
+        refs.rewardText.textWrappingMode = TextWrappingModes.NoWrap;
+        refs.rewardText.overflowMode = TextOverflowModes.Ellipsis;
+        refs.rewardText.gameObject.AddComponent<LayoutElement>().preferredWidth = 200f;
 
         // ProgressContainer — full slot width (~92%), independent of header columns
         refs.progressRow = CreatePanel(go.transform, "ProgressContainer", Color.clear);

@@ -18,7 +18,13 @@ public static class GameplayRefreshService
             Loc.Get(LocKeys.ProdNewProduction),
             DiamondRefreshCost,
             placementId: ProductionOffersPlacement,
-            onAd: ok => { if (ok) { Debug.Log("[Offers] RefreshConsumed"); CompleteProductionRefresh(onSuccess); } },
+            onAd: ok =>
+            {
+                if (!ok) return;
+                Debug.Log("[Offers] RefreshConsumed");
+                FirebaseManager.Instance?.LogAdRewarded(ProductionOffersPlacement);
+                CompleteProductionRefresh(onSuccess);
+            },
             onDiamonds: () => { Debug.Log("[Offers] RefreshConsumed"); CompleteProductionRefresh(onSuccess); });
     }
 
@@ -32,7 +38,12 @@ public static class GameplayRefreshService
             Loc.Get(LocKeys.ContractRefresh),
             DiamondRefreshCost,
             placementId: ContractCandidatesPlacement,
-            onAd: ok => { if (ok) CompleteContractRefresh(onSuccess); },
+            onAd: ok =>
+            {
+                if (!ok) return;
+                FirebaseManager.Instance?.LogAdRewarded(ContractCandidatesPlacement);
+                CompleteContractRefresh(onSuccess);
+            },
             onDiamonds: () => CompleteContractRefresh(onSuccess));
     }
 

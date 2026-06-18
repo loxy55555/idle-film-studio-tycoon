@@ -78,31 +78,53 @@ public class StudioHubUI : MonoBehaviour
 
     public void ShowTab(int idx, bool instant)
     {
+        if (!instant && idx != _currentTab)
+            AudioManager.Instance?.PlaySfx("tabswitch");
+
         _currentTab = idx;
 
         if (tabPanels != null)
         {
+            // Pre-pass: kill ALL pending tweens (RT + CanvasGroup) and immediately deactivate every
+            // non-target panel.  The old pattern used OnComplete(() => SetActive(false)) which never
+            // fired when rapid switches called DOKill(canvasGroup) mid-animation, leaving multiple
+            // panels active simultaneously with drifted anchoredPositions.
             for (int i = 0; i < tabPanels.Length; i++)
             {
-                if (tabPanels[i] == null) continue;
-                bool active = i == idx;
-                tabPanels[i].SetActive(active);
-                if (active)
-                    tabPanels[i].GetComponent<MovieCollectionUI>()?.Refresh();
-                if (_panelGroups != null && i < _panelGroups.Length && _panelGroups[i] != null)
+                if (tabPanels[i] == null || i == idx) continue;
+                tabPanels[i].GetComponent<RectTransform>()?.DOKill(false);
+                bool hg = _panelGroups != null && i < _panelGroups.Length && _panelGroups[i] != null;
+                if (hg)
                 {
-                    _panelGroups[i].DOKill();
-                    _panelGroups[i].blocksRaycasts = active;
-                    _panelGroups[i].interactable  = active;
-                    if (instant || !active)
-                    {
-                        _panelGroups[i].alpha = active ? 1f : 0f;
-                    }
+                    _panelGroups[i].DOKill(false);
+                    _panelGroups[i].blocksRaycasts = false;
+                    _panelGroups[i].interactable   = false;
+                    _panelGroups[i].alpha           = 0f;
+                }
+                var rt = tabPanels[i].GetComponent<RectTransform>();
+                if (rt != null) rt.anchoredPosition = Vector2.zero;
+                tabPanels[i].SetActive(false);
+            }
+
+            // Main pass: activate and animate only the target panel.
+            for (int i = 0; i < tabPanels.Length; i++)
+            {
+                if (tabPanels[i] == null || i != idx) continue;
+                bool hasGroup = _panelGroups != null && i < _panelGroups.Length && _panelGroups[i] != null;
+
+                tabPanels[i].SetActive(true);
+                tabPanels[i].GetComponent<MovieCollectionUI>()?.Refresh();
+                if (hasGroup)
+                {
+                    _panelGroups[i].blocksRaycasts = true;
+                    _panelGroups[i].interactable   = true;
+                    if (instant)
+                        _panelGroups[i].alpha = 1f;
                     else
                     {
                         _panelGroups[i].alpha = 0f;
-                        var panelRt = tabPanels[i].GetComponent<RectTransform>();
-                        UIAnimationService.PlayPanelOpen(panelRt, _panelGroups[i]);
+                        UIAnimationService.PlayPanelOpen(
+                            tabPanels[i].GetComponent<RectTransform>(), _panelGroups[i]);
                     }
                 }
             }

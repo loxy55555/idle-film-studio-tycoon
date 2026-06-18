@@ -31,7 +31,12 @@ public class MissionObjectiveUI : MonoBehaviour
     void Awake()
     {
         AutoWire();
-        GameHub.OnGameReady += Bind;
+        GameHubReadyGate.SubscribeOrInvokeNow(Bind);
+    }
+
+    void OnEnable()
+    {
+        GameHubReadyGate.RefreshIfReady(Bind);
     }
 
     void OnDestroy()
@@ -79,6 +84,7 @@ public class MissionObjectiveUI : MonoBehaviour
     }
 
     void OnContractEvent(ContractConfig _) => Refresh();
+    public void RefreshLocalization() => Refresh();
 
     void Refresh()
     {
@@ -108,31 +114,33 @@ public class MissionObjectiveUI : MonoBehaviour
         if (target == null)
         {
             if (_contracts.IsSelectionMode)
-                SetTexts("OBJETIVO", Loc.Get(LocKeys.ContractChoosePrompt), "");
+                SetTexts(Loc.Get(LocKeys.ContractObjective), Loc.Get(LocKeys.ContractChoosePrompt), "");
             else
-                SetTexts("OBJETIVO", "Sin contrato activo", "");
+                SetTexts(Loc.Get(LocKeys.ContractObjective), Loc.Get(LocKeys.ContractNoActive), "");
             return;
         }
 
         float progress = _contracts.GetProgress(target);
         bool ready = _contracts.IsReadyToClaim(target);
         string progressLine = ready
-            ? "¡Listo para reclamar!"
+            ? Loc.Get(LocKeys.ContractReadyClaim)
             : $"{progress:0}/{target.goalAmount:0}";
 
+        var locTitle = Loc.Get(LocKeys.ContractTitlePfx + target.id);
+        if (locTitle == LocKeys.ContractTitlePfx + target.id) locTitle = target.contractTitle;
         SetTexts(
-            ready ? "RECLAMAR" : "OBJETIVO",
-            $"{target.contractTitle}\n{progressLine}",
+            ready ? Loc.Get(LocKeys.ContractClaim) : Loc.Get(LocKeys.ContractObjective),
+            $"{locTitle}\n{progressLine}",
             BuildRewardLine(target));
     }
 
     static string BuildRewardLine(ContractConfig c)
     {
         var parts = new System.Collections.Generic.List<string>();
-        if (c.rewardMoney > 0) parts.Add("+$" + c.rewardMoney.ToString("N0"));
-        if (c.rewardReputation > 0) parts.Add("+" + c.rewardReputation.ToString("0") + " REP");
-        if (c.rewardDiamonds > 0) parts.Add("+" + c.rewardDiamonds + " 💎");
-        if (c.rewardStudioXP > 0) parts.Add("+" + c.rewardStudioXP + " XP");
+        if (c.rewardMoney > 0)      parts.Add(Loc.Format(LocKeys.ContractRewardMoney, AnimatedMoneyText.FormatMoney(c.rewardMoney)));
+        if (c.rewardReputation > 0) parts.Add(Loc.Format(LocKeys.ContractRewardRep,   c.rewardReputation));
+        if (c.rewardDiamonds > 0)   parts.Add(Loc.Format(LocKeys.ContractRewardDiam,  c.rewardDiamonds));
+        if (c.rewardStudioXP > 0)   parts.Add(Loc.Format(LocKeys.ContractRewardXP,    c.rewardStudioXP));
         return string.Join("  ", parts);
     }
 

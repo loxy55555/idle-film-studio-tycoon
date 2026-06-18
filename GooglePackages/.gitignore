@@ -1,0 +1,4 @@
+# Keep local Firebase .tgz packages out of git (download via GooglePackages/README.md)
+*.tgz
+*.zip
+extracted/

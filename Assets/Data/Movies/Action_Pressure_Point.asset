@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Pressure Point
   genre: 0
   tagline: One warehouse. One bomb. One chance.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: One warehouse. One bomb. One chance.
+  synopsisEn: In a high-stakes scenario, a team of fighters wages the most important
+    battle of their lives.
+  synopsisFr: "Dans un sc\xE9nario \xE0 haute tension, un groupe de combattants livre
+    la bataille la plus importante de leur vie."
+  synopsisDe: "In einem Hochrisikoszenario liefern K\xE4mpfer die wichtigste Schlacht
+    ihres Lebens."
+  synopsisJa: "\u7DCA\u8FEB\u3057\u305F\u30B7\u30CA\u30EA\u30AA\u306E\u4E2D\u3067\u3001\u6226\u58EB\u305F\u3061\u306F\u4EBA\u751F\u3067\u6700\u3082\u91CD\u8981\u306A\u6226\u3044\u306B\u81E8\u3080\u3002"
+  cost: 1800
+  baseReward: 3250
+  baseRep: 17
+  duration: 60
+  quality: 2.2
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 4
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: PressurePoint.png
   posterSprite: {fileID: 21300000, guid: 198ade03ee4382241ada1f445a3bf453, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -12,7 +12,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
 {
 
-    public const string LayoutMarkerName = "DeptCardLayout_v6";
+    public const string LayoutMarkerName = "DeptCardLayout_v7";
 
     public const float CardHeight = HudLayoutConstants.StudioDeptCardHeight;
 
@@ -72,7 +72,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
 
 
-        foreach (var legacyName in new[] { "DeptCardLayout_v5", "DeptCardLayout_v4", "DeptCardLayout_v3" })
+        foreach (var legacyName in new[] { "DeptCardLayout_v6", "DeptCardLayout_v5", "DeptCardLayout_v4", "DeptCardLayout_v3" })
 
         {
 
@@ -80,9 +80,7 @@ public static class DepartmentMiniCardLayoutBuilder
 
             if (legacy == null) continue;
 
-            if (Application.isPlaying) Object.Destroy(legacy.gameObject);
-
-            else Object.DestroyImmediate(legacy.gameObject);
+            Object.DestroyImmediate(legacy.gameObject);
 
         }
 
@@ -270,15 +268,21 @@ public static class DepartmentMiniCardLayoutBuilder
 
 
 
-        result.deptNameText = CreateLabel(infoCol.transform, "DeptName", string.Empty, 20f, TextPrimary,
+        result.deptNameText = CreateLabel(infoCol.transform, "DeptName", string.Empty, 22f, TextPrimary,
 
-            FontStyles.Bold, 24f);
+            FontStyles.Bold, 28f);
 
         result.deptNameText.alignment = TextAlignmentOptions.MidlineLeft;
 
         result.deptNameText.textWrappingMode = TextWrappingModes.NoWrap;
 
         result.deptNameText.overflowMode = TextOverflowModes.Ellipsis;
+
+        result.deptNameText.enableAutoSizing = true;
+
+        result.deptNameText.fontSizeMin = 15f;
+
+        result.deptNameText.fontSizeMax = 22f;
 
 
 
@@ -288,6 +292,12 @@ public static class DepartmentMiniCardLayoutBuilder
 
         result.levelText.alignment = TextAlignmentOptions.MidlineLeft;
 
+        result.levelText.enableAutoSizing = true;
+
+        result.levelText.fontSizeMin = 14f;
+
+        result.levelText.fontSizeMax = 19f;
+
 
 
         result.upgradeCostText = CreateLabel(infoCol.transform, "UpgradeCost", string.Empty, 18f, CinematicTheme.GoldBase,
@@ -296,17 +306,31 @@ public static class DepartmentMiniCardLayoutBuilder
 
         result.upgradeCostText.alignment = TextAlignmentOptions.MidlineLeft;
 
+        result.upgradeCostText.enableAutoSizing = true;
+
+        result.upgradeCostText.fontSizeMin = 13f;
+
+        result.upgradeCostText.fontSizeMax = 18f;
 
 
-        result.effectText = CreateLabel(infoCol.transform, "EffectText", string.Empty, 13f, AccentBlue,
 
-            FontStyles.Normal, 18f);
+        result.effectText = CreateLabel(infoCol.transform, "EffectText", string.Empty, 15f, AccentBlue,
+
+            FontStyles.Normal, 22f);
 
         result.effectText.alignment = TextAlignmentOptions.MidlineLeft;
 
         result.effectText.textWrappingMode = TextWrappingModes.Normal;
 
-        result.effectText.maxVisibleLines = 1;
+        result.effectText.overflowMode = TextOverflowModes.Ellipsis;
+
+        result.effectText.enableAutoSizing = true;
+
+        result.effectText.fontSizeMin = 12f;
+
+        result.effectText.fontSizeMax = 16f;
+
+        result.effectText.maxVisibleLines = 2;
 
 
 
@@ -742,21 +766,14 @@ public static class DepartmentMiniCardLayoutBuilder
 
     {
 
+        // Always use DestroyImmediate — async Object.Destroy leaves old children
+        // alive alongside newly built ones. WireExisting() then binds to stale
+        // (pending-destroy) children, which become null after end-of-frame cleanup
+        // → department cards appear empty on first launch. Synchronous destroy prevents
+        // the race condition.
         for (int i = root.childCount - 1; i >= 0; i--)
 
-        {
-
-            var child = root.GetChild(i);
-
-            if (Application.isPlaying)
-
-                Object.Destroy(child.gameObject);
-
-            else
-
-                Object.DestroyImmediate(child.gameObject);
-
-        }
+            Object.DestroyImmediate(root.GetChild(i).gameObject);
 
     }
 

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Moonkeeper II
   genre: 6
   tagline: The door opens wider each full moon.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: The door opens wider each full moon.
+  synopsisEn: A universe built with the richness of myth and the depth of a saga
+    that transcends generations.
+  synopsisFr: "Un univers construit avec la richesse d'un mythe et la profondeur
+    d'une saga qui transcende les g\xE9n\xE9rations."
+  synopsisDe: "Ein Universum, erbaut mit dem Reichtum eines Mythos und der Tiefe
+    einer Saga, die Generationen \xFCberdauert."
+  synopsisJa: "\u795E\u8A71\u306E\u8C4A\u304B\u3055\u3068\u4E16\u4EE3\u3092\u8D85\u3048\u308B\u5927\u6CB3\u306E\u6DF1\u307F\u3067\u69CB\u7BC9\u3055\u308C\u305F\u4E16\u754C\u3002"
+  cost: 2350
+  baseReward: 4250
+  baseRep: 22
+  duration: 60
+  quality: 2.25
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: MoonkeeperII.png
   posterSprite: {fileID: -7281673456155310115, guid: b0b00c10ee44be9428b610a151942f79, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: moonkeeper
   sagaEntryIndex: 2

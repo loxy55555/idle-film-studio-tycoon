@@ -16,6 +16,7 @@ public class MovieButtonUI : MonoBehaviour
     public TextMeshProUGUI durationText;
     public TextMeshProUGUI costText;
     public TextMeshProUGUI rewardText;
+    public TextMeshProUGUI xpText;
     public TextMeshProUGUI repText;
     public TextMeshProUGUI badgesText;
     public TextMeshProUGUI unlockText;
@@ -99,8 +100,18 @@ public class MovieButtonUI : MonoBehaviour
         if (!_initialized || _studio == null || movieConfig == null) return;
         if (IsLocked()) return;
 
+        // D2: Check slot availability before opening the budget picker
+        if (_studio.AvailableProductionSlotUnits <= 0)
+        {
+            AdRewardUI.ShowMessage(Loc.Get(LocKeys.UxNoSlotsAvailable));
+            return;
+        }
+
         ProductionBudgetPickerUI.Show(movieConfig, budget =>
-            _studio.StartMovie(movieConfig, budget));
+        {
+            _studio.StartMovie(movieConfig, budget);
+            AudioManager.Instance?.PlaySfx("filmstart");
+        });
     }
 
     void RefreshUI()
@@ -141,6 +152,7 @@ public class MovieButtonUI : MonoBehaviour
             }
             if (costText != null) costText.text = string.Empty;
             if (rewardText != null) rewardText.text = string.Empty;
+            if (xpText != null) xpText.text = string.Empty;
             if (durationText != null) durationText.text = string.Empty;
             if (repText != null) repText.text = string.Empty;
             if (badgesText != null) badgesText.text = string.Empty;
@@ -158,10 +170,13 @@ public class MovieButtonUI : MonoBehaviour
         float duration = movieConfig.duration / speed;
         float rep      = movieConfig.baseRep * quality;
 
-        if (durationText != null) durationText.text = "⏱ " + ProductionLoc.FormatDuration(duration);
+        float xp = StudioLevelSystem.BaseMovieXP(movieConfig);
+
+        if (durationText != null) durationText.text = ProductionLoc.FormatDuration(duration);
         if (costText != null) costText.text = AnimatedMoneyText.FormatMoney((long)realCost);
-        if (rewardText != null) rewardText.text = "💵 " + Loc.Format(LocKeys.ProdOfferMoney, AnimatedMoneyText.FormatMoney((long)reward));
-        if (repText != null) repText.text = "🏆 " + Loc.Format(LocKeys.ProdOfferRep, rep.ToString("0.0"));
+        if (rewardText != null) rewardText.text = Loc.Format(LocKeys.ProdOfferMoney, AnimatedMoneyText.FormatMoney((long)reward));
+        if (xpText != null) xpText.text = "+" + xp.ToString("0.#") + " " + Loc.Get(LocKeys.XPSuffix);
+        if (repText != null) repText.text = Loc.Format(LocKeys.ProdOfferRep, rep.ToString("0.#"));
 
         if (badgesText != null)
         {
@@ -197,7 +212,7 @@ public class MovieButtonUI : MonoBehaviour
         if (movieConfig.unlockStudioLevel > 0 && (_studioLevel?.Level ?? 1) < movieConfig.unlockStudioLevel)
             return Loc.Format(LocKeys.DeptLevelFormat, movieConfig.unlockStudioLevel);
         if (movieConfig.unlockReputation > 0 && (_studio?.reputation ?? 0) < movieConfig.unlockReputation)
-            return movieConfig.unlockReputation.ToString("N0") + " REP";
+            return movieConfig.unlockReputation.ToString("N0") + " " + Loc.Get(LocKeys.RepSuffix);
         if (_studio != null && !SagaProgressionRules.ArePreviousSagaEntriesDiscovered(
                 movieConfig, _studio.CompletedMovieKeys, GetAllMovies()))
             return SagaProgressionRules.GetSagaBlockReason(movieConfig, GetAllMovies()) ?? Loc.Get(LocKeys.DeptLocked);

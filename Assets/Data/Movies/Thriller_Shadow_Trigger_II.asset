@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Shadow Trigger II
   genre: 7
   tagline: Second trigger. Bigger fallout.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Second trigger. Bigger fallout.
+  synopsisEn: A carefully constructed conspiracy begins to unravel when the wrong
+    person discovers too much.
+  synopsisFr: "Une conspiration soigneusement construite commence \xE0 s'effondrer
+    quand la mauvaise personne en d\xE9couvre trop."
+  synopsisDe: "Eine sorgf\xE4ltig konstruierte Verschw\xF6rung beginnt zu br\xF6ckeln,
+    als die falsche Person zu viel herausfindet."
+  synopsisJa: "\u7CBE\u7DFB\u306B\u69CB\u7BC9\u3055\u308C\u305F\u9670\u8B00\u306F\u3001\u9593\u9055\u3063\u305F\u4EBA\u7269\u304C\u77E5\u308A\u3059\u304E\u305F\u77AC\u9593\u304B\u3089\u5D29\u308C\u59CB\u3081\u308B\u3002"
+  cost: 280
+  baseReward: 500
+  baseRep: 3.6
+  duration: 60
+  quality: 1.28
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

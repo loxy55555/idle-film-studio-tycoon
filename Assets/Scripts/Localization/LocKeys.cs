@@ -129,6 +129,7 @@ public static class LocKeys
     public const string InstNextLevel       = "inst.next_level";
     public const string InstCurrentLevel    = "inst.current_level";
     public const string InstMultiplier      = "inst.multiplier";
+    public const string InstLocked          = "inst.locked";
 
     // ─── Bonifications panel (Studio screen) ─────────────────────────────────
     public const string BonifSpeed          = "bonif.speed";
@@ -148,11 +149,291 @@ public static class LocKeys
     public const string SettingsCredits     = "settings.credits";
     public const string SettingsPrivacy     = "settings.privacy";
     public const string SettingsRestore     = "settings.restore";
+
+    // ─── IAP (FASE 15.9D) ─────────────────────────────────────────────────────
+    public const string IapRestoreSuccess   = "iap.restore_success";
+    public const string IapRestoreFailed    = "iap.restore_failed";
+    public const string IapPurchaseFailed   = "iap.purchase_failed";
+    public const string IapUnavailable      = "iap.unavailable";
+    public const string IapPackActivatedFmt = "iap.pack_activated_fmt";
     public const string SettingsClose       = "settings.close";
 
     // ─── Tienda (Shop) placeholder ────────────────────────────────────────────
     public const string TiendaTitle         = "tienda.title";
     public const string TiendaComingSoon    = "tienda.coming_soon";
+
+    // ─── Bottom nav tabs ──────────────────────────────────────────────────────
+    public const string NavStudio      = "nav.studio";
+    public const string NavProduction  = "nav.production";
+    public const string NavAwards      = "nav.awards";
+    public const string NavCollection  = "nav.collection";
+    public const string NavShop        = "nav.shop";
+
+    // ─── Mejoras sub-tabs ─────────────────────────────────────────────────────
+    public const string MejorasProduction = "mejoras.production";
+    public const string MejorasStaff      = "mejoras.staff";
+    public const string MejorasResearch   = "mejoras.research";
+    public const string MejorasMarketing  = "mejoras.marketing";
+
+    // ─── Awards / Estrellas de Oro ────────────────────────────────────────────
+    public const string AwardsTitle         = "awards.title";
+    public const string AwardsNextStar      = "awards.next_star";
+    public const string AwardsProgressSect  = "awards.progress_section";
+    public const string AwardsKeepProducing = "awards.keep_producing";
+    public const string AwardsAllEarned     = "awards.all_earned";
+    public const string AwardsComplete      = "awards.complete";
+    public const string AwardsEmpireMax     = "awards.empire_max";
+    public const string AwardsReadyClaim    = "awards.ready_claim";
+    public const string AwardsClaimBtn      = "awards.claim_btn";
+    public const string AwardsRepNeeded     = "awards.rep_needed";
+    public const string AwardsHint          = "awards.hint";
+    public const string AwardsStudioLevel   = "awards.studio_level";
+
+    // ─── Production slots ─────────────────────────────────────────────────────
+    public const string ProdSlotFree   = "prod.slot_free";
+    public const string ProdSlotLocked = "prod.slot_locked";
+    public const string ProdSlotUnlock = "prod.slot_unlock";
+
+    // ─── Upgrade cards ────────────────────────────────────────────────────────
+    public const string UpgradeNoEffect     = "upgrade.no_effect";
+    public const string UpgradeLockedStudio = "upgrade.locked_studio";
+
+    // ─── Contracts panel ──────────────────────────────────────────────────────
+    public const string ContractActive        = "contract.active";
+    public const string ContractNoneAvailable = "contract.none_available";
+    public const string ContractClaim         = "contract.claim";
+    public const string ContractCompletedPfx  = "contract.completed_prefix";
+    public const string ContractNoActive      = "contract.no_active";
+    public const string ContractReadyClaim    = "contract.ready_claim";
+    public const string ContractObjective     = "contract.objective";
+
+    // ─── Collection screen (beyond existing collection.*) ────────────────────
+    public const string CollectionScreenTitle   = "collection.screen_title";
+    public const string CollectionGenreLabel    = "collection.genre_label";
+    public const string CollectionSynopsisHdr   = "collection.synopsis_header";
+    public const string CollectionClose         = "collection.close";
+    public const string CollectionSynopsisNone  = "collection.synopsis_none";
+    public const string CollectionFilmCompleted = "collection.film_completed";
+    public const string CollectionFilmPending   = "collection.film_pending";
+
+    // ─── GameFeel reward popups ───────────────────────────────────────────────
+    public const string GameFeelContractComplete = "gamefeel.contract_complete";
+    public const string GameFeelOscarEarned      = "gamefeel.oscar_earned";
+    public const string GameFeelCityImproved     = "gamefeel.city_improved";
+    public const string GameFeelUpgradeBought    = "gamefeel.upgrade_bought";
+    public const string GameFeelContinue         = "gamefeel.continue";
+    public const string GameFeelOscarsSuffix     = "gamefeel.oscars_suffix";
+    public const string GameFeelIncomeGlobal     = "gamefeel.income_global";
+
+    // ─── Studio chrome ────────────────────────────────────────────────────────
+    public const string StudioName            = "studio.name";
+    public const string StudioLevelFormat     = "studio.level_format";
+    public const string StudioXPFormat        = "studio.xp_format";
+    public const string StudioNextLevel       = "studio.next_level";
+    public const string StudioBonusSummaryFmt = "studio.bonus_summary";
+    public const string StudioRepBarFmt       = "studio.rep_bar_fmt";
+
+    // ─── TopBar abbreviations ─────────────────────────────────────────────────
+    public const string TopBarDiam       = "topbar.diam";
+    public const string TopBarQualAbbr   = "topbar.qual_abbr";
+    public const string TopBarSpeedAbbr  = "topbar.speed_abbr";
+    public const string TopBarLevelAbbr  = "topbar.level_abbr";
+    public const string TopBarIncomeFmt  = "topbar.income_fmt";
+
+    // ─── Upgrade card effect labels ────────────────────────────────────────────
+    public const string UpgradeMax            = "upgrade.max";
+    public const string UpgradeCurrent        = "upgrade.current";
+    public const string UpgradeNext           = "upgrade.next";
+    public const string UpgradeEffectQuality  = "upgrade.effect.quality";
+    public const string UpgradeEffectSpeed    = "upgrade.effect.speed";
+    public const string UpgradeEffectCost     = "upgrade.effect.cost";
+    public const string UpgradeEffectRep      = "upgrade.effect.rep";
+    public const string UpgradeEffectIncome   = "upgrade.effect.income";
+    public const string UpgradeEffectSlot     = "upgrade.effect.slot";
+    public const string UpgradeEffectXP       = "upgrade.effect.xp";
+    public const string UpgradeEffectCatalog  = "upgrade.effect.catalog";
+
+    // ─── Awards (remaining format strings) ────────────────────────────────────
+    public const string AwardsStarTitleFmt  = "awards.star_title_fmt";
+    public const string AwardsRepReadyFmt   = "awards.rep_ready_fmt";
+    public const string AwardsUnlockHintFmt = "awards.unlock_hint_fmt";
+
+    // ─── City / Installation panel ────────────────────────────────────────────
+    public const string InstGlobalBonus     = "inst.global_bonus";
+    public const string InstGlobalBonusFmt  = "inst.global_bonus_fmt";
+    public const string InstCurrentUnlocks  = "inst.current_unlocks";
+    public const string InstMaxCity         = "inst.max_city";
+
+    // ─── Production ───────────────────────────────────────────────────────────
+    public const string ProdProduceBtn  = "prod.produce_btn";
+    public const string ProdEmptyState  = "prod.empty_state";
+
+    // ─── Collection stats ─────────────────────────────────────────────────────
+    public const string CollStatDurFmt   = "coll.stat.dur_fmt";
+    public const string CollStatLvlFmt   = "coll.stat.lvl_fmt";
+    public const string CollStatMoneyFmt = "coll.stat.money_fmt";
+
+    // ─── Contract reward lines ────────────────────────────────────────────────
+    public const string ContractRewardMoney = "contract.reward.money";
+    public const string ContractRewardDiam  = "contract.reward.diam";
+    public const string ContractRewardRep   = "contract.reward.rep";
+    public const string ContractRewardXP    = "contract.reward.xp";
+
+    // ─── Premiere overlay (remaining) ─────────────────────────────────────────
+    public const string PremiereXPFmt        = "premiere.xp_fmt";
+    public const string PremiereVarietyFmt   = "premiere.variety_fmt";
+    public const string PremiereFilmFound    = "premiere.film_found";
+    public const string PremiereContractDone = "premiere.contract_done";
+    public const string PremiereContractProg = "premiere.contract_prog";
+
+    // ─── GameFeel (remaining) ─────────────────────────────────────────────────
+    public const string GameFeelUpgradeFallback = "gamefeel.upgrade_fallback";
+
+    // ─── Store sections ───────────────────────────────────────────────────────
+    public const string StoreSectionDiamonds = "store.section.diamonds";
+    public const string StoreSectionPacks    = "store.section.packs";
+    public const string StoreSectionBoosts   = "store.section.boosts";
+    public const string StoreSectionPremium  = "store.section.premium";
+    public const string StoreWatchAd         = "store.watch_ad";
+    public const string StoreStarterPack     = "store.starter_pack";
+    public const string StoreStarterDesc     = "store.starter_desc";
+    public const string StoreUniqueOffer     = "store.unique_offer";
+    public const string StoreNoAds           = "store.no_ads";
+    public const string StoreNoAdsDesc       = "store.no_ads_desc";
+
+    // ─── Store products ───────────────────────────────────────────────────────
+    public const string StoreProdDiamSmall    = "store.prod.diam_small";
+    public const string StoreProdDiamMed      = "store.prod.diam_med";
+    public const string StoreProdDiamLarge    = "store.prod.diam_large";
+    public const string StoreProdPackDir      = "store.prod.pack_dir";
+    public const string StoreProdPackDirDesc  = "store.prod.pack_dir_desc";
+    public const string StoreProdPackStar     = "store.prod.pack_star";
+    public const string StoreProdPackStarDesc = "store.prod.pack_star_desc";
+    public const string StoreProdBoostProd    = "store.prod.boost_prod";
+    public const string StoreProdBoostInc     = "store.prod.boost_inc";
+
+    // ─── Production slot formats ──────────────────────────────────────────────
+    public const string ProdTimeFmt       = "prod.time_fmt";
+    public const string ProdSlotRewardFmt = "prod.slot_reward_fmt";
+
+    // ─── Contract reroll button ────────────────────────────────────────────────
+    public const string ContractRerollBtn = "contract.reroll_btn";
+
+    // ─── Settings coming-soon badge ────────────────────────────────────────────
+    public const string SettingsComing = "settings.coming";
+
+    // ─── Settings new rows / group headers (FASE 15.6C) ───────────────────────
+    public const string SettingsMusic        = "settings.music";
+    public const string SettingsSfx          = "settings.sfx";
+    public const string SettingsGroupAudio   = "settings.group.audio";
+    public const string SettingsGroupLang    = "settings.group.lang";
+    public const string SettingsGroupInfo    = "settings.group.info";
+
+    // ─── Studio header format (no ★ prefix) ───────────────────────────────────
+    public const string StudioRepHeaderFmt = "studio.rep_header_fmt";
+
+    // ─── Studio main subtabs ──────────────────────────────────────────────────
+    public const string StudTabDepts     = "stud.tab.depts";
+    public const string StudTabMejoras   = "stud.tab.mejoras";
+    public const string StudTabContratos = "stud.tab.contratos";
+
+    // ─── Credits panel ────────────────────────────────────────────────────────
+    public const string CreditsCreatedBy  = "credits.created_by";
+    public const string CreditsVersion    = "credits.version";
+    public const string CreditsPoweredBy  = "credits.powered_by";
+
+    // ─── Universal stat abbreviations ─────────────────────────────────────────
+    public const string RepSuffix         = "rep.suffix";
+    public const string XPSuffix          = "xp.suffix";
+
+    // ─── Income display ───────────────────────────────────────────────────────
+    public const string IncomePerSecFmt   = "income.per_sec_fmt";
+
+    // ─── City / Facility localized names (key = prefix + level number) ────────
+    // e.g. CityNamePfx + "1" → "city.name.1"
+    public const string CityNamePfx       = "city.name.";
+
+    // ─── Upgrade display names (key = prefix + upgrade id) ───────────────────
+    // e.g. UpgradeNamePfx + "equip_camera_basic" → "upgrade.name.equip_camera_basic"
+    public const string UpgradeNamePfx    = "upgrade.name.";
+
+    // ─── City panel / Oscar progress ─────────────────────────────────────────
+    public const string InstOscarProgress  = "inst.oscar_progress";  // {0} / {1} OSC
+    public const string InstOscarMax       = "inst.oscar_max";       // {0} OSC · MÁXIMO
+    public const string InstUnlockGlobal   = "inst.unlock_global";   // ×{0:0.00} global income
+    public const string InstUnlockDept     = "inst.unlock_dept";     // Dept: {0}
+    public const string InstTierPfx        = "inst.tier.";           // + level num, e.g. "inst.tier.1"
+
+    // ─── City lock labels ────────────────────────────────────────────────────
+    public const string CityLockLabel      = "city.lock_label";      // City {0} required
+
+    // ─── Offer card badges ───────────────────────────────────────────────────
+    public const string OfferBadgeNew      = "offer.badge.new";
+    public const string OfferBadgeSaga     = "offer.badge.saga";
+    public const string OfferBadgeContract = "offer.badge.contract";
+
+    // ─── Saga progression labels ──────────────────────────────────────────────
+    public const string SagaCompleted      = "saga.completed";     // {0}/{1} COMPLETADA
+    public const string SagaBlockReason    = "saga.block_reason";  // Complete entry {0} first
+
+    // ─── Contract titles (prefix + contract.id) ───────────────────────────────
+    public const string ContractTitlePfx   = "contract.title.";
+
+    // ─── Ad reward feedback ────────────────────────────────────────────────────
+    public const string AdLimitReached     = "ad.limit_reached";
+    public const string FreeDiamondsAwarded = "ad.free_diamonds_awarded"; // {0} = count
+    public const string BoostActivated     = "ad.boost_activated";
+    public const string BoostAlreadyActive = "ad.boost_already_active";
+    public const string InvestorAwarded    = "ad.investor_awarded";       // {0} = amount
+    public const string InvestorNoIncome   = "ad.investor_no_income";
+
+    // ─── Store section: boosts + premium (new for 15.2A) ─────────────────────
+    public const string StoreSectionInvestor     = "store.section.investor";
+    public const string StoreProdBoostRep        = "store.prod.boost_rep";
+    public const string StoreProdBoostXP         = "store.prod.boost_xp";
+    public const string StoreProdFreeDiam        = "store.prod.free_diam";
+    public const string StoreProdInvestor        = "store.prod.investor";
+    public const string StoreProdOfflinePremium  = "store.prod.offline_premium";
+    public const string StoreBoostTimerFmt       = "store.boost_timer_fmt";  // {0}m {1}s
+    public const string StoreBoostActive         = "store.boost_active";     // ACTIVO ·
+    public const string StorePackStarter         = "store.pack.starter";
+    public const string StorePackSupporter       = "store.pack.supporter";
+    public const string StorePackProducer        = "store.pack.producer";
+    public const string StorePackExecutive       = "store.pack.executive";
+    public const string StorePackAlreadyOwned    = "store.pack.already_owned";
+    public const string StoreSimBuy              = "store.sim_buy";
+
+    // ─── Offline premium ─────────────────────────────────────────────────────
+    public const string OfflinePremiumName = "offline.premium.name";
+    public const string OfflinePremiumDesc = "offline.premium.desc";
+    public const string OfflinePremiumOwned = "offline.premium.owned";
+    public const string OfflinePremiumCostPending = "offline.premium.cost_pending";
+
+    // ─── Pack descriptions (FASE 15.2B) ──────────────────────────────────────
+    public const string PackSupporterDesc  = "pack.desc.supporter";
+    public const string PackProducerDesc   = "pack.desc.producer";
+    public const string PackExecutiveDesc  = "pack.desc.executive";
+
+    // ─── Investor cooldown UI ─────────────────────────────────────────────────
+    public const string InvestorCooldownFmt = "investor.cooldown_fmt"; // {0}m {1}s
+    public const string InvestorReady       = "investor.ready";
+
+    // ─── Store section: free rewards (BUG-08 — separated from Investor) ──────
+    public const string StoreSectionFreeRewards = "store.section.free_rewards";
+
+    // ─── UX feedback dialogs (FASE 16.1 — D1, D2) ────────────────────────────
+    public const string UxNotEnoughDiamonds = "ux.not_enough_diamonds";
+    public const string UxGoToStore         = "ux.go_to_store";
+    public const string UxCancelAction      = "ux.cancel_action";
+    public const string UxNoSlotsAvailable  = "ux.no_slots_available";
+
+    // ─── Contract cancel via ad (FASE 16.1 — D3) ─────────────────────────────
+    public const string ContractCancelWithAd  = "contract.cancel_with_ad";
+    public const string ContractCancelConfirm = "contract.cancel_confirm";
+    public const string ContractCancelDone    = "contract.cancel_done";
+
+    // ─── Investor ready (properly localized) ──────────────────────────────────
+    public const string InvestorReadyLabel = "investor.ready_label";
 }
 
 public static class DepartmentLocKeys

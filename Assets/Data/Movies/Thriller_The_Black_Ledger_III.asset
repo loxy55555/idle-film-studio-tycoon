@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Black Ledger III
   genre: 7
   tagline: Auditors become targets become hunters.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Auditors become targets become hunters.
+  synopsisEn: The Black Ledger III takes the thriller to a level of narrative complexity
+    and sustained tension that is hard to match.
+  synopsisFr: "The Black Ledger III \xE9l\xE8ve le thriller \xE0 un niveau de complexit\xE9
+    narrative et de tension soutenue difficilement \xE9galable."
+  synopsisDe: "The Black Ledger III hebt den Thriller auf ein Niveau narrativer Komplexit\xE4t
+    und anhaltender Spannung, das schwer zu \xFCbertreffen ist."
+  synopsisJa: "The Black Ledger III\u306F\u30B9\u30EA\u30E9\u30FC\u3092\u3001\u4ED6\u3067\u306F\u5230\u9054\u3057\u306B\u304F\u3044\u307B\u3069\u306E\u8A9E\u308A\u306E\u8907\u96D1\u3055\u3068\u6301\u7D9A\u3059\u308B\u7DCA\u5F35\u306E\u6B21\u5143\u3078\u3068\u5F15\u304D\u4E0A\u3052\u308B\u3002"
+  cost: 9550
+  baseReward: 17000
+  baseRep: 77
+  duration: 60
+  quality: 2.97
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheBlackLedgerIII.png
   posterSprite: {fileID: 5158292789185485195, guid: 797e6be1a37564c4fb53d6a89279c908, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 4
   sagaId: the_black_ledger
   sagaEntryIndex: 3

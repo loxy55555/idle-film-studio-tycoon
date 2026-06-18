@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Forgotten Well
   genre: 2
   tagline: A child's room painted in a color that moves.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A child's room painted in a color that moves.
+  synopsisEn: When the deepest terror takes shape, running is no longer enough to
+    stay safe.
+  synopsisFr: "Quand la terreur la plus profonde prend forme, fuir ne suffit plus
+    \xE0 rester en s\xE9curit\xE9."
+  synopsisDe: Wenn die tiefste Angst Gestalt annimmt, reicht Flucht nicht mehr aus,
+    um in Sicherheit zu bleiben.
+  synopsisJa: "\u6DF1\u6DF5\u306E\u6050\u6016\u304C\u5F62\u3092\u6210\u3057\u305F\u3068\u304D\u3001\u9003\u3052\u308B\u3060\u3051\u3067\u306F\u5B89\u5168\u306F\u4FDD\u8A3C\u3055\u308C\u306A\u3044\u3002"
+  cost: 1350
+  baseReward: 2450
+  baseRep: 14
+  duration: 300
+  quality: 1.93
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheForgottenWell.png
   posterSprite: {fileID: 21300000, guid: fe38cf8e2e30e93478d81679ee3510e2, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

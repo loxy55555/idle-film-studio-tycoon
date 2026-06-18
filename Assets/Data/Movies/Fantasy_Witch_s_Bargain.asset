@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Kingdom Of Silent Moon S
   genre: 6
   tagline: Power offered. Price deferred. Never free.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Power offered. Price deferred. Never free.
+  synopsisEn: The Kingdom Of Silent Moon S is a fantasy epic of a scale and ambition
+    that very few works in the genre can match.
+  synopsisFr: "The Kingdom Of Silent Moon S est une \xE9pop\xE9e fantastique d'une
+    \xE9chelle et d'une ambition que peu d'\u0153uvres du genre peuvent \xE9galer."
+  synopsisDe: "The Kingdom Of Silent Moon S ist ein Fantasie-Epos von einer Gr\xF6\xDFe
+    und einem Ehrgeiz, die nur wenige Werke des Genres erreichen."
+  synopsisJa: "The Kingdom Of Silent Moon S\u306F\u3001\u3053\u306E\u30B8\u30E3\u30F3\u30EB\u3067\u307B\u3068\u3093\u3069\u6BD4\u80A9\u3067\u304D\u306A\u3044\u898F\u6A21\u3068\u91CE\u5FC3\u3092\u6301\u3064\u30D5\u30A1\u30F3\u30BF\u30B8\u30FC\u53D9\u4E8B\u8A69\u3060\u3002"
+  cost: 17000
+  baseReward: 30500
+  baseRep: 130
+  duration: 300
+  quality: 3.21
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheKingdomOfSilentMoonS.png
   posterSprite: {fileID: 21300000, guid: 980ab7182e3c5774ca42724eb9ab0963, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

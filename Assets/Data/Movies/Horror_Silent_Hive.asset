@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Last Bo A Dc A St
   genre: 2
   tagline: Bees stop buzzing. Then people stop speaking.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Bees stop buzzing. Then people stop speaking.
+  synopsisEn: In an isolated setting, a group discovers that the real danger was
+    always among them.
+  synopsisFr: "Dans un cadre isol\xE9, un groupe d\xE9couvre que le vrai danger \xE9tait
+    depuis toujours parmi eux."
+  synopsisDe: In einer abgelegenen Umgebung entdeckt eine Gruppe, dass die wahre
+    Gefahr immer unter ihnen war.
+  synopsisJa: "\u5B64\u7ACB\u3057\u305F\u5834\u6240\u3067\u3001\u30B0\u30EB\u30FC\u30D7\u306F\u672C\u5F53\u306E\u5371\u967A\u304C\u5E38\u306B\u81EA\u5206\u305F\u3061\u306E\u4E2D\u306B\u3044\u305F\u3053\u3068\u3092\u77E5\u308B\u3002"
+  cost: 1450
+  baseReward: 2550
+  baseRep: 15
+  duration: 300
+  quality: 1.95
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLastBoADcASt.png
   posterSprite: {fileID: 21300000, guid: fc19f7cb67de9d5469c7f7cbc286c775, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

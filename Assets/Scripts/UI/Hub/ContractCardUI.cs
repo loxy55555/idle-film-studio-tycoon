@@ -20,6 +20,7 @@ public class ContractCardUI : MonoBehaviour
     public Button          claimButton;
     public Button          selectButton;
     public Button          rerollDiamondsButton;   // Phase 13.4D: reroll via 5 diamonds
+    public Button          cancelAdButton;          // FASE 16.1 D3: cancel active contract via ad
     public GameObject      completedBadge;
 
     const int RerollDiamondCost = 5;
@@ -68,6 +69,8 @@ public class ContractCardUI : MonoBehaviour
             claimButton.onClick.RemoveListener(OnClaimClicked);
         if (selectButton != null)
             selectButton.onClick.RemoveListener(OnSelectClicked);
+        if (cancelAdButton != null)
+            cancelAdButton.onClick.RemoveListener(OnCancelAdClicked);
     }
 
     void OnContractsUpdated() => RefreshUI();
@@ -109,6 +112,11 @@ public class ContractCardUI : MonoBehaviour
             rerollDiamondsButton.onClick.RemoveListener(OnRerollDiamondsClicked);
             rerollDiamondsButton.onClick.AddListener(OnRerollDiamondsClicked);
         }
+        if (cancelAdButton != null)
+        {
+            cancelAdButton.onClick.RemoveListener(OnCancelAdClicked);
+            cancelAdButton.onClick.AddListener(OnCancelAdClicked);
+        }
     }
 
     void BindContractEvents()
@@ -132,7 +140,7 @@ public class ContractCardUI : MonoBehaviour
         if (contract == null) return;
 
         if (titleText != null)
-            titleText.text = isCandidateMode || isHistoryMode ? contract.contractTitle : "CONTRATO ACTIVO";
+            titleText.text = isCandidateMode || isHistoryMode ? contract.contractTitle : Loc.Get(LocKeys.ContractActive);
 
         if (isHistoryMode) return;
 
@@ -214,11 +222,26 @@ public class ContractCardUI : MonoBehaviour
     string BuildRewardString()
     {
         var parts = new System.Collections.Generic.List<string>();
-        if (contract.rewardMoney > 0)      parts.Add($"💵 +{AnimatedMoneyText.FormatMoney(contract.rewardMoney)}");
-        if (contract.rewardDiamonds > 0)   parts.Add($"💎 +{contract.rewardDiamonds}");
-        if (contract.rewardReputation > 0) parts.Add($"⭐ +{contract.rewardReputation:0} REP");
-        if (contract.rewardStudioXP > 0)   parts.Add($"📈 +{contract.rewardStudioXP} XP");
+        if (contract.rewardMoney > 0)      parts.Add(Loc.Format(LocKeys.ContractRewardMoney, AnimatedMoneyText.FormatMoney(contract.rewardMoney)));
+        if (contract.rewardDiamonds > 0)   parts.Add(Loc.Format(LocKeys.ContractRewardDiam, contract.rewardDiamonds));
+        if (contract.rewardReputation > 0) parts.Add(Loc.Format(LocKeys.ContractRewardRep, contract.rewardReputation));
+        if (contract.rewardStudioXP > 0)   parts.Add(Loc.Format(LocKeys.ContractRewardXP, contract.rewardStudioXP));
         return parts.Count > 0 ? string.Join("  ", parts) : "—";
+    }
+
+    static void NavigateToStore()
+    {
+        // Navigate to the store tab by clicking its BottomNav button
+        var nav = GameObject.Find("BottomNav");
+        if (nav == null) return;
+        foreach (var btn in nav.GetComponentsInChildren<UnityEngine.UI.Button>(true))
+        {
+            if (btn.name.Contains("Shop") || btn.name.Contains("Tienda") || btn.name.Contains("Store"))
+            {
+                btn.onClick.Invoke();
+                return;
+            }
+        }
     }
 
     void OnClaimClicked()
@@ -242,7 +265,7 @@ public class ContractCardUI : MonoBehaviour
 
         if (diamonds.Balance < RerollDiamondCost)
         {
-            Debug.Log($"[ContractCardUI] Reroll failed: not enough diamonds ({diamonds.Balance} < {RerollDiamondCost})");
+            InsufficientDiamondsDialog.Show(NavigateToStore);
             return;
         }
 
@@ -253,9 +276,38 @@ public class ContractCardUI : MonoBehaviour
         bool ok = _contracts.RerollCandidate(contract, level);
         if (!ok)
         {
-            // No alternatives available — refund
             diamonds.Add(RerollDiamondCost);
             Debug.Log("[ContractCardUI] Reroll refunded: no alternatives available.");
         }
+    }
+
+    // ── FASE 16.1 — D3: Cancel active contract via ad ─────────────────────────
+
+    void OnCancelAdClicked()
+    {
+        if (_contracts == null || !_contracts.HasActiveContract) return;
+
+        bool noAds = PremiumFeatures.Instance?.NoAdsPurchased ?? false;
+        int level  = _studioLevel?.Level ?? 1;
+
+        if (noAds)
+        {
+            ExecuteContractCancel(level);
+        }
+        else
+        {
+            GameplayRefreshService.TryShowAd(AdRewardSystem.PlacementCancelContract, ok =>
+            {
+                if (!ok) return;
+                ExecuteContractCancel(level);
+            });
+        }
+    }
+
+    void ExecuteContractCancel(int studioLevel)
+    {
+        bool ok = _contracts?.CancelActiveContract(studioLevel) ?? false;
+        if (ok)
+            AdRewardUI.ShowMessage(Loc.Get(LocKeys.ContractCancelDone));
     }
 }

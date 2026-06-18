@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Pulse Drive
   genre: 5
   tagline: Faster-than-light travel breaks more than physics.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Faster-than-light travel breaks more than physics.
+  synopsisEn: When science reaches the unthinkable, the most important questions
+    remain without a satisfying answer.
+  synopsisFr: "Quand la science atteint l'impensable, les questions les plus importantes
+    restent sans r\xE9ponse satisfaisante."
+  synopsisDe: Als die Wissenschaft das Undenkbare erreicht, bleiben die wichtigsten
+    Fragen ohne befriedigende Antwort.
+  synopsisJa: "\u79D1\u5B66\u304C\u60F3\u50CF\u3092\u7D76\u3059\u308B\u3053\u3068\u306B\u5230\u9054\u3057\u305F\u3068\u304D\u3001\u6700\u3082\u91CD\u8981\u306A\u554F\u3044\u306B\u6E80\u8DB3\u306A\u7B54\u3048\u306F\u306A\u3044\u3002"
+  cost: 380
+  baseReward: 680
+  baseRep: 4.8
+  duration: 60
+  quality: 1.33
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

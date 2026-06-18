@@ -50,6 +50,6 @@ public class MoneyDisplayUI : MonoBehaviour
         if (incomeText == null)
             return;
 
-        incomeText.text = $"+${incomePerSecond:N0}/seg";
+        incomeText.text = Loc.Format(LocKeys.IncomePerSecFmt, incomePerSecond);
     }
 }

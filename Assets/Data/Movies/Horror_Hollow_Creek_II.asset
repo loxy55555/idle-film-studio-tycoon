@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Hollow Creek II
   genre: 2
   tagline: The creek runs backward after the flood.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: The creek runs backward after the flood.
+  synopsisEn: A primordial, nameless terror emerges to remind us that not everything
+    in this world can be understood.
+  synopsisFr: "Une terreur primordiale et sans nom \xE9merge pour rappeler que tout
+    ce qui existe dans ce monde ne peut \xEAtre compris."
+  synopsisDe: Ein uralter, namenloser Schrecken taucht auf, um uns daran zu erinnern,
+    dass nicht alles in dieser Welt zu begreifen ist.
+  synopsisJa: "\u3053\u306E\u4E16\u306E\u3059\u3079\u3066\u304C\u7406\u89E3\u3067\u304D\u308B\u308F\u3051\u3067\u306F\u306A\u3044\u3068\u77E5\u3089\u3057\u3081\u308B\u3001\u539F\u521D\u306E\u540D\u3082\u306A\u304D\u6050\u6016\u304C\u76EE\u899A\u3081\u308B\u3002"
+  cost: 570
+  baseReward: 1050
+  baseRep: 6.2
+  duration: 60
+  quality: 1.64
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: HollowCreekII.png
   posterSprite: {fileID: -560412746788144606, guid: 69be6debf9a59194083691fed9846ea1, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: hollow_creek
   sagaEntryIndex: 2

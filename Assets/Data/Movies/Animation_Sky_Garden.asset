@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Captain Acorn
   genre: 8
   tagline: Floating gardens need young caretakers.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Floating gardens need young caretakers.
+  synopsisEn: An animated work that transcends its format to become a cinematic experience
+    of the highest order.
+  synopsisFr: "Une \u0153uvre anim\xE9e qui transcende son format pour devenir une
+    exp\xE9rience cin\xE9matographique de premier plan."
+  synopsisDe: "Ein Animationswerk, das sein Format \xFCbersteigt und zu einem Kinoerlebnis
+    erster G\xFCte wird."
+  synopsisJa: "\u305D\u306E\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u3092\u8D85\u3048\u3066\u6700\u9AD8\u6C34\u6E96\u306E\u6620\u753B\u4F53\u9A13\u3068\u306A\u308B\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u4F5C\u54C1\u3002"
+  cost: 125000
+  baseReward: 225000
+  baseRep: 754
+  duration: 2700
+  quality: 4.39
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: CaptainAcorn.png
   posterSprite: {fileID: 21300000, guid: e9c83f6cd610a1b42984d631767361af, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

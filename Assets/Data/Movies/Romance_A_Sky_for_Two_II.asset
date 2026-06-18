@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Horizons Apart
   genre: 4
   tagline: Same sky. Different cities. Same pull.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Same sky. Different cities. Same pull.
+  synopsisEn: Two paths that should never have crossed meet at the most unexpected
+    moment of their lives.
+  synopsisFr: "Deux chemins qui n'auraient jamais d\xFB se croiser se rencontrent
+    au moment le plus inattendu de leur vie."
+  synopsisDe: "Zwei Wege, die sich nie h\xE4tten kreuzen sollen, treffen im unerwartetsten
+    Moment ihres Lebens aufeinander."
+  synopsisJa: "\u6C7A\u3057\u3066\u4EA4\u308F\u308B\u306F\u305A\u306E\u306A\u304B\u3063\u305F\u4E8C\u3064\u306E\u9053\u304C\u3001\u4EBA\u751F\u3067\u6700\u3082\u601D\u3044\u304C\u3051\u306A\u3044\u77AC\u9593\u306B\u51FA\u4F1A\u3046\u3002"
+  cost: 50000
+  baseReward: 90000
+  baseRep: 360
+  duration: 60
+  quality: 4
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: HorizonsApart.png
   posterSprite: {fileID: 21300000, guid: 132490546275a664b950ea84035ab8ef, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

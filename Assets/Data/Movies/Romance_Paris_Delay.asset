@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Where  The   Ocean  Meets  The   Sky
   genre: 4
   tagline: Missed flight. Found connection.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Missed flight. Found connection.
+  synopsisEn: Two paths that should never have crossed meet at the most unexpected
+    moment of their lives.
+  synopsisFr: "Deux chemins qui n'auraient jamais d\xFB se croiser se rencontrent
+    au moment le plus inattendu de leur vie."
+  synopsisDe: "Zwei Wege, die sich nie h\xE4tten kreuzen sollen, treffen im unerwartetsten
+    Moment ihres Lebens aufeinander."
+  synopsisJa: "\u6C7A\u3057\u3066\u4EA4\u308F\u308B\u306F\u305A\u306E\u306A\u304B\u3063\u305F\u4E8C\u3064\u306E\u9053\u304C\u3001\u4EBA\u751F\u3067\u6700\u3082\u601D\u3044\u304C\u3051\u306A\u3044\u77AC\u9593\u306B\u51FA\u4F1A\u3046\u3002"
+  cost: 54500
+  baseReward: 98000
+  baseRep: 361
+  duration: 300
+  quality: 3.81
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: WhereTheOceanMeetsTheSky.png
   posterSprite: {fileID: 21300000, guid: 55e08af298a300c43a2cc7bc813f5b6f, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

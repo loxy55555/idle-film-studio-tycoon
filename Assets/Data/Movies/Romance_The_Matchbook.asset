@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Matchbook
   genre: 4
   tagline: A matchbook from Paris starts everything.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A matchbook from Paris starts everything.
+  synopsisEn: The Matchbook recounts with delicacy and emotion the story of two people
+    who learn to truly see each other.
+  synopsisFr: "The Matchbook raconte avec d\xE9licatesse et \xE9motion l'histoire
+    de deux personnes qui apprennent \xE0 vraiment se voir."
+  synopsisDe: "The Matchbook erz\xE4hlt mit Zartheit und Emotion die Geschichte zweier
+    Menschen, die lernen, einander wirklich zu sehen."
+  synopsisJa: "The Matchbook\u306F\u4E92\u3044\u3092\u672C\u5F53\u306B\u898B\u308B\u3053\u3068\u3092\u5B66\u3076\u4E8C\u4EBA\u306E\u7269\u8A9E\u3092\u3001\u7E4A\u7D30\u3055\u3068\u611F\u60C5\u8C4A\u304B\u306B\u7D21\u3050\u3002"
+  cost: 28500
+  baseReward: 51500
+  baseRep: 201
+  duration: 60
+  quality: 3.53
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheMatchbook.png
   posterSprite: {fileID: 21300000, guid: d55c8b2538cede54ab483f61306279a8, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Whispering Woods
   genre: 2
   tagline: Water carries voices from upstream crimes.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Water carries voices from upstream crimes.
+  synopsisEn: Something ancient and forgotten awakens, and with it resurface secrets
+    that should never have seen the light.
+  synopsisFr: "Quelque chose d'ancien et d'oubli\xE9 se r\xE9veille, et avec lui
+    ressurgissent des secrets qui n'auraient jamais d\xFB voir le jour."
+  synopsisDe: "Etwas Altes und Vergessenes erwacht, und mit ihm tauchen Geheimnisse
+    auf, die nie ans Licht h\xE4tten kommen d\xFCrfen."
+  synopsisJa: "\u53E4\u304F\u5FD8\u308C\u3089\u308C\u305F\u4F55\u304B\u304C\u76EE\u899A\u3081\u3001\u6C7A\u3057\u3066\u65E5\u306E\u76EE\u3092\u898B\u3066\u306F\u306A\u3089\u306A\u304B\u3063\u305F\u79D8\u5BC6\u3092\u8607\u3089\u305B\u308B\u3002"
+  cost: 4150
+  baseReward: 7500
+  baseRep: 37
+  duration: 300
+  quality: 2.49
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheWhisperingWoods.png
   posterSprite: {fileID: 21300000, guid: 13132dbcdd3ff8d41aac6fa4dfd9b5cc, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: blackwater
   sagaEntryIndex: 1

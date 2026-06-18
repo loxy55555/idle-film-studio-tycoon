@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Gate S Of Elderglen
   genre: 6
   tagline: Break the rune. Break the curse. Break yourself.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Break the rune. Break the curse. Break yourself.
+  synopsisEn: The Gate S Of Elderglen unfolds a world of wonders and dangers where
+    only courage can tip the balance.
+  synopsisFr: "The Gate S Of Elderglen d\xE9ploie un monde de merveilles et de dangers
+    o\xF9 seul le courage peut faire pencher la balance."
+  synopsisDe: The Gate S Of Elderglen entfaltet eine Welt voller Wunder und Gefahren,
+    wo nur Mut die Waage neigen kann.
+  synopsisJa: "The Gate S Of Elderglen\u306F\u3001\u52C7\u6C17\u3060\u3051\u304C\u5747\u8861\u3092\u50BE\u3051\u3089\u308C\u308B\u9A5A\u7570\u3068\u5371\u967A\u306E\u4E16\u754C\u3092\u5C55\u958B\u3059\u308B\u3002"
+  cost: 13000
+  baseReward: 23500
+  baseRep: 102
+  duration: 300
+  quality: 3.06
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheGateSOfElderglen.png
   posterSprite: {fileID: 21300000, guid: b3cc6dc4f1a8c174d9f46f460f161901, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

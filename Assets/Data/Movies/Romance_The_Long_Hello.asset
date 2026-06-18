@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Summer On Willowstreet
   genre: 4
   tagline: Goodbye took years. Hello takes courage.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Goodbye took years. Hello takes courage.
+  synopsisEn: Between love and adverse circumstances, some bonds prove impossible
+    to break with the passing of time.
+  synopsisFr: "Entre l'amour et les circonstances adverses, certains liens s'av\xE8rent
+    impossibles \xE0 briser avec le temps."
+  synopsisDe: "Zwischen Liebe und widrigen Umst\xE4nden erweisen sich manche Bande
+    als unm\xF6glich zu brechen."
+  synopsisJa: "\u611B\u3068\u9006\u5883\u306E\u9593\u3067\u3001\u6642\u306E\u6D41\u308C\u3092\u3082\u3063\u3066\u3057\u3066\u3082\u65AD\u3061\u5207\u308C\u306A\u3044\u7D46\u304C\u3042\u308B\u3002"
+  cost: 65000
+  baseReward: 115000
+  baseRep: 426
+  duration: 2700
+  quality: 3.92
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: SummerOnWillowstreet.png
   posterSprite: {fileID: 21300000, guid: 1df17b356d0daf546a6f267b678ab6fb, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

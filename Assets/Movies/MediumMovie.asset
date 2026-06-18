@@ -13,9 +13,28 @@ MonoBehaviour:
   m_Name: MediumMovie
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
   movieName: Cortometraje Indie
-  cost: 400
-  baseReward: 600
-  baseRep: 4
-  duration: 18
-  quality: 1.5
+  genre: 0
+  tagline: 
+  synopsis: 
+  synopsisEn: 
+  synopsisFr: 
+  synopsisDe: 
+  synopsisJa: 
+  cost: 100
+  baseReward: 190
+  baseRep: 1.4
+  duration: 60
+  quality: 1.08
+  unlockStudioLevel: 0
+  unlockCityLevel: 1
   unlockReputation: 10
+  rarity: 0
+  posterColorHex: '#3498DB'
+  genreIconKey: 
+  posterFile: 
+  posterSprite: {fileID: 0}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

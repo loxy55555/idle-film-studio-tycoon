@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Last Record In G
   genre: 7
   tagline: Sunset industry hides dawn crimes.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Sunset industry hides dawn crimes.
+  synopsisEn: The Last Record In G takes the thriller to a level of narrative complexity
+    and sustained tension that is hard to match.
+  synopsisFr: "The Last Record In G \xE9l\xE8ve le thriller \xE0 un niveau de complexit\xE9
+    narrative et de tension soutenue difficilement \xE9galable."
+  synopsisDe: "The Last Record In G hebt den Thriller auf ein Niveau narrativer Komplexit\xE4t
+    und anhaltender Spannung, das schwer zu \xFCbertreffen ist."
+  synopsisJa: "The Last Record In G\u306F\u30B9\u30EA\u30E9\u30FC\u3092\u3001\u4ED6\u3067\u306F\u5230\u9054\u3057\u306B\u304F\u3044\u307B\u3069\u306E\u8A9E\u308A\u306E\u8907\u96D1\u3055\u3068\u6301\u7D9A\u3059\u308B\u7DCA\u5F35\u306E\u6B21\u5143\u3078\u3068\u5F15\u304D\u4E0A\u3052\u308B\u3002"
+  cost: 110000
+  baseReward: 200000
+  baseRep: 686
+  duration: 300
+  quality: 4.28
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLastRecordInG.png
   posterSprite: {fileID: 21300000, guid: 38e58453a30cee44280d3c655ab09e76, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

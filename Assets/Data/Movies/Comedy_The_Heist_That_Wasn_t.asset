@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Heist That Wasn't
   genre: 3
   tagline: Amateurs steal the wrong safe. Twice.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Amateurs steal the wrong safe. Twice.
+  synopsisEn: The Heist That Wasn't celebrates the most unexpected humor with a story
+    that delivers laughs at the least expected moment.
+  synopsisFr: "The Heist That Wasn't c\xE9l\xE8bre l'humour le plus inattendu avec
+    une histoire qui fait rire au moment le moins pr\xE9vu."
+  synopsisDe: The Heist That Wasn't zelebriert den unerwartetsten Humor mit einer
+    Geschichte, die im unpassendsten Moment zum Lachen bringt.
+  synopsisJa: "The Heist That Wasn't\u306F\u6700\u3082\u4E88\u60F3\u5916\u306E\u5834\u9762\u3067\u7B11\u3044\u3092\u5C4A\u3051\u308B\u3001\u601D\u3044\u304C\u3051\u306A\u3044\u30E6\u30FC\u30E2\u30A2\u3092\u8B83\u3048\u308B\u7269\u8A9E\u3002"
+  cost: 3250
+  baseReward: 5850
+  baseRep: 29
+  duration: 60
+  quality: 2.38
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheHeistThatWasnt.png
   posterSprite: {fileID: 21300000, guid: c2f09033c6887dc4695086071197c684, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

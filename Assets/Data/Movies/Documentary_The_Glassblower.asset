@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Desert Kingdoms
   genre: 9
   tagline: Molten art in a family workshop.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Molten art in a family workshop.
+  synopsisEn: Through testimonies, images, and unique documents, a story is reconstructed
+    that must not be forgotten.
+  synopsisFr: "\xC0 travers t\xE9moignages, images et documents uniques, une histoire
+    est reconstruite qui ne doit pas \xEAtre oubli\xE9e."
+  synopsisDe: Durch Aussagen, Bilder und einzigartige Dokumente wird eine Geschichte
+    rekonstruiert, die nicht vergessen werden darf.
+  synopsisJa: "\u8A3C\u8A00\u3001\u6620\u50CF\u3001\u552F\u4E00\u7121\u4E8C\u306E\u8CC7\u6599\u3092\u901A\u3058\u3066\u3001\u5FD8\u308C\u3066\u306F\u306A\u3089\u306A\u3044\u6B74\u53F2\u304C\u518D\u69CB\u7BC9\u3055\u308C\u308B\u3002"
+  cost: 145000
+  baseReward: 265000
+  baseRep: 856
+  duration: 2700
+  quality: 4.89
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: DesertKingdoms.png
   posterSprite: {fileID: 21300000, guid: e3f89c21a27df994584b4579b2738938, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

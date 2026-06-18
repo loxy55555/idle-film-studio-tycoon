@@ -48,6 +48,10 @@ public class GameHub : MonoBehaviour
 
     public CitySystem         city;
 
+    public BoostSystem        boosts;
+
+    public PremiumFeatures    premium;
+
 
 
     /// <summary>Set during load when v2 save has no contract snapshot.</summary>
@@ -77,6 +81,8 @@ public class GameHub : MonoBehaviour
         FixCanvasScale();
 
         EnsureDiamondWallet();
+        EnsureBoostSystem();
+        EnsurePremiumFeatures();
 
 
 
@@ -131,6 +137,38 @@ public class GameHub : MonoBehaviour
 
 
 
+    void EnsureBoostSystem()
+
+    {
+
+        if (boosts != null) return;
+
+        boosts = GetComponentInChildren<BoostSystem>();
+
+        if (boosts != null) return;
+
+        boosts = gameObject.AddComponent<BoostSystem>();
+
+    }
+
+
+
+    void EnsurePremiumFeatures()
+
+    {
+
+        if (premium != null) return;
+
+        premium = GetComponentInChildren<PremiumFeatures>();
+
+        if (premium != null) return;
+
+        premium = gameObject.AddComponent<PremiumFeatures>();
+
+    }
+
+
+
     private void Start()
 
     {
@@ -170,6 +208,12 @@ public class GameHub : MonoBehaviour
 
             diamonds?.Init();
 
+            boosts?.Init();
+
+            premium?.Init();
+
+            EntitlementService.InitEmpty();
+
             contracts?.Init(1);
             contracts?.EnsureActiveContracts(1);
 
@@ -180,6 +224,15 @@ public class GameHub : MonoBehaviour
 
 
         pendingLegacyContractRefresh = false;
+
+        PurchaseManager.EnsureOn(gameObject);
+        PurchaseManager.Instance?.Initialize();
+
+        if (SaveSystem.PendingMigrationSave && save != null)
+            save.Save("MigrateV7_IAP");
+
+        FirebaseManager.EnsureOn(gameObject);
+        FirebaseManager.Instance?.BeginAfterGameHub();
 
         OnGameReady?.Invoke();
 

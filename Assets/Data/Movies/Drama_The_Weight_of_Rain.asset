@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Weight of Rain
   genre: 1
   tagline: Floods wash up truths buried for decades.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Floods wash up truths buried for decades.
+  synopsisEn: The Weight of Rain is a work of extraordinary emotional depth that
+    transcends the screen to speak directly to the viewer.
+  synopsisFr: "The Weight of Rain est une \u0153uvre d'une profondeur \xE9motionnelle
+    extraordinaire qui transcende l'\xE9cran pour interpeller le spectateur."
+  synopsisDe: "The Weight of Rain ist ein Werk von au\xDFergew\xF6hnlicher emotionaler
+    Tiefe, das \xFCber die Leinwand hinaus den Zuschauer direkt anspricht."
+  synopsisJa: "The Weight of Rain\u306F\u30B9\u30AF\u30EA\u30FC\u30F3\u3092\u8D85\u3048\u3066\u89B3\u5BA2\u306B\u8A9E\u308A\u304B\u3051\u308B\u3001\u5727\u5012\u7684\u306A\u611F\u60C5\u7684\u6DF1\u307F\u3092\u6301\u3064\u4F5C\u54C1\u3060\u3002"
+  cost: 420
+  baseReward: 760
+  baseRep: 5.2
+  duration: 60
+  quality: 1.36
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: "The Winter C A F\xE9"
   genre: 4
   tagline: Love letters survive a stormy season.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Love letters survive a stormy season.
+  synopsisEn: A love story spanning continents, decades, and entire lives without
+    losing an ounce of its emotion.
+  synopsisFr: "Une histoire d'amour couvrant continents, d\xE9cennies et vies enti\xE8res
+    sans perdre une once de son \xE9motion."
+  synopsisDe: "Eine Liebesgeschichte \xFCber Kontinente, Jahrzehnte und ganze Leben
+    \u2014 ohne auch nur einen Funken ihrer Emotion zu verlieren."
+  synopsisJa: "\u5927\u9678\u3001\u6570\u5341\u5E74\u3001\u4EBA\u751F\u5168\u4F53\u306B\u308F\u305F\u308B\u611B\u306E\u7269\u8A9E\u2014\u2014\u305D\u306E\u611F\u52D5\u306F\u4E00\u77AC\u305F\u308A\u3068\u3082\u8584\u308C\u306A\u3044\u3002"
+  cost: 49000
+  baseReward: 88000
+  baseRep: 327
+  duration: 300
+  quality: 3.75
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheWinterCAF.png
   posterSprite: {fileID: 21300000, guid: bddf7d6fafc33e249b942673b7a6bd2b, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

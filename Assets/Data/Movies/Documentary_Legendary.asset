@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Voices of the Deep
   genre: 9
   tagline: The ocean still speaks to those willing to listen.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: The ocean still speaks to those willing to listen.
+  synopsisEn: A documentary of exceptional ambition and execution that redefines
+    what the genre can offer.
+  synopsisFr: "Un documentaire d'une ambition et d'une ex\xE9cution exceptionnelles
+    qui red\xE9finit ce que le genre peut offrir."
+  synopsisDe: "Eine Dokumentation von au\xDFergew\xF6hnlichem Ehrgeiz und au\xDFergew\xF6hnlicher
+    Ausf\xFChrung, die neu definiert, was das Genre leisten kann."
+  synopsisJa: "\u3053\u306E\u30B8\u30E3\u30F3\u30EB\u304C\u4F55\u3092\u63D0\u4F9B\u3067\u304D\u308B\u304B\u3092\u518D\u5B9A\u7FA9\u3059\u308B\u3001\u5353\u8D8A\u3057\u305F\u91CE\u5FC3\u3068\u5B8C\u6210\u5EA6\u3092\u6301\u3064\u30C9\u30AD\u30E5\u30E1\u30F3\u30BF\u30EA\u30FC\u3002"
+  cost: 206250
+  baseReward: 398250
+  baseRep: 1398
+  duration: 21600
+  quality: 5
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: voiceofthedeep.png
   posterSprite: {fileID: 21300000, guid: f69eda4197d4dbe4e9b7361a41500011, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Moon S To Ne Path
   genre: 6
   tagline: Forest walks toward the capital at dawn.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Forest walks toward the capital at dawn.
+  synopsisEn: Moon S To Ne Path is an epic tale of sacrifice, loyalty, and the search
+    for a destiny no one can escape.
+  synopsisFr: "Moon S To Ne Path est un r\xE9cit \xE9pique de sacrifice, de loyaut\xE9
+    et de la qu\xEAte d'un destin que personne ne peut fuir."
+  synopsisDe: "Moon S To Ne Path ist ein episches Epos aus Opfer, Loyalit\xE4t und
+    der Suche nach einem Schicksal, dem niemand entfliehen kann."
+  synopsisJa: "Moon S To Ne Path\u306F\u8AB0\u3082\u9003\u308C\u3089\u308C\u306A\u3044\u904B\u547D\u306E\u63A2\u6C42\u3092\u63CF\u304F\u3001\u72A0\u7272\u3068\u5FE0\u7FA9\u306E\u53D9\u4E8B\u8A69\u3002"
+  cost: 17500
+  baseReward: 31500
+  baseRep: 135
+  duration: 2700
+  quality: 3.23
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: MoonSToNePath.png
   posterSprite: {fileID: 21300000, guid: 2d897ae6edc3f2349944dd28d5341ed4, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

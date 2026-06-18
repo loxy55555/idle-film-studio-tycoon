@@ -1,0 +1,51 @@
+---
+description: Prohibit hardcoded player-facing strings in UI scripts — use Loc.Get() instead
+globs: Assets/Scripts/UI/**/*.cs
+alwaysApply: false
+---
+
+# Localization Rule — No Hardcoded Player-Facing Strings
+
+All text visible to the player must use `Loc.Get(LocKeys.*)` or an equivalent localization helper. **Never hardcode human-readable strings in UI code.**
+
+## Bad — PROHIBITED
+
+```csharp
+title.text = "Store";
+button.text = "Buy";
+label.text = "Locked";
+effectText.text = $"+{val}% Quality";
+lines.Add("Contract complete");
+```
+
+## Good — REQUIRED
+
+```csharp
+title.text  = Loc.Get(LocKeys.TiendaTitle);
+button.text = Loc.Get(LocKeys.ContractClaim);
+label.text  = Loc.Get(LocKeys.InstLocked);
+effectText.text = Loc.Format(LocKeys.UpgradeEffectQuality, val);
+lines.Add(Loc.Get(LocKeys.PremiereContractDone));
+```
+
+## Workflow for new strings
+
+1. Add a `public const string MyKey = "my.key";` to `LocKeys.cs`
+2. Add translations for `es`, `en`, `fr`, `de`, `ja` in `Loc.cs` (`BaseEs()` + each language override)
+3. Use `Loc.Get(LocKeys.MyKey)` or `Loc.Format(LocKeys.MyKey, arg0, ...)` in UI code
+4. If the panel rebuilds on language change: subscribe in `Awake()` and unsubscribe in `OnDestroy()`:
+   ```csharp
+   UserPrefs.OnLanguageChanged += RefreshLocalization;
+   ```
+
+## Helpers already available
+
+- `GenreLoc.GetLabel(genre)` — localized genre names
+- `ProductionLoc.GetRarityLabel(rarity)` — localized rarity labels
+- `DepartmentLoc.GetName(type)` — localized department names
+- `PremiereLoc.FormatMoneyReward(amount)` — localized money reward
+- `Loc.Format(key, args...)` — format string with args
+
+## Applies to all future screens
+
+Store, Monetization, Supporter Packs, Ads, Boosts, Events, Settings, any new panel.

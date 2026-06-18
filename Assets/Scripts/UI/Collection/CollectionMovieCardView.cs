@@ -5,6 +5,8 @@ using UnityEngine.UI;
 /// <summary>Single movie card in the collection filmoteca (Phase 8.6 / 9.0 legendaries).</summary>
 public static class CollectionMovieCardView
 {
+    // Ivory colour shared by cinematic title overlays
+    static readonly Color TitleIvory = new Color(0.96f, 0.94f, 0.87f);
     const float CellWidth   = 108f;
     const float CellHeight  = 190f;
     const float PosterHeight = 90f;
@@ -59,10 +61,15 @@ public static class CollectionMovieCardView
                 var lockOverlay = CreatePanel(posterWrap, "LockOverlay", new Color(0f, 0f, 0f, 0.35f));
                 Stretch(lockOverlay);
             }
+            else
+            {
+                AddCinematicTitleOverlay(posterWrap, cfg.movieName);
+            }
         }
         else if (entry.discovered)
         {
             MoviePosterVisual.Apply(poster, cfg);
+            AddCinematicTitleOverlay(posterWrap, cfg.movieName);
         }
         else
         {
@@ -135,6 +142,47 @@ public static class CollectionMovieCardView
         tmp.textWrappingMode = TextWrappingModes.Normal;
         LE(tmp.rectTransform, height);
         return tmp;
+    }
+
+    /// <summary>
+    /// Adds a cinematic bottom-gradient + uppercase title overlay inside <paramref name="posterWrap"/>.
+    /// Uses absolute anchoring so it does not interfere with the parent LayoutGroup.
+    /// </summary>
+    static void AddCinematicTitleOverlay(RectTransform posterWrap, string movieName)
+    {
+        // Opaque dark band at the bottom 40 % of the poster
+        var gradGo = new GameObject("TitleGradient", typeof(RectTransform), typeof(Image));
+        gradGo.transform.SetParent(posterWrap, false);
+        var gradImg = gradGo.GetComponent<Image>();
+        gradImg.color = new Color(0f, 0f, 0f, 0.88f);
+        gradImg.raycastTarget = false;
+        var gradRT = gradGo.GetComponent<RectTransform>();
+        gradRT.anchorMin = Vector2.zero;
+        gradRT.anchorMax = new Vector2(1f, 0.40f);
+        gradRT.offsetMin = gradRT.offsetMax = Vector2.zero;
+
+        // Uppercase bold title — large and prominent, anchored over the dark band
+        var titleGo = new GameObject("TitleTMP", typeof(RectTransform));
+        titleGo.transform.SetParent(posterWrap, false);
+        var titleTMP = titleGo.AddComponent<TextMeshProUGUI>();
+        var titleRT = titleGo.GetComponent<RectTransform>();
+        titleRT.anchorMin = Vector2.zero;
+        titleRT.anchorMax = new Vector2(1f, 0.40f);
+        titleRT.offsetMin = new Vector2(4f, 4f);
+        titleRT.offsetMax = new Vector2(-4f, 0f);
+        // C3 (FASE 16.1): NoWrap prevents TMP from breaking words mid-character on narrow cards
+        titleTMP.text = movieName.ToUpper();
+        titleTMP.fontSize = 12f;
+        titleTMP.fontStyle = FontStyles.Bold;
+        titleTMP.alignment = TextAlignmentOptions.BottomLeft;
+        titleTMP.enableAutoSizing = true;
+        titleTMP.fontSizeMin = 8f;
+        titleTMP.fontSizeMax = 13f;
+        titleTMP.overflowMode = TextOverflowModes.Ellipsis;
+        titleTMP.color = TitleIvory;
+        titleTMP.raycastTarget = false;
+        titleTMP.textWrappingMode = TextWrappingModes.NoWrap;
+        titleTMP.characterSpacing = 0f;
     }
 
     static RectTransform CreatePanel(Transform parent, string name, Color color)

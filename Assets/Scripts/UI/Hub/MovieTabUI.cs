@@ -304,6 +304,7 @@ public class MovieTabUI : MonoBehaviour
         ui.rarityText = wire.rarityText;
         ui.durationText = wire.durationText;
         ui.rewardText = wire.rewardText;
+        ui.xpText = wire.xpText;
         ui.repText = wire.repText;
         ui.badgesText = wire.badgesText;
         ui.unlockText = wire.unlockText;

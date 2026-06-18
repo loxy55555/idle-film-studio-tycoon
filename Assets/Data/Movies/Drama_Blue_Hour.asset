@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: A Pl A Cec A Lled Tomorrow
   genre: 1
   tagline: Twilight conversations that change everything.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Twilight conversations that change everything.
+  synopsisEn: A Pl A Cec A Lled Tomorrow is a work of extraordinary emotional depth
+    that transcends the screen to speak directly to the viewer.
+  synopsisFr: "A Pl A Cec A Lled Tomorrow est une \u0153uvre d'une profondeur \xE9motionnelle
+    extraordinaire qui transcende l'\xE9cran pour interpeller le spectateur."
+  synopsisDe: "A Pl A Cec A Lled Tomorrow ist ein Werk von au\xDFergew\xF6hnlicher
+    emotionaler Tiefe, das \xFCber die Leinwand hinaus den Zuschauer direkt anspricht."
+  synopsisJa: "A Pl A Cec A Lled Tomorrow\u306F\u30B9\u30AF\u30EA\u30FC\u30F3\u3092\u8D85\u3048\u3066\u89B3\u5BA2\u306B\u8A9E\u308A\u304B\u3051\u308B\u3001\u5727\u5012\u7684\u306A\u611F\u60C5\u7684\u6DF1\u307F\u3092\u6301\u3064\u4F5C\u54C1\u3060\u3002"
+  cost: 90
+  baseReward: 170
+  baseRep: 1.3
+  duration: 300
+  quality: 1.06
   unlockStudioLevel: 1
-  unlockCityLevel: 2
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 1
   posterColorHex: 0

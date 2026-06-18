@@ -80,6 +80,6 @@ public class ProductionStatusUI : MonoBehaviour
             rewardText.text = AnimatedMoneyText.FormatMoney((long)_studio.CurrentMovieReward);
 
         if (repText != null)
-            repText.text = "+" + _studio.CurrentMovieRep.ToString("0.0") + " REP";
+            repText.text = "+" + _studio.CurrentMovieRep.ToString("0.0") + " " + Loc.Get(LocKeys.RepSuffix);
     }
 }

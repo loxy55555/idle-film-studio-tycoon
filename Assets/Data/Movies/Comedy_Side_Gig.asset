@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Wr On Gwedd In G
   genre: 3
   tagline: A temp job becomes a permanent comedy of errors.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A temp job becomes a permanent comedy of errors.
+  synopsisEn: A journey full of surprises proving that sometimes the best plan is
+    to have no plan at all.
+  synopsisFr: Un voyage plein de surprises prouvant que parfois le meilleur plan
+    est de n'en avoir aucun.
+  synopsisDe: "Eine Reise voller \xDCberraschungen, die beweist, dass der beste Plan
+    manchmal gar kein Plan ist."
+  synopsisJa: "\u9A5A\u304D\u306B\u6E80\u3061\u305F\u65C5\u304C\u8A3C\u660E\u3059\u308B\u306E\u306F\u3001\u3068\u304D\u306B\u306F\u7121\u8A08\u753B\u304C\u30D9\u30B9\u30C8\u30D7\u30E9\u30F3\u3060\u3068\u3044\u3046\u3053\u3068\u3002"
+  cost: 12000
+  baseReward: 22000
+  baseRep: 96
+  duration: 300
+  quality: 3.09
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheWrOnGweddInG.png
   posterSprite: {fileID: 21300000, guid: d3769e5c0c4972f48940c6d51ef5a580, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

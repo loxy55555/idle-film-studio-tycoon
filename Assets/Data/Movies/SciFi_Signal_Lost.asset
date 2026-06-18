@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Signal Lost
   genre: 5
   tagline: Contact with Mars ends without explanation.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Contact with Mars ends without explanation.
+  synopsisEn: In a future marked by uncertainty, a daring expedition reveals truths
+    that change the course of history.
+  synopsisFr: "Dans un futur marqu\xE9 par l'incertitude, une exp\xE9dition audacieuse
+    r\xE9v\xE8le des v\xE9rit\xE9s qui changent le cours de l'histoire."
+  synopsisDe: "In einer von Unsicherheit gepr\xE4gten Zukunft enth\xFCllt eine waghalsige
+    Expedition Wahrheiten, die den Lauf der Geschichte ver\xE4ndern."
+  synopsisJa: "\u4E0D\u78BA\u5B9F\u306A\u672A\u6765\u3092\u821E\u53F0\u306B\u3001\u5927\u80C6\u306A\u63A2\u691C\u304C\u6B74\u53F2\u306E\u6D41\u308C\u3092\u5909\u3048\u308B\u771F\u5B9F\u3092\u660E\u3089\u304B\u306B\u3059\u308B\u3002"
+  cost: 720
+  baseReward: 1300
+  baseRep: 7.8
+  duration: 60
+  quality: 1.66
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: SignalLost.png
   posterSprite: {fileID: 21300000, guid: 6a202787ce4315c4989daed9cbc69316, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: dominion
   sagaEntryIndex: 3

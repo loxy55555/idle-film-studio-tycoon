@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Forgotten C A Se
   genre: 7
   tagline: Case number changes. Truth does not.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Case number changes. Truth does not.
+  synopsisEn: Every answer opens a new question in a spiral of secrets threatening
+    to destroy everything.
+  synopsisFr: "Chaque r\xE9ponse ouvre une nouvelle question dans une spirale de
+    secrets qui menace de tout d\xE9truire."
+  synopsisDe: "Jede Antwort \xF6ffnet eine neue Frage in einer Spirale aus Geheimnissen,
+    die alles zu zerst\xF6ren droht."
+  synopsisJa: "\u3059\u3079\u3066\u3092\u7834\u58CA\u3057\u3088\u3046\u3068\u3059\u308B\u79D8\u5BC6\u306E\u9023\u9396\u306E\u4E2D\u3067\u3001\u7B54\u3048\u3054\u3068\u306B\u65B0\u305F\u306A\u554F\u3044\u304C\u751F\u307E\u308C\u308B\u3002"
+  cost: 105000
+  baseReward: 190000
+  baseRep: 662
+  duration: 300
+  quality: 4.26
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheForgottenCASe.png
   posterSprite: {fileID: 21300000, guid: 61663ad4bf1febc42958de4cb0950a4d, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

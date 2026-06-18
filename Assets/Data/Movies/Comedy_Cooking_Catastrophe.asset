@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Cooking Catastrophe
   genre: 3
   tagline: Celebrity chef meets reality TV reality.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Celebrity chef meets reality TV reality.
+  synopsisEn: What starts as a perfect plan quickly becomes the most hilarious chain
+    of disasters imaginable.
+  synopsisFr: "Ce qui commence comme un plan parfait devient rapidement la cha\xEEne
+    de catastrophes la plus hilarante imaginable."
+  synopsisDe: Was als perfekter Plan beginnt, wird schnell zur wohl absurdesten Katastrophenserie,
+    die man sich vorstellen kann.
+  synopsisJa: "\u5B8C\u74A7\u306A\u306F\u305A\u306E\u8A08\u753B\u304C\u3001\u60F3\u50CF\u3092\u7D76\u3059\u308B\u60E8\u4E8B\u306E\u9023\u9396\u3078\u3068\u5909\u308F\u3063\u3066\u3044\u304F\u3002"
+  cost: 60
+  baseReward: 100
+  baseRep: 0.9
+  duration: 60
+  quality: 1.02
   unlockStudioLevel: 1
-  unlockCityLevel: 4
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

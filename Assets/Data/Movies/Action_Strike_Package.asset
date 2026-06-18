@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Strike Package
   genre: 0
   tagline: Every asset in the theater on one target.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Every asset in the theater on one target.
+  synopsisEn: Strike Package tests the limits of human endurance in a mission where
+    every second counts.
+  synopsisFr: "Strike Package met \xE0 l'\xE9preuve les limites humaines dans une
+    mission o\xF9 chaque seconde compte."
+  synopsisDe: "Strike Package stellt die Grenzen menschlicher Ausdauer auf die Probe
+    in einem Einsatz, bei dem jede Sekunde z\xE4hlt."
+  synopsisJa: "Strike Package\u306F\u3001\u4E00\u79D2\u4E00\u79D2\u304C\u547D\u53D6\u308A\u3068\u306A\u308B\u30DF\u30C3\u30B7\u30E7\u30F3\u3067\u4EBA\u9593\u306E\u9650\u754C\u3092\u8A66\u3059\u3002"
+  cost: 74000
+  baseReward: 135000
+  baseRep: 490
+  duration: 60
+  quality: 4.1
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 7
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: StrikePackage.png
   posterSprite: {fileID: 21300000, guid: de959051702f20843af4ba72351ddad6, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

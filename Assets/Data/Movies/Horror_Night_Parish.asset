@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Night Parish
   genre: 2
   tagline: A church that only opens after midnight.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A church that only opens after midnight.
+  synopsisEn: Something ancient and forgotten awakens, and with it resurface secrets
+    that should never have seen the light.
+  synopsisFr: "Quelque chose d'ancien et d'oubli\xE9 se r\xE9veille, et avec lui
+    ressurgissent des secrets qui n'auraient jamais d\xFB voir le jour."
+  synopsisDe: "Etwas Altes und Vergessenes erwacht, und mit ihm tauchen Geheimnisse
+    auf, die nie ans Licht h\xE4tten kommen d\xFCrfen."
+  synopsisJa: "\u53E4\u304F\u5FD8\u308C\u3089\u308C\u305F\u4F55\u304B\u304C\u76EE\u899A\u3081\u3001\u6C7A\u3057\u3066\u65E5\u306E\u76EE\u3092\u898B\u3066\u306F\u306A\u3089\u306A\u304B\u3063\u305F\u79D8\u5BC6\u3092\u8607\u3089\u305B\u308B\u3002"
+  cost: 860
+  baseReward: 1550
+  baseRep: 9.2
+  duration: 60
+  quality: 1.74
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: NightParish.png
   posterSprite: {fileID: 21300000, guid: 854775ea731f0b84f8fbf2466d16b3e4, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

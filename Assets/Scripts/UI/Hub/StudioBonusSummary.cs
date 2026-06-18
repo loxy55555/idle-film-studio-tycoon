@@ -13,6 +13,6 @@ public static class StudioBonusSummary
         float speedPct  = (D.CalculateSpeed() - 1f) * 100f;
         float repPct    = U != null ? U.TotalEffect(UpgradeEffectType.ReputationBonus) * 100f : 0f;
 
-        return $"Ingresos +{incomePct:0}% · REP +{repPct:0}% · Vel +{speedPct:0}%";
+        return string.Format(Loc.Get(LocKeys.StudioBonusSummaryFmt), incomePct, repPct, speedPct);
     }
 }

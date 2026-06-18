@@ -37,32 +37,30 @@ public class MovieGridUI : MonoBehaviour
         _                  => Color.gray,
     };
 
-    static string GenreLabel(MovieGenre g) => g switch
-    {
-        MovieGenre.Action  => "ACCIÓN",
-        MovieGenre.Drama   => "DRAMA",
-        MovieGenre.Horror  => "TERROR",
-        MovieGenre.Comedy  => "COMEDIA",
-        MovieGenre.Romance => "ROMANCE",
-        MovieGenre.SciFi   => "SCI-FI",
-        _                  => g.ToString().ToUpper(),
-    };
+    static string GenreLabel(MovieGenre g) => GenreLoc.GetLabel(g).ToUpper();
 
     private readonly List<MovieButtonUI> _cards = new();
 
+    private bool _gridBuilt;
+
     private void Awake()
     {
-        GameHub.OnGameReady += OnGameReady;
+        GameHubReadyGate.SubscribeOrInvokeNow(OnGameReady);
+        UserPrefs.OnLanguageChanged += GenerateGrid;
     }
 
     private void OnDestroy()
     {
         GameHub.OnGameReady -= OnGameReady;
+        UserPrefs.OnLanguageChanged -= GenerateGrid;
     }
 
     private void OnGameReady()
     {
+        // Unsubscribe first to prevent double-build from the event and SubscribeOrInvokeNow.
         GameHub.OnGameReady -= OnGameReady;
+        if (_gridBuilt) return;
+        _gridBuilt = true;
         GenerateGrid();
     }
 
@@ -79,9 +77,8 @@ public class MovieGridUI : MonoBehaviour
         MovieConfig[] movies = MovieCatalogRuntime.Resolve(allMovies);
         if (movies == null || movies.Length == 0)
         {
-            var lbl = MakeText(content,
-                "No hay películas disponibles.\nEjecuta: IdleFilm → Catalog → Rebuild Scene Movie References",
-                22, TEXT_SEC);
+            var lbl = MakeText(content, Loc.Get(LocKeys.ProdEmptyState), 22, TEXT_SEC);
+            UnityEngine.Debug.LogWarning("[MovieGridUI] No movies — run IdleFilm → Catalog → Rebuild Scene Movie References");
             lbl.textWrappingMode = TMPro.TextWrappingModes.Normal;
             return;
         }
@@ -210,7 +207,7 @@ public class MovieGridUI : MonoBehaviour
         btnLbl.GetComponent<RectTransform>().anchorMax = Vector2.one;
         btnLbl.GetComponent<RectTransform>().offsetMin = btnLbl.GetComponent<RectTransform>().offsetMax = Vector2.zero;
         var btnTMP = btnLbl.AddComponent<TextMeshProUGUI>();
-        btnTMP.text = "PRODUCIR"; btnTMP.fontSize = 15; btnTMP.fontStyle = FontStyles.Bold;
+        btnTMP.text = Loc.Get(LocKeys.ProdProduceBtn); btnTMP.fontSize = 15; btnTMP.fontStyle = FontStyles.Bold;
         btnTMP.alignment = TextAlignmentOptions.Center; btnTMP.color = TEXT_PRI;
         btnTMP.textWrappingMode = TMPro.TextWrappingModes.Normal;
 

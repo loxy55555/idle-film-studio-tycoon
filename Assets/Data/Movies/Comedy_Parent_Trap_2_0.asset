@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Parent Trap 2.0
   genre: 3
   tagline: Kids reverse-engineer adult relationships.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Kids reverse-engineer adult relationships.
+  synopsisEn: When chance throws together incompatible characters, the result can
+    only be the funniest chaos of the year.
+  synopsisFr: "Quand le hasard r\xE9unit des personnages incompatibles, le r\xE9sultat
+    ne peut \xEAtre que le chaos le plus dr\xF4le de l'ann\xE9e."
+  synopsisDe: Wenn der Zufall unvereinbare Charaktere zusammenbringt, kann das Ergebnis
+    nur das lustigste Chaos des Jahres sein.
+  synopsisJa: "\u76F8\u6027\u6700\u60AA\u306E\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC\u304C\u904B\u547D\u306B\u5F15\u304D\u5408\u308F\u3055\u308C\u308B\u3068\u3001\u7D50\u679C\u306F\u4ECA\u5E74\u6700\u9AD8\u306B\u7B11\u3048\u308B\u30AB\u30AA\u30B9\u3057\u304B\u306A\u3044\u3002"
+  cost: 2250
+  baseReward: 4100
+  baseRep: 21
+  duration: 60
+  quality: 2.27
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: ParentTrap20.png
   posterSprite: {fileID: 21300000, guid: 4fa4d0b7260cc4547b7c8bdc510953ef, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

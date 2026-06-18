@@ -26,11 +26,9 @@ public static class UIIconRegistryBuilder
     [InitializeOnLoadMethod]
     static void EnsureRegistryOnLoad()
     {
-        EditorApplication.delayCall += () =>
-        {
-            if (AssetDatabase.LoadAssetAtPath<UIIconRegistry>(RegistryPath) != null) return;
-            Rebuild(log: true);
-        };
+        // Always rebuild so new registry fields (e.g. resSettings) are populated automatically
+        // without requiring a manual menu trigger after every code change.
+        EditorApplication.delayCall += () => Rebuild(log: false);
     }
 
     public static UIIconRegistry Rebuild(bool log = false)
@@ -153,6 +151,7 @@ public static class UIIconRegistryBuilder
                 "camaradeco" => nameof(UIIconRegistry.resDecoCamera),
                 "carrete" => nameof(UIIconRegistry.resFilmReel),
                 "diamantes" => nameof(UIIconRegistry.resDiamonds),
+                "ajustes"   => nameof(UIIconRegistry.resSettings),
                 _ => null,
             };
         }

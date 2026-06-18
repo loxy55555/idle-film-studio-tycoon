@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Dog Mayor
   genre: 3
   tagline: A town elects a dog. Bureaucracy adapts reluctantly.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A town elects a dog. Bureaucracy adapts reluctantly.
+  synopsisEn: A journey full of surprises proving that sometimes the best plan is
+    to have no plan at all.
+  synopsisFr: Un voyage plein de surprises prouvant que parfois le meilleur plan
+    est de n'en avoir aucun.
+  synopsisDe: "Eine Reise voller \xDCberraschungen, die beweist, dass der beste Plan
+    manchmal gar kein Plan ist."
+  synopsisJa: "\u9A5A\u304D\u306B\u6E80\u3061\u305F\u65C5\u304C\u8A3C\u660E\u3059\u308B\u306E\u306F\u3001\u3068\u304D\u306B\u306F\u7121\u8A08\u753B\u304C\u30D9\u30B9\u30C8\u30D7\u30E9\u30F3\u3060\u3068\u3044\u3046\u3053\u3068\u3002"
+  cost: 75
+  baseReward: 130
+  baseRep: 1.1
+  duration: 60
+  quality: 1.04
   unlockStudioLevel: 1
-  unlockCityLevel: 4
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

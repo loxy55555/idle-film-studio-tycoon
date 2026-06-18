@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Glass Forest IV
   genre: 6
   tagline: Crystal shards cut more than flesh.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Crystal shards cut more than flesh.
+  synopsisEn: An ancient prophecy unfolds amid warring kingdoms and powers the world
+    believed long extinct.
+  synopsisFr: "Une proph\xE9tie ancestrale se r\xE9alise au milieu de royaumes en
+    guerre et de pouvoirs que le monde croyait disparus."
+  synopsisDe: "Eine uralte Prophezeiung erf\xFCllt sich inmitten kriegf\xFChrender
+    K\xF6nigreiche und M\xE4chten, die die Welt f\xFCr ausgestorben hielt."
+  synopsisJa: "\u6226\u706B\u306E\u738B\u56FD\u3068\u4E16\u754C\u304C\u7D76\u3048\u305F\u3068\u4FE1\u3058\u3066\u3044\u305F\u529B\u306E\u4E2D\u3067\u3001\u53E4\u4EE3\u306E\u4E88\u8A00\u304C\u6210\u5C31\u3059\u308B\u3002"
+  cost: 30000
+  baseReward: 54000
+  baseRep: 211
+  duration: 60
+  quality: 3.53
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheGlassForestIV.png
   posterSprite: {fileID: -9210713818034708541, guid: b16b37353ae54f840bb0079d0a14660a, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

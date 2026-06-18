@@ -26,6 +26,10 @@ public static class CityVisualThemeCleanup
     static void DestroyObject(Object obj)
     {
         if (obj == null) return;
+        // Rename immediately so CreateLayerRoot cannot reuse this root
+        // during the same frame before Destroy is processed.
+        if (obj is GameObject go)
+            go.name = $"__pending_destroy_{go.GetInstanceID()}";
         if (Application.isPlaying)
             Object.Destroy(obj);
         else

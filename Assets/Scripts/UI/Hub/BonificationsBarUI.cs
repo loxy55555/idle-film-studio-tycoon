@@ -44,6 +44,16 @@ public class BonificationsBarUI : MonoBehaviour
         GameHub.OnGameReady += OnGameReady;
     }
 
+    void Start()
+    {
+        // Start() fires after all AfterSceneLoad bootstrap patches and other Start() calls.
+        // For a component that starts inactive (EstudioPanel is inactive at scene load),
+        // this is the earliest reliable moment all systems are ready and children stable.
+        AutoWire();
+        EnsureBuilt();
+        Refresh();
+    }
+
     void OnEnable()
     {
         AutoWire();
@@ -114,11 +124,32 @@ public class BonificationsBarUI : MonoBehaviour
 
     void EnsureBuilt()
     {
+        // Always remove any baked HLG and ensure VLG is correctly configured — even when
+        // returning early below. The scene may have stale baked components from a previous
+        // edit-mode call that left childControlWidth=false.
+        var barHLG = GetComponent<HorizontalLayoutGroup>();
+        if (barHLG != null)
+        {
+            barHLG.enabled = false;
+            if (Application.isPlaying) Destroy(barHLG);
+            else DestroyImmediate(barHLG);
+        }
+
+        var barVLG = GetComponent<VerticalLayoutGroup>() ?? gameObject.AddComponent<VerticalLayoutGroup>();
+        barVLG.childAlignment        = TextAnchor.UpperLeft;
+        barVLG.childControlWidth     = true;   // must be true: VLG sets sizeDelta directly, not via anchors
+        barVLG.childControlHeight    = true;
+        barVLG.childForceExpandWidth = true;
+        barVLG.childForceExpandHeight = true;
+        barVLG.spacing  = 0;
+        barVLG.padding  = new RectOffset(0, 0, 0, 0);
+
         if (transform.Find(CompactMarker) != null && FindTmp("BonusSummary") != null) return;
 
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             var ch = transform.GetChild(i);
+            ch.SetParent(null, false);   // remove from hierarchy immediately so layout sees 0 children
             if (Application.isPlaying) Destroy(ch.gameObject);
             else DestroyImmediate(ch.gameObject);
         }
@@ -131,20 +162,6 @@ public class BonificationsBarUI : MonoBehaviour
         le.preferredHeight = 118f;
         le.minHeight       = 118f;
         le.flexibleHeight  = 0f;
-
-        var barHLG = GetComponent<HorizontalLayoutGroup>();
-        if (barHLG != null)
-        {
-            if (Application.isPlaying) Destroy(barHLG);
-            else DestroyImmediate(barHLG);
-        }
-
-        var barVLG = GetComponent<VerticalLayoutGroup>() ?? gameObject.AddComponent<VerticalLayoutGroup>();
-        barVLG.childAlignment = TextAnchor.UpperLeft;
-        barVLG.childForceExpandWidth = true;
-        barVLG.childForceExpandHeight = true;
-        barVLG.spacing = 0;
-        barVLG.padding = new RectOffset(0, 0, 0, 0);
 
         var marker = new GameObject(CompactMarker, typeof(RectTransform));
         marker.transform.SetParent(transform, false);
@@ -196,11 +213,11 @@ public class BonificationsBarUI : MonoBehaviour
         metaHLG.childForceExpandWidth = false;
         metaHLG.childForceExpandHeight = true;
 
-        _repLineText = RuntimeTmpText.Create(meta.transform, "★ 0 REP",
+        _repLineText = RuntimeTmpText.Create(meta.transform, Loc.Format(LocKeys.StudioRepBarFmt, 0f),
             16f, C_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "RepLine");
         _repLineText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        _xpLineText = RuntimeTmpText.Create(meta.transform, "0 / 120 XP",
+        _xpLineText = RuntimeTmpText.Create(meta.transform, Loc.Format(LocKeys.StudioXPFormat, 0, 0),
             13f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "XpLine");
         _xpLineText.gameObject.AddComponent<LayoutElement>().preferredWidth = 120f;
 
@@ -222,13 +239,13 @@ public class BonificationsBarUI : MonoBehaviour
         _levelXpBar.fillRect = fill.GetComponent<RectTransform>();
         ReadOnlySlider.Configure(_levelXpBar);
 
-        _bonusSummaryText = RuntimeTmpText.Create(info.transform, "Ingresos +0% · REP +0% · Vel +0%",
+        _bonusSummaryText = RuntimeTmpText.Create(info.transform, Loc.Format(LocKeys.StudioBonusSummaryFmt, 0, 0, 0),
             12f, CinematicTheme.GoldBase, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "BonusSummary");
         _bonusSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
 
         EnsureAnimatedStats(info.transform);
 
-        _objectiveText = RuntimeTmpText.Create(info.transform, "Próximo nivel",
+        _objectiveText = RuntimeTmpText.Create(info.transform, Loc.Get(LocKeys.StudioNextLevel),
             11f, TEXT_DIM, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Objective");
         _objectiveText.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
     }
@@ -316,12 +333,12 @@ public class BonificationsBarUI : MonoBehaviour
             if (_repAnimator != null)
             {
                 _repAnimator.Mode = AnimatedValueText.FormatMode.OneDecimal;
-                _repAnimator.Prefix = "★ ";
-                _repAnimator.Suffix = " REP";
+                _repAnimator.Prefix = "";
+                _repAnimator.Suffix = " " + Loc.Get(LocKeys.RepSuffix);
                 _repAnimator.SetValue(rep);
             }
             else
-                _repLineText.text = $"★ {rep:0.#} REP";
+                _repLineText.text = Loc.Format(LocKeys.StudioRepBarFmt, rep);
         }
 
         if (SL != null)
@@ -332,14 +349,14 @@ public class BonificationsBarUI : MonoBehaviour
                 {
                     _xpAnimator.Mode = AnimatedValueText.FormatMode.CustomPrefixSuffix;
                     _xpAnimator.Prefix = "";
-                    _xpAnimator.Suffix = $" / {SL.XPToNext:0} XP";
+                    _xpAnimator.Suffix = " / " + ((int)SL.XPToNext).ToString() + " " + Loc.Get(LocKeys.XPSuffix);
                     _xpAnimator.SetValue(SL.XP);
                 }
                 else
-                    _xpLineText.text = $"{SL.XP:0} / {SL.XPToNext:0} XP";
+                    _xpLineText.text = Loc.Format(LocKeys.StudioXPFormat, (int)SL.XP, (int)SL.XPToNext);
             }
             if (_objectiveText != null)
-                _objectiveText.text = $"Próximo nivel · {Mathf.Max(0f, SL.XPToNext - SL.XP):0} XP restantes";
+                _objectiveText.text = string.Format(Loc.Get(LocKeys.StudioNextLevel), Mathf.Max(0f, SL.XPToNext - SL.XP));
             if (_xpBarAnimator != null)
                 _xpBarAnimator.SetNormalized(SL.XPToNext > 0f ? Mathf.Clamp01(SL.XP / SL.XPToNext) : 0f);
             else if (_levelXpBar != null)
@@ -373,8 +390,8 @@ public class BonificationsBarUI : MonoBehaviour
         if (iconTxt != null)
         {
             string cityName = city != null
-                ? CityLevelDatabase.GetLevel(city.Level).displayName
-                : "ESTUDIO";
+                ? CityLevelDatabase.GetLocalizedName(city.Level)
+                : Loc.Get(LocKeys.NavStudio);
             iconTxt.text = cityName.ToUpperInvariant();
             iconTxt.fontStyle = FontStyles.Bold;
             iconTxt.color = CinematicTheme.TextPrimary;
@@ -383,15 +400,15 @@ public class BonificationsBarUI : MonoBehaviour
 
         if (SL != null && levelLine != null)
         {
-            levelLine.text = $"Nivel {SL.Level}";
+            levelLine.text = string.Format(Loc.Get(LocKeys.StudioLevelFormat), SL.Level);
             levelLine.alignment = TextAlignmentOptions.MidlineLeft;
         }
         if (SL != null && xpText != null)
         {
-            xpText.text = $"{SL.XP:0}/{SL.XPToNext:0} XP";
+            xpText.text = Loc.Format(LocKeys.StudioXPFormat, SL.XP, SL.XPToNext);
             xpText.alignment = TextAlignmentOptions.MidlineLeft;
         }
-        if (studio != null && repText != null) repText.text = $"{studio.reputation:0} REP";
+        if (studio != null && repText != null) repText.text = Loc.Format(LocKeys.StudioRepHeaderFmt, studio.reputation);
     }
 
     void SetStat(TextMeshProUGUI label, string value)

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Moonkeeper
   genre: 6
   tagline: One guardian tends the door between worlds.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: One guardian tends the door between worlds.
+  synopsisEn: Moonkeeper is an epic tale of sacrifice, loyalty, and the search for
+    a destiny no one can escape.
+  synopsisFr: "Moonkeeper est un r\xE9cit \xE9pique de sacrifice, de loyaut\xE9 et
+    de la qu\xEAte d'un destin que personne ne peut fuir."
+  synopsisDe: "Moonkeeper ist ein episches Epos aus Opfer, Loyalit\xE4t und der Suche
+    nach einem Schicksal, dem niemand entfliehen kann."
+  synopsisJa: "Moonkeeper\u306F\u8AB0\u3082\u9003\u308C\u3089\u308C\u306A\u3044\u904B\u547D\u306E\u63A2\u6C42\u3092\u63CF\u304F\u3001\u72A0\u7272\u3068\u5FE0\u7FA9\u306E\u53D9\u4E8B\u8A69\u3002"
+  cost: 1900
+  baseReward: 3400
+  baseRep: 18
+  duration: 60
+  quality: 2.2
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: Moonkeeper.png
   posterSprite: {fileID: 21300000, guid: b3cf74a5bc026fe468878d0a576dc4f5, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: moonkeeper
   sagaEntryIndex: 1

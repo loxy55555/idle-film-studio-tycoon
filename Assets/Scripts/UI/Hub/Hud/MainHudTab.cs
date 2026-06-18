@@ -10,13 +10,13 @@ public enum MainHudTab
 
 public static class MainHudTabLabels
 {
-    public static readonly string[] BottomNav =
+    public static string[] BottomNav => new[]
     {
-        "ESTUDIO",
-        "PRODUCCIÓN",
-        "PREMIOS",
-        "COLECCIÓN",
-        "TIENDA",
+        Loc.Get(LocKeys.NavStudio),
+        Loc.Get(LocKeys.NavProduction),
+        Loc.Get(LocKeys.NavAwards),
+        Loc.Get(LocKeys.NavCollection),
+        Loc.Get(LocKeys.NavShop),
     };
 
     public static readonly string[] BottomIcons =

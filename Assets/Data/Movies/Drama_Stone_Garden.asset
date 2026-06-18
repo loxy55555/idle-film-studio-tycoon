@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Betweentwo Sea S On S
   genre: 1
   tagline: Grief grows into something unexpectedly alive.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Grief grows into something unexpectedly alive.
+  synopsisEn: Betweentwo Sea S On S explores the bonds that define us and the impossible
+    choices that shape the course of a life.
+  synopsisFr: "Betweentwo Sea S On S explore les liens qui nous d\xE9finissent et
+    les choix impossibles qui d\xE9terminent le cours d'une vie."
+  synopsisDe: "Betweentwo Sea S On S erkundet die Bindungen, die uns definieren,
+    und die unm\xF6glichen Entscheidungen, die den Lauf eines Lebens bestimmen."
+  synopsisJa: "Betweentwo Sea S On S\u306F\u79C1\u305F\u3061\u3092\u5B9A\u7FA9\u3059\u308B\u7D46\u3068\u3001\u4EBA\u751F\u306E\u884C\u65B9\u3092\u6C7A\u3081\u308B\u4E0D\u53EF\u80FD\u306A\u9078\u629E\u3092\u63A2\u6C42\u3059\u308B\u3002"
+  cost: 450
+  baseReward: 820
+  baseRep: 5.6
+  duration: 300
+  quality: 1.38
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

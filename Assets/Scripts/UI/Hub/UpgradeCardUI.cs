@@ -31,12 +31,15 @@ public class UpgradeCardUI : MonoBehaviour
     bool              _upgradeEventsBound;
     bool              _cityEventsBound;
     bool              _purchaseInFlight;
+    bool              _layoutEnsured;
 
     void Awake()
     {
+        _layoutEnsured = false;
         AutoWireReferences();
         EnsurePremiumMaterial();
         EnsureEffectLayout();
+        _layoutEnsured = true;
         GameHub.OnGameReady += Bind;
         WireBuyButton();
         ReadOnlySlider.Configure(levelBar);
@@ -52,6 +55,13 @@ public class UpgradeCardUI : MonoBehaviour
 
     void Start()
     {
+        // Re-run layout once in Start when parent dimensions are established.
+        // Awake runs before the scroll content VLG has computed widths, so
+        // EnsureHorizontalBuyLayout may have skipped the infoColRt width fix.
+        _layoutEnsured = false;
+        EnsureEffectLayout();
+        _layoutEnsured = true;
+
         if (GameHub.Instance != null)
             Bind();
     }
@@ -145,7 +155,14 @@ public class UpgradeCardUI : MonoBehaviour
         }
 
         AutoWireReferences();
-        EnsureEffectLayout();
+        // EnsureEffectLayout runs once (Awake/OnEnable) — not on every refresh.
+        // Repeated ForceRebuildLayoutImmediate calls propagate dirty marks to the
+        // scroll content's ContentSizeFitter, causing progressive scroll drift (BUG FIX 2).
+        if (!_layoutEnsured)
+        {
+            EnsureEffectLayout();
+            _layoutEnsured = true;
+        }
         ApplyInteractionPolicy();
         DisableProgressBarRaycasts();
 
@@ -157,26 +174,34 @@ public class UpgradeCardUI : MonoBehaviour
         bool cityLocked   = GameHub.Instance?.city != null && !GameHub.Instance.city.IsUpgradeUnlocked(upgradeConfig);
         bool locked  = studioLocked || cityLocked;
 
-        if (nameText  != null) nameText.text  = upgradeConfig.displayName;
+        if (nameText  != null)
+        {
+            var nameKey = LocKeys.UpgradeNamePfx + upgradeConfig.id;
+            var locName = Loc.Get(nameKey);
+            nameText.text = (locName == nameKey) ? upgradeConfig.displayName : locName;
+        }
         if (descText  != null) descText.text  = upgradeConfig.description;
         if (levelText != null)
         {
-            levelText.text  = maxed ? "MAX" : $"Nivel {level}";
+            levelText.text  = maxed ? Loc.Get(LocKeys.UpgradeMax) : string.Format(Loc.Get(LocKeys.StudioLevelFormat), level);
             levelText.color = maxed ? CinematicTheme.GoldBright : CinematicTheme.GoldBase;
         }
 
         if (effectText != null)
         {
-            string current = level > 0 ? BuildEffectString(level) : "Sin efecto";
-            string next    = maxed ? "—" : BuildEffectString(Mathf.Max(1, level + 1));
+            string noEffect = Loc.Get(LocKeys.UpgradeNoEffect);
+            string current  = level > 0 ? BuildEffectString(level) : noEffect;
+            string next     = maxed ? "—" : BuildEffectString(Mathf.Max(1, level + 1));
+            string cur      = Loc.Get(LocKeys.UpgradeCurrent);
+            string nxt      = Loc.Get(LocKeys.UpgradeNext);
             effectText.text = maxed
-                ? $"Actual: {current}"
-                : $"Nivel {level} → {Mathf.Max(1, level + 1)}\nActual: {current}\nSiguiente: {next}";
+                ? $"{cur}: {current}"
+                : string.Format(Loc.Get(LocKeys.StudioLevelFormat), level) + $" → {Mathf.Max(1, level + 1)}\n{cur}: {current}\n{nxt}: {next}";
             effectText.color = CinematicTheme.TextSecondary;
         }
         if (costText != null)
         {
-            costText.text = maxed  ? "MAX" :
+            costText.text = maxed  ? Loc.Get(LocKeys.UpgradeMax) :
                             locked  ? LockLabel(studioLocked, cityLocked, upgradeConfig) :
                             AnimatedMoneyText.FormatMoney(cost);
             costText.color = maxed  ? CinematicTheme.GoldBright :
@@ -267,7 +292,7 @@ public class UpgradeCardUI : MonoBehaviour
         btnLbl.text = state switch
         {
             PurchaseUiState.Maxed  => Loc.Get(LocKeys.DeptMax),
-            PurchaseUiState.Locked => "BLOQUEADO",
+            PurchaseUiState.Locked => Loc.Get(LocKeys.InstLocked),
             _                      => Loc.Get(LocKeys.DeptUpgrade),
         };
         btnLbl.transform.SetAsLastSibling();
@@ -399,15 +424,17 @@ public class UpgradeCardUI : MonoBehaviour
         if (effectText != null)
         {
             effectText.textWrappingMode = TextWrappingModes.Normal;
-            effectText.overflowMode = TextOverflowModes.Overflow;
-            effectText.fontSize = 20f;
+            effectText.overflowMode = TextOverflowModes.Ellipsis;
+            effectText.enableAutoSizing = true;
+            effectText.fontSizeMin = 14f * RuntimeTmpText.MobileScale;
+            effectText.fontSizeMax = 20f * RuntimeTmpText.MobileScale;
             effectText.lineSpacing = 2f;
-            effectText.maxVisibleLines = 4;
+            effectText.maxVisibleLines = 5;
 
             var effectLE = effectText.GetComponent<LayoutElement>()
                            ?? effectText.gameObject.AddComponent<LayoutElement>();
-            effectLE.preferredHeight = 88f;
-            effectLE.minHeight = 66f;
+            effectLE.preferredHeight = 140f;
+            effectLE.minHeight = 100f;
         }
 
         EnsureHorizontalBuyLayout();
@@ -449,7 +476,37 @@ public class UpgradeCardUI : MonoBehaviour
         iconRt.offsetMin = iconRt.offsetMax = Vector2.zero;
 
         var sprite = UIIconCatalog.GetUpgradeIcon(upgradeConfig.id);
-        UIIconGraphic.Apply(icon, sprite);
+
+        // B3 (FASE 16.1): When no sprite is available show a category emoji placeholder
+        if (sprite == null)
+        {
+            icon.gameObject.SetActive(false);
+            var existingPh = badgeRt.Find("BadgePlaceholder")?.GetComponent<TMPro.TextMeshProUGUI>();
+            if (existingPh == null)
+            {
+                string emoji = GetUpgradeFallbackEmoji(upgradeConfig.id);
+                var ph = RuntimeTmpText.Create(badgeRt, emoji, 28f,
+                    CinematicTheme.SilverBase, FontStyles.Normal, TextAlignmentOptions.Center, "BadgePlaceholder");
+                ph.raycastTarget = false;
+                ph.rectTransform.anchorMin = Vector2.zero;
+                ph.rectTransform.anchorMax = Vector2.one;
+                ph.rectTransform.offsetMin = ph.rectTransform.offsetMax = Vector2.zero;
+            }
+        }
+        else
+        {
+            UIIconGraphic.Apply(icon, sprite);
+        }
+    }
+
+    static string GetUpgradeFallbackEmoji(string id)
+    {
+        if (id == null) return "⬜";
+        if (id.StartsWith("personal_")) return "🎬";
+        if (id.StartsWith("install_"))  return "🏢";
+        if (id.StartsWith("equip_"))    return "📷";
+        if (id.StartsWith("mkt_"))      return "📣";
+        return "⬜";
     }
 
     void EnsureBadgeReadability()
@@ -590,6 +647,23 @@ public class UpgradeCardUI : MonoBehaviour
         if (costText != null && costText.transform.parent != infoColT)
             costText.transform.SetParent(infoColT, false);
 
+        // BLOQUE 6: create CostText dynamically when the baked scene card has none
+        if (costText == null)
+        {
+            var costGo = new GameObject("CostText", typeof(RectTransform));
+            costGo.transform.SetParent(infoColT, false);
+            costText = costGo.AddComponent<TextMeshProUGUI>();
+            RuntimeTmpText.ApplyDefaultFont(costText);
+            costText.fontSize  = 22f;
+            costText.fontStyle = FontStyles.Bold;
+            costText.color     = CinematicTheme.GoldBase;
+            costText.alignment = TextAlignmentOptions.MidlineLeft;
+            costText.textWrappingMode = TextWrappingModes.NoWrap;
+            var costLE = costGo.AddComponent<LayoutElement>();
+            costLE.preferredHeight = 28f;
+            costLE.minHeight       = 24f;
+        }
+
         buyButton.transform.SetParent(cardMain, false);
         buyButton.transform.SetAsLastSibling();
 
@@ -679,14 +753,14 @@ public class UpgradeCardUI : MonoBehaviour
         if (cityLocked)
             return CityProgressionRules.GetUpgradeLockLabel(cfg);
         if (studioLocked)
-            return $"Nv.{cfg.unlockStudioLevel} estudio";
-        return "Bloqueado";
+            return string.Format(Loc.Get(LocKeys.UpgradeLockedStudio), cfg.unlockStudioLevel);
+        return Loc.Get(LocKeys.InstLocked);
     }
 
     string BuildEffectString(int level)
     {
         if (level <= 0 || upgradeConfig.effects == null || upgradeConfig.effects.Length == 0)
-            return "Sin efecto";
+            return Loc.Get(LocKeys.UpgradeNoEffect);
 
         var lines = new System.Collections.Generic.List<string>();
         foreach (var e in upgradeConfig.effects)
@@ -696,7 +770,7 @@ public class UpgradeCardUI : MonoBehaviour
             if (!string.IsNullOrEmpty(part))
                 lines.Add(part);
         }
-        return lines.Count > 0 ? string.Join("\n", lines) : "Sin efecto";
+        return lines.Count > 0 ? string.Join("\n", lines) : Loc.Get(LocKeys.UpgradeNoEffect);
     }
 
     void OnBuyClicked()
@@ -793,21 +867,21 @@ public static class UpgradeEffectFormatter
         switch (type)
         {
             case UpgradeEffectType.Quality:
-                return $"+{val * 100f:0.#}% Calidad";
+                return Loc.Format(LocKeys.UpgradeEffectQuality, val * 100f);
             case UpgradeEffectType.Speed:
-                return $"+{val * 100f:0.#}% Velocidad";
+                return Loc.Format(LocKeys.UpgradeEffectSpeed, val * 100f);
             case UpgradeEffectType.CostReduction:
-                return $"-{val * 100f:0.#}% Coste";
+                return Loc.Format(LocKeys.UpgradeEffectCost, val * 100f);
             case UpgradeEffectType.ReputationBonus:
-                return $"+{val * 100f:0.#}% Reputación";
+                return Loc.Format(LocKeys.UpgradeEffectRep, val * 100f);
             case UpgradeEffectType.PassiveIncomeBonus:
-                return $"+{AnimatedMoneyText.FormatMoney((long)val)}/s Ingresos";
+                return Loc.Format(LocKeys.UpgradeEffectIncome, AnimatedMoneyText.FormatMoney((long)val));
             case UpgradeEffectType.MaxMovieSlots:
-                return val == 1f ? "+1 Slot Producción" : $"+{(int)val} Slots Producción";
+                return Loc.Format(LocKeys.UpgradeEffectSlot, (int)val);
             case UpgradeEffectType.XPBonus:
-                return $"+{val * 100f:0.#}% XP";
+                return Loc.Format(LocKeys.UpgradeEffectXP, val * 100f);
             case UpgradeEffectType.UnlockMovieTier:
-                return val >= 1f ? $"Catálogo Nv.{Mathf.RoundToInt(val)}" : "";
+                return val >= 1f ? Loc.Format(LocKeys.UpgradeEffectCatalog, Mathf.RoundToInt(val)) : "";
             default:
                 return "";
         }

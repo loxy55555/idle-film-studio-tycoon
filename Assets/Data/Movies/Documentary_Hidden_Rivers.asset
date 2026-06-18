@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Hidden Rivers
   genre: 9
   tagline: Underground rivers mapped for the first time.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Underground rivers mapped for the first time.
+  synopsisEn: Hidden Rivers examines with depth and honesty a topic that challenges
+    contemporary society.
+  synopsisFr: "Hidden Rivers examine avec profondeur et honn\xEAtet\xE9 un sujet
+    qui interpelle la soci\xE9t\xE9 contemporaine."
+  synopsisDe: Hidden Rivers untersucht mit Tiefe und Ehrlichkeit ein Thema, das die
+    heutige Gesellschaft herausfordert.
+  synopsisJa: "Hidden Rivers\u306F\u73FE\u4EE3\u793E\u4F1A\u306B\u554F\u3044\u304B\u3051\u308B\u30C6\u30FC\u30DE\u3092\u3001\u6DF1\u307F\u3068\u8AA0\u5B9F\u3055\u3092\u3082\u3063\u3066\u8003\u5BDF\u3059\u308B\u3002"
+  cost: 80
+  baseReward: 140
+  baseRep: 1.1
+  duration: 300
+  quality: 1.11
   unlockStudioLevel: 1
-  unlockCityLevel: 8
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 1
   posterColorHex: 0

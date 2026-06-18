@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,10 @@ public class RefreshChoiceDialogUI : MonoBehaviour
 
     RectTransform _panel;
     TextMeshProUGUI _titleText;
+    TextMeshProUGUI _subtitleText;
+    TextMeshProUGUI _adLabel;
+    TextMeshProUGUI _diamondLabel;
+    TextMeshProUGUI _cancelLabel;
     Action<bool> _onAd;
     Action _onDiamonds;
     string _placementId;
@@ -47,10 +52,12 @@ public class RefreshChoiceDialogUI : MonoBehaviour
         Stretch(backdrop);
         backdrop.gameObject.AddComponent<Button>().onClick.AddListener(Close);
 
+        // A3: Full-width dialog for mobile legibility
         _panel = CreatePanel(root, "Panel", Color.clear);
         var panelRT = _panel;
-        panelRT.anchorMin = panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRT.sizeDelta = new Vector2(300f, 260f);
+        panelRT.anchorMin = new Vector2(0.05f, 0.20f);
+        panelRT.anchorMax = new Vector2(0.95f, 0.80f);
+        panelRT.offsetMin = panelRT.offsetMax = Vector2.zero;
         HudSkinProvider.ApplyPanel(_panel.GetComponent<Image>(), HudPanelVariant.Card);
 
         var vlg = _panel.gameObject.AddComponent<VerticalLayoutGroup>();
@@ -65,12 +72,12 @@ public class RefreshChoiceDialogUI : MonoBehaviour
             FontStyles.Bold, TextAlignmentOptions.Center, "Title");
         LE(_titleText.rectTransform, 28f);
 
-        var sub = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.RefreshChoosePayment), 11f, TextSecondary,
+        _subtitleText = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.RefreshChoosePayment), 11f, TextSecondary,
             FontStyles.Normal, TextAlignmentOptions.Center, "Subtitle");
-        LE(sub.rectTransform, 24f);
+        LE(_subtitleText.rectTransform, 24f);
 
-        CreateActionButton(_panel, LocKeys.RefreshWatchAd, HudButtonVariant.Primary, OnAdClicked);
-        CreateActionButton(_panel, LocKeys.RefreshSpendDiamonds, HudButtonVariant.Primary, OnDiamondClicked);
+        _adLabel = CreateActionButton(_panel, LocKeys.RefreshWatchAd, HudButtonVariant.Primary, OnAdClicked);
+        _diamondLabel = CreateActionButton(_panel, LocKeys.RefreshSpendDiamonds, HudButtonVariant.Primary, OnDiamondClicked);
 
         var cancelGo = new GameObject("CancelBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         cancelGo.transform.SetParent(_panel, false);
@@ -78,11 +85,11 @@ public class RefreshChoiceDialogUI : MonoBehaviour
         cancelGo.AddComponent<UIButtonScale>();
         LE(cancelGo.GetComponent<RectTransform>(), 34f);
         cancelGo.GetComponent<Button>().onClick.AddListener(Close);
-        RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 12f, TextPrimary,
+        _cancelLabel = RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 12f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
     }
 
-    void CreateActionButton(Transform parent, string locKey, HudButtonVariant variant, UnityEngine.Events.UnityAction onClick)
+    TextMeshProUGUI CreateActionButton(Transform parent, string locKey, HudButtonVariant variant, UnityEngine.Events.UnityAction onClick)
     {
         var go = new GameObject("Btn_" + locKey, typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
@@ -90,8 +97,16 @@ public class RefreshChoiceDialogUI : MonoBehaviour
         go.AddComponent<UIButtonScale>();
         LE(go.GetComponent<RectTransform>(), 40f);
         go.GetComponent<Button>().onClick.AddListener(onClick);
-        RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 13f, TextPrimary,
+        return RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 13f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
+    }
+
+    void RefreshLocalization()
+    {
+        if (_subtitleText) _subtitleText.text = Loc.Get(LocKeys.RefreshChoosePayment);
+        if (_adLabel) _adLabel.text = Loc.Get(LocKeys.RefreshWatchAd);
+        if (_diamondLabel) _diamondLabel.text = Loc.Get(LocKeys.RefreshSpendDiamonds);
+        if (_cancelLabel) _cancelLabel.text = Loc.Get(LocKeys.ProdBudgetCancel);
     }
 
     void Open(string title, int diamondCost, string placementId, Action<bool> onAd, Action onDiamonds)
@@ -101,7 +116,9 @@ public class RefreshChoiceDialogUI : MonoBehaviour
         _onAd = onAd;
         _onDiamonds = onDiamonds;
         if (_titleText != null) _titleText.text = title;
+        RefreshLocalization();
         gameObject.SetActive(true);
+        UIAnimationService.PlayPopupOpen(_panel, GetComponent<CanvasGroup>());
     }
 
     void OnAdClicked()
@@ -115,7 +132,8 @@ public class RefreshChoiceDialogUI : MonoBehaviour
     {
         if (!GameplayRefreshService.TrySpendDiamonds(_diamondCost))
         {
-            Debug.Log("[RefreshChoice] Not enough diamonds.");
+            Close();
+            InsufficientDiamondsDialog.Show();
             return;
         }
 
@@ -128,7 +146,11 @@ public class RefreshChoiceDialogUI : MonoBehaviour
     {
         _onAd = null;
         _onDiamonds = null;
-        gameObject.SetActive(false);
+        if (!gameObject.activeSelf) return;
+        var cg = GetComponent<CanvasGroup>();
+        _panel?.DOKill();
+        cg?.DOKill();
+        UIAnimationService.PlayPopupClose(_panel, cg, () => gameObject.SetActive(false));
     }
 
     static RectTransform CreatePanel(Transform parent, string name, Color color)

@@ -71,12 +71,14 @@ public class TopBarUI : MonoBehaviour
         TrySubscribe();
         PatchSettingsIcon();
         PatchTopBarVisuals();
+        UserPrefs.OnLanguageChanged += RefreshLocalization;
     }
 
     private void OnDestroy()
     {
         GameHub.OnGameReady -= BindDiamonds;
         GameHub.OnGameReady -= BindCity;
+        UserPrefs.OnLanguageChanged -= RefreshLocalization;
         UnbindDiamonds();
         UnbindCity();
         if (studio == null) return;
@@ -126,7 +128,7 @@ public class TopBarUI : MonoBehaviour
         var statsBlock = transform.Find("StatsBlock") as RectTransform;
         if (statsBlock == null)
         {
-            diamondsText = RuntimeTmpText.Create(transform, "DIA 0", 18, DIAMOND_COLOR, FontStyles.Bold);
+            diamondsText = RuntimeTmpText.Create(transform, Loc.Get(LocKeys.TopBarDiam), 18, DIAMOND_COLOR, FontStyles.Bold);
             return;
         }
 
@@ -142,7 +144,7 @@ public class TopBarUI : MonoBehaviour
         vl.childForceExpandWidth = vl.childForceExpandHeight = true;
         vl.spacing = 0;
 
-        var label = RuntimeTmpText.Create(block.transform, "DIAM", 11, CinematicTheme.TextDim,
+        var label = RuntimeTmpText.Create(block.transform, Loc.Get(LocKeys.TopBarDiam), 11, CinematicTheme.TextDim,
             FontStyles.Normal, TextAlignmentOptions.Center, "DiamondsLabel");
         label.gameObject.AddComponent<LayoutElement>().preferredHeight = 14;
 
@@ -269,7 +271,7 @@ public class TopBarUI : MonoBehaviour
     private void UpdateIncome(long income)
     {
         if (incomeText != null)
-            incomeText.text = "+" + AnimatedMoneyText.FormatMoney(income) + "/s";
+            incomeText.text = Loc.Format(LocKeys.TopBarIncomeFmt, AnimatedMoneyText.FormatMoney(income));
     }
 
     private void UpdateReputation(float rep)
@@ -310,8 +312,8 @@ public class TopBarUI : MonoBehaviour
     {
         if (D != null)
         {
-            if (qualityText != null) qualityText.text = "Cal " + D.CalculateQuality().ToString("0.0");
-            if (speedText   != null) speedText.text   = "Vel " + D.CalculateSpeed().ToString("0.0");
+            if (qualityText != null) qualityText.text = Loc.Get(LocKeys.TopBarQualAbbr)  + " " + D.CalculateQuality().ToString("0.0");
+            if (speedText   != null) speedText.text   = Loc.Get(LocKeys.TopBarSpeedAbbr) + " " + D.CalculateSpeed().ToString("0.0");
         }
 
         if (P != null && oscarsText != null)
@@ -321,7 +323,16 @@ public class TopBarUI : MonoBehaviour
             UpdateCity(_city.Level);
 
         if (SL != null && levelText != null && levelText.gameObject.activeInHierarchy)
-            levelText.text = "Nv." + SL.Level;
+            levelText.text = Loc.Get(LocKeys.TopBarLevelAbbr) + SL.Level;
+    }
+
+    public void RefreshLocalization()
+    {
+        // Refresh DIAM label
+        var diamLabel = FindChildText("DiamondsLabel");
+        if (diamLabel != null) diamLabel.text = Loc.Get(LocKeys.TopBarDiam);
+        // Refresh stat abbreviations and level
+        UpdateStats();
     }
 
     public RectTransform GetOscarRect() => _oscarRT;
@@ -346,7 +357,7 @@ public class TopBarUI : MonoBehaviour
 
         RestructureTopBarLayout();
         AddDarkPanelBg("MoneyBlock");
-        AddDarkPanelBg("DiamondsBlock");
+        ClearDiamondBlockBg();
 
         if (moneyText != null)
         {
@@ -521,11 +532,6 @@ public class TopBarUI : MonoBehaviour
         le.preferredWidth = 150f;
         le.flexibleWidth = 0.8f;
 
-        // Dark panel background matching reference
-        var blockImg = diamondsBlock.GetComponent<Image>() ?? diamondsBlock.gameObject.AddComponent<Image>();
-        blockImg.color = new Color(0.08f, 0.10f, 0.14f, 0.92f);
-        blockImg.raycastTarget = false;
-
         diamondsBlock.gameObject.SetActive(true);
         UpdateDiamonds(_diamonds != null ? _diamonds.Balance : 0);
     }
@@ -660,6 +666,19 @@ public class TopBarUI : MonoBehaviour
         blockImg.raycastTarget = false;
     }
 
+    /// <summary>FASE 14.0A — removes any Image on DiamondsBlock so it blends with the uniform
+    /// TopBar background instead of showing a lighter rectangle.</summary>
+    void ClearDiamondBlockBg()
+    {
+        Transform diamondsBlock = null;
+        var statsBlock = transform.Find("StatsBlock");
+        if (statsBlock != null) diamondsBlock = statsBlock.Find("DiamondsBlock");
+        if (diamondsBlock == null) return;
+
+        var img = diamondsBlock.GetComponent<Image>();
+        if (img != null) img.color = Color.clear;
+    }
+
     // Phase 13.3D: Remove any previously created __ResourceBg panel that shows as a visible blue box.
     void ClearResourceBlockBg(string blockName)
     {
@@ -718,11 +737,35 @@ public class TopBarUI : MonoBehaviour
         btnRT.anchoredPosition = new Vector2(-margin, -margin);
 
         var tmp = settingsBtn.GetComponentInChildren<TextMeshProUGUI>(true);
-        if (tmp != null)
+        var settingsSprite = UIIconCatalog.GetResourceSettings();
+        if (settingsSprite != null)
         {
-            tmp.text = "⚙";
-            tmp.fontSize = 40f;
-            tmp.alignment = TextAlignmentOptions.Center;
+            Debug.Log("[SettingsIcon] Sprite encontrado");
+            if (tmp != null) tmp.gameObject.SetActive(false);
+            const float iconInset = 4f;
+            var iconImg = UIIconGraphic.EnsureChildIcon(settingsBtn.transform, "SettingsIconSprite", size - iconInset * 2f);
+            UIIconGraphic.Apply(iconImg, settingsSprite, CinematicTheme.GoldBright);
+            var iconRT = iconImg.rectTransform;
+            iconRT.anchorMin = Vector2.zero;
+            iconRT.anchorMax = Vector2.one;
+            iconRT.offsetMin = new Vector2(iconInset, iconInset);
+            iconRT.offsetMax = new Vector2(-iconInset, -iconInset);
         }
+        else
+        {
+            Debug.LogWarning("[SettingsIcon] Sprite NULL — registry may need rebuild (Idle Film › UI › Rebuild Icon Registry)");
+            if (tmp != null)
+            {
+                tmp.text = "⚙";
+                tmp.fontSize = 40f;
+                tmp.alignment = TextAlignmentOptions.Center;
+            }
+        }
+
+        // BLOQUE 1 — wire to SettingsOverlayUI (works from any screen that has a TopBar)
+        settingsBtn.onClick.RemoveAllListeners();
+        var settingsOverlay = Object.FindAnyObjectByType<SettingsOverlayUI>(FindObjectsInactive.Include);
+        if (settingsOverlay != null)
+            settingsBtn.onClick.AddListener(settingsOverlay.Toggle);
     }
 }

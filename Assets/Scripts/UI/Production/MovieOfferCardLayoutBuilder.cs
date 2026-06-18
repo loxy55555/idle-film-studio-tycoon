@@ -5,12 +5,14 @@ using UnityEngine.UI;
 /// <summary>Premium movie offer card — tycoon-style production opportunity (Phase 9.0).</summary>
 public static class MovieOfferCardLayoutBuilder
 {
-    public const string LayoutMarkerName = "MovieOfferCard_v5";
+    public const string LayoutMarkerName = "MovieOfferCard_v8";
     public const float RarityIconWidth   = 98f;
-    // Phase 13.4D — increased font sizes for mobile legibility; card + body heights adjusted
+    // Phase 15.0C.5 — increased genre row height for NotoSansJP CJK metrics
     public const float TitleRowHeight    = 38f;   // was 34
-    public const float CompactBodyHeight = 296f;  // was 248 — accommodates larger fonts
-    public const float CardPreferredHeight = 356f; // was HudLayoutConstants.OfferCardBaseHeight (300)
+    public const float GenreRowHeight    = 44f;   // was 22 — NotoSansJP needs ~41px for 6-char katakana
+    // Phase 15.0C.5 BLOQUE 4 — +16px for vertical 2-row reward section (money + XP|REP)
+    public const float CompactBodyHeight = 334f;  // was 318
+    public const float CardPreferredHeight = 394f; // was 378
 
     static readonly Color TextPrimary    = Color.white;
     static readonly Color TextSecondary  = new Color(0.54f, 0.54f, 0.67f);
@@ -29,6 +31,7 @@ public static class MovieOfferCardLayoutBuilder
         public TextMeshProUGUI rarityText;
         public TextMeshProUGUI durationText;
         public TextMeshProUGUI rewardText;
+        public TextMeshProUGUI xpText;
         public TextMeshProUGUI repText;
         public TextMeshProUGUI badgesText;
         public TextMeshProUGUI unlockText;
@@ -41,8 +44,8 @@ public static class MovieOfferCardLayoutBuilder
     {
         if (root.Find(LayoutMarkerName) != null) return true;
 
-        // Remove legacy v3/v4 markers so the card rebuilds with v5 layout
-        foreach (var legacyName in new[] { "MovieOfferCard_v4", "MovieOfferCard_v3" })
+        // Remove legacy markers so the card rebuilds with the current layout
+        foreach (var legacyName in new[] { "MovieOfferCard_v7", "MovieOfferCard_v6", "MovieOfferCard_v5", "MovieOfferCard_v4", "MovieOfferCard_v3" })
         {
             var legacy = root.Find(legacyName);
             if (legacy == null) continue;
@@ -88,7 +91,7 @@ public static class MovieOfferCardLayoutBuilder
             emptyInner.childControlWidth = emptyInner.childControlHeight = true;
             emptyInner.childForceExpandWidth = emptyInner.childForceExpandHeight = false;
 
-            var empty = CreateLabel(emptyGo.transform, "EmptyLabel", "BLOQUEADO", 28f, TextSecondary, 80f);
+            var empty = CreateLabel(emptyGo.transform, "EmptyLabel", Loc.Get(LocKeys.ProdSlotLocked), 28f, TextSecondary, 80f);
             empty.fontStyle = FontStyles.Bold;
             empty.alignment = TextAlignmentOptions.Center;
             empty.enableAutoSizing = true;
@@ -132,35 +135,62 @@ public static class MovieOfferCardLayoutBuilder
         result.titleText.raycastTarget = false;
         LE(result.titleText.rectTransform, TitleRowHeight);
 
-        result.genreText = RuntimeTmpText.Create(bodyRow.transform, cfg != null ? GenreLabel(cfg.genre) : string.Empty,
+        result.genreText = RuntimeTmpText.CreateMultilingual(bodyRow.transform, cfg != null ? GenreLabel(cfg.genre) : string.Empty,
             17f, cfg != null ? GenreAccentColor(cfg.genre) : TextSecondary, FontStyles.Bold,
             TextAlignmentOptions.MidlineLeft, "Genre");
         result.genreText.raycastTarget = false;
-        LE(result.genreText.rectTransform, 22f);
+        LE(result.genreText.rectTransform, GenreRowHeight);
 
-        result.durationText = RuntimeTmpText.Create(bodyRow.transform, "⏱ —",
+        result.durationText = RuntimeTmpText.Create(bodyRow.transform, "—",
             18f, TextSecondary, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Duration");
         result.durationText.raycastTarget = false;
         LE(result.durationText.rectTransform, 22f);
 
+        // RewardRow v8 — vertical 2-row layout: money on top, XP + REP below
         var rewardRow = CreatePanel(bodyRow.transform, "RewardRow", Color.clear);
-        LE(rewardRow, 24f);
-        var rewardHLG = rewardRow.gameObject.AddComponent<HorizontalLayoutGroup>();
-        rewardHLG.spacing = 8;
-        rewardHLG.childAlignment = TextAnchor.MiddleLeft;
-        rewardHLG.childControlWidth = rewardHLG.childControlHeight = true;
-        rewardHLG.childForceExpandWidth = false;
-        rewardHLG.childForceExpandHeight = false;
+        LE(rewardRow, 44f);
+        var rewardVLG = rewardRow.gameObject.AddComponent<VerticalLayoutGroup>();
+        rewardVLG.spacing = 2;
+        rewardVLG.padding = new RectOffset(0, 0, 2, 2);
+        rewardVLG.childAlignment = TextAnchor.MiddleLeft;
+        rewardVLG.childControlWidth = rewardVLG.childControlHeight = true;
+        rewardVLG.childForceExpandWidth = true;
+        rewardVLG.childForceExpandHeight = false;
 
-        result.rewardText = RuntimeTmpText.Create(rewardRow.transform, "💵 —",
-            17f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Reward");
+        // Row 1: money (full width, gold)
+        result.rewardText = RuntimeTmpText.Create(rewardRow.transform, "—",
+            16f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Reward");
         result.rewardText.raycastTarget = false;
-        result.rewardText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        result.rewardText.enableAutoSizing = true;
+        result.rewardText.fontSizeMin = 12f;
+        result.rewardText.fontSizeMax = 16f;
+        result.rewardText.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
 
-        result.repText = RuntimeTmpText.Create(rewardRow.transform, "🏆 —",
-            17f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Rep");
+        // Row 2: XP (green) + REP (blue) side by side
+        var xpRepRow = new GameObject("XpRepRow", typeof(RectTransform));
+        xpRepRow.transform.SetParent(rewardRow.transform, false);
+        xpRepRow.AddComponent<LayoutElement>().preferredHeight = 20f;
+        var xpRepHLG = xpRepRow.AddComponent<HorizontalLayoutGroup>();
+        xpRepHLG.spacing = 8;
+        xpRepHLG.childControlWidth = xpRepHLG.childControlHeight = true;
+        xpRepHLG.childForceExpandWidth = false;
+        xpRepHLG.childForceExpandHeight = false;
+
+        result.xpText = RuntimeTmpText.Create(xpRepRow.transform, "—",
+            14f, new Color(0.55f, 0.95f, 0.60f), FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "XP");
+        result.xpText.raycastTarget = false;
+        result.xpText.enableAutoSizing = true;
+        result.xpText.fontSizeMin = 11f;
+        result.xpText.fontSizeMax = 14f;
+        result.xpText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+        result.repText = RuntimeTmpText.Create(xpRepRow.transform, "—",
+            14f, new Color(0.65f, 0.90f, 1f), FontStyles.Bold, TextAlignmentOptions.MidlineRight, "Rep");
         result.repText.raycastTarget = false;
-        result.repText.gameObject.AddComponent<LayoutElement>().preferredWidth = 80f;
+        result.repText.enableAutoSizing = true;
+        result.repText.fontSizeMin = 11f;
+        result.repText.fontSizeMax = 14f;
+        result.repText.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
         result.badgesText = RuntimeTmpText.Create(bodyRow.transform, string.Empty,
             11f, AccentGold, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Badges");
@@ -367,12 +397,12 @@ public static class MovieOfferCardLayoutBuilder
             twLE.minHeight = TitleRowHeight;
         }
 
-        var rewardWrap = bodyRow.Find("InfoCol/RewardWrap") ?? bodyRow.Find("RewardWrap");
+        var rewardWrap = bodyRow.Find("InfoCol/RewardWrap") ?? bodyRow.Find("RewardWrap") ?? bodyRow.Find("RewardRow");
         if (rewardWrap != null)
         {
             var rwLE = rewardWrap.GetComponent<LayoutElement>() ?? rewardWrap.gameObject.AddComponent<LayoutElement>();
-            rwLE.preferredHeight = 24f;
-            rwLE.minHeight = 20f;
+            rwLE.preferredHeight = 44f;
+            rwLE.minHeight = 40f;
         }
 
         var selectBtn = bodyRow.Find("InfoCol/SelectBtn") ?? bodyRow.Find("SelectBtn");
@@ -439,20 +469,7 @@ public static class MovieOfferCardLayoutBuilder
         _                      => new Color(0.40f, 0.40f, 0.50f),
     };
 
-    static string GenreLabel(MovieGenre g) => g switch
-    {
-        MovieGenre.Action      => "ACCIÓN",
-        MovieGenre.Drama       => "DRAMA",
-        MovieGenre.Horror      => "TERROR",
-        MovieGenre.Comedy      => "COMEDIA",
-        MovieGenre.Romance     => "ROMANCE",
-        MovieGenre.SciFi       => "SCI-FI",
-        MovieGenre.Fantasy     => "FANTASÍA",
-        MovieGenre.Thriller    => "THRILLER",
-        MovieGenre.Animation   => "ANIMACIÓN",
-        MovieGenre.Documentary => "DOCUMENTAL",
-        _                      => g.ToString().ToUpper(),
-    };
+    static string GenreLabel(MovieGenre g) => GenreLoc.GetLabel(g).ToUpper();
 
     static Color RarityFrameColor(MovieRarity r) => r switch
     {
@@ -470,13 +487,7 @@ public static class MovieOfferCardLayoutBuilder
         _                     => new Color(0.20f, 0.22f, 0.30f),
     };
 
-    static string RarityLabel(MovieRarity r) => r switch
-    {
-        MovieRarity.Legendary => "★ LEGENDARIA",
-        MovieRarity.Epic      => "◆ ÉPICA",
-        MovieRarity.Rare      => "● RARA",
-        _                     => "COMÚN",
-    };
+    static string RarityLabel(MovieRarity r) => ProductionLoc.GetRarityLabel(r);
 
     static Color ParseHexColor(string hex)
     {
@@ -508,7 +519,10 @@ public static class MovieOfferCardLayoutBuilder
             rewardText      = card.Find("BodyRow/RewardRow/Reward")?.GetComponent<TextMeshProUGUI>()
                            ?? card.Find("BodyRow/InfoCol/RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>()
                            ?? card.Find("RewardWrap/Reward")?.GetComponent<TextMeshProUGUI>(),
-            repText         = card.Find("BodyRow/RewardRow/Rep")?.GetComponent<TextMeshProUGUI>()
+            xpText          = card.Find("BodyRow/RewardRow/XpRepRow/XP")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("BodyRow/InfoCol/RewardWrap/XpRepRow/XP")?.GetComponent<TextMeshProUGUI>(),
+            repText         = card.Find("BodyRow/RewardRow/XpRepRow/Rep")?.GetComponent<TextMeshProUGUI>()
+                           ?? card.Find("BodyRow/RewardRow/Rep")?.GetComponent<TextMeshProUGUI>()
                            ?? card.Find("BodyRow/InfoCol/RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>()
                            ?? card.Find("RewardWrap/Rep")?.GetComponent<TextMeshProUGUI>(),
             badgesText      = card.Find("BodyRow/Badges")?.GetComponent<TextMeshProUGUI>()
@@ -568,7 +582,7 @@ public static class MovieOfferCardLayoutBuilder
 
         // Phase 13.4D — row heights match the increased font sizes
         EnsureRowLE(bodyRow.Find("Title") as RectTransform, TitleRowHeight);      // 38
-        EnsureRowLE(bodyRow.Find("Genre") as RectTransform, 22f);                  // was 14
+        EnsureRowLE(bodyRow.Find("Genre") as RectTransform, GenreRowHeight);        // 44 — NotoSansJP metrics
         EnsureRowLE(bodyRow.Find("Duration") as RectTransform, 22f);               // was 18
 
         var rewardRow = bodyRow.Find("RewardRow") as RectTransform;

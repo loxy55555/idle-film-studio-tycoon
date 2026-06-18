@@ -29,6 +29,9 @@ public class DepartmentMiniCardUI : MonoBehaviour
     int               _cachedLevel = -1;
     bool              _cachedLocked;
     bool              _purchaseInFlight;
+    // Track the language used for the last full refresh so we can force a rebuild
+    // when the tab becomes active after a language change (fixes Japanese TMP rendering).
+    string            _lastRefreshedLanguage;
 
     void Awake()
     {
@@ -88,7 +91,22 @@ public class DepartmentMiniCardUI : MonoBehaviour
     {
         EnsurePremiumMaterial();
         WireUpgradeButton();
-        Refresh();
+        if (_depts == null && GameHub.Instance != null)
+        {
+            // GameHub.OnGameReady fired while this object was inactive (Awake subscription
+            // was missed). Bind immediately — same pattern as UpgradeCardUI.
+            OnGameReady();
+        }
+        else if (_depts != null && _lastRefreshedLanguage != Loc.LanguageCode)
+        {
+            // Language changed while the tab was inactive (HudLocalizationBridge skips
+            // inactive objects). Force a full rebuild so Japanese TMP components are fresh.
+            RefreshLocalization();
+        }
+        else
+        {
+            Refresh();
+        }
     }
 
     public void ForcePremiumLayoutRebuild() => EnsurePremiumLayoutIfNeeded();
@@ -203,9 +221,23 @@ public class DepartmentMiniCardUI : MonoBehaviour
         }
     }
 
+    public void RefreshLocalization()
+    {
+        // TMP components created at startup can't render Japanese (fallback font not yet loaded).
+        // Force a complete layout rebuild so fresh TMP objects are created — they render correctly.
+        for (int i = transform.childCount - 1; i >= 0; i--)
+            Object.DestroyImmediate(transform.GetChild(i).gameObject);
+
+        var wire = DepartmentMiniCardLayoutBuilder.Build(transform as RectTransform, deptType);
+        ApplyWire(wire);
+        WireUpgradeButton();
+        Refresh();
+    }
+
     void Refresh()
     {
         if (_depts == null) return;
+        _lastRefreshedLanguage = Loc.LanguageCode;
 
         themeVisual?.Apply(deptType);
 
@@ -345,9 +377,9 @@ public class DepartmentMiniCardUI : MonoBehaviour
         float pct = effectPerLevel * 100f;
         return category switch
         {
-            "Reducción" => $"-{pct:0.#}% costes",
-            "Velocidad" => $"+{pct:0.#}% velocidad",
-            _           => $"+{pct:0.#}% ingresos",
+            "Reducción" => $"-{pct:0.#}% {Loc.Get(LocKeys.BonifCosts).ToLower()}",
+            "Velocidad" => $"+{pct:0.#}% {Loc.Get(LocKeys.BonifSpeed).ToLower()}",
+            _           => $"+{pct:0.#}% {Loc.Get(LocKeys.BonifBoxOffice).ToLower()}",
         };
     }
 

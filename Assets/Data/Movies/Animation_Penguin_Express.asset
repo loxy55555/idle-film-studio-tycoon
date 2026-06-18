@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Penguin Express
   genre: 8
   tagline: Express delivery across ice continents.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Express delivery across ice continents.
+  synopsisEn: Penguin Express redefines what animation can tell with a story of uncommon
+    emotional depth.
+  synopsisFr: "Penguin Express red\xE9finit ce que l'animation peut raconter avec
+    une histoire d'une profondeur \xE9motionnelle hors du commun."
+  synopsisDe: "Penguin Express definiert neu, was Animation erz\xE4hlen kann \u2014
+    mit einer Geschichte von ungew\xF6hnlicher emotionaler Tiefe."
+  synopsisJa: "Penguin Express\u306F\u30A2\u30CB\u30E1\u30FC\u30B7\u30E7\u30F3\u304C\u4F55\u3092\u8A9E\u308C\u308B\u304B\u3092\u518D\u5B9A\u7FA9\u3059\u308B\u3001\u4E26\u5916\u308C\u305F\u611F\u60C5\u7684\u6DF1\u307F\u3092\u6301\u3064\u7269\u8A9E\u3002"
+  cost: 165000
+  baseReward: 295000
+  baseRep: 943
+  duration: 60
+  quality: 4.71
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: PenguinExpress.png
   posterSprite: {fileID: 21300000, guid: dec2f1ec7bb81604e8f15b3ba40a1345, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

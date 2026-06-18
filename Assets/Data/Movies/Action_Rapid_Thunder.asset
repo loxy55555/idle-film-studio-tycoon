@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Rapid Thunder
   genre: 0
   tagline: Lightning war in a city that never sleeps.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Lightning war in a city that never sleeps.
+  synopsisEn: "A covert operation at the edge of possibility \u2014 every decision
+    carries a cost and no mistake is forgiven."
+  synopsisFr: "Une op\xE9ration secr\xE8te \xE0 la limite du possible \u2014 chaque
+    d\xE9cision a un co\xFBt et aucune erreur n'est pardonn\xE9e."
+  synopsisDe: "Eine verdeckte Operation jenseits aller Grenzen \u2014 jede Entscheidung
+    hat ihren Preis und kein Fehler wird verziehen."
+  synopsisJa: "\u53EF\u80FD\u6027\u306E\u9650\u754C\u306B\u6311\u3080\u6975\u79D8\u4F5C\u6226\u3002\u3042\u3089\u3086\u308B\u5224\u65AD\u306B\u4EE3\u511F\u304C\u3042\u308A\u3001\u3069\u3093\u306A\u5931\u6557\u3082\u8A31\u3055\u308C\u306A\u3044\u3002"
+  cost: 50000
+  baseReward: 90000
+  baseRep: 360
+  duration: 60
+  quality: 4
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 7
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: RapidThunder.png
   posterSprite: {fileID: 21300000, guid: 096ec5ffe6dfebb4f8f37d87a1b8a9e1, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

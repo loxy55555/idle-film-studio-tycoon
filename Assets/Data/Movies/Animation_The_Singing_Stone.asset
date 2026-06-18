@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Lantern Parade
   genre: 8
   tagline: A stone teaches a village to harmonize.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A stone teaches a village to harmonize.
+  synopsisEn: The Lantern Parade takes the audience to a colorful and exciting universe
+    where dreams and challenges coexist.
+  synopsisFr: "The Lantern Parade emm\xE8ne le spectateur dans un univers color\xE9
+    et passionnant o\xF9 r\xEAves et d\xE9fis coexistent."
+  synopsisDe: "The Lantern Parade entf\xFChrt das Publikum in ein farbenfrohes und
+    aufregendes Universum, in dem Tr\xE4ume und Herausforderungen koexistieren."
+  synopsisJa: "The Lantern Parade\u306F\u5922\u3068\u6311\u6226\u304C\u5171\u5B58\u3059\u308B\u3001\u8272\u9BAE\u3084\u304B\u3067\u8208\u596E\u306B\u6E80\u3061\u305F\u4E16\u754C\u3078\u89B3\u5BA2\u3092\u9023\u308C\u3066\u3044\u304F\u3002"
+  cost: 170000
+  baseReward: 310000
+  baseRep: 985
+  duration: 300
+  quality: 4.74
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLanternParade.png
   posterSprite: {fileID: 21300000, guid: f236901ab1a1fd9448185380c052b7ef, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

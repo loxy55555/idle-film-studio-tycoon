@@ -164,6 +164,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
+    Android: com.vosnosgames.filmproducertycoon
     Standalone: com.DefaultCompany.2D-URP
   buildNumber:
     Standalone: 0
@@ -386,7 +387,10 @@ PlayerSettings:
       m_Height: 36
       m_Kind: 0
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs: []
   m_BuildTargetGraphicsJobMode: []
@@ -674,7 +678,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: DOTWEEN;DOTWEEN_UITOOLKIT;DOTWEEN_EPO
+    Android: DOTWEEN;DOTWEEN_UITOOLKIT;DOTWEEN_EPO;APP_UI_EDITOR_ONLY;SENTIS_ANALYTICS_ENABLED
     EmbeddedLinux: DOTWEEN;DOTWEEN_UITOOLKIT;DOTWEEN_EPO
     GameCoreScarlett: DOTWEEN;DOTWEEN_UITOOLKIT;DOTWEEN_EPO
     GameCoreXboxOne: DOTWEEN;DOTWEEN_UITOOLKIT;DOTWEEN_EPO
@@ -768,7 +772,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Purchasing: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 

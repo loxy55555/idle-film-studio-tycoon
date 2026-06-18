@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Boss of None
   genre: 3
   tagline: Promoted by mistake. Promoted again anyway.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Promoted by mistake. Promoted again anyway.
+  synopsisEn: Boss of None pushes its characters' ability to improvise to the limit
+    in increasingly absurd situations.
+  synopsisFr: "Boss of None pousse la capacit\xE9 d'improvisation de ses personnages
+    \xE0 la limite dans des situations de plus en plus absurdes."
+  synopsisDe: Boss of None treibt das Improvisationstalent seiner Figuren in immer
+    absurderen Situationen an die Grenzen.
+  synopsisJa: "Boss of None\u306F\u307E\u3059\u307E\u3059\u7A81\u62CD\u5B50\u3082\u306A\u3044\u72B6\u6CC1\u3067\u3001\u767B\u5834\u4EBA\u7269\u305F\u3061\u306E\u5373\u8208\u529B\u3092\u9650\u754C\u307E\u3067\u8A66\u3059\u3002"
+  cost: 5150
+  baseReward: 9300
+  baseRep: 45
+  duration: 60
+  quality: 2.8
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: BossofNone.png
   posterSprite: {fileID: 21300000, guid: 5aa6521d3b2f02242b591049aeb8454d, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

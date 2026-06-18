@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Projectl A Z A Rus
   genre: 7
   tagline: Assassin hired through layers of deniability.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Assassin hired through layers of deniability.
+  synopsisEn: When appearances deceive and trust is a luxury no one can afford, only
+    instinct remains.
+  synopsisFr: Quand les apparences trompent et que la confiance est un luxe que personne
+    ne peut se permettre, seul l'instinct reste.
+  synopsisDe: "Wenn Schein tr\xFCgt und Vertrauen ein Luxus ist, den sich niemand
+    leisten kann, bleibt nur noch der Instinkt."
+  synopsisJa: "\u898B\u305F\u76EE\u304C\u4FE1\u7528\u3067\u304D\u305A\u3001\u4FE1\u983C\u304C\u8AB0\u3082\u6255\u3048\u306A\u3044\u8D05\u6CA2\u306A\u3068\u304D\u3001\u6B8B\u308B\u306E\u306F\u672C\u80FD\u3060\u3051\u3060\u3002"
+  cost: 93000
+  baseReward: 170000
+  baseRep: 590
+  duration: 300
+  quality: 4.2
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: ProjectlAZARus.png
   posterSprite: {fileID: 21300000, guid: a359b0cb456f0c445b7bbaf851e973c1, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

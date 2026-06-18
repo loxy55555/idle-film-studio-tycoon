@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Parallel Earth
   genre: 5
   tagline: Visitors claim they are from a better timeline.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Visitors claim they are from a better timeline.
+  synopsisEn: A civilization on the brink of its own abyss discovers that the greatest
+    danger always came from within.
+  synopsisFr: "Une civilisation au bord de son propre gouffre d\xE9couvre que le
+    plus grand danger venait de l'int\xE9rieur."
+  synopsisDe: "Eine Zivilisation am Rand ihres eigenen Abgrunds entdeckt, dass die
+    gr\xF6\xDFte Gefahr immer von innen kam."
+  synopsisJa: "\u6DF1\u6DF5\u306B\u7ACB\u3064\u6587\u660E\u304C\u3001\u6700\u5927\u306E\u5371\u6A5F\u306F\u5E38\u306B\u5185\u5074\u304B\u3089\u6765\u3066\u3044\u305F\u3053\u3068\u3092\u767A\u898B\u3059\u308B\u3002"
+  cost: 530
+  baseReward: 950
+  baseRep: 5.8
+  duration: 60
+  quality: 1.6
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: ParallelEarth.png
   posterSprite: {fileID: 21300000, guid: 8266dc1957a8e78428b6797ebfbaaacd, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: dominion
   sagaEntryIndex: 6

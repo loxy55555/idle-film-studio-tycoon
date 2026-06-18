@@ -75,16 +75,8 @@ public abstract class PlaceholderCityVisualTheme : CityVisualTheme
 
     protected override void BuildOverlay(CityVisualThemeContext ctx)
     {
-        var root = ctx.CreateLayerRoot(StudioVisualLayerKind.Overlay);
-        var labelColor = new Color(0.72f, 0.74f, 0.80f, 0.50f);
-
-        var title = RuntimeTmpText.Create(root, DisplayLabel, 12f, labelColor,
-            FontStyles.Bold, TextAlignmentOptions.MidlineLeft, $"{ThemeId}_OverlayTitle");
-        StretchAnchored(title.rectTransform, new Vector2(0.03f, 0.86f), new Vector2(0.60f, 0.97f));
-
-        var city = RuntimeTmpText.Create(root, CityLabel, 10f, labelColor,
-            FontStyles.Normal, TextAlignmentOptions.MidlineLeft, $"{ThemeId}_OverlayCity");
-        StretchAnchored(city.rectTransform, new Vector2(0.03f, 0.78f), new Vector2(0.40f, 0.86f));
+        // Overlay text (studio name + city number) removed in FASE 14.0A.
+        // The artistic background images replace the need for these debug labels.
     }
 
     static void StretchAnchored(RectTransform rt, Vector2 anchorMin, Vector2 anchorMax)

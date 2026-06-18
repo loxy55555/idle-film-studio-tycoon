@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: L At E A G A In
   genre: 3
   tagline: Save the cat. Become mayor accidentally.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Save the cat. Become mayor accidentally.
+  synopsisEn: What starts as a perfect plan quickly becomes the most hilarious chain
+    of disasters imaginable.
+  synopsisFr: "Ce qui commence comme un plan parfait devient rapidement la cha\xEEne
+    de catastrophes la plus hilarante imaginable."
+  synopsisDe: Was als perfekter Plan beginnt, wird schnell zur wohl absurdesten Katastrophenserie,
+    die man sich vorstellen kann.
+  synopsisJa: "\u5B8C\u74A7\u306A\u306F\u305A\u306E\u8A08\u753B\u304C\u3001\u60F3\u50CF\u3092\u7D76\u3059\u308B\u60E8\u4E8B\u306E\u9023\u9396\u3078\u3068\u5909\u308F\u3063\u3066\u3044\u304F\u3002"
+  cost: 9250
+  baseReward: 16500
+  baseRep: 75
+  duration: 300
+  quality: 2.97
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: LAtEAGAIn.png
   posterSprite: {fileID: 21300000, guid: fbcd1e3ccf007604eaad870320f88430, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

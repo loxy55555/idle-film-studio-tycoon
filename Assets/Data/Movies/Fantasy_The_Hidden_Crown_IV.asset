@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Hidden Crown IV
   genre: 6
   tagline: Coronation day. Assassins RSVP yes.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Coronation day. Assassins RSVP yes.
+  synopsisEn: An ancient prophecy unfolds amid warring kingdoms and powers the world
+    believed long extinct.
+  synopsisFr: "Une proph\xE9tie ancestrale se r\xE9alise au milieu de royaumes en
+    guerre et de pouvoirs que le monde croyait disparus."
+  synopsisDe: "Eine uralte Prophezeiung erf\xFCllt sich inmitten kriegf\xFChrender
+    K\xF6nigreiche und M\xE4chten, die die Welt f\xFCr ausgestorben hielt."
+  synopsisJa: "\u6226\u706B\u306E\u738B\u56FD\u3068\u4E16\u754C\u304C\u7D76\u3048\u305F\u3068\u4FE1\u3058\u3066\u3044\u305F\u529B\u306E\u4E2D\u3067\u3001\u53E4\u4EE3\u306E\u4E88\u8A00\u304C\u6210\u5C31\u3059\u308B\u3002"
+  cost: 12500
+  baseReward: 22500
+  baseRep: 100
+  duration: 60
+  quality: 3.05
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheHiddenCrownIV.png
   posterSprite: {fileID: 4287855637481401729, guid: 8b03078f49f33a84faa67be5be4d8500, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 4
   sagaId: the_hidden_crown
   sagaEntryIndex: 4

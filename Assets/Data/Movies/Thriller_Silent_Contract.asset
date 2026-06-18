@@ -15,11 +15,20 @@ MonoBehaviour:
   movieName: The N In Thfloor
   genre: 7
   tagline: Sign or disappear quietly.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: "La paranoia como motor dram\xE1tico: un thriller que convierte al espectador
+    en c\xF3mplice y en sospechoso al mismo tiempo."
+  synopsisEn: A carefully constructed conspiracy begins to unravel when the wrong
+    person discovers too much.
+  synopsisFr: "Une conspiration soigneusement construite commence \xE0 s'effondrer
+    quand la mauvaise personne en d\xE9couvre trop."
+  synopsisDe: "Eine sorgf\xE4ltig konstruierte Verschw\xF6rung beginnt zu br\xF6ckeln,
+    als die falsche Person zu viel herausfindet."
+  synopsisJa: "\u7CBE\u7DFB\u306B\u69CB\u7BC9\u3055\u308C\u305F\u9670\u8B00\u306F\u3001\u9593\u9055\u3063\u305F\u4EBA\u7269\u304C\u77E5\u308A\u3059\u304E\u305F\u77AC\u9593\u304B\u3089\u5D29\u308C\u59CB\u3081\u308B\u3002"
+  cost: 120000
+  baseReward: 215000
+  baseRep: 734
+  duration: 300
+  quality: 4.32
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +37,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheNInThfloor.png
   posterSprite: {fileID: 21300000, guid: 5037925bfdeddb949a03d82f864b6e75, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: The Silvercrown
   genre: 6
   tagline: An old dragon's voice guides a young thief.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: An old dragon's voice guides a young thief.
+  synopsisEn: The Silvercrown is an epic tale of sacrifice, loyalty, and the search
+    for a destiny no one can escape.
+  synopsisFr: "The Silvercrown est un r\xE9cit \xE9pique de sacrifice, de loyaut\xE9
+    et de la qu\xEAte d'un destin que personne ne peut fuir."
+  synopsisDe: "The Silvercrown ist ein episches Epos aus Opfer, Loyalit\xE4t und
+    der Suche nach einem Schicksal, dem niemand entfliehen kann."
+  synopsisJa: "The Silvercrown\u306F\u8AB0\u3082\u9003\u308C\u3089\u308C\u306A\u3044\u904B\u547D\u306E\u63A2\u6C42\u3092\u63CF\u304F\u3001\u72A0\u7272\u3068\u5FE0\u7FA9\u306E\u53D9\u4E8B\u8A69\u3002"
+  cost: 130
+  baseReward: 230
+  baseRep: 1.7
+  duration: 300
+  quality: 1.1
   unlockStudioLevel: 1
-  unlockCityLevel: 6
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 1
   posterColorHex: 0

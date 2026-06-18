@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Blackwater III
   genre: 7
   tagline: Water tests clean. People do not.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Water tests clean. People do not.
+  synopsisEn: A conspiracy of global dimensions whose resolution will rewrite history
+    as we know it.
+  synopsisFr: "Une conspiration aux dimensions mondiales dont la r\xE9solution r\xE9\xE9crira
+    l'histoire telle que nous la connaissons."
+  synopsisDe: "Eine Verschw\xF6rung globalen Ausma\xDFes, deren Aufl\xF6sung die
+    Geschichte so neu schreiben wird, wie wir sie kennen."
+  synopsisJa: "\u4E16\u754C\u898F\u6A21\u306E\u9670\u8B00\u2014\u2014\u305D\u306E\u89E3\u6C7A\u306F\u3001\u79C1\u305F\u3061\u304C\u77E5\u308B\u6B74\u53F2\u3092\u66F8\u304D\u63DB\u3048\u308B\u3053\u3068\u306B\u306A\u308B\u3002"
+  cost: 3950
+  baseReward: 7100
+  baseRep: 35
+  duration: 60
+  quality: 2.45
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: BlackwaterIII.png
   posterSprite: {fileID: -99970412794504429, guid: 5991e64850816434488e1dc5d1be9577, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: blackwater
   sagaEntryIndex: 4

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Secret Treehouse
   genre: 8
   tagline: Midnight quests for cheese and courage.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Midnight quests for cheese and courage.
+  synopsisEn: The Secret Treehouse blends emotion, humor, and warmth in a story that
+    resonates with audiences of all ages.
+  synopsisFr: "The Secret Treehouse m\xEAle \xE9motion, humour et tendresse dans
+    une histoire qui touche un public de tous \xE2ges."
+  synopsisDe: "The Secret Treehouse verbindet Emotion, Humor und W\xE4rme in einer
+    Geschichte, die ein Publikum jeden Alters anspricht."
+  synopsisJa: "The Secret Treehouse\u306F\u611F\u52D5\u3001\u30E6\u30FC\u30E2\u30A2\u3001\u6E29\u304B\u3055\u3092\u7E54\u308A\u4EA4\u305C\u3001\u3042\u3089\u3086\u308B\u4E16\u4EE3\u306B\u5C4A\u304F\u7269\u8A9E\u3092\u7D21\u3050\u3002"
+  cost: 100000
+  baseReward: 185000
+  baseRep: 629
+  duration: 300
+  quality: 4.27
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheSecretTreehouse.png
   posterSprite: {fileID: 21300000, guid: 27bfc98bee3264d43b56e508c8423114, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

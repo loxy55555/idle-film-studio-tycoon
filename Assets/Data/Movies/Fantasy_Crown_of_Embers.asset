@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Last Dr A G On Keeper
   genre: 6
   tagline: Fire crown for a queen who hates heat.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Fire crown for a queen who hates heat.
+  synopsisEn: A forgotten power resurfaces at the most critical moment, testing the
+    faith and valor of those who wield it.
+  synopsisFr: "Un pouvoir oubli\xE9 ressurgit au moment le plus critique, mettant
+    \xE0 l'\xE9preuve la foi et la valeur de ceux qui le portent."
+  synopsisDe: Eine vergessene Macht taucht im kritischsten Moment wieder auf und
+    stellt Glauben und Tapferkeit auf die Probe.
+  synopsisJa: "\u6700\u3082\u91CD\u5927\u306A\u77AC\u9593\u306B\u5FD8\u308C\u3089\u308C\u305F\u529B\u304C\u8607\u308A\u3001\u305D\u308C\u3092\u5BBF\u3059\u8005\u305F\u3061\u306E\u4FE1\u4EF0\u3068\u52C7\u6C17\u304C\u8A66\u3055\u308C\u308B\u3002"
+  cost: 34000
+  baseReward: 61000
+  baseRep: 236
+  duration: 300
+  quality: 3.57
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLastDrAGOnKeeper.png
   posterSprite: {fileID: 21300000, guid: 58397564eddfbca47a95a0cf004c9d65, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

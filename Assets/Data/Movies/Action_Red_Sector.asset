@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Red Sector
   genre: 0
   tagline: A quarantined district hides a military secret.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A quarantined district hides a military secret.
+  synopsisEn: Adrenaline and strategy collide in a relentless race that leaves no
+    room to breathe.
+  synopsisFr: "L'adr\xE9naline et la strat\xE9gie s'affrontent dans une course effr\xE9n\xE9e
+    qui ne laisse aucun r\xE9pit."
+  synopsisDe: "Adrenalin und Strategie sto\xDFen in einem gnadenlosen Wettlauf aufeinander,
+    der keine Verschnaufpause l\xE4sst."
+  synopsisJa: "\u30A2\u30C9\u30EC\u30CA\u30EA\u30F3\u3068\u6226\u7565\u304C\u6FC0\u7A81\u3059\u308B\u606F\u3082\u5410\u3051\u306A\u3044\u8FFD\u8DE1\u5287\u304C\u3001\u4ECA\u59CB\u307E\u308B\u3002"
+  cost: 17000
+  baseReward: 30500
+  baseRep: 130
+  duration: 60
+  quality: 3.4
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 6
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: RedSector.png
   posterSprite: {fileID: 21300000, guid: 0682ebbc84ddec34995b1a9900e27596, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

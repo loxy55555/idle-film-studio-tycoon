@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Clockwork Fox
   genre: 8
   tagline: A mechanical fox searches for warmth.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A mechanical fox searches for warmth.
+  synopsisEn: In a world full of wonders, imagination is the one tool that never
+    fails when you need it most.
+  synopsisFr: Dans un monde rempli de merveilles, l'imagination est le seul outil
+    qui ne faillit jamais quand on en a le plus besoin.
+  synopsisDe: In einer Welt voller Wunder ist die Vorstellungskraft das einzige Werkzeug,
+    das nie versagt, wenn man es am meisten braucht.
+  synopsisJa: "\u9A5A\u7570\u306B\u6E80\u3061\u305F\u4E16\u754C\u3067\u3001\u60F3\u50CF\u529B\u3060\u3051\u304C\u6700\u3082\u5FC5\u8981\u306A\u3068\u304D\u306B\u7D76\u5BFE\u306B\u88CF\u5207\u3089\u306A\u3044\u9053\u5177\u3060\u3002"
+  cost: 115000
+  baseReward: 210000
+  baseRep: 703
+  duration: 300
+  quality: 4.34
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheClockworkFox.png
   posterSprite: {fileID: 21300000, guid: 0228dabd15a577c44a7947398a6eb887, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

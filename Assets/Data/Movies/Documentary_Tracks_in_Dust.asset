@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Last Forest
   genre: 9
   tagline: Nomads crossing deserts for water.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Nomads crossing deserts for water.
+  synopsisEn: A fascinating and rigorous look at the people and moments that transformed
+    an era forever.
+  synopsisFr: "Un regard fascinant et rigoureux sur les protagonistes et les moments
+    qui ont transform\xE9 une \xE9poque \xE0 jamais."
+  synopsisDe: "Ein faszinierender und rigoroser Blick auf die Menschen und Momente,
+    die eine \xC4ra f\xFCr immer ver\xE4ndert haben."
+  synopsisJa: "\u3042\u308B\u6642\u4EE3\u3092\u6C38\u9060\u306B\u5909\u3048\u305F\u4EBA\u3005\u3068\u77AC\u9593\u306B\u5BFE\u3059\u308B\u3001\u9B45\u529B\u7684\u3067\u53B3\u5BC6\u306A\u8996\u7DDA\u3002"
+  cost: 140000
+  baseReward: 250000
+  baseRep: 810
+  duration: 300
+  quality: 4.84
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLastForest.png
   posterSprite: {fileID: 21300000, guid: 601ba68d20855114d80996a45bf3eb2e, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

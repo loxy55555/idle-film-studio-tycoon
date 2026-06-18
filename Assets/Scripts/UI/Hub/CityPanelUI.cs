@@ -24,6 +24,8 @@ public class CityPanelUI : MonoBehaviour
     SmoothProgressBar   _smoothBar;
     Button              _upgradeButton;
     RectTransform       _heroPanel;
+    TextMeshProUGUI     _bonusHeaderText;
+    TextMeshProUGUI     _unlockHeaderText;
 
     CitySystem     _city;
     PrestigeSystem _prestige;
@@ -58,12 +60,21 @@ public class CityPanelUI : MonoBehaviour
         HidePlaceholderContent();
         BuildLayout();
         GameHub.OnGameReady += Bind;
+        UserPrefs.OnLanguageChanged += RefreshLocalization;
     }
 
     void OnDestroy()
     {
         GameHub.OnGameReady -= Bind;
+        UserPrefs.OnLanguageChanged -= RefreshLocalization;
         Unbind();
+    }
+
+    public void RefreshLocalization()
+    {
+        if (_bonusHeaderText  != null) _bonusHeaderText.text  = Loc.Get(LocKeys.InstGlobalBonus);
+        if (_unlockHeaderText != null) _unlockHeaderText.text = Loc.Get(LocKeys.InstCurrentUnlocks);
+        Refresh();
     }
 
     void OnEnable() => Refresh();
@@ -91,7 +102,7 @@ public class CityPanelUI : MonoBehaviour
         _celebratePending = false;
         var def = _city?.CurrentDefinition;
         if (def == null) return;
-        GameFeelUI.Instance?.ShowCityUpgrade(def.displayName, def.globalMultiplier);
+        GameFeelUI.Instance?.ShowCityUpgrade(CityLevelDatabase.GetLocalizedName(def.level), def.globalMultiplier);
         if (_heroPanel != null)
         {
             _heroPanel.DOKill();
@@ -169,11 +180,11 @@ public class CityPanelUI : MonoBehaviour
         _smoothBar = barGo.AddComponent<SmoothProgressBar>();
 
         var bonusCard = MakeCard(content.transform, "BonusCard", 0);
-        AddCardHeader(bonusCard, "BONUS GLOBAL");
-        _bonusText = AddCardBody(bonusCard, "×1.00 ingreso", 22, ACCENT_GOLD, FontStyles.Bold);
+        _bonusHeaderText = AddCardHeader(bonusCard, Loc.Get(LocKeys.InstGlobalBonus));
+        _bonusText = AddCardBody(bonusCard, "×1.00", 22, ACCENT_GOLD, FontStyles.Bold);
 
         var unlockCard = MakeCard(content.transform, "UnlockCard", 0);
-        AddCardHeader(unlockCard, "DESBLOQUEOS ACTUALES");
+        _unlockHeaderText = AddCardHeader(unlockCard, Loc.Get(LocKeys.InstCurrentUnlocks));
         _unlockSummaryText = AddCardBody(unlockCard, "—", 16, TEXT_PRI);
         _unlockSummaryText.textWrappingMode = TextWrappingModes.Normal;
         _unlockSummaryText.gameObject.AddComponent<LayoutElement>().preferredHeight = 72;
@@ -212,9 +223,9 @@ public class CityPanelUI : MonoBehaviour
         if (_heroPanel != null && ColorUtility.TryParseHtmlString(current.backgroundColorHex, out Color hero))
             _heroPanel.GetComponent<Image>().color = Color.Lerp(hero, Color.white, 0.08f);
 
-        if (_cityNameText != null) _cityNameText.text = current.displayName.ToUpper();
+        if (_cityNameText != null) _cityNameText.text = CityLevelDatabase.GetLocalizedName(current.level).ToUpper();
         if (_oscarText != null)    _oscarText.text = _city.GetProgressLabel();
-        if (_bonusText != null)    _bonusText.text = $"×{current.globalMultiplier:0.00} ingreso global";
+        if (_bonusText != null)    _bonusText.text = Loc.Format(LocKeys.InstGlobalBonusFmt, current.globalMultiplier);
 
         if (_unlockSummaryText != null)
             _unlockSummaryText.text = string.Join("\n", _city.GetUnlockSummaryLines());
@@ -222,9 +233,9 @@ public class CityPanelUI : MonoBehaviour
         if (_nextPreviewText != null)
         {
             _nextPreviewText.text = _city.IsMaxLevel
-                ? "Has alcanzado el Imperio Cinematográfico."
+                ? Loc.Get(LocKeys.InstMaxCity)
                 : next != null
-                    ? $"{next.displayName}\n{string.Join("\n", _city.GetNextUnlockPreviewLines())}"
+                    ? $"{CityLevelDatabase.GetLocalizedName(next.level)}\n{string.Join("\n", _city.GetNextUnlockPreviewLines())}"
                     : "—";
         }
 

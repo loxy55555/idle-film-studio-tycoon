@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Quantum Fault
   genre: 5
   tagline: Reality fractures along a single bad equation.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Reality fractures along a single bad equation.
+  synopsisEn: An interstellar odyssey of mythic proportions placing humanity before
+    the ultimate questions of its existence.
+  synopsisFr: "Une odyss\xE9e interstellaire aux proportions mythiques pla\xE7ant
+    l'humanit\xE9 devant les questions ultimes de son existence."
+  synopsisDe: "Eine interstellare Odyssee mythischen Ausma\xDFes, die die Menschheit
+    vor die letzten Fragen ihrer Existenz stellt."
+  synopsisJa: "\u4EBA\u985E\u3092\u5B58\u5728\u306E\u7A76\u6975\u306E\u554F\u3044\u3078\u3068\u5411\u304D\u5408\u308F\u305B\u308B\u3001\u795E\u8A71\u7684\u898F\u6A21\u306E\u6052\u661F\u9593\u53D9\u4E8B\u8A69\u3002"
+  cost: 18000
+  baseReward: 32500
+  baseRep: 138
+  duration: 60
+  quality: 3.4
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 6
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: QuantumFault.png
   posterSprite: {fileID: 21300000, guid: fcdabe83f2b080c40863f3e62ae8e511, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

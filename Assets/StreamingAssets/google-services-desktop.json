@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373601715074",
+    "project_id": "film-producer-tycoon",
+    "storage_bucket": "film-producer-tycoon.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373601715074:android:642abfbd86008ec6a0c59b",
+        "android_client_info": {
+          "package_name": "com.vosnosgames.filmproducertycoon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK3d_ZKsqJ9fCfiVowQX8kgezdTWsqeiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

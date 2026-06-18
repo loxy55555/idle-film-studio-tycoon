@@ -147,6 +147,10 @@ public class MultiProductionPanelUI : MonoBehaviour
         _scroll.content = _slotsRoot;
     }
 
+    public void RefreshLocalization() => Refresh();
+
+    void OnEnable() => Refresh();
+
     void Refresh()
     {
         if (_studio == null || _slotsRoot == null) return;
@@ -256,6 +260,8 @@ public class MultiProductionPanelUI : MonoBehaviour
                 _refs.statusText.color = CinematicTheme.GoldBright;
                 if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(false);
                 if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(false);
+                if (_refs.discoverLabel != null)
+                    _refs.discoverLabel.text = Loc.Get(LocKeys.ProdDiscoverButton);
                 if (_refs.discoverButton != null)
                 {
                     _refs.discoverButton.gameObject.SetActive(true);
@@ -273,9 +279,9 @@ public class MultiProductionPanelUI : MonoBehaviour
                 if (_refs.metaRow != null) _refs.metaRow.gameObject.SetActive(true);
                 if (_refs.discoverButton != null) _refs.discoverButton.gameObject.SetActive(false);
                 ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
-                _refs.timeText.text = "⏱ " + ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+                _refs.timeText.text = Loc.Format(LocKeys.ProdTimeFmt, ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds));
                 if (_refs.rewardText != null)
-                    _refs.rewardText.text = $"💵 {AnimatedMoneyText.FormatMoney(snap.rewardMoney)} · +{snap.rewardRep:0.0} REP";
+                    _refs.rewardText.text = Loc.Format(LocKeys.ProdSlotRewardFmt, AnimatedMoneyText.FormatMoney(snap.rewardMoney), snap.rewardRep);
                 UpdateProgress(snap);
             }
 
@@ -327,8 +333,8 @@ public class MultiProductionPanelUI : MonoBehaviour
             ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
             ResetTitleTypography();
             _refs.titleText.text = Loc.Get(LocKeys.ProdNoActive);
-            _refs.statusText.text = "SLOT LIBRE";
-            _refs.statusText.fontSize = 12f;
+            _refs.statusText.text = Loc.Get(LocKeys.ProdSlotFree);
+            _refs.statusText.fontSize = 14f;
             _refs.statusText.color = CinematicTheme.TextDim;
             _refs.statusText.alignment = TextAlignmentOptions.MidlineRight;
             if (_refs.bodyRow != null) _refs.bodyRow.gameObject.SetActive(true);
@@ -354,14 +360,14 @@ public class MultiProductionPanelUI : MonoBehaviour
             _movieKey = null;
             ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
             ResetTitleTypography();
-            _refs.titleText.text = "SLOT BLOQUEADO";
+            _refs.titleText.text = Loc.Get(LocKeys.ProdSlotLocked);
             _refs.titleText.fontSize = 22f;
             _refs.titleText.fontSizeMin = 18f;
             _refs.titleText.fontSizeMax = 24f;
             _refs.titleText.alignment = TextAlignmentOptions.MidlineLeft;
             _refs.titleText.color = CinematicTheme.TextSecondary;
-            _refs.statusText.text = "Desbloquea en Mejoras → Instalaciones";
-            _refs.statusText.fontSize = 12f;
+            _refs.statusText.text = Loc.Get(LocKeys.ProdSlotUnlock);
+            _refs.statusText.fontSize = 14f;
             _refs.statusText.color = CinematicTheme.TextDim;
             _refs.statusText.alignment = TextAlignmentOptions.MidlineRight;
             if (_refs.bodyRow != null) _refs.bodyRow.gameObject.SetActive(true);
@@ -394,9 +400,9 @@ public class MultiProductionPanelUI : MonoBehaviour
             if (snap.awaitingDiscovery) return;
             if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(snap.progress01);
             else if (_refs.progressBar != null) _refs.progressBar.value = snap.progress01;
-            _refs.timeText.text = "⏱ " + ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds);
+            _refs.timeText.text = Loc.Format(LocKeys.ProdTimeFmt, ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds));
             if (_refs.rewardText != null)
-                _refs.rewardText.text = $"💵 {AnimatedMoneyText.FormatMoney(snap.rewardMoney)} · +{snap.rewardRep:0.0} REP";
+                _refs.rewardText.text = Loc.Format(LocKeys.ProdSlotRewardFmt, AnimatedMoneyText.FormatMoney(snap.rewardMoney), snap.rewardRep);
         }
     }
 }

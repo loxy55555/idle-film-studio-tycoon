@@ -54,7 +54,7 @@ public static class CityProgressionRules
         cityLevel >= GetDepartmentRequiredCity(type);
 
     public static string GetDepartmentLockLabel(DepartmentType type) =>
-        $"Disponible en Ciudad {GetDepartmentRequiredCity(type)}";
+        Loc.Format(LocKeys.DeptAvailableCity, GetDepartmentRequiredCity(type));
 
     public static int GetMovieRequiredCity(MovieConfig cfg)
     {
@@ -102,7 +102,7 @@ public static class CityProgressionRules
         cfg != null && cityLevel >= GetMovieRequiredCity(cfg);
 
     public static string GetMovieLockLabel(MovieConfig cfg) =>
-        $"Requiere Ciudad {GetMovieRequiredCity(cfg)}";
+        Loc.Format(LocKeys.CityLockLabel, GetMovieRequiredCity(cfg));
 
     public static int GetUpgradeRequiredCity(UpgradeConfig cfg)
     {
@@ -159,7 +159,7 @@ public static class CityProgressionRules
         cfg != null && cityLevel >= GetUpgradeRequiredCity(cfg);
 
     public static string GetUpgradeLockLabel(UpgradeConfig cfg) =>
-        $"Requiere Ciudad {GetUpgradeRequiredCity(cfg)}";
+        Loc.Format(LocKeys.CityLockLabel, GetUpgradeRequiredCity(cfg));
 
     public static int GetContractRequiredCity(ContractConfig cfg)
     {

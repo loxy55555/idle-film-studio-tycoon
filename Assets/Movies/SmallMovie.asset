@@ -13,9 +13,28 @@ MonoBehaviour:
   m_Name: SmallMovie
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
   movieName: Anuncio Local
-  cost: 50
-  baseReward: 80
-  baseRep: 1
-  duration: 6
-  quality: 1
+  genre: 0
+  tagline: 
+  synopsis: 
+  synopsisEn: 
+  synopsisFr: 
+  synopsisDe: 
+  synopsisJa: 
+  cost: 110
+  baseReward: 200
+  baseRep: 1.5
+  duration: 60
+  quality: 1.08
+  unlockStudioLevel: 0
+  unlockCityLevel: 1
   unlockReputation: 0
+  rarity: 0
+  posterColorHex: '#3498DB'
+  genreIconKey: 
+  posterFile: 
+  posterSprite: {fileID: 0}
+  catalogTier: 1
+  contentKind: 0
+  sagaId: 
+  sagaEntryIndex: 0
+  sagaDisplayName: 

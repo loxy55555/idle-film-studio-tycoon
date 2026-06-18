@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Orbital Decay
   genre: 5
   tagline: A station falls. A crew must choose who leaves.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A station falls. A crew must choose who leaves.
+  synopsisEn: Orbital Decay builds a fascinating universe where every breakthrough
+    carries a price not everyone is willing to pay.
+  synopsisFr: "Orbital Decay construit un univers fascinant o\xF9 chaque avanc\xE9e
+    a un prix que tous ne sont pas pr\xEAts \xE0 payer."
+  synopsisDe: Orbital Decay baut ein faszinierendes Universum, in dem jeder Fortschritt
+    einen Preis hat, den nicht jeder zu zahlen bereit ist.
+  synopsisJa: "Orbital Decay\u306F\u3059\u3079\u3066\u306E\u9032\u6B69\u306B\u4EE3\u511F\u304C\u3042\u308A\u3001\u8AB0\u3082\u304C\u305D\u308C\u3092\u6255\u3046\u899A\u609F\u3092\u6301\u3064\u308F\u3051\u3067\u306F\u306A\u3044\u4E16\u754C\u3092\u7BC9\u304F\u3002"
+  cost: 3100
+  baseReward: 5600
+  baseRep: 28
+  duration: 60
+  quality: 2.33
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 4
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: OrbitalDecay.png
   posterSprite: {fileID: 21300000, guid: f495380cdea61754da907a1216679dbb, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

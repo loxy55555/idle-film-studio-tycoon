@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Rogue Squadron
   genre: 0
   tagline: Pilots who answer to no flag save the day.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Pilots who answer to no flag save the day.
+  synopsisEn: A mission of global scope whose outcome will determine the balance
+    of power for decades to come.
+  synopsisFr: "Une mission d'envergure mondiale dont l'issue d\xE9terminera l'\xE9quilibre
+    des pouvoirs pour les d\xE9cennies \xE0 venir."
+  synopsisDe: "Ein Einsatz von globalem Ausma\xDF, dessen Ausgang das Machtgef\xFCge
+    f\xFCr Jahrzehnte bestimmen wird."
+  synopsisJa: "\u7D50\u672B\u304C\u6570\u5341\u5E74\u306B\u308F\u305F\u308B\u52E2\u529B\u5747\u8861\u3092\u5DE6\u53F3\u3059\u308B\u3001\u4E16\u754C\u898F\u6A21\u306E\u30DF\u30C3\u30B7\u30E7\u30F3\u3002"
+  cost: 32500
+  baseReward: 58500
+  baseRep: 225
+  duration: 60
+  quality: 3.57
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 6
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: RogueSquadron.png
   posterSprite: {fileID: 21300000, guid: af6202817ba4c8543a03c328c9d7b34a, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

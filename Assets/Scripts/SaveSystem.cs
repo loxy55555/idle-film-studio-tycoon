@@ -44,6 +44,13 @@ public class GameSaveData
 
     // v5 — persistent production offers
     public string[] currentOffers;
+
+    // v6 — premium systems
+    public BoostSaveEntry[]       activeBoosts;
+    public PremiumFeaturesSaveData premiumFeatures;
+
+    // v7 — IAP ownership + fulfillment ledger
+    public IapSaveData iap;
 }
 
 [Serializable]
@@ -97,6 +104,11 @@ public class SaveSystem : MonoBehaviour
     static string SavePath       => Path.Combine(Application.persistentDataPath, SaveFile);
     static string TempSavePath   => SavePath + TempSaveSuffix;
     static string LegacySavePath => Path.Combine(Application.persistentDataPath, LegacySaveFile);
+
+    /// <summary>True when v6→v7 migration ran and needs persisting.</summary>
+    public static bool PendingMigrationSave { get; private set; }
+
+    const string LegacyPackPurchasedKeyPrefix = "pack.purchased.";
 
     public static float GetOfflineSeconds(long saveTimestampUnix)
     {
@@ -195,7 +207,7 @@ public class SaveSystem : MonoBehaviour
 
     static GameSaveData BuildSaveData(GameHub hub) => new GameSaveData
     {
-        version = 5,
+        version = 7,
         money      = hub.studio.Money,
         moneyExact = hub.studio.MoneyExact,
         reputation = hub.studio.reputation,
@@ -232,6 +244,9 @@ public class SaveSystem : MonoBehaviour
         ftueCompleted        = FtueState.Completed,
         ftueStep             = (int)FtueState.Step,
         currentOffers        = MovieOfferState.GetSaveData(),
+        activeBoosts         = hub.boosts?.GetSaveData(),
+        premiumFeatures      = hub.premium?.GetSaveData(),
+        iap                  = EntitlementService.GetSaveData(),
     };
 
     void ApplyLoadedData(GameSaveData data)
@@ -254,7 +269,7 @@ public class SaveSystem : MonoBehaviour
         hub.departments.grip           = data.grip;
         hub.departments.producer       = data.producer;
 
-        hub.prestige.oscars = data.oscars;
+        hub.prestige.oscars = Mathf.Clamp(data.oscars, 0, PrestigeSystem.TotalOscars);
         hub.city?.LoadFromSave(data.cityLevel);
         hub.city?.BindRuntime(hub.prestige, hub.studio);
 
@@ -283,8 +298,17 @@ public class SaveSystem : MonoBehaviour
         else
             hub.pendingLegacyContractRefresh = true;
 
+        if (data.version >= 6 && data.premiumFeatures != null)
+            hub.premium?.LoadFromSave(data.premiumFeatures);
+
+        ApplyIapData(data);
+
+        if (data.version >= 6 && data.activeBoosts != null)
+            hub.boosts?.LoadFromSave(data.activeBoosts);
+
         float offlineSeconds = GetOfflineSeconds(data.saveTimestampUnix);
-        offlineSeconds = Mathf.Min(offlineSeconds, StudioManager.MaxOfflineSeconds);
+        float offlineCap = hub.premium?.EffectiveOfflineSeconds ?? StudioManager.MaxOfflineSeconds;
+        offlineSeconds = Mathf.Min(offlineSeconds, offlineCap);
         hub.studio.ApplyOfflinePassiveIncome(offlineSeconds);
         hub.studio.ResumeProductions(data.activeProductions, offlineSeconds);
 
@@ -415,6 +439,99 @@ public class SaveSystem : MonoBehaviour
 
         int estimatedLevel = Mathf.Max(1, Mathf.FloorToInt(data.reputation / 50f));
         hub.studioLevel.LoadFromSave(estimatedLevel, 0f);
+    }
+
+    void ApplyIapData(GameSaveData data)
+    {
+        PendingMigrationSave = false;
+
+        if (data.version < 7)
+            PendingMigrationSave = MigrateV6ToV7(data);
+
+        if (data.version >= 7 && data.iap != null)
+            EntitlementService.LoadFromSave(data.iap);
+        else if (!PendingMigrationSave)
+            EntitlementService.LoadFromSave(data.iap);
+
+        EntitlementService.SyncPremiumFeaturesFromIap();
+    }
+
+    static bool MigrateV6ToV7(GameSaveData data)
+    {
+        data.iap ??= new IapSaveData { fulfilledTransactions = Array.Empty<IapTransactionEntry>() };
+        if (data.iap.fulfilledTransactions == null)
+            data.iap.fulfilledTransactions = Array.Empty<IapTransactionEntry>();
+
+        bool migrated = false;
+
+        if (PlayerPrefs.GetInt(LegacyPackPurchasedKeyPrefix + "1", 0) == 1)
+        {
+            data.iap.packSupporterOwned = true;
+            data.iap.packSupporterRewardsDelivered = true;
+            migrated = true;
+        }
+
+        if (PlayerPrefs.GetInt(LegacyPackPurchasedKeyPrefix + "2", 0) == 1)
+        {
+            data.iap.packProducerOwned = true;
+            data.iap.packProducerRewardsDelivered = true;
+            migrated = true;
+        }
+
+        if (PlayerPrefs.GetInt(LegacyPackPurchasedKeyPrefix + "3", 0) == 1)
+        {
+            data.iap.packExecutiveOwned = true;
+            data.iap.packExecutiveRewardsDelivered = true;
+            migrated = true;
+        }
+
+        data.premiumFeatures ??= new PremiumFeaturesSaveData();
+        if (data.premiumFeatures.noAdsPurchased)
+            data.iap.noAdsOwned = true;
+
+        if (data.iap.packSupporterOwned || data.iap.packProducerOwned || data.iap.packExecutiveOwned)
+        {
+            data.iap.noAdsOwned = true;
+            data.premiumFeatures.noAdsPurchased = true;
+        }
+
+        if (migrated)
+        {
+            if (data.iap.packSupporterOwned)
+                AppendLegacyFulfillmentMarker(data.iap, IapProductCatalog.PackSupporter, "legacy:pack_supporter");
+            if (data.iap.packProducerOwned)
+                AppendLegacyFulfillmentMarker(data.iap, IapProductCatalog.PackProducer, "legacy:pack_producer");
+            if (data.iap.packExecutiveOwned)
+                AppendLegacyFulfillmentMarker(data.iap, IapProductCatalog.PackExecutive, "legacy:pack_executive");
+
+            PlayerPrefs.DeleteKey(LegacyPackPurchasedKeyPrefix + "1");
+            PlayerPrefs.DeleteKey(LegacyPackPurchasedKeyPrefix + "2");
+            PlayerPrefs.DeleteKey(LegacyPackPurchasedKeyPrefix + "3");
+            PlayerPrefs.Save();
+            Debug.Log("[Save] Migrated pack.purchased.* PlayerPrefs → IapSaveData v7.");
+        }
+
+        data.version = 7;
+        EntitlementService.LoadFromSave(data.iap);
+        return true;
+    }
+
+    static void AppendLegacyFulfillmentMarker(IapSaveData iap, string productId, string markerId)
+    {
+        foreach (var e in iap.fulfilledTransactions ?? Array.Empty<IapTransactionEntry>())
+        {
+            if (e != null && e.transactionId == markerId)
+                return;
+        }
+
+        var list = new System.Collections.Generic.List<IapTransactionEntry>(iap.fulfilledTransactions ?? Array.Empty<IapTransactionEntry>());
+        list.Add(new IapTransactionEntry
+        {
+            transactionId = markerId,
+            productId       = productId,
+            fulfilledUnix   = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+        });
+        iap.fulfilledTransactions = list.ToArray();
     }
 
     public void DeleteSave()

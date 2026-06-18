@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Chrono Debt
   genre: 5
   tagline: Borrow time today. Pay with years tomorrow.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Borrow time today. Pay with years tomorrow.
+  synopsisEn: Chrono Debt redefines the genre with a vision of science fiction that
+    transcends speculation and touches the philosophical.
+  synopsisFr: "Chrono Debt red\xE9finit le genre avec une vision de la science-fiction
+    qui transcende la sp\xE9culation pour toucher le philosophique."
+  synopsisDe: "Chrono Debt definiert das Genre neu mit einer Science-Fiction-Vision,
+    die \xFCber Spekulation hinaus das Philosophische ber\xFChrt."
+  synopsisJa: "Chrono Debt\u306F\u601D\u7D22\u3092\u8D85\u3048\u3066\u54F2\u5B66\u306E\u9818\u57DF\u306B\u89E6\u308C\u308BSF\u306E\u30D3\u30B8\u30E7\u30F3\u3067\u30B8\u30E3\u30F3\u30EB\u3092\u518D\u5B9A\u7FA9\u3059\u308B\u3002"
+  cost: 65
+  baseReward: 120
+  baseRep: 1
+  duration: 60
+  quality: 1.02
   unlockStudioLevel: 1
   unlockCityLevel: 1
   unlockReputation: 0

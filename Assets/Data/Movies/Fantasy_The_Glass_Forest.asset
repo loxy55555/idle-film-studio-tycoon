@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Glass Forest
   genre: 6
   tagline: Trees of crystal sing when the moon is full.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Trees of crystal sing when the moon is full.
+  synopsisEn: The Glass Forest unfolds a world of wonders and dangers where only
+    courage can tip the balance.
+  synopsisFr: "The Glass Forest d\xE9ploie un monde de merveilles et de dangers o\xF9
+    seul le courage peut faire pencher la balance."
+  synopsisDe: The Glass Forest entfaltet eine Welt voller Wunder und Gefahren, wo
+    nur Mut die Waage neigen kann.
+  synopsisJa: "The Glass Forest\u306F\u3001\u52C7\u6C17\u3060\u3051\u304C\u5747\u8861\u3092\u50BE\u3051\u3089\u308C\u308B\u9A5A\u7570\u3068\u5371\u967A\u306E\u4E16\u754C\u3092\u5C55\u958B\u3059\u308B\u3002"
+  cost: 3800
+  baseReward: 6850
+  baseRep: 34
+  duration: 60
+  quality: 2.4
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheGlassForest.png
   posterSprite: {fileID: 21300000, guid: 144a20c3920b91a4bbf8e29514c2e4a3, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: the_glass_forest
   sagaEntryIndex: 1

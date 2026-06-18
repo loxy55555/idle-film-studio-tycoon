@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Dead Drop
   genre: 7
   tagline: Package exchange. Wrong package. Right danger.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
+  synopsis: Package exchange. Wrong package. Right danger.
+  synopsisEn: When appearances deceive and trust is a luxury no one can afford, only
+    instinct remains.
+  synopsisFr: Quand les apparences trompent et que la confiance est un luxe que personne
+    ne peut se permettre, seul l'instinct reste.
+  synopsisDe: "Wenn Schein tr\xFCgt und Vertrauen ein Luxus ist, den sich niemand
+    leisten kann, bleibt nur noch der Instinkt."
+  synopsisJa: "\u898B\u305F\u76EE\u304C\u4FE1\u7528\u3067\u304D\u305A\u3001\u4FE1\u983C\u304C\u8AB0\u3082\u6255\u3048\u306A\u3044\u8D05\u6CA2\u306A\u3068\u304D\u3001\u6B8B\u308B\u306E\u306F\u672C\u80FD\u3060\u3051\u3060\u3002"
+  cost: 45
+  baseReward: 80
+  baseRep: 0.8
+  duration: 60
   quality: 1
   unlockStudioLevel: 1
-  unlockCityLevel: 7
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

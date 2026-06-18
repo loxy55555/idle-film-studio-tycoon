@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Bene At H A Sh Hill
   genre: 2
   tagline: Plants grow toward sleeping faces.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Plants grow toward sleeping faces.
+  synopsisEn: In an isolated setting, a group discovers that the real danger was
+    always among them.
+  synopsisFr: "Dans un cadre isol\xE9, un groupe d\xE9couvre que le vrai danger \xE9tait
+    depuis toujours parmi eux."
+  synopsisDe: In einer abgelegenen Umgebung entdeckt eine Gruppe, dass die wahre
+    Gefahr immer unter ihnen war.
+  synopsisJa: "\u5B64\u7ACB\u3057\u305F\u5834\u6240\u3067\u3001\u30B0\u30EB\u30FC\u30D7\u306F\u672C\u5F53\u306E\u5371\u967A\u304C\u5E38\u306B\u81EA\u5206\u305F\u3061\u306E\u4E2D\u306B\u3044\u305F\u3053\u3068\u3092\u77E5\u308B\u3002"
+  cost: 1650
+  baseReward: 2950
+  baseRep: 17
+  duration: 2700
+  quality: 2.03
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: BeneAtHAShHill.png
   posterSprite: {fileID: 21300000, guid: 22ea9cbc0ffb0584483b67a9bed2fe87, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

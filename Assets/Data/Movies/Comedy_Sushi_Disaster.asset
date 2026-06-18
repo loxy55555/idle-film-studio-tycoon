@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Sushi Disaster
   genre: 3
   tagline: One roll destroys a chef's reputation.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: One roll destroys a chef's reputation.
+  synopsisEn: "Misunderstandings, impossible coincidences, and questionable decisions
+    \u2014 the ingredients of a comedy with no mercy."
+  synopsisFr: "Malentendus, co\xEFncidences impossibles et d\xE9cisions douteuses
+    \u2014 les ingr\xE9dients d'une com\xE9die sans piti\xE9."
+  synopsisDe: "Missverst\xE4ndnisse, unm\xF6gliche Zuf\xE4lle und fragw\xFCrdige
+    Entscheidungen \u2014 die Zutaten einer Kom\xF6die ohne Gnade."
+  synopsisJa: "\u52D8\u9055\u3044\u3001\u3042\u308A\u5F97\u306A\u3044\u5076\u7136\u3001\u7591\u308F\u3057\u3044\u5224\u65AD\u2014\u2014\u5BB9\u8D66\u306A\u304F\u7B11\u3044\u3092\u8A98\u3046\u30B3\u30E1\u30C7\u30A3\u306E\u5FC5\u8981\u6761\u4EF6\u3002"
+  cost: 2850
+  baseReward: 5150
+  baseRep: 26
+  duration: 60
+  quality: 2.34
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: SushiDisaster.png
   posterSprite: {fileID: 21300000, guid: a6cc18b5c0a6a0c4eab5de96bfa2f077, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

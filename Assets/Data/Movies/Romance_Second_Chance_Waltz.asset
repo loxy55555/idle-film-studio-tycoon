@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Second Chance Waltz
   genre: 4
   tagline: Former lovers meet at a charity ball.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Former lovers meet at a charity ball.
+  synopsisEn: A story exploring the vulnerability and courage of those who dare to
+    love without guarantees.
+  synopsisFr: "Une histoire explorant la vuln\xE9rabilit\xE9 et le courage de ceux
+    qui osent aimer sans garanties."
+  synopsisDe: Eine Geschichte, die die Verletzlichkeit und den Mut derer erkundet,
+    die es wagen, ohne Garantien zu lieben.
+  synopsisJa: "\u4FDD\u8A3C\u306A\u3057\u306B\u611B\u3059\u308B\u3053\u3068\u3092\u9078\u3093\u3060\u8005\u305F\u3061\u306E\u8106\u3055\u3068\u52C7\u6C17\u3092\u63A2\u308B\u7269\u8A9E\u3002"
+  cost: 65
+  baseReward: 120
+  baseRep: 1
+  duration: 60
+  quality: 1.03
   unlockStudioLevel: 1
-  unlockCityLevel: 6
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

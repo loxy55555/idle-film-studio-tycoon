@@ -15,20 +15,28 @@ MonoBehaviour:
   movieName: Synthetic Dawn
   genre: 5
   tagline: Machines claim personhood in open court.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Machines claim personhood in open court.
+  synopsisEn: A civilization on the brink of its own abyss discovers that the greatest
+    danger always came from within.
+  synopsisFr: "Une civilisation au bord de son propre gouffre d\xE9couvre que le
+    plus grand danger venait de l'int\xE9rieur."
+  synopsisDe: "Eine Zivilisation am Rand ihres eigenen Abgrunds entdeckt, dass die
+    gr\xF6\xDFte Gefahr immer von innen kam."
+  synopsisJa: "\u6DF1\u6DF5\u306B\u7ACB\u3064\u6587\u660E\u304C\u3001\u6700\u5927\u306E\u5371\u6A5F\u306F\u5E38\u306B\u5185\u5074\u304B\u3089\u6765\u3066\u3044\u305F\u3053\u3068\u3092\u767A\u898B\u3059\u308B\u3002"
+  cost: 42500
+  baseReward: 76500
+  baseRep: 289
+  duration: 60
+  quality: 3.65
   unlockStudioLevel: 1
-  unlockCityLevel: 1
+  unlockCityLevel: 6
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
   posterFile: SyntheticDawn.png
   posterSprite: {fileID: 21300000, guid: 21d851a86bb57ee47bedab885e3573db, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

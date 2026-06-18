@@ -16,6 +16,18 @@ public class MovieConfig : ScriptableObject
     public MovieGenre genre;
     [TextArea(2, 4)]
     public string tagline;
+    [TextArea(3, 6)]
+    public string synopsis;
+
+    [Header("Localized Synopsis (leave blank to use default synopsis)")]
+    [TextArea(3, 6)]
+    public string synopsisEn;
+    [TextArea(3, 6)]
+    public string synopsisFr;
+    [TextArea(3, 6)]
+    public string synopsisDe;
+    [TextArea(3, 6)]
+    public string synopsisJa;
 
     [Header("Economy")]
     public long cost;

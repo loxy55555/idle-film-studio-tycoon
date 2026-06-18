@@ -127,7 +127,7 @@ public class CollectionGenreSectionView : MonoBehaviour
         vlg.childForceExpandHeight = false;
 
         var hdr = RuntimeTmpText.Create(section.transform,
-            CollectionLoc.GetRarityLabel(group.rarity) + (group.rarity == MovieRarity.Legendary ? " ★" : string.Empty),
+            CollectionLoc.GetRarityLabel(group.rarity) + (group.rarity == MovieRarity.Legendary ? " ●" : string.Empty),
             12f, group.rarity == MovieRarity.Legendary ? new Color(0.95f, 0.77f, 0.06f) : TextSecondary,
             FontStyles.Bold, TextAlignmentOptions.MidlineLeft);
         hdr.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;

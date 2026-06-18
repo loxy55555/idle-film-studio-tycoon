@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Beyond The Frontier
   genre: 0
   tagline: Rules of engagement become suggestions under fire.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Rules of engagement become suggestions under fire.
+  synopsisEn: When the clock runs out and the enemy is closer than expected, only
+    sheer determination makes the difference.
+  synopsisFr: "Quand le temps manque et l'ennemi est plus proche que pr\xE9vu, seule
+    la d\xE9termination fait la diff\xE9rence."
+  synopsisDe: "Als die Zeit abl\xE4uft und der Feind n\xE4her ist als erwartet, entscheidet
+    allein die Entschlossenheit."
+  synopsisJa: "\u6642\u9593\u304C\u5C3D\u304D\u304B\u3051\u3001\u6575\u304C\u4E88\u60F3\u4EE5\u4E0A\u306B\u8FD1\u3065\u3044\u305F\u3068\u304D\u3001\u52DD\u6557\u3092\u5206\u3051\u308B\u306E\u306F\u63FA\u308B\u304E\u306A\u3044\u610F\u5FD7\u3060\u3051\u3060\u3002"
+  cost: 330
+  baseReward: 600
+  baseRep: 4.2
+  duration: 300
+  quality: 1.31
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

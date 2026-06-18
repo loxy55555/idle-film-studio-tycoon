@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: A Utumnpromise
   genre: 4
   tagline: Return to the place where it started.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Return to the place where it started.
+  synopsisEn: A Utumnpromise recounts with delicacy and emotion the story of two
+    people who learn to truly see each other.
+  synopsisFr: "A Utumnpromise raconte avec d\xE9licatesse et \xE9motion l'histoire
+    de deux personnes qui apprennent \xE0 vraiment se voir."
+  synopsisDe: "A Utumnpromise erz\xE4hlt mit Zartheit und Emotion die Geschichte
+    zweier Menschen, die lernen, einander wirklich zu sehen."
+  synopsisJa: "A Utumnpromise\u306F\u4E92\u3044\u3092\u672C\u5F53\u306B\u898B\u308B\u3053\u3068\u3092\u5B66\u3076\u4E8C\u4EBA\u306E\u7269\u8A9E\u3092\u3001\u7E4A\u7D30\u3055\u3068\u611F\u60C5\u8C4A\u304B\u306B\u7D21\u3050\u3002"
+  cost: 48500
+  baseReward: 87000
+  baseRep: 324
+  duration: 2700
+  quality: 3.74
   unlockStudioLevel: 1
   unlockCityLevel: 6
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: AUtumnpromise.png
   posterSprite: {fileID: 21300000, guid: 12c336856ed451d4caedd87e089f9a93, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

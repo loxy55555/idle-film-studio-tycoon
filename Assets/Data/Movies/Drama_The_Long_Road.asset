@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Long Road
   genre: 1
   tagline: A father walks home across a divided country.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A father walks home across a divided country.
+  synopsisEn: The past returns in unexpected ways, demanding answers that not everyone
+    is prepared to give.
+  synopsisFr: "Le pass\xE9 revient de mani\xE8re inattendue, exigeant des r\xE9ponses
+    que tout le monde n'est pas pr\xEAt \xE0 donner."
+  synopsisDe: "Die Vergangenheit kehrt auf unerwartete Weise zur\xFCck und fordert
+    Antworten, auf die nicht jeder vorbereitet ist."
+  synopsisJa: "\u904E\u53BB\u306F\u4E88\u671F\u305B\u306C\u304B\u305F\u3061\u3067\u623B\u3063\u3066\u304F\u308B\u2014\u2014\u8AB0\u3082\u304C\u7B54\u3048\u308B\u6E96\u5099\u304C\u3067\u304D\u3066\u3044\u306A\u3044\u554F\u3044\u3092\u643A\u3048\u3066\u3002"
+  cost: 380
+  baseReward: 680
+  baseRep: 4.8
+  duration: 60
+  quality: 1.33
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

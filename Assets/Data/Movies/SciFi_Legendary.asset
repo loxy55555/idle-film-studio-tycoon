@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Echoes of Titan
   genre: 5
   tagline: Humanity's farthest signal returns with a warning no one wants to hear.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Humanity's farthest signal returns with a warning no one wants to hear.
+  synopsisEn: Space, time, and consciousness become the battlefield of a story with
+    no precedent.
+  synopsisFr: "L'espace, le temps et la conscience deviennent le champ de bataille
+    d'une histoire sans pr\xE9c\xE9dent."
+  synopsisDe: "Raum, Zeit und Bewusstsein werden zum Schlachtfeld einer Geschichte
+    ohne Pr\xE4zedenzfall."
+  synopsisJa: "\u7A7A\u9593\u3001\u6642\u9593\u3001\u610F\u8B58\u304C\u524D\u4F8B\u306E\u306A\u3044\u7269\u8A9E\u306E\u821E\u53F0\u3068\u306A\u308B\u3002"
+  cost: 350000
+  baseReward: 688500
+  baseRep: 2286
+  duration: 21600
+  quality: 5
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: EchoesofTitan.png
   posterSprite: {fileID: 21300000, guid: e90741d976eaede4a827ca96c9278551, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

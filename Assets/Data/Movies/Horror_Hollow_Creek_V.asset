@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Hollow Creek V
   genre: 2
   tagline: Five films. One creek. No escape.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Five films. One creek. No escape.
+  synopsisEn: Something ancient and forgotten awakens, and with it resurface secrets
+    that should never have seen the light.
+  synopsisFr: "Quelque chose d'ancien et d'oubli\xE9 se r\xE9veille, et avec lui
+    ressurgissent des secrets qui n'auraient jamais d\xFB voir le jour."
+  synopsisDe: "Etwas Altes und Vergessenes erwacht, und mit ihm tauchen Geheimnisse
+    auf, die nie ans Licht h\xE4tten kommen d\xFCrfen."
+  synopsisJa: "\u53E4\u304F\u5FD8\u308C\u3089\u308C\u305F\u4F55\u304B\u304C\u76EE\u899A\u3081\u3001\u6C7A\u3057\u3066\u65E5\u306E\u76EE\u3092\u898B\u3066\u306F\u306A\u3089\u306A\u304B\u3063\u305F\u79D8\u5BC6\u3092\u8607\u3089\u305B\u308B\u3002"
+  cost: 2200
+  baseReward: 3950
+  baseRep: 20
+  duration: 60
+  quality: 2.26
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: HollowCreekV.png
   posterSprite: {fileID: 3808578901149644785, guid: 79d82a91914a65440a78e70da6edc329, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -14,13 +14,13 @@ public static class MovieOfferBadgeHelper
         var parts = new List<string>(3);
 
         if (completedKeys != null && !MovieCollectionService.IsDiscovered(cfg, completedKeys))
-            parts.Add("[NUEVA]");
+            parts.Add(Loc.Get(LocKeys.OfferBadgeNew));
 
         if (!string.IsNullOrEmpty(cfg.sagaId))
-            parts.Add("[SAGA]");
+            parts.Add(Loc.Get(LocKeys.OfferBadgeSaga));
 
         if (contracts != null && contracts.DoesMovieHelpActiveContract(cfg, depts))
-            parts.Add("[CONTRATO]");
+            parts.Add(Loc.Get(LocKeys.OfferBadgeContract));
 
         return parts.Count == 0 ? string.Empty : string.Join(" ", parts);
     }

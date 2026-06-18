@@ -31,6 +31,8 @@ public class ProductionHudShell : MonoBehaviour
             UpgradeProductionLayout();
     }
 
+    public void RefreshLocalization() => ApplyLocalizedButtonLabel();
+
     public void Configure(RectTransform activeProductionRoot, MovieTabUI movieTab, Button newProductionButton)
     {
         this.activeProductionRoot = activeProductionRoot;

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The Silent Galaxy
   genre: 5
   tagline: A dead pilot still flies through the network.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A dead pilot still flies through the network.
+  synopsisEn: The Silent Galaxy presents a scenario where the limits of the possible
+    dissolve and reality itself becomes questionable.
+  synopsisFr: "The Silent Galaxy pr\xE9sente un sc\xE9nario o\xF9 les limites du
+    possible s'effacent et la r\xE9alit\xE9 elle-m\xEAme devient discutable."
+  synopsisDe: "The Silent Galaxy entwirft ein Szenario, in dem die Grenzen des M\xF6glichen
+    verschwimmen und die Realit\xE4t selbst in Frage gestellt wird."
+  synopsisJa: "The Silent Galaxy\u306F\u53EF\u80FD\u6027\u306E\u9650\u754C\u304C\u6D88\u3048\u3001\u73FE\u5B9F\u305D\u306E\u3082\u306E\u304C\u554F\u308F\u308C\u308B\u30B7\u30CA\u30EA\u30AA\u3092\u63D0\u793A\u3059\u308B\u3002"
+  cost: 1750
+  baseReward: 3150
+  baseRep: 18
+  duration: 300
+  quality: 2.01
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheSilentGalaxy.png
   posterSprite: {fileID: 21300000, guid: bccbb4fa0cc8cfb479152948c0466707, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: dominion
   sagaEntryIndex: 2

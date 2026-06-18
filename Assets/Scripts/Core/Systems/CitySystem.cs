@@ -80,10 +80,10 @@ public class CitySystem : MonoBehaviour
 
     public string GetProgressLabel()
     {
-        if (IsMaxLevel) return $"{CurrentOscars} OSC · MÁXIMO";
+        if (IsMaxLevel) return Loc.Format(LocKeys.InstOscarMax, CurrentOscars);
 
         var next = GetNextDefinition();
-        return $"{CurrentOscars} / {next.requiredOscars} OSC";
+        return Loc.Format(LocKeys.InstOscarProgress, CurrentOscars, next.requiredOscars);
     }
 
     public bool IsMovieUnlocked(MovieConfig cfg) =>
@@ -109,7 +109,7 @@ public class CitySystem : MonoBehaviour
     public List<string> GetUnlockSummaryLines()
     {
         var lines = new List<string>();
-        lines.Add($"×{CurrentDefinition.globalMultiplier:0.00} ingreso global");
+        lines.Add(Loc.Format(LocKeys.InstUnlockGlobal, CurrentDefinition.globalMultiplier));
         AppendDepartmentLines(lines, Level);
         AppendContentBandLines(lines, Level);
         return lines;
@@ -117,12 +117,12 @@ public class CitySystem : MonoBehaviour
 
     public List<string> GetNextUnlockPreviewLines()
     {
-        if (IsMaxLevel) return new List<string> { "Nivel máximo alcanzado" };
+        if (IsMaxLevel) return new List<string> { Loc.Get(LocKeys.InstMaxCity) };
 
         int next = Level + 1;
         var lines = new List<string>();
         var def = CityLevelDatabase.GetLevel(next);
-        lines.Add($"×{def.globalMultiplier:0.00} ingreso global");
+        lines.Add(Loc.Format(LocKeys.InstUnlockGlobal, def.globalMultiplier));
         AppendDepartmentLines(lines, next);
         AppendContentBandLines(lines, next);
         return lines;
@@ -132,24 +132,14 @@ public class CitySystem : MonoBehaviour
     {
         var depts = CityProgressionRules.GetDepartmentsUnlockedAtCity(cityLevel);
         foreach (var d in depts)
-            lines.Add("Dept: " + DepartmentCardUI.DeptData[(int)d].name);
+            lines.Add(Loc.Format(LocKeys.InstUnlockDept, DepartmentLoc.GetName(d)));
     }
 
     static void AppendContentBandLines(List<string> lines, int cityLevel)
     {
-        int movieTarget = ContentScaleDatabase.GetMovieTargetForCity(cityLevel);
-        lines.Add($"Catálogo ~{movieTarget} / {ContentScaleDatabase.TargetMovieCount} películas");
-        lines.Add(cityLevel switch
-        {
-            1 => "Tier 1–2 · películas básicas",
-            2 => "Secuelas y remakes",
-            3 => "Producción profesional",
-            4 => "Películas avanzadas",
-            5 => "Campaña y distribución",
-            6 => "VFX y premios",
-            7 => "Streaming y universos",
-            8 => "Imperio completo",
-            _ => "",
-        });
+        var tierKey = LocKeys.InstTierPfx + cityLevel;
+        var tierDesc = Loc.Get(tierKey);
+        if (tierDesc != tierKey)
+            lines.Add(tierDesc);
     }
 }

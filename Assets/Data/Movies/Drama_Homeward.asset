@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Homeward
   genre: 1
   tagline: Return to the place that never felt like home.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Return to the place that never felt like home.
+  synopsisEn: A generational story spanning decades, lives, and legacies in a human
+    portrait of monumental proportions.
+  synopsisFr: "Une histoire g\xE9n\xE9rationnelle couvrant des d\xE9cennies, des
+    vies et des legs dans une fresque humaine monumentale."
+  synopsisDe: "Eine Generationengeschichte \xFCber Jahrzehnte, Leben und Verm\xE4chtnisse
+    \u2014 ein menschliches Fresko von monumentalem Ausma\xDF."
+  synopsisJa: "\u6570\u5341\u5E74\u3001\u4EBA\u751F\u3001\u305D\u3057\u3066\u907A\u7523\u306B\u308F\u305F\u308B\u4E16\u4EE3\u306E\u7269\u8A9E\u2014\u2014\u58EE\u5927\u306A\u30B9\u30B1\u30FC\u30EB\u306E\u4EBA\u9593\u53D9\u4E8B\u8A69\u3002"
+  cost: 200
+  baseReward: 350
+  baseRep: 2.7
+  duration: 60
+  quality: 1.22
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

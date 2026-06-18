@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Grinning Dark
   genre: 2
   tagline: Darkness wears a familiar smile.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Darkness wears a familiar smile.
+  synopsisEn: Grinning Dark takes horror into unexplored territory with a disturbance
+    that questions the foundations of perception itself.
+  synopsisFr: "Grinning Dark emm\xE8ne l'horreur en territoire inexplor\xE9 avec
+    une perturbation qui remet en question les fondements de la perception."
+  synopsisDe: "Grinning Dark treibt den Horror in unerforschtes Terrain mit einer
+    Ersch\xFCtterung, die die Grundlagen der Wahrnehmung in Frage stellt."
+  synopsisJa: "Grinning Dark\u306F\u30DB\u30E9\u30FC\u3092\u672A\u8E0F\u306E\u9818\u57DF\u3078\u8A98\u3044\u3001\u77E5\u899A\u306E\u6839\u672C\u3092\u63FA\u308B\u304C\u3059\u602A\u7570\u3092\u63CF\u304F\u3002"
+  cost: 85
+  baseReward: 150
+  baseRep: 1.2
+  duration: 60
+  quality: 1.06
   unlockStudioLevel: 1
-  unlockCityLevel: 3
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

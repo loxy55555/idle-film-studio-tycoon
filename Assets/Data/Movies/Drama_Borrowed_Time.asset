@@ -15,13 +15,21 @@ MonoBehaviour:
   movieName: Borrowed Time
   genre: 1
   tagline: A diagnosis reorders every priority.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
+  synopsis: A diagnosis reorders every priority.
+  synopsisEn: Borrowed Time portrays with sensitivity the invisible scars of those
+    who choose to live with integrity against all odds.
+  synopsisFr: "Borrowed Time d\xE9crit avec sensibilit\xE9 les cicatrices invisibles
+    de ceux qui choisissent de vivre avec int\xE9grit\xE9."
+  synopsisDe: "Borrowed Time portraitiert mit Feingef\xFChl die unsichtbaren Narben
+    derer, die w\xE4hlen, mit Integrit\xE4t gegen alle Widerst\xE4nde zu leben."
+  synopsisJa: "Borrowed Time\u306F\u3001\u9006\u5883\u306E\u4E2D\u3067\u8AA0\u5B9F\u306B\u751F\u304D\u308B\u8005\u305F\u3061\u306E\u898B\u3048\u306A\u3044\u50B7\u8DE1\u3092\u7E4A\u7D30\u306B\u63CF\u304D\u51FA\u3059\u3002"
+  cost: 45
+  baseReward: 85
+  baseRep: 0.8
+  duration: 60
   quality: 1
   unlockStudioLevel: 1
-  unlockCityLevel: 2
+  unlockCityLevel: 1
   unlockReputation: 0
   rarity: 0
   posterColorHex: 0

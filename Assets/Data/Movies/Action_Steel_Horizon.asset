@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Dead Frequency
   genre: 0
   tagline: Fleet commanders gamble everything on one offensive.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Fleet commanders gamble everything on one offensive.
+  synopsisEn: Dead Frequency elevates the action genre to epic heights with a confrontation
+    that redefines the meaning of sacrifice.
+  synopsisFr: "Dead Frequency \xE9l\xE8ve le film d'action \xE0 des sommets \xE9piques
+    avec une confrontation qui red\xE9finit le sens du sacrifice."
+  synopsisDe: "Dead Frequency hebt das Actiongenre auf epische H\xF6hen mit einer
+    Konfrontation, die die Bedeutung von Opfer neu definiert."
+  synopsisJa: "Dead Frequency\u306F\u30A2\u30AF\u30B7\u30E7\u30F3\u6620\u753B\u3092\u53D9\u4E8B\u8A69\u7684\u306A\u9AD8\u307F\u3078\u3068\u5F15\u304D\u4E0A\u3052\u3001\u72A0\u7272\u306E\u610F\u5473\u3092\u554F\u3044\u76F4\u3059\u5BFE\u6C7A\u3092\u63CF\u304F\u3002"
+  cost: 480
+  baseReward: 870
+  baseRep: 5.9
+  duration: 300
+  quality: 1.4
   unlockStudioLevel: 1
   unlockCityLevel: 2
   unlockReputation: 0

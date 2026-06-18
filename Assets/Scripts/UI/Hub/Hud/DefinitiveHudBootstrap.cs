@@ -9,6 +9,48 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-160)]
 public static class DefinitiveHudBootstrap
 {
+    static readonly string[] MainStudioTabKeys =
+    {
+        LocKeys.StudTabDepts,
+        LocKeys.StudTabMejoras,
+        LocKeys.StudTabContratos,
+    };
+
+    /// <summary>Refresh all navigation label text (bottom nav + studio subtabs) for a language change.</summary>
+    public static void RefreshNavLabels()
+    {
+        PatchBottomNavLabels();
+
+        var switcher = FindContentSwitcher();
+        if (switcher == null) return;
+        var estudio = FindChildPanel(switcher, "EstudioPanel");
+        if (estudio == null) return;
+
+        // Refresh main studio subtabs (DEPARTAMENTOS / MEJORAS / CONTRATOS)
+        RefreshMainStudioSubTabs(estudio);
+
+        // Refresh mejoras sub-tab labels (PRODUCCIÓN / STAFF / INVESTIGACIÓN / MARKETING)
+        var mejoras = estudio.Find("StudioSubContent/StudioPanel_MEJORAS");
+        if (mejoras != null) PatchMejorasSubTabs(mejoras);
+    }
+
+    static void RefreshMainStudioSubTabs(Transform estudio)
+    {
+        var subTabBar = estudio.Find("StudioSubTabBar") as RectTransform;
+        if (subTabBar == null) return;
+
+        int tabIndex = 0;
+        for (int i = 0; i < subTabBar.childCount && tabIndex < MainStudioTabKeys.Length; i++)
+        {
+            var tab = subTabBar.GetChild(i);
+            if (tab.GetComponent<Button>() == null) continue;
+            var lbl = tab.Find("Label")?.GetComponent<TextMeshProUGUI>()
+                   ?? tab.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (lbl != null) lbl.text = Loc.Get(MainStudioTabKeys[tabIndex]);
+            tabIndex++;
+        }
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Install()
     {
@@ -44,6 +86,9 @@ public static class DefinitiveHudBootstrap
 
         PatchStudioVisualFinal(switcher);
         PatchStudioSubTabs(switcher);
+        // Localize main studio subtabs (DEPARTAMENTOS / MEJORAS / CONTRATOS)
+        var estudioForSubTabs = FindChildPanel(switcher, "EstudioPanel");
+        if (estudioForSubTabs != null) RefreshMainStudioSubTabs(estudioForSubTabs);
         PatchStudioDepartmentCards(switcher);
         PatchStudioLayoutExpansion(switcher);
         PatchDeptScrollHandling(switcher);
@@ -584,12 +629,12 @@ public static class DefinitiveHudBootstrap
         }
     }
 
-    static readonly string[] MejorasSubTabLabels =
+    static string[] MejorasSubTabLabels => new[]
     {
-        "PRODUCCIÓN",
-        "PERSONAL",
-        "INVESTIGACIÓN",
-        "MARKETING",
+        Loc.Get(LocKeys.MejorasProduction),
+        Loc.Get(LocKeys.MejorasStaff),
+        Loc.Get(LocKeys.MejorasResearch),
+        Loc.Get(LocKeys.MejorasMarketing),
     };
 
     static void PatchMejorasSubTabs(Transform mejorasRoot)

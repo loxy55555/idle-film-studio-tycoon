@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Uncle Gary II
   genre: 3
   tagline: Gary babysits. Parents reconsider life choices.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Gary babysits. Parents reconsider life choices.
+  synopsisEn: What starts as a perfect plan quickly becomes the most hilarious chain
+    of disasters imaginable.
+  synopsisFr: "Ce qui commence comme un plan parfait devient rapidement la cha\xEEne
+    de catastrophes la plus hilarante imaginable."
+  synopsisDe: Was als perfekter Plan beginnt, wird schnell zur wohl absurdesten Katastrophenserie,
+    die man sich vorstellen kann.
+  synopsisJa: "\u5B8C\u74A7\u306A\u306F\u305A\u306E\u8A08\u753B\u304C\u3001\u60F3\u50CF\u3092\u7D76\u3059\u308B\u60E8\u4E8B\u306E\u9023\u9396\u3078\u3068\u5909\u308F\u3063\u3066\u3044\u304F\u3002"
+  cost: 1150
+  baseReward: 2050
+  baseRep: 12
+  duration: 60
+  quality: 1.85
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: UncleGaryII.png
   posterSprite: {fileID: 6889706047142631188, guid: 07fc52d7aea9948429787dc796d4e1c3, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 4
   sagaId: uncle_gary
   sagaEntryIndex: 2

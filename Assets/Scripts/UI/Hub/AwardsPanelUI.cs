@@ -31,7 +31,8 @@ public class AwardsPanelUI : MonoBehaviour
     static readonly Color STAR_DARK   = CinematicTheme.CardBg2;
     static readonly Color STAR_DIMFG  = CinematicTheme.TextDim;
     static readonly Color SLOT_LOCKED_BG  = new Color(CinematicTheme.CardBg2.r, CinematicTheme.CardBg2.g, CinematicTheme.CardBg2.b, 0.92f);
-    static readonly Color SLOT_EARNED_BG  = new Color(CinematicTheme.GoldBase.r, CinematicTheme.GoldBase.g, CinematicTheme.GoldBase.b, 0.14f);
+    // FASE 15.7B — earned cells: dark cinematic black; star icon is the hero, not the tile
+    static readonly Color SLOT_EARNED_BG  = CinematicTheme.DeepBg;
     static readonly Color FRAME_LOCKED    = CinematicTheme.BorderSubtle;
     static readonly Color STAR_LOCKED_FG  = new Color(CinematicTheme.SilverDim.r, CinematicTheme.SilverDim.g, CinematicTheme.SilverDim.b, 0.62f);
     static readonly Color TEXT_PRI    = CinematicTheme.TextPrimary;
@@ -81,6 +82,7 @@ public class AwardsPanelUI : MonoBehaviour
     void Awake()
     {
         GameHub.OnGameReady += Bind;
+        UserPrefs.OnLanguageChanged += RefreshLocalization;
         EnsureBuilt();
     }
 
@@ -105,7 +107,21 @@ public class AwardsPanelUI : MonoBehaviour
     void OnDestroy()
     {
         GameHub.OnGameReady -= Bind;
+        UserPrefs.OnLanguageChanged -= RefreshLocalization;
         if (_prestige != null) _prestige.OnOscarGained -= OnOscarGained;
+    }
+
+    public void RefreshLocalization()
+    {
+        _built = false;
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            var ch = transform.GetChild(i);
+            if (Application.isPlaying) Destroy(ch.gameObject);
+            else DestroyImmediate(ch.gameObject);
+        }
+        EnsureBuilt();
+        Bind();
     }
 
     // ── Bind ──────────────────────────────────────────────────────────────────
@@ -233,14 +249,14 @@ public class AwardsPanelUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = false;
 
-        Tmp(row.transform, "★", 36f, GOLD_BRIGHT, FontStyles.Normal).gameObject
+        Tmp(row.transform, "●", 28f, GOLD_BRIGHT, FontStyles.Normal).gameObject
             .AddComponent<LayoutElement>().preferredWidth = 36f;
 
-        var t = Tmp(row.transform, "ESTRELLAS DE ORO", 22f, TEXT_PRI, FontStyles.Bold);
+        var t = Tmp(row.transform, Loc.Get(LocKeys.AwardsTitle), 22f, TEXT_PRI, FontStyles.Bold);
         t.alignment = TextAlignmentOptions.Center;
         t.gameObject.AddComponent<LayoutElement>().flexibleWidth = 0f;
 
-        Tmp(row.transform, "★", 36f, GOLD_BRIGHT, FontStyles.Normal).gameObject
+        Tmp(row.transform, "●", 28f, GOLD_BRIGHT, FontStyles.Normal).gameObject
             .AddComponent<LayoutElement>().preferredWidth = 36f;
 
         _studioPanelLabel = Tmp(hdr.transform, "—", 14f, TEXT_GOLD, FontStyles.Normal);
@@ -385,7 +401,7 @@ public class AwardsPanelUI : MonoBehaviour
         _starGlows[slotIndex].color = Color.clear;
         _starGlows[slotIndex].raycastTarget = false;
 
-        var lbl = Tmp(cell.transform, "☆", SHOWCASE_STAR_FONT, STAR_LOCKED_FG, FontStyles.Normal);
+        var lbl = Tmp(cell.transform, "·", SHOWCASE_STAR_FONT, STAR_LOCKED_FG, FontStyles.Normal);
         lbl.alignment = TextAlignmentOptions.Center;
         lbl.raycastTarget = false;
         lbl.enableAutoSizing = false;
@@ -433,11 +449,11 @@ public class AwardsPanelUI : MonoBehaviour
         lHLG.childControlWidth = lHLG.childControlHeight = true;
         lHLG.childForceExpandWidth = false; lHLG.childForceExpandHeight = true;
 
-        _progressLabel = Tmp(labelRow.transform, "0 / 28 ★", 17f, TEXT_GOLD, FontStyles.Bold);
+        _progressLabel = Tmp(labelRow.transform, "0 / 28 OSC", 17f, TEXT_GOLD, FontStyles.Bold);
         _progressLabel.alignment = TextAlignmentOptions.MidlineLeft;
         _progressLabel.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        var capLbl = Tmp(labelRow.transform, "ESTRELLAS DE ORO", 11f, TEXT_SEC, FontStyles.Bold);
+        var capLbl = Tmp(labelRow.transform, Loc.Get(LocKeys.AwardsTitle), 11f, TEXT_SEC, FontStyles.Bold);
         capLbl.alignment = TextAlignmentOptions.MidlineRight;
         capLbl.gameObject.AddComponent<LayoutElement>().preferredWidth = 160f;
 
@@ -472,7 +488,7 @@ public class AwardsPanelUI : MonoBehaviour
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        var sectionHeader = Tmp(section.transform, "SIGUIENTE ESTRELLA", 12f, TEXT_SEC, FontStyles.Bold);
+        var sectionHeader = Tmp(section.transform, Loc.Get(LocKeys.AwardsNextStar), 12f, TEXT_SEC, FontStyles.Bold);
         sectionHeader.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
 
         _nextLabel = Tmp(section.transform, "—", 18f, TEXT_PRI, FontStyles.Bold);
@@ -491,7 +507,7 @@ public class AwardsPanelUI : MonoBehaviour
         _claimBtn = btnGo.GetComponent<Button>();
         _claimBtn.onClick.AddListener(OnClaimClick);
 
-        _claimBtnLabel = Tmp(btnGo.transform, "Sigue produciendo...", 14f, TEXT_PRI, FontStyles.Bold);
+        _claimBtnLabel = Tmp(btnGo.transform, Loc.Get(LocKeys.AwardsKeepProducing), 14f, TEXT_PRI, FontStyles.Bold);
         _claimBtnLabel.alignment = TextAlignmentOptions.Center;
         Stretch(_claimBtnLabel.rectTransform);
 
@@ -516,7 +532,7 @@ public class AwardsPanelUI : MonoBehaviour
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        Tmp(section.transform, "PROGRESO DEL ESTUDIO", 12f, TEXT_SEC, FontStyles.Bold)
+        Tmp(section.transform, Loc.Get(LocKeys.AwardsProgressSect), 12f, TEXT_SEC, FontStyles.Bold)
             .gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
 
         // Divider
@@ -534,7 +550,7 @@ public class AwardsPanelUI : MonoBehaviour
         r1hlg.childControlWidth = r1hlg.childControlHeight = true;
         r1hlg.childForceExpandWidth = false; r1hlg.childForceExpandHeight = true;
 
-        var installIcon = Tmp(row1.transform, "🏛", 22f, TEXT_GOLD, FontStyles.Normal);
+        var installIcon = Tmp(row1.transform, "★", 22f, TEXT_GOLD, FontStyles.Normal);
         installIcon.gameObject.AddComponent<LayoutElement>().preferredWidth = 36f;
 
         var installName = Tmp(row1.transform, "—", 18f, TEXT_PRI, FontStyles.Bold);
@@ -557,7 +573,7 @@ public class AwardsPanelUI : MonoBehaviour
         studioLvlLbl.gameObject.AddComponent<LayoutElement>().preferredWidth = 140f;
 
         // Store refs for refresh
-        var hintLbl = Tmp(section.transform, "Las Estrellas de Oro impulsan el crecimiento del estudio.",
+        var hintLbl = Tmp(section.transform, Loc.Get(LocKeys.AwardsHint),
             11f, TEXT_SEC, FontStyles.Italic);
         hintLbl.textWrappingMode = TextWrappingModes.Normal;
         hintLbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 30f;
@@ -595,19 +611,23 @@ public class AwardsPanelUI : MonoBehaviour
         {
             bool lit = i < display;
 
-            // Phase 13.3D: no individual per-star backgrounds — stars float on the vitrina surface
+            // FASE 15.7B — unlocked: black tile; locked: transparent (embossed sprite owns the tile)
             if (_slotBgs != null && _slotBgs[i] != null)
-                _slotBgs[i].color = Color.clear;
+            {
+                if (lit) HudSkinUtil.ApplyPremiumSurface(_slotBgs[i], SLOT_EARNED_BG);
+                else _slotBgs[i].color = Color.clear;
+            }
 
             if (_slotFrames != null && _slotFrames[i] != null)
                 _slotFrames[i].color = Color.clear;
 
+            // No full-cell gold wash — keeps earned tiles dark; glow only via earn animation
             if (_starGlows != null && _starGlows[i] != null)
                 _starGlows[i].color = Color.clear;
 
             if (_starLabels[i] != null)
             {
-                _starLabels[i].text = lit ? "★" : "☆";
+                _starLabels[i].text = lit ? "●" : "·";
                 _starLabels[i].color = lit ? GOLD_BRIGHT : STAR_LOCKED_FG;
                 _starLabels[i].fontStyle = lit ? FontStyles.Bold : FontStyles.Normal;
                 _starLabels[i].alpha = 1f;
@@ -616,7 +636,7 @@ public class AwardsPanelUI : MonoBehaviour
             if (_starIcons != null && _starIcons[i] != null)
             {
                 var sprite = lit ? UIIconCatalog.GetAwardStar() : UIIconCatalog.GetAwardStarLocked();
-                UIIconGraphic.Apply(_starIcons[i], sprite, lit ? GOLD_BRIGHT : STAR_LOCKED_FG);
+                UIIconGraphic.Apply(_starIcons[i], sprite, lit ? Color.white : STAR_LOCKED_FG);
                 _starIcons[i].preserveAspect = true;
                 if (sprite != null && _starLabels[i] != null)
                     _starLabels[i].gameObject.SetActive(false);
@@ -633,7 +653,7 @@ public class AwardsPanelUI : MonoBehaviour
     {
         float pct = SHOWCASE_SLOTS > 0 ? Mathf.Clamp01((float)earned / SHOWCASE_SLOTS) : 0f;
         if (_barFill != null)   SetFill(_barFill, pct);
-        if (_progressLabel != null) _progressLabel.text = $"{earned} / {SHOWCASE_SLOTS} ★";
+        if (_progressLabel != null) _progressLabel.text = $"{earned} / {SHOWCASE_SLOTS}";
     }
 
     void RefreshNextObjective(int earned, float rep, float threshold, bool canClaim)
@@ -642,23 +662,23 @@ public class AwardsPanelUI : MonoBehaviour
 
         if (earned >= SHOWCASE_SLOTS)
         {
-            _nextLabel.text    = "¡Colección completa!";
-            _nextSubLabel.text = "Todas las Estrellas de Oro conseguidas";
-            SetClaimButton(false, "¡Imperio Cinematográfico!");
+            _nextLabel.text    = Loc.Get(LocKeys.AwardsComplete);
+            _nextSubLabel.text = Loc.Get(LocKeys.AwardsAllEarned);
+            SetClaimButton(false, Loc.Get(LocKeys.AwardsEmpireMax));
             return;
         }
 
         if (canClaim)
         {
-            _nextLabel.text    = "¡LISTA PARA RECLAMAR!";
-            _nextSubLabel.text = $"Reputación: {rep:N0} / {threshold:N0} REP ✓";
-            SetClaimButton(true, "✦ CONSEGUIR ESTRELLA DE ORO");
+            _nextLabel.text    = Loc.Get(LocKeys.AwardsReadyClaim);
+            _nextSubLabel.text = Loc.Format(LocKeys.AwardsRepReadyFmt, rep, threshold);
+            SetClaimButton(true, Loc.Get(LocKeys.AwardsClaimBtn));
         }
         else
         {
-            _nextLabel.text    = $"Estrella #{earned + 1}";
-            _nextSubLabel.text = $"REP necesaria: {rep:N0} / {threshold:N0}";
-            SetClaimButton(false, "Sigue produciendo...");
+            _nextLabel.text    = Loc.Format(LocKeys.AwardsStarTitleFmt, earned + 1);
+            _nextSubLabel.text = string.Format(Loc.Get(LocKeys.AwardsRepNeeded), rep, threshold);
+            SetClaimButton(false, Loc.Get(LocKeys.AwardsKeepProducing));
         }
     }
 
@@ -675,7 +695,7 @@ public class AwardsPanelUI : MonoBehaviour
             else if (t.name == "StudioLvlLbl") studLvlL = t;
         }
 
-        string curName   = CityLevelDatabase.GetLevel(_city.Level).displayName;
+        string curName   = CityLevelDatabase.GetLocalizedName(_city.Level);
         int    nextOscars = -1;
         if (!_city.IsMaxLevel)
         {
@@ -687,11 +707,11 @@ public class AwardsPanelUI : MonoBehaviour
         if (starsL   != null)
         {
             starsL.text = nextOscars >= 0
-                ? $"{earned} ★  ·  {nextOscars - earned} para desbloq. siguiente"
-                : $"{earned} ★  ·  ¡Imperio máximo alcanzado!";
+                ? Loc.Format(LocKeys.AwardsUnlockHintFmt, earned, nextOscars - earned)
+                : $"{earned}  ·  {Loc.Get(LocKeys.AwardsEmpireMax)}";
         }
         if (studLvlL != null)
-            studLvlL.text = $"Estudio Nv. {_studioLevel.Level}";
+            studLvlL.text = string.Format(Loc.Get(LocKeys.AwardsStudioLevel), _studioLevel.Level);
         if (_studioPanelLabel != null)
             _studioPanelLabel.text = curName;
     }
@@ -806,11 +826,7 @@ public class AwardsPanelUI : MonoBehaviour
             }
         }
 
-        if (_slotBgs != null)
-        {
-            for (int i = 0; i < _slotBgs.Length; i++)
-                if (_slotBgs[i] != null) _slotBgs[i].color = Color.clear;
-        }
+        // Slot backgrounds are owned by RefreshStarGrid (FASE 15.7B)
 
         if (_vitrinaFrameLE != null)
             ApplyVitrinaFrameLayout(_vitrinaFrameLE);

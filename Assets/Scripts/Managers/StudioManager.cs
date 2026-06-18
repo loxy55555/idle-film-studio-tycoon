@@ -321,7 +321,7 @@ public class StudioManager : MonoBehaviour
 
         float repIncome = repPower * quality * cityMult;
 
-        cachedPassiveIncome = repIncome + flatBonus;
+        cachedPassiveIncome = (repIncome + flatBonus) * BoostSystem.Multiplier(BoostSystem.BoostType.Income);
 
 
 
@@ -724,6 +724,9 @@ public class StudioManager : MonoBehaviour
         float xp              = p.pendingXp;
         float varietyBonusPct = p.varietyBonusPercent;
         float durationUsed    = p.totalDuration;
+
+        rep   *= BoostSystem.Multiplier(BoostSystem.BoostType.Rep);
+        xp    *= BoostSystem.Multiplier(BoostSystem.BoostType.XP);
 
         AddMoney(reward);
         reputation += rep;

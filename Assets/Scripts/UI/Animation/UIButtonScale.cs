@@ -89,7 +89,18 @@ public class UIButtonScale : MonoBehaviour,
 
 
 
-    public void OnPointerClick(PointerEventData eventData) => ResetScale();
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ResetScale();
+        if (!IsInteractable() || IsBottomNavTab()) return;
+        AudioManager.Instance?.PlaySfx("softclick");
+    }
+
+    bool IsBottomNavTab()
+    {
+        var nav = GameObject.Find("BottomNav");
+        return nav != null && transform.IsChildOf(nav.transform);
+    }
 
 
 

@@ -32,6 +32,9 @@ public class StudioVisualStage : MonoBehaviour
             gameObject.AddComponent<StudioVisualManager>();
         HideLegacyContent();
         RemoveStageOverlays();
+
+        if (GetComponent<StudioAmbientSystem>() == null)
+            gameObject.AddComponent<StudioAmbientSystem>();
     }
 
     void OnDestroy()

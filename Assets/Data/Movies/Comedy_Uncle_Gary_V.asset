@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Uncle Gary V
   genre: 3
   tagline: Gary opens a food truck. Health code weeps.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Gary opens a food truck. Health code weeps.
+  synopsisEn: What starts as a perfect plan quickly becomes the most hilarious chain
+    of disasters imaginable.
+  synopsisFr: "Ce qui commence comme un plan parfait devient rapidement la cha\xEEne
+    de catastrophes la plus hilarante imaginable."
+  synopsisDe: Was als perfekter Plan beginnt, wird schnell zur wohl absurdesten Katastrophenserie,
+    die man sich vorstellen kann.
+  synopsisJa: "\u5B8C\u74A7\u306A\u306F\u305A\u306E\u8A08\u753B\u304C\u3001\u60F3\u50CF\u3092\u7D76\u3059\u308B\u60E8\u4E8B\u306E\u9023\u9396\u3078\u3068\u5909\u308F\u3063\u3066\u3044\u304F\u3002"
+  cost: 11500
+  baseReward: 20500
+  baseRep: 89
+  duration: 60
+  quality: 3.05
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: UncleGaryV.png
   posterSprite: {fileID: -4427677575782036297, guid: f331087a63e9f0547a25d8c5bbcc034a, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

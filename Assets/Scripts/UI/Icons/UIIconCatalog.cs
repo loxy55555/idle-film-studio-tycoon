@@ -19,7 +19,7 @@ public static class UIIconCatalog
     {
         var r = Registry;
         if (r == null) return null;
-        return type switch
+        var sprite = type switch
         {
             DepartmentType.Editor         => r.deptEditor,
             DepartmentType.Director       => r.deptDirector,
@@ -34,13 +34,17 @@ public static class UIIconCatalog
             DepartmentType.Producer       => r.deptProducer,
             _                             => null,
         };
+        // B2 diagnostic: log missing department icon on first encounter
+        if (sprite == null)
+            UnityEngine.Debug.LogWarning($"[UIIconCatalog] Department icon missing for: {type}");
+        return sprite;
     }
 
     public static Sprite GetGenre(MovieGenre genre)
     {
         var r = Registry;
         if (r == null) return null;
-        return genre switch
+        var sprite = genre switch
         {
             MovieGenre.Action      => r.genreAction,
             MovieGenre.Drama       => r.genreDrama,
@@ -54,6 +58,10 @@ public static class UIIconCatalog
             MovieGenre.Documentary => r.genreDocumentary,
             _                      => null,
         };
+        // B1 diagnostic: log missing genre icon on first encounter
+        if (sprite == null)
+            UnityEngine.Debug.LogWarning($"[UIIconCatalog] Genre icon missing for: {genre}");
+        return sprite;
     }
 
     public static Sprite GetProductionIcon(MovieRarity rarity, MovieGenre genre)
@@ -90,6 +98,7 @@ public static class UIIconCatalog
     public static Sprite GetResourceTicket()     => Registry?.resTicket;
     public static Sprite GetResourceFilmReel()   => Registry?.resFilmReel;
     public static Sprite GetResourceDecoCamera() => Registry?.resDecoCamera;
+    public static Sprite GetResourceSettings()   => Registry?.resSettings;
 
     public static Sprite GetAwardStar()       => Registry?.awardStar ?? Registry?.resGoldStar;
     public static Sprite GetAwardStarLocked()  => Registry?.awardStarLocked;

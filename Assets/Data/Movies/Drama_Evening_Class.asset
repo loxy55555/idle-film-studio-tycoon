@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: The L On G Road Home
   genre: 1
   tagline: Adults learn to read and to hope again.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Adults learn to read and to hope again.
+  synopsisEn: The L On G Road Home explores the bonds that define us and the impossible
+    choices that shape the course of a life.
+  synopsisFr: "The L On G Road Home explore les liens qui nous d\xE9finissent et
+    les choix impossibles qui d\xE9terminent le cours d'une vie."
+  synopsisDe: "The L On G Road Home erkundet die Bindungen, die uns definieren, und
+    die unm\xF6glichen Entscheidungen, die den Lauf eines Lebens bestimmen."
+  synopsisJa: "The L On G Road Home\u306F\u79C1\u305F\u3061\u3092\u5B9A\u7FA9\u3059\u308B\u7D46\u3068\u3001\u4EBA\u751F\u306E\u884C\u65B9\u3092\u6C7A\u3081\u308B\u4E0D\u53EF\u80FD\u306A\u9078\u629E\u3092\u63A2\u6C42\u3059\u308B\u3002"
+  cost: 1250
+  baseReward: 2250
+  baseRep: 13
+  duration: 300
+  quality: 1.85
   unlockStudioLevel: 1
   unlockCityLevel: 3
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: TheLOnGRoadHome.png
   posterSprite: {fileID: 21300000, guid: 5eef885b0656fa244a231399fd721cca, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Silenceevidence
   genre: 7
   tagline: Earlier file. Same handler. Worse secrets.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Earlier file. Same handler. Worse secrets.
+  synopsisEn: The truth is closer than it seems, but uncovering it may prove more
+    dangerous than the lie itself.
+  synopsisFr: "La v\xE9rit\xE9 est plus proche qu'il n'y para\xEEt, mais la d\xE9couvrir
+    pourrait s'av\xE9rer plus dangereux que le mensonge lui-m\xEAme."
+  synopsisDe: "Die Wahrheit ist n\xE4her, als es scheint \u2014 doch sie aufzudecken
+    k\xF6nnte gef\xE4hrlicher sein als die L\xFCge selbst."
+  synopsisJa: "\u771F\u5B9F\u306F\u601D\u3063\u305F\u3088\u308A\u8FD1\u304F\u306B\u3042\u308B\u2014\u2014\u3060\u304C\u66B4\u304F\u3053\u3068\u306F\u3001\u5618\u3088\u308A\u3082\u5371\u967A\u304B\u3082\u3057\u308C\u306A\u3044\u3002"
+  cost: 97500
+  baseReward: 175000
+  baseRep: 614
+  duration: 300
+  quality: 4.22
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: Silenceevidence.png
   posterSprite: {fileID: 21300000, guid: 5bac09781d5f330488ec1a3a6c23ca16, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

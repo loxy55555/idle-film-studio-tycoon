@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Red File 27
   genre: 7
   tagline: Case closed does not mean case finished.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Case closed does not mean case finished.
+  synopsisEn: Red File 27 keeps the audience in constant tension with unpredictable
+    twists that redefine what they think they know.
+  synopsisFr: "Red File 27 maintient le spectateur en tension constante avec des
+    rebondissements impr\xE9visibles."
+  synopsisDe: "Red File 27 h\xE4lt das Publikum in st\xE4ndiger Spannung mit unvorhersehbaren
+    Wendungen, die alles in Frage stellen."
+  synopsisJa: "Red File 27\u306F\u5E38\u306B\u89B3\u5BA2\u3092\u7DCA\u5F35\u306E\u4E2D\u306B\u7F6E\u304D\u3001\u4E88\u6E2C\u4E0D\u80FD\u306A\u5C55\u958B\u3067\u3059\u3079\u3066\u306E\u601D\u3044\u8FBC\u307F\u3092\u8986\u3059\u3002"
+  cost: 325000
+  baseReward: 627750
+  baseRep: 2091
+  duration: 21600
+  quality: 5
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: RedFile27.png
   posterSprite: {fileID: 21300000, guid: 8ccf5b9d6b96a1346ac6c4456f4d3a22, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

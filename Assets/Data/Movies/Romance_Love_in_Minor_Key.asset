@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Love in Minor Key
   genre: 4
   tagline: Musicians compose a shared life.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Musicians compose a shared life.
+  synopsisEn: When the heart decides, neither distance nor the past can prevent what
+    was always meant to happen.
+  synopsisFr: "Quand le c\u0153ur d\xE9cide, ni la distance ni le pass\xE9 ne peuvent
+    emp\xEAcher ce qui \xE9tait destin\xE9 \xE0 arriver."
+  synopsisDe: "Wenn das Herz entscheidet, k\xF6nnen weder Distanz noch Vergangenheit
+    verhindern, was immer geschehen sollte."
+  synopsisJa: "\u5FC3\u304C\u6C7A\u3081\u305F\u3068\u304D\u3001\u8DDD\u96E2\u3082\u904E\u53BB\u3082\u3001\u8D77\u3053\u308B\u3079\u304D\u3053\u3068\u3092\u6B62\u3081\u3089\u308C\u306A\u3044\u3002"
+  cost: 98500
+  baseReward: 175000
+  baseRep: 620
+  duration: 60
+  quality: 4.21
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: LoveinMinorKey.png
   posterSprite: {fileID: 21300000, guid: 2a10480e57fc9084294bd0b145a520a8, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

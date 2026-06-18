@@ -50,6 +50,7 @@ public class UIIconRegistry : ScriptableObject
     public Sprite resDecoCamera;
     public Sprite resFilmReel;
     public Sprite resDiamonds;
+    public Sprite resSettings;
 
     [Header("Awards")]
     public Sprite awardStar;

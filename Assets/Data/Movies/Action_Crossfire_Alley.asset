@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Crossfire Alley
   genre: 0
   tagline: Every alley is an ambush waiting to happen.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Every alley is an ambush waiting to happen.
+  synopsisEn: A mission of global scope whose outcome will determine the balance
+    of power for decades to come.
+  synopsisFr: "Une mission d'envergure mondiale dont l'issue d\xE9terminera l'\xE9quilibre
+    des pouvoirs pour les d\xE9cennies \xE0 venir."
+  synopsisDe: "Ein Einsatz von globalem Ausma\xDF, dessen Ausgang das Machtgef\xFCge
+    f\xFCr Jahrzehnte bestimmen wird."
+  synopsisJa: "\u7D50\u672B\u304C\u6570\u5341\u5E74\u306B\u308F\u305F\u308B\u52E2\u529B\u5747\u8861\u3092\u5DE6\u53F3\u3059\u308B\u3001\u4E16\u754C\u898F\u6A21\u306E\u30DF\u30C3\u30B7\u30E7\u30F3\u3002"
+  cost: 50
+  baseReward: 95
+  baseRep: 0.9
+  duration: 60
+  quality: 1.01
   unlockStudioLevel: 1
   unlockCityLevel: 1
   unlockReputation: 0

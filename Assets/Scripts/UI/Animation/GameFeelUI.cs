@@ -93,22 +93,22 @@ public class GameFeelUI : MonoBehaviour
 
         if (contract.rewardMoney > 0)
         {
-            lines.Add("+$" + contract.rewardMoney.ToString("N0"));
+            lines.Add(Loc.Format(LocKeys.ContractRewardMoney, AnimatedMoneyText.FormatMoney(contract.rewardMoney)));
             colors.Add(moneyColor);
         }
         if (contract.rewardReputation > 0)
         {
-            lines.Add("+" + contract.rewardReputation.ToString("0") + " REP");
+            lines.Add(Loc.Format(LocKeys.ContractRewardRep, contract.rewardReputation));
             colors.Add(repColor);
         }
         if (contract.rewardDiamonds > 0)
         {
-            lines.Add("+" + contract.rewardDiamonds + " 💎");
+            lines.Add(Loc.Format(LocKeys.ContractRewardDiam, contract.rewardDiamonds));
             colors.Add(diamondColor);
         }
         if (contract.rewardStudioXP > 0)
         {
-            lines.Add("+" + contract.rewardStudioXP + " XP");
+            lines.Add(Loc.Format(LocKeys.ContractRewardXP, contract.rewardStudioXP));
             colors.Add(xpColor);
         }
 
@@ -116,7 +116,7 @@ public class GameFeelUI : MonoBehaviour
 
         EnqueuePanel(new PanelRequest
         {
-            title      = "CONTRATO COMPLETADO",
+            title      = Loc.Get(LocKeys.GameFeelContractComplete),
             subtitle   = contract.contractTitle,
             lines      = lines.ToArray(),
             lineColors = colors.ToArray(),
@@ -134,9 +134,9 @@ public class GameFeelUI : MonoBehaviour
 
         EnqueuePanel(new PanelRequest
         {
-            title      = "OSCAR CONSEGUIDO",
+            title      = Loc.Get(LocKeys.GameFeelOscarEarned),
             subtitle   = "",
-            lines      = new[] { oscars + " Oscar(s) · Mejora tu Ciudad" },
+            lines      = new[] { oscars + Loc.Get(LocKeys.GameFeelOscarsSuffix) },
             lineColors = new[] { oscarTitleColor },
             prominent  = true,
         });
@@ -146,11 +146,11 @@ public class GameFeelUI : MonoBehaviour
     {
         EnqueuePanel(new PanelRequest
         {
-            title      = "CIUDAD MEJORADA",
+            title      = Loc.Get(LocKeys.GameFeelCityImproved),
             subtitle   = cityName,
             lines      = new[]
             {
-                "×" + globalMultiplier.ToString("0.00") + " ingreso global",
+                "×" + globalMultiplier.ToString("0.00") + Loc.Get(LocKeys.GameFeelIncomeGlobal),
             },
             lineColors = new[] { oscarTitleColor },
             prominent  = true,
@@ -187,11 +187,11 @@ public class GameFeelUI : MonoBehaviour
 
         string effect = UpgradeEffectFormatter.FormatLevelEffects(cfg, newLevel);
         if (string.IsNullOrEmpty(effect))
-            effect = cfg != null ? cfg.displayName : "Mejora adquirida";
+            effect = cfg != null ? cfg.displayName : Loc.Get(LocKeys.GameFeelUpgradeFallback);
 
         EnqueuePanel(new PanelRequest
         {
-            title      = "MEJORA ADQUIRIDA",
+            title      = Loc.Get(LocKeys.GameFeelUpgradeBought),
             subtitle   = cfg != null ? cfg.displayName : "",
             lines      = new[] { effect },
             lineColors = new[] { moneyColor },
@@ -267,6 +267,7 @@ public class GameFeelUI : MonoBehaviour
 
         for (int i = 0; i < req.lines.Length; i++)
         {
+            if (string.IsNullOrWhiteSpace(req.lines[i])) continue;
             Color c = req.lineColors != null && i < req.lineColors.Length ? req.lineColors[i] : titleColor;
             AddPanelText(go.transform, req.lines[i], 20, c, FontStyles.Bold);
         }
@@ -308,7 +309,7 @@ public class GameFeelUI : MonoBehaviour
         btnGo.AddComponent<LayoutElement>().preferredHeight = 36f;
         btnGo.AddComponent<UIButtonScale>();
 
-        var lbl = RuntimeTmpText.Create(btnGo.transform, "CONTINUAR", 16, Color.white, FontStyles.Bold,
+        var lbl = RuntimeTmpText.Create(btnGo.transform, Loc.Get(LocKeys.GameFeelContinue), 16, Color.white, FontStyles.Bold,
             TextAlignmentOptions.Center);
         StretchRect(lbl.rectTransform);
 

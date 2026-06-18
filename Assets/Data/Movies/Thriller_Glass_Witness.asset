@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: C A Se114
   genre: 7
   tagline: Testimony recorded in a mirror maze.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Testimony recorded in a mirror maze.
+  synopsisEn: C A Se114 keeps the audience in constant tension with unpredictable
+    twists that redefine what they think they know.
+  synopsisFr: "C A Se114 maintient le spectateur en tension constante avec des rebondissements
+    impr\xE9visibles."
+  synopsisDe: "C A Se114 h\xE4lt das Publikum in st\xE4ndiger Spannung mit unvorhersehbaren
+    Wendungen, die alles in Frage stellen."
+  synopsisJa: "C A Se114\u306F\u5E38\u306B\u89B3\u5BA2\u3092\u7DCA\u5F35\u306E\u4E2D\u306B\u7F6E\u304D\u3001\u4E88\u6E2C\u4E0D\u80FD\u306A\u5C55\u958B\u3067\u3059\u3079\u3066\u306E\u601D\u3044\u8FBC\u307F\u3092\u8986\u3059\u3002"
+  cost: 84000
+  baseReward: 150000
+  baseRep: 542
+  duration: 300
+  quality: 4.16
   unlockStudioLevel: 1
   unlockCityLevel: 7
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: CASe114.png
   posterSprite: {fileID: 21300000, guid: 9c66b60b3aa0fdf43b5ab07d84658423, type: 3}
-  catalogTier: 1
+  catalogTier: 4
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

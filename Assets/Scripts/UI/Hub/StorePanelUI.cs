@@ -1,47 +1,182 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Commercial store screen (Phase 8.6A layout rebuild).
-/// Builds a premium-looking storefront at runtime inside the store tab:
-/// featured banner, diamond packs, content packs, boosts and premium section.
-/// All products are visual placeholders — no purchase logic.
+/// FASE 15.2A / 15.9D — Store UI wired to PurchaseManager (Google Play Billing).
+///   • Diamond packs / premium packs / NoAds — real IAP
+///   • Rewarded ads unchanged
+///   • Offline Premium — still simulated (out of 15.9D SKU scope)
 /// </summary>
 public class StorePanelUI : MonoBehaviour
 {
-    static readonly Color BG_DEEP    = new Color(0.05f, 0.06f, 0.11f);
-    static readonly Color BG_CARD    = new Color(0.10f, 0.11f, 0.19f);
-    static readonly Color BG_DARK    = new Color(0.04f, 0.04f, 0.08f);
-    static readonly Color TEXT_PRI   = CinematicTheme.TextPrimary;
-    static readonly Color TEXT_SEC   = CinematicTheme.SilverBase;
+    static readonly Color BG_DEEP     = new Color(0.05f, 0.06f, 0.11f);
+    static readonly Color BG_CARD     = new Color(0.10f, 0.11f, 0.19f);
+    static readonly Color BG_DARK     = new Color(0.04f, 0.04f, 0.08f);
+    static readonly Color TEXT_PRI    = CinematicTheme.TextPrimary;
+    static readonly Color TEXT_SEC    = CinematicTheme.SilverBase;
     static readonly Color ACCENT_GOLD = CinematicTheme.GoldBright;
     static readonly Color ACCENT_BLUE = new Color(0.25f, 0.55f, 0.90f);
     static readonly Color ACCENT_PURP = new Color(0.61f, 0.35f, 0.71f);
     static readonly Color ACCENT_GREEN = CinematicTheme.BronzeBase;
-    static readonly Color BTN_BUY    = CinematicTheme.ButtonSuccess;
+    static readonly Color ACCENT_RED    = new Color(0.85f, 0.25f, 0.25f);
+    static readonly Color ACCENT_ORANGE = new Color(0.88f, 0.50f, 0.15f);
+    static readonly Color BTN_BUY     = CinematicTheme.ButtonSuccess;
+    static readonly Color BTN_AD      = CinematicTheme.GoldDim;   // warm amber — replaces generic green
+    static readonly Color BTN_OWNED   = new Color(0.3f, 0.3f, 0.3f);
+
+    // Shared action-button geometry — Inversor hero + Featured Supporter banner
+    const float StorePromoButtonWidth = 92f;
 
     bool _built;
+    bool _iapSubscribed;
 
-    void Awake()  => EnsureBuilt();
-    void Start()  => EnsureBuilt();
+    // Toast label for feedback messages
+    TextMeshProUGUI _toastLabel;
+    float           _toastTimer;
+
+    // BUG-05: Live timer labels for active boosts — updated every frame without rebuilding
+    readonly System.Collections.Generic.Dictionary<BoostSystem.BoostType, TextMeshProUGUI>
+        _boostTimerLabels = new System.Collections.Generic.Dictionary<BoostSystem.BoostType, TextMeshProUGUI>();
+
+    // H1 (FASE 16.1): Investor cooldown label — updated every frame so the countdown is live
+    readonly System.Collections.Generic.List<TextMeshProUGUI> _investorCooldownLabels = new();
+
+    void Awake()
+    {
+        EnsureBuilt();
+        UserPrefs.OnLanguageChanged += RefreshLocalization;
+        AdRewardUI.Register(ShowToast);
+        SubscribeBoostEvents();
+        GameHub.OnGameReady += OnGameHubReady;
+    }
+
+    void OnGameHubReady()
+    {
+        SubscribeIapEvents();
+        RefreshLocalization();
+    }
+
+    void SubscribeIapEvents()
+    {
+        if (_iapSubscribed) return;
+        var pm = PurchaseManager.Instance;
+        if (pm == null) return;
+        pm.OnCatalogReady += RefreshLocalization;
+        pm.OnEntitlementsChanged += RefreshLocalization;
+        _iapSubscribed = true;
+    }
+
+    void OnDestroy()
+    {
+        GameHub.OnGameReady -= OnGameHubReady;
+        if (PurchaseManager.Instance != null && _iapSubscribed)
+        {
+            PurchaseManager.Instance.OnCatalogReady -= RefreshLocalization;
+            PurchaseManager.Instance.OnEntitlementsChanged -= RefreshLocalization;
+        }
+        UserPrefs.OnLanguageChanged -= RefreshLocalization;
+        AdRewardUI.Register(null);
+        UnsubscribeBoostEvents();
+    }
+
+    void SubscribeBoostEvents()
+    {
+        if (BoostSystem.Instance != null)
+            BoostSystem.Instance.OnBoostsChanged += RefreshLocalization;
+        else
+            GameHub.OnGameReady += OnGameReady;
+    }
+
+    void UnsubscribeBoostEvents()
+    {
+        if (BoostSystem.Instance != null)
+            BoostSystem.Instance.OnBoostsChanged -= RefreshLocalization;
+        GameHub.OnGameReady -= OnGameReady;
+    }
+
+    void OnGameReady()
+    {
+        GameHub.OnGameReady -= OnGameReady;
+        if (BoostSystem.Instance != null)
+            BoostSystem.Instance.OnBoostsChanged += RefreshLocalization;
+    }
+
+    void Start()    => EnsureBuilt();
     void OnEnable() => EnsureBuilt();
+
+    void Update()
+    {
+        if (_toastTimer > 0f)
+        {
+            _toastTimer -= Time.deltaTime;
+            if (_toastLabel != null)
+                _toastLabel.alpha = Mathf.Clamp01(_toastTimer);
+            if (_toastTimer <= 0f && _toastLabel != null)
+                _toastLabel.gameObject.SetActive(false);
+        }
+
+        // BUG-05: Tick active boost timers every frame without rebuilding the store
+        if (_boostTimerLabels.Count > 0)
+        {
+            var boosts = BoostSystem.Instance;
+            if (boosts != null)
+            {
+                foreach (var kv in _boostTimerLabels)
+                {
+                    var label = kv.Value;
+                    if (label == null) continue; // safely skip destroyed labels after a rebuild
+                    if (boosts.IsActive(kv.Key))
+                    {
+                        float rem = boosts.GetTimeRemaining(kv.Key);
+                        int mins = (int)(rem / 60f);
+                        int secs = (int)(rem % 60f);
+                        label.text = $"{Loc.Get(LocKeys.StoreBoostActive)} {mins:0}m {secs:00}s";
+                    }
+                }
+            }
+        }
+
+        // H1 (FASE 16.1): Tick investor cooldown in real time without rebuilding the store
+        if (_investorCooldownLabels.Count > 0)
+        {
+            float cd = AdRewardSystem.GetInvestorCooldownRemaining();
+            if (cd > 0f)
+            {
+                int mins = (int)(cd / 60f);
+                int secs = (int)(cd % 60f);
+                string cdText = string.Format(Loc.Get(LocKeys.InvestorCooldownFmt), mins, secs);
+                foreach (var lbl in _investorCooldownLabels)
+                    if (lbl != null) lbl.text = cdText;
+            }
+            else
+            {
+                // Cooldown just expired — rebuild so the "claim" button appears
+                _investorCooldownLabels.Clear();
+                RefreshLocalization();
+            }
+        }
+    }
+
+    public void RefreshLocalization()
+    {
+        _built = false;
+        EnsureBuilt();
+    }
 
     public void EnsureBuilt()
     {
-        // Also rebuild if StoreRoot was somehow destroyed (e.g., scene reload)
         if (_built && transform.Find("StoreRoot") != null) return;
         _built = true;
 
-        // Hide legacy menu content — settings now live behind the top-bar gear
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             var child = transform.GetChild(i);
-            if (child.name == "StoreRoot") continue; // don't hide our own root if it exists
+            if (child.name == "StoreRoot") continue;
             child.gameObject.SetActive(false);
         }
 
-        // Ensure this panel fills its parent
         var rt = GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
         rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
         rt.offsetMin = rt.offsetMax = Vector2.zero;
@@ -51,17 +186,23 @@ public class StorePanelUI : MonoBehaviour
 
     void BuildStore()
     {
-        // Remove stale root if it exists
-        var stale = transform.Find("StoreRoot");
-        if (stale != null) Object.Destroy(stale.gameObject);
+        // BUG-01: Destroy ALL existing StoreRoot instances immediately so that a new
+        // StoreRoot is always built on a clean slate — Destroy() is deferred to end-of-frame
+        // which let multiple roots accumulate during the same frame.
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            var child = transform.GetChild(i);
+            if (child.name == "StoreRoot")
+                DestroyImmediate(child.gameObject);
+        }
+        _boostTimerLabels.Clear();     // BUG-05: stale label refs invalidated on rebuild
+        _investorCooldownLabels.Clear(); // H1: stale cooldown label refs invalidated on rebuild
+        _toastTimer = 0f;          // prevent ghost toast after rebuild
 
         var root = new GameObject("StoreRoot", typeof(RectTransform), typeof(Image));
         root.transform.SetParent(transform, false);
         root.GetComponent<Image>().color = BG_DEEP;
-        var rootRT = root.GetComponent<RectTransform>();
-        Stretch(rootRT);
-
-        // Ensure we fill the panel — also add LayoutElement to prevent being squished
+        Stretch(root.GetComponent<RectTransform>());
         var rootLE = root.AddComponent<LayoutElement>();
         rootLE.flexibleWidth = 1f; rootLE.flexibleHeight = 1f;
 
@@ -93,55 +234,207 @@ public class StorePanelUI : MonoBehaviour
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
         content.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-        // ── Header ──
-        var hdr = RuntimeTmpText.Create(content.transform, "TIENDA",
-            24f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Header");
-        hdr.raycastTarget = false;
-        hdr.gameObject.AddComponent<LayoutElement>().preferredHeight = 32f;
+        // ── Toast overlay ─────────────────────────────────────────────────────
+        BuildToast(root.transform);
 
-        // ── Featured banner ──
+        // ── Header ───────────────────────────────────────────────────────────
+        var hdr = RuntimeTmpText.Create(content.transform, Loc.Get(LocKeys.TiendaTitle),
+            36f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Header");
+        hdr.raycastTarget = false;
+        hdr.gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
+
+        // ── BLOQUE A: Inversor — hero card, elemento principal ──────────────
+        BuildInvestorHero(content.transform);
+
+        // ── Oferta Destacada — segunda en importancia, sin separador dorado ──
         BuildFeaturedBanner(content.transform);
 
-        // ── Diamantes ──
-        BuildSectionHeader(content.transform, "💎 DIAMANTES");
-        var dRow = BuildRow(content.transform, 168f);
-        BuildProductCard(dRow, "💎", "PUÑADO",  "x25",   "0,99 €",  ACCENT_BLUE);
-        BuildProductCard(dRow, "💎", "BOLSA",   "x150",  "4,99 €",  ACCENT_BLUE);
-        BuildProductCard(dRow, "💎", "COFRE",   "x400",  "9,99 €",  ACCENT_BLUE);
+        // ── Diamond Packs — sección secundaria, sin ruido dorado ─────────────
+        BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionDiamonds));
+        var dRow1 = BuildRow(content.transform, 200f);
+        BuildDiamondCard(dRow1, "100 ♦",  IapProductCatalog.Diamonds100);
+        BuildDiamondCard(dRow1, "550 ♦",  IapProductCatalog.Diamonds550);
+        var dRow2 = BuildRow(content.transform, 200f);
+        BuildDiamondCard(dRow2, "1.500 ♦", IapProductCatalog.Diamonds1500);
+        BuildDiamondCard(dRow2, "5.000 ♦", IapProductCatalog.Diamonds5000);
 
-        // ── Packs ──
-        BuildSectionHeader(content.transform, "🎁 PACKS");
-        var pRow = BuildRow(content.transform, 188f);
-        BuildProductCard(pRow, "🎬", "PACK DIRECTOR", "Diamantes + Boost\n+ Película rara", "7,99 €", ACCENT_PURP, wide: true);
-        BuildProductCard(pRow, "🌟", "PACK ESTRELLA", "Diamantes + REP\n+ Película épica",  "14,99 €", ACCENT_GOLD, wide: true);
+        // ── Premium Packs — jerarquía visual progresiva, header dorado ───────
+        BuildSectionHeader(content.transform, Loc.Get(LocKeys.StoreSectionPacks));
+        var pRow = BuildRow(content.transform, 310f);
+        BuildPackCard(pRow, PremiumPackCatalog.PackId.Supporter,         "♦", Loc.Get(LocKeys.StorePackSupporter), ACCENT_PURP, false, false);
+        BuildPackCard(pRow, PremiumPackCatalog.PackId.Producer,          "»", Loc.Get(LocKeys.StorePackProducer),  ACCENT_PURP, true,  false);
+        BuildPackCard(pRow, PremiumPackCatalog.PackId.ExecutiveProducer, "♥", Loc.Get(LocKeys.StorePackExecutive), ACCENT_PURP, false, true);
 
-        // ── Boosts ──
-        BuildSectionHeader(content.transform, "⚡ BOOSTS");
-        var bRow = BuildRow(content.transform, 168f);
-        BuildProductCard(bRow, "⏩", "PRODUCCIÓN x2", "30 min", "📺 Ver anuncio", ACCENT_GREEN);
-        BuildProductCard(bRow, "💵", "INGRESOS x2",   "30 min", "📺 Ver anuncio", ACCENT_GREEN);
+        // ── Boost Ads — sección compacta, sin separador dorado ───────────────
+        BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionBoosts));
+        var bRow = BuildRow(content.transform, 200f);
+        BuildAdBoostCard(bRow, "»", Loc.Get(LocKeys.StoreProdBoostInc),  BoostSystem.BoostType.Income, AdRewardSystem.PlacementBoostIncome, ACCENT_ORANGE);
+        BuildAdBoostCard(bRow, "+", Loc.Get(LocKeys.StoreProdBoostXP),   BoostSystem.BoostType.XP,     AdRewardSystem.PlacementBoostXP,     ACCENT_ORANGE);
+        BuildAdBoostCard(bRow, "♥", Loc.Get(LocKeys.StoreProdBoostRep),  BoostSystem.BoostType.Rep,    AdRewardSystem.PlacementBoostRep,    ACCENT_ORANGE);
 
-        // ── Premium ──
-        BuildSectionHeader(content.transform, "👑 PREMIUM");
-        BuildPremiumBanner(content.transform);
+        // ── Diamantes Gratis — sección ligera ─────────────────────────────────
+        BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionFreeRewards));
+        var fRow = BuildRow(content.transform, 200f);
+        BuildAdSimpleCard(fRow, "♦", Loc.Get(LocKeys.StoreProdFreeDiam),
+            $"+{AdRewardSystem.FreeDiamondsReward} ♦  (1/{AdRewardSystem.LimitFreeDiamonds}/día)",
+            ACCENT_GREEN, AdRewardSystem.PlacementFreeDiamonds);
+        var freePadding = new GameObject("FreePad", typeof(RectTransform));
+        freePadding.transform.SetParent(fRow, false);
+        freePadding.AddComponent<LayoutElement>().flexibleWidth = 1f;
+
+        // ── BLOQUE B: Premium permanente — header dorado, máxima elegancia ────
+        BuildSectionHeader(content.transform, Loc.Get(LocKeys.StoreSectionPremium));
+        var premiumGroup = BuildPremiumGroupContainer(content.transform);
+        BuildOfflinePremiumBanner(premiumGroup);
+        BuildNoAdsBanner(premiumGroup);
     }
 
-    // ── Building blocks ───────────────────────────────────────────────────────
+    // ── Investor hero card — full-width, máxima prominencia ─────────────────────
+
+    void BuildInvestorHero(Transform parent)
+    {
+        var hero = new GameObject("InvestorHero", typeof(RectTransform), typeof(Image));
+        hero.transform.SetParent(parent, false);
+        hero.GetComponent<Image>().color = BG_CARD;
+        hero.AddComponent<LayoutElement>().preferredHeight = 240f;
+        CinematicTheme.ApplyElevationCard(hero.GetComponent<RectTransform>());
+        hero.GetComponent<Image>().color = BG_CARD;
+
+        var vlg = hero.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(16, 16, 14, 14);
+        vlg.spacing = 6;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+
+        // Section label inside the card — provides context without a floating gold header
+        var sectionLbl = RuntimeTmpText.Create(hero.transform, Loc.Get(LocKeys.StoreSectionInvestor),
+            10f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "SectionLbl");
+        sectionLbl.raycastTarget = false;
+        sectionLbl.gameObject.AddComponent<LayoutElement>().preferredHeight = 14f;
+
+        // Main content row: icon | text column | button — mirrors Featured Supporter layout
+        var contentRow = new GameObject("ContentRow", typeof(RectTransform));
+        contentRow.transform.SetParent(hero.transform, false);
+        contentRow.AddComponent<LayoutElement>().flexibleHeight = 1f;
+        var hlg = contentRow.AddComponent<HorizontalLayoutGroup>();
+        hlg.spacing = 12;
+        hlg.childAlignment = TextAnchor.MiddleLeft;
+        hlg.childControlWidth = hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
+
+        // Left: large icon
+        var iconCol = new GameObject("IconCol", typeof(RectTransform));
+        iconCol.transform.SetParent(contentRow.transform, false);
+        iconCol.AddComponent<LayoutElement>().preferredWidth = 64f;
+        var iconVLG = iconCol.AddComponent<VerticalLayoutGroup>();
+        iconVLG.childAlignment = TextAnchor.MiddleCenter;
+        iconVLG.childControlWidth = iconVLG.childControlHeight = true;
+        iconVLG.childForceExpandWidth = true; iconVLG.childForceExpandHeight = false;
+
+        var iconTmp = RuntimeTmpText.Create(iconCol.transform, "$",
+            42f, ACCENT_GREEN, FontStyles.Bold, TextAlignmentOptions.Center, "Icon");
+        iconTmp.raycastTarget = false;
+        iconTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 52f;
+
+        // Center: name + detail
+        var txtCol = new GameObject("TxtCol", typeof(RectTransform));
+        txtCol.transform.SetParent(contentRow.transform, false);
+        txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
+        txtVLG.spacing = 6;
+        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.childControlWidth = txtVLG.childControlHeight = true;
+        txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
+
+        var nameTmp = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StoreProdInvestor),
+            30f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Name");
+        nameTmp.raycastTarget = false;
+        nameTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 38f;
+
+        float cooldown = AdRewardSystem.GetInvestorCooldownRemaining();
+        bool onCooldown = cooldown > 0f;
+        string detailText;
+        if (onCooldown)
+        {
+            int mins = (int)(cooldown / 60f);
+            int secs = (int)(cooldown % 60f);
+            detailText = string.Format(Loc.Get(LocKeys.InvestorCooldownFmt), mins, secs);
+        }
+        else
+        {
+            long preview = AdRewardSystem.GetInvestorPreviewReward();
+            detailText = preview > 0
+                ? $"+${preview:N0}  ·  {AdRewardSystem.InvestorMinutes:0} min"
+                : Loc.Get(LocKeys.InvestorReady);
+        }
+
+        var detailTmp = RuntimeTmpText.Create(txtCol.transform, detailText,
+            22f, onCooldown ? TEXT_SEC : ACCENT_GREEN, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "Detail");
+        detailTmp.raycastTarget = false;
+        detailTmp.textWrappingMode = TextWrappingModes.Normal;
+        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 50f;
+
+        // H1: Register cooldown label for real-time updates
+        if (onCooldown)
+            _investorCooldownLabels.Add(detailTmp);
+
+        // Right: action button — same width/alignment as Featured Supporter below
+        if (onCooldown)
+        {
+            var coolBtn = MakeButton(contentRow.transform, detailText, BTN_OWNED, StorePromoButtonWidth);
+            coolBtn.interactable = false;
+            // H1: Also register the button label for real-time cooldown text
+            var coolBtnLbl = coolBtn.GetComponentInChildren<TextMeshProUGUI>();
+            if (coolBtnLbl != null) _investorCooldownLabels.Add(coolBtnLbl);
+        }
+        else
+        {
+            var btn = MakeButton(contentRow.transform, Loc.Get(LocKeys.StoreWatchAd), ACCENT_GREEN, StorePromoButtonWidth);
+            btn.onClick.AddListener(() =>
+            {
+                AdRewardSystem.RequestReward(AdRewardSystem.PlacementInvestor);
+                RefreshLocalization();
+            });
+        }
+    }
+
+    // ── Subtle section header — sin línea dorada para secciones secundarias ────
+
+    void BuildSubtleHeader(Transform parent, string title)
+    {
+        var container = new GameObject("SubtleHdr", typeof(RectTransform));
+        container.transform.SetParent(parent, false);
+        container.AddComponent<LayoutElement>().preferredHeight = 30f;
+
+        var lbl = RuntimeTmpText.Create(container.transform, title,
+            20f, TEXT_SEC, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Label");
+        lbl.raycastTarget = false;
+        Stretch(lbl.GetComponent<RectTransform>());
+    }
+
+    // ── Featured Supporter banner ──────────────────────────────────────────────
 
     void BuildFeaturedBanner(Transform parent)
     {
+        bool owned = PremiumPackCatalog.PackAlreadyPurchased(PremiumPackCatalog.PackId.Supporter);
+
         var banner = new GameObject("Featured", typeof(RectTransform), typeof(Image));
         banner.transform.SetParent(parent, false);
-        banner.GetComponent<Image>().color = Color.Lerp(ACCENT_GOLD, BG_DARK, 0.55f);
-        banner.AddComponent<LayoutElement>().preferredHeight = 110f;
+        banner.GetComponent<Image>().color = BG_CARD;
+        banner.AddComponent<LayoutElement>().preferredHeight = 155f;
+        CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
+        banner.GetComponent<Image>().color = BG_CARD;
 
         var hlg = banner.AddComponent<HorizontalLayoutGroup>();
         hlg.padding = new RectOffset(16, 16, 12, 12);
         hlg.spacing = 12;
+        hlg.childAlignment = TextAnchor.MiddleLeft;
         hlg.childControlWidth = hlg.childControlHeight = true;
-        hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = false;
 
-        var icon = RuntimeTmpText.Create(banner.transform, "🚀",
+        var icon = RuntimeTmpText.Create(banner.transform, "♦",
             44f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
         icon.raycastTarget = false;
         icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 64f;
@@ -155,31 +448,350 @@ public class StorePanelUI : MonoBehaviour
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
-        var t1 = RuntimeTmpText.Create(txtCol.transform, "STARTER PACK",
-            18f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1");
+        var t1 = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StorePackSupporter),
+            28f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1");
         t1.raycastTarget = false;
-        t1.gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
+        t1.gameObject.AddComponent<LayoutElement>().preferredHeight = 36f;
 
-        var t2 = RuntimeTmpText.Create(txtCol.transform, "Diamantes + Boost + Sin anuncios 24h",
-            12f, TEXT_PRI, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
+        var t2 = RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.PackSupporterDesc),
+            18f, TEXT_PRI, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
         t2.raycastTarget = false;
         t2.textWrappingMode = TextWrappingModes.Normal;
-        t2.gameObject.AddComponent<LayoutElement>().preferredHeight = 32f;
+        t2.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
 
-        var t3 = RuntimeTmpText.Create(txtCol.transform, "OFERTA ÚNICA",
-            10f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T3");
+        var t3 = RuntimeTmpText.Create(txtCol.transform,
+            BuildPackRewardLine(PremiumPackCatalog.Get(PremiumPackCatalog.PackId.Supporter)),
+            14f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T3");
         t3.raycastTarget = false;
-        t3.gameObject.AddComponent<LayoutElement>().preferredHeight = 14f;
+        t3.gameObject.AddComponent<LayoutElement>().preferredHeight = 20f;
 
-        BuildPriceButton(banner.transform, "2,99 €", 92f);
+        string bannerPrice = GetIapPrice(IapProductCatalog.PackSupporter,
+            PremiumPackCatalog.Get(PremiumPackCatalog.PackId.Supporter)?.priceDisplay ?? "4,99 €");
+        BuildPackButton(banner.transform, owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : bannerPrice,
+            owned,
+            () => { PurchaseManager.Instance?.Purchase(IapProductCatalog.PackSupporter); },
+            StorePromoButtonWidth, BTN_AD);
     }
 
-    void BuildPremiumBanner(Transform parent)
+    // ── Diamond pack card ─────────────────────────────────────────────────────
+
+    void BuildDiamondCard(Transform parent, string amount, string productId)
     {
+        var card = MakeCard(parent, ACCENT_BLUE, out _);
+
+        RuntimeTmpText.Create(card.transform, "♦", 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+
+        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreSectionDiamonds), 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+
+        RuntimeTmpText.Create(card.transform, amount, 26f, ACCENT_BLUE, FontStyles.Bold, TextAlignmentOptions.Center, "Detail")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+
+        var spacer = new GameObject("Spacer", typeof(RectTransform));
+        spacer.transform.SetParent(card.transform, false);
+        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
+
+        string price = GetIapPrice(productId);
+        bool unavailable = PurchaseManager.Instance != null && !PurchaseManager.Instance.IsReady;
+        BuildIAPButton(card.transform, unavailable ? Loc.Get(LocKeys.IapUnavailable) : price, -1f, () =>
+        {
+            PurchaseManager.Instance?.Purchase(productId);
+        }, ACCENT_BLUE, unavailable);
+    }
+
+    // ── Premium Pack card ─────────────────────────────────────────────────────
+
+    void BuildPackCard(Transform parent, PremiumPackCatalog.PackId packId, string icon, string name, Color accent, bool popular, bool premium)
+    {
+        var pack = PremiumPackCatalog.Get(packId);
+        bool owned = PremiumPackCatalog.PackAlreadyPurchased(packId);
+
+        var card = MakeCard(parent, accent, out _);
+
+        // BLOQUE C: tier-based strip height — Supporter 4px · Producer 6px · Executive 8px
+        float stripH = premium ? 8f : popular ? 6f : 4f;
+        var stripLE = card.transform.Find("Strip")?.GetComponent<LayoutElement>();
+        if (stripLE != null) stripLE.preferredHeight = stripH;
+
+        // "POPULAR" badge on Producer pack
+        if (popular)
+        {
+            var badge = RuntimeTmpText.Create(card.transform, "· POPULAR ·",
+                12f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+            badge.raycastTarget = false;
+            badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
+        }
+
+        // "PREMIUM" badge on Executive Producer pack — gold to match permanent-upgrade aesthetic
+        if (premium)
+        {
+            var badge = RuntimeTmpText.Create(card.transform, "· PREMIUM ·",
+                12f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+            badge.raycastTarget = false;
+            badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 16f;
+        }
+
+        RuntimeTmpText.Create(card.transform, icon, 40f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 48f;
+
+        RuntimeTmpText.Create(card.transform, name, 18f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
+
+        string rewardLine = BuildPackRewardLine(pack);
+        var detailTmp = RuntimeTmpText.Create(card.transform, rewardLine, 16f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
+        detailTmp.raycastTarget = false;
+        detailTmp.textWrappingMode = TextWrappingModes.Normal;
+        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+
+        string descKey = packId switch
+        {
+            PremiumPackCatalog.PackId.Supporter       => LocKeys.PackSupporterDesc,
+            PremiumPackCatalog.PackId.Producer        => LocKeys.PackProducerDesc,
+            PremiumPackCatalog.PackId.ExecutiveProducer => LocKeys.PackExecutiveDesc,
+            _ => LocKeys.PackSupporterDesc,
+        };
+        var descTmp = RuntimeTmpText.Create(card.transform, Loc.Get(descKey), 12f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.Center, "Desc");
+        descTmp.raycastTarget = false;
+        descTmp.textWrappingMode = TextWrappingModes.Normal;
+        descTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 44f;
+
+        var spacer = new GameObject("Spacer", typeof(RectTransform));
+        spacer.transform.SetParent(card.transform, false);
+        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
+
+        string price = GetIapPrice(pack?.storeProductId, pack?.priceDisplay ?? "—");
+        if (pack == null || string.IsNullOrEmpty(pack.storeProductId)) return;
+        BuildPackButton(card.transform, owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : price, owned,
+            () => { PurchaseManager.Instance?.Purchase(pack.storeProductId); }, -1f, accent);
+    }
+
+    string BuildPackRewardLine(PremiumPackDef pack)
+    {
+        if (pack == null) return "";
+        var sb = new System.Text.StringBuilder();
+        if (pack.diamonds > 0) sb.Append($"♦ {pack.diamonds:N0}");
+        if (pack.noAdsIncluded) { if (sb.Length > 0) sb.Append(" + "); sb.Append(Loc.Get(LocKeys.StoreNoAds)); }
+        return sb.ToString().Trim();
+    }
+
+    // ── Ad Boost card ─────────────────────────────────────────────────────────
+
+    void BuildAdBoostCard(Transform parent, string icon, string name, BoostSystem.BoostType boostType, string placement, Color accent)
+    {
+        var card = MakeCard(parent, accent, out _);
+
+        RuntimeTmpText.Create(card.transform, icon, 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+
+        RuntimeTmpText.Create(card.transform, name, 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+
+        var detail = BuildBoostDetailLabel(card.transform, boostType, placement, accent);
+        detail.gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+        _boostTimerLabels[boostType] = detail; // BUG-05: track label for real-time updates
+
+        var spacer = new GameObject("Spacer", typeof(RectTransform));
+        spacer.transform.SetParent(card.transform, false);
+        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
+
+        BuildAdButton(card.transform, () =>
+        {
+            AdRewardSystem.RequestReward(placement);
+            // BUG-02: RefreshLocalization() removed — OnBoostsChanged fires from BoostSystem
+            // and triggers the rebuild via the event subscription in SubscribeBoostEvents().
+        }, accent);
+    }
+
+    TextMeshProUGUI BuildBoostDetailLabel(Transform parent, BoostSystem.BoostType type, string placement, Color accent)
+    {
+        var boosts = BoostSystem.Instance;
+        string text;
+
+        if (boosts != null && boosts.IsActive(type))
+        {
+            float rem = boosts.GetTimeRemaining(type);
+            int mins = (int)(rem / 60f);
+            int secs = (int)(rem % 60f);
+            text = $"{Loc.Get(LocKeys.StoreBoostActive)} {mins:0}m {secs:00}s";
+        }
+        else
+        {
+            int uses = AdRewardSystem.UsesRemaining(placement);
+            text = uses > 0 ? $"×2  ·  {uses}/{GetLimit(placement)}/día" : Loc.Get(LocKeys.AdLimitReached);
+        }
+
+        var tmp = RuntimeTmpText.Create(parent, text, 18f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
+        tmp.raycastTarget = false;
+        return tmp;
+    }
+
+    // ── Simple ad reward card (free diamonds) ─────────────────────────────────
+
+    void BuildAdSimpleCard(Transform parent, string icon, string name, string detail, Color accent, string placement)
+    {
+        var card = MakeCard(parent, accent, out _);
+
+        RuntimeTmpText.Create(card.transform, icon, 32f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 40f;
+
+        RuntimeTmpText.Create(card.transform, name, 20f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+
+        int uses = AdRewardSystem.UsesRemaining(placement);
+        string detailText = uses > 0 ? detail : Loc.Get(LocKeys.AdLimitReached);
+        var detailTmp = RuntimeTmpText.Create(card.transform, detailText, 18f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
+        detailTmp.raycastTarget = false;
+        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
+
+        var spacer = new GameObject("Spacer", typeof(RectTransform));
+        spacer.transform.SetParent(card.transform, false);
+        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
+
+        BuildAdButton(card.transform, () =>
+        {
+            AdRewardSystem.RequestReward(placement);
+            RefreshLocalization();
+        }, accent);
+    }
+
+    // ── Investor card (BLOQUE F — 10-min cooldown) ───────────────────────────
+
+    void BuildInvestorCard(Transform parent, Color accent)
+    {
+        var card = MakeCard(parent, accent, out _);
+
+        RuntimeTmpText.Create(card.transform, "$", 26f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+
+        RuntimeTmpText.Create(card.transform, Loc.Get(LocKeys.StoreProdInvestor), 12f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+
+        float cooldown = AdRewardSystem.GetInvestorCooldownRemaining();
+        bool onCooldown = cooldown > 0f;
+
+        string detailText;
+        if (onCooldown)
+        {
+            int mins = (int)(cooldown / 60f);
+            int secs = (int)(cooldown % 60f);
+            detailText = string.Format(Loc.Get(LocKeys.InvestorCooldownFmt), mins, secs);
+        }
+        else
+        {
+            long preview = AdRewardSystem.GetInvestorPreviewReward();
+            detailText = preview > 0
+                ? $"+${preview:N0}\n({AdRewardSystem.InvestorMinutes:0} min)"
+                : Loc.Get(LocKeys.InvestorReady);
+        }
+
+        var detail = RuntimeTmpText.Create(card.transform, detailText,
+            11f, onCooldown ? TEXT_SEC : accent, FontStyles.Normal, TextAlignmentOptions.Center, "Detail");
+        detail.raycastTarget = false;
+        detail.textWrappingMode = TextWrappingModes.Normal;
+        detail.gameObject.AddComponent<LayoutElement>().preferredHeight = 28f;
+
+        var spacer = new GameObject("Spacer", typeof(RectTransform));
+        spacer.transform.SetParent(card.transform, false);
+        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
+
+        if (onCooldown)
+        {
+            // Show grayed-out disabled button during cooldown
+            MakeButton(card.transform, detailText, BTN_OWNED, -1f).interactable = false;
+        }
+        else
+        {
+            BuildAdButton(card.transform, () =>
+            {
+                AdRewardSystem.RequestReward(AdRewardSystem.PlacementInvestor);
+                RefreshLocalization();
+            });
+        }
+    }
+
+    // ── Offline Premium banner ─────────────────────────────────────────────────
+
+    void BuildOfflinePremiumBanner(Transform parent)
+    {
+        bool owned = PremiumFeatures.Instance?.OfflinePremiumUnlocked ?? false;
+
+        var banner = new GameObject("OfflinePremium", typeof(RectTransform), typeof(Image));
+        banner.transform.SetParent(parent, false);
+        banner.GetComponent<Image>().color = BG_CARD;
+        banner.AddComponent<LayoutElement>().preferredHeight = 145f;
+        CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
+        banner.GetComponent<Image>().color = BG_CARD;
+
+        var hlg = banner.AddComponent<HorizontalLayoutGroup>();
+        hlg.padding = new RectOffset(16, 16, 10, 10);
+        hlg.spacing = 12;
+        hlg.childControlWidth = hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = true;
+
+        var iconCol = new GameObject("IconCol", typeof(RectTransform));
+        iconCol.transform.SetParent(banner.transform, false);
+        iconCol.AddComponent<LayoutElement>().preferredWidth = 44f;
+        var iconVlg = iconCol.AddComponent<VerticalLayoutGroup>();
+        iconVlg.childAlignment = TextAnchor.MiddleCenter;
+        iconVlg.childControlWidth = iconVlg.childControlHeight = true;
+        iconVlg.childForceExpandWidth = true; iconVlg.childForceExpandHeight = false;
+
+        var icon = RuntimeTmpText.Create(iconCol.transform, "»",
+            28f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
+        icon.raycastTarget = false;
+        icon.gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
+
+        // "PERMANENTE" micro-badge under the icon
+        var badge = RuntimeTmpText.Create(iconCol.transform, "PERM.",
+            7f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.Center, "Badge");
+        badge.raycastTarget = false;
+        badge.gameObject.AddComponent<LayoutElement>().preferredHeight = 10f;
+
+        var txtCol = new GameObject("Texts", typeof(RectTransform));
+        txtCol.transform.SetParent(banner.transform, false);
+        txtCol.AddComponent<LayoutElement>().flexibleWidth = 1f;
+        var txtVLG = txtCol.AddComponent<VerticalLayoutGroup>();
+        txtVLG.spacing = 2;
+        txtVLG.childAlignment = TextAnchor.MiddleLeft;
+        txtVLG.childControlWidth = txtVLG.childControlHeight = true;
+        txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
+
+        RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.OfflinePremiumName),
+            24f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 30f;
+
+        string descText = owned
+            ? $"✓ {PremiumFeatures.PremiumOfflineHours:0}h — {Loc.Get(LocKeys.OfflinePremiumOwned)}"
+            : Loc.Get(LocKeys.OfflinePremiumDesc);
+        RuntimeTmpText.Create(txtCol.transform, descText,
+            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
+
+        BuildPackButton(banner.transform,
+            owned ? Loc.Get(LocKeys.OfflinePremiumOwned) : Loc.Get(LocKeys.OfflinePremiumCostPending),
+            owned,
+            () =>
+            {
+                PremiumFeatures.Instance?.PurchaseOfflinePremium();
+                ShowToast(Loc.Get(LocKeys.OfflinePremiumName) + " ✓");
+                RefreshLocalization();
+            },
+            92f, BTN_AD);
+    }
+
+    // ── No Ads banner ─────────────────────────────────────────────────────────
+
+    void BuildNoAdsBanner(Transform parent)
+    {
+        bool owned = IsNoAdsOwned();
+
         var banner = new GameObject("Premium", typeof(RectTransform), typeof(Image));
         banner.transform.SetParent(parent, false);
-        banner.GetComponent<Image>().color = Color.Lerp(ACCENT_PURP, BG_DARK, 0.50f);
-        banner.AddComponent<LayoutElement>().preferredHeight = 96f;
+        banner.GetComponent<Image>().color = BG_CARD;
+        banner.AddComponent<LayoutElement>().preferredHeight = 135f;
+        CinematicTheme.ApplyElevationCard(banner.GetComponent<RectTransform>());
+        banner.GetComponent<Image>().color = BG_CARD;
 
         var hlg = banner.AddComponent<HorizontalLayoutGroup>();
         hlg.padding = new RectOffset(16, 16, 12, 12);
@@ -187,7 +799,7 @@ public class StorePanelUI : MonoBehaviour
         hlg.childControlWidth = hlg.childControlHeight = true;
         hlg.childForceExpandWidth = false; hlg.childForceExpandHeight = true;
 
-        var icon = RuntimeTmpText.Create(banner.transform, "🚫",
+        var icon = RuntimeTmpText.Create(banner.transform, "X",
             36f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
         icon.raycastTarget = false;
         icon.gameObject.AddComponent<LayoutElement>().preferredWidth = 56f;
@@ -201,25 +813,76 @@ public class StorePanelUI : MonoBehaviour
         txtVLG.childControlWidth = txtVLG.childControlHeight = true;
         txtVLG.childForceExpandWidth = true; txtVLG.childForceExpandHeight = false;
 
-        var t1 = RuntimeTmpText.Create(txtCol.transform, "SIN ANUNCIOS",
-            17f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1");
-        t1.raycastTarget = false;
-        t1.gameObject.AddComponent<LayoutElement>().preferredHeight = 22f;
+        RuntimeTmpText.Create(txtCol.transform,
+            owned ? $"✓ {Loc.Get(LocKeys.StoreNoAds)}" : Loc.Get(LocKeys.StoreNoAds),
+            26f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "T1")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 34f;
 
-        var t2 = RuntimeTmpText.Create(txtCol.transform, "Elimina los anuncios para siempre",
-            12f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2");
-        t2.raycastTarget = false;
-        t2.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
+        RuntimeTmpText.Create(txtCol.transform, Loc.Get(LocKeys.StoreNoAdsDesc),
+            18f, TEXT_SEC, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, "T2")
+            .gameObject.AddComponent<LayoutElement>().preferredHeight = 26f;
 
-        BuildPriceButton(banner.transform, "5,99 €", 92f);
+        BuildPackButton(banner.transform,
+            owned ? Loc.Get(LocKeys.StorePackAlreadyOwned) : GetIapPrice(IapProductCatalog.NoAds, "3,99 €"),
+            owned,
+            () => { PurchaseManager.Instance?.Purchase(IapProductCatalog.NoAds); },
+            92f, BTN_AD);
     }
+
+    string GetIapPrice(string productId, string fallback = null) =>
+        PurchaseManager.Instance != null
+            ? PurchaseManager.Instance.GetLocalizedPrice(productId)
+            : fallback ?? IapProductCatalog.GetFallbackPrice(productId);
+
+    bool IsNoAdsOwned() =>
+        PurchaseManager.Instance?.IsOwned(IapProductCatalog.NoAds) == true
+        || PremiumFeatures.Instance?.NoAdsPurchased == true;
+
+    // ── BLOQUE B: Premium group container ────────────────────────────────────
+
+    /// <summary>
+    /// Wraps Productor Remoto + Sin Anuncios in a shared container so both
+    /// permanent upgrades read as a unified premium tier.
+    /// </summary>
+    Transform BuildPremiumGroupContainer(Transform parent)
+    {
+        var container = new GameObject("PremiumGroup", typeof(RectTransform), typeof(Image));
+        container.transform.SetParent(parent, false);
+        // Very slightly purple-tinted dark — just enough to visually unify the two banners
+        container.GetComponent<Image>().color = new Color(0.08f, 0.07f, 0.14f, 1f);
+
+        var vlg = container.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(0, 0, 0, 0);
+        vlg.spacing = 4;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+        container.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        return container.transform;
+    }
+
+    // ── Building blocks ───────────────────────────────────────────────────────
 
     void BuildSectionHeader(Transform parent, string title)
     {
-        var tmp = RuntimeTmpText.Create(parent, title,
-            16f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Section");
+        var container = new GameObject("SectionHdr", typeof(RectTransform));
+        container.transform.SetParent(parent, false);
+        container.AddComponent<LayoutElement>().preferredHeight = 40f;
+        var vlg = container.AddComponent<VerticalLayoutGroup>();
+        vlg.spacing = 2;
+        vlg.childControlWidth = vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
+
+        var tmp = RuntimeTmpText.Create(container.transform, title,
+            24f, ACCENT_GOLD, FontStyles.Bold, TextAlignmentOptions.MidlineLeft, "Section");
         tmp.raycastTarget = false;
-        tmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 24f;
+        tmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 32f;
+
+        var line = new GameObject("GoldLine", typeof(RectTransform), typeof(Image));
+        line.transform.SetParent(container.transform, false);
+        line.GetComponent<Image>().color = CinematicTheme.BorderGold;
+        line.GetComponent<Image>().raycastTarget = false;
+        line.AddComponent<LayoutElement>().preferredHeight = HudLayoutConstants.AccentLineHeight;
     }
 
     Transform BuildRow(Transform parent, float height)
@@ -234,73 +897,116 @@ public class StorePanelUI : MonoBehaviour
         return row.transform;
     }
 
-    void BuildProductCard(Transform parent, string icon, string title, string detail, string price, Color accent, bool wide = false)
+    /// <summary>Creates a card with a colored accent strip at top, returns card transform.</summary>
+    GameObject MakeCard(Transform parent, Color accent, out VerticalLayoutGroup vlg)
     {
-        var card = new GameObject("Product_" + title, typeof(RectTransform), typeof(Image));
+        var card = new GameObject("Card", typeof(RectTransform), typeof(Image));
         card.transform.SetParent(parent, false);
         HudSkinProvider.ApplyCard(card.GetComponent<Image>(), HudCardVariant.Primary);
         CinematicTheme.ApplyPremiumMaterial(card.GetComponent<RectTransform>());
 
-        var vlg = card.AddComponent<VerticalLayoutGroup>();
+        vlg = card.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(8, 8, 0, 8);
         vlg.spacing = 4;
         vlg.childAlignment = TextAnchor.UpperCenter;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true; vlg.childForceExpandHeight = false;
 
-        // Accent header strip
         var strip = new GameObject("Strip", typeof(RectTransform), typeof(Image));
         strip.transform.SetParent(card.transform, false);
-        strip.GetComponent<Image>().color = accent;
+        strip.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.07f);
         strip.GetComponent<Image>().raycastTarget = false;
         strip.AddComponent<LayoutElement>().preferredHeight = 5f;
 
-        var iconTmp = RuntimeTmpText.Create(card.transform, icon,
-            wide ? 30f : 26f, Color.white, FontStyles.Normal, TextAlignmentOptions.Center, "Icon");
-        iconTmp.raycastTarget = false;
-        iconTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = wide ? 38f : 34f;
-
-        var titleTmp = RuntimeTmpText.Create(card.transform, title,
-            12f, TEXT_PRI, FontStyles.Bold, TextAlignmentOptions.Center, "Title");
-        titleTmp.raycastTarget = false;
-        titleTmp.textWrappingMode = TextWrappingModes.Normal;
-        titleTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = 18f;
-
-        var detailTmp = RuntimeTmpText.Create(card.transform, detail,
-            11f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
-        detailTmp.raycastTarget = false;
-        detailTmp.textWrappingMode = TextWrappingModes.Normal;
-        detailTmp.gameObject.AddComponent<LayoutElement>().preferredHeight = wide ? 34f : 20f;
-
-        var spacer = new GameObject("Spacer", typeof(RectTransform));
-        spacer.transform.SetParent(card.transform, false);
-        spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
-
-        BuildPriceButton(card.transform, price, -1f);
+        return card;
     }
 
-    void BuildPriceButton(Transform parent, string price, float width)
+    // ── Button variants ───────────────────────────────────────────────────────
+
+    void BuildIAPButton(Transform parent, string label, float width, Action onClick, Color btnColor = default, bool disabled = false)
     {
-        var btnGo = new GameObject("BuyBtn", typeof(RectTransform), typeof(Image), typeof(Button));
-        btnGo.transform.SetParent(parent, false);
-        HudSkinProvider.ApplyButton(btnGo.GetComponent<Image>(), HudButtonVariant.Success);
-        var le = btnGo.AddComponent<LayoutElement>();
-        le.preferredHeight = 38f;
+        var btn = MakeButton(parent, label, btnColor.a > 0f ? btnColor : BTN_BUY, width);
+        btn.interactable = !disabled && !(PurchaseManager.Instance?.IsPurchaseInFlight ?? false);
+        if (!disabled) btn.onClick.AddListener(() => onClick?.Invoke());
+    }
+
+    void BuildPackButton(Transform parent, string label, bool owned, Action onClick, float width, Color btnColor = default)
+    {
+        var activeColor = btnColor.a > 0f ? btnColor : BTN_BUY;
+        var btn = MakeButton(parent, label, owned ? BTN_OWNED : activeColor, width);
+        btn.interactable = !owned;
+        if (!owned) btn.onClick.AddListener(() => onClick?.Invoke());
+    }
+
+    void BuildAdButton(Transform parent, Action onClick, Color btnColor = default)
+    {
+        var btn = MakeButton(parent, Loc.Get(LocKeys.StoreWatchAd), btnColor.a > 0f ? btnColor : BTN_AD, -1f);
+        btn.onClick.AddListener(() => onClick?.Invoke());
+    }
+
+    Button MakeButton(Transform parent, string label, Color bgColor, float width)
+    {
+        var go = new GameObject("BuyBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+        go.transform.SetParent(parent, false);
+        var le = go.AddComponent<LayoutElement>();
+        le.preferredHeight = 48f;
+        le.flexibleHeight  = 0f;
         if (width > 0f) { le.preferredWidth = width; le.flexibleWidth = 0f; }
 
-        var lbl = RuntimeTmpText.Create(btnGo.transform, price,
-            13f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
+        CinematicTheme.ApplyElevationButton(go.GetComponent<RectTransform>());
+        go.GetComponent<Image>().color = bgColor;   // restore desired colour after elevation pass
+
+        var lbl = RuntimeTmpText.Create(go.transform, label,
+            20f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Lbl");
         lbl.raycastTarget = false;
         Stretch(lbl.rectTransform);
 
-        // Placeholder — products are not purchasable yet
-        btnGo.GetComponent<Button>().onClick.AddListener(() =>
-            Debug.Log("[Store] Producto placeholder — compra no disponible todavía"));
+        return go.GetComponent<Button>();
     }
+
+    // ── Toast overlay ─────────────────────────────────────────────────────────
+
+    void BuildToast(Transform root)
+    {
+        var go = new GameObject("Toast", typeof(RectTransform), typeof(Image));
+        go.transform.SetParent(root, false);
+        var rt = go.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.1f, 0.85f);
+        rt.anchorMax = new Vector2(0.9f, 0.92f);
+        rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+        go.GetComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
+
+        _toastLabel = RuntimeTmpText.Create(go.transform, "",
+            14f, Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "ToastLbl");
+        Stretch(_toastLabel.rectTransform);
+        _toastLabel.raycastTarget = false;
+
+        go.SetActive(false);
+    }
+
+    void ShowToast(string msg)
+    {
+        if (_toastLabel == null) return;
+        _toastLabel.text = msg;
+        _toastLabel.gameObject.SetActive(true);
+        _toastLabel.alpha = 1f;
+        _toastTimer = 2.5f;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     static void Stretch(RectTransform rt)
     {
         rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
         rt.offsetMin = rt.offsetMax = Vector2.zero;
     }
+
+    static int GetLimit(string placement) => placement switch
+    {
+        AdRewardSystem.PlacementBoostIncome => AdRewardSystem.LimitBoostIncome,
+        AdRewardSystem.PlacementBoostXP     => AdRewardSystem.LimitBoostXP,
+        AdRewardSystem.PlacementBoostRep    => AdRewardSystem.LimitBoostRep,
+        _ => 1,
+    };
 }

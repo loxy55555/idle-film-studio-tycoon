@@ -18,11 +18,11 @@ public class ContractsPanelUI : MonoBehaviour
 
     public const int VisibleSlotCount = 3;
 
-    public const float FixedSlotHeightPublic = 220f; // Phase 12.3: larger for mobile readability (was 200)
+    public const float FixedSlotHeightPublic = 280f; // FASE 16.1 A: larger for mobile readability (was 220)
 
     const float FixedSlotHeight = FixedSlotHeightPublic;
 
-    public const float ActiveCardHeight = 110f; // Phase 12.3: larger for mobile readability (was 96)
+    public const float ActiveCardHeight = 148f; // FASE 16.1 A4: larger for mobile readability (was 110)
 
 
 
@@ -707,7 +707,7 @@ public static class ContractCardFactory
 
 
 
-        var title = MakeText(cardGo.transform, "Sin contrato disponible", 16, TEXT_SEC, FontStyles.Italic);
+        var title = MakeText(cardGo.transform, Loc.Get(LocKeys.ContractNoneAvailable), 16, TEXT_SEC, FontStyles.Italic);
 
         title.alignment = TextAlignmentOptions.Center;
 
@@ -769,7 +769,7 @@ public static class ContractCardFactory
 
 
 
-        var title = MakeText(cardGo.transform, activeMode ? "CONTRATO ACTIVO" : cfg.contractTitle,
+        var title = MakeText(cardGo.transform, activeMode ? Loc.Get(LocKeys.ContractActive) : cfg.contractTitle,
             activeMode ? 13f : 22f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
 
         title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 30f;
@@ -780,7 +780,7 @@ public static class ContractCardFactory
 
         {
 
-            MakeText(cardGo.transform, "Completado — " + BuildReward(cfg), 14, TEXT_SEC);
+            MakeText(cardGo.transform, Loc.Get(LocKeys.ContractCompletedPfx) + BuildReward(cfg), 14, TEXT_SEC);
 
             var histUI = cardGo.AddComponent<ContractCardUI>();
 
@@ -922,7 +922,7 @@ public static class ContractCardFactory
 
             rerollLE.flexibleWidth = 0f;
 
-            var rerollLbl = MakeText(rerollGo.transform, "🔁 💎5", 14, TEXT_PRI, FontStyles.Bold);
+            var rerollLbl = MakeText(rerollGo.transform, Loc.Get(LocKeys.ContractRerollBtn), 14, TEXT_PRI, FontStyles.Bold);
 
             rerollLbl.alignment = TextAlignmentOptions.Center;
 
@@ -966,7 +966,7 @@ public static class ContractCardFactory
 
             claimGo.AddComponent<UIButtonScale>();
 
-            var lbl = MakeText(claimGo.transform, "RECLAMAR", 18, TEXT_PRI, FontStyles.Bold); // Phase 12.3
+            var lbl = MakeText(claimGo.transform, Loc.Get(LocKeys.ContractClaim), 18, TEXT_PRI, FontStyles.Bold); // Phase 12.3
 
             lbl.alignment = TextAlignmentOptions.Center;
 
@@ -979,6 +979,22 @@ public static class ContractCardFactory
         }
 
 
+
+        // ── FASE 16.1 D3: Cancel-via-ad button (active mode only) ─────────────
+        Button cancelAdBtn = null;
+        if (activeMode)
+        {
+            var cancelGo = new GameObject("CancelAdBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+            cancelGo.transform.SetParent(cardGo.transform, false);
+            HudSkinProvider.ApplyButton(cancelGo.GetComponent<Image>(), HudButtonVariant.Secondary);
+            cancelGo.AddComponent<LayoutElement>().preferredHeight = 36f;
+            cancelGo.AddComponent<UIButtonScale>();
+            var cancelLbl = MakeText(cancelGo.transform, Loc.Get(LocKeys.ContractCancelWithAd),
+                13, TEXT_SEC, FontStyles.Normal);
+            cancelLbl.alignment = TextAlignmentOptions.Center;
+            Stretch(cancelLbl.rectTransform);
+            cancelAdBtn = cancelGo.GetComponent<Button>();
+        }
 
         var ui = cardGo.AddComponent<ContractCardUI>();
 
@@ -1001,6 +1017,8 @@ public static class ContractCardFactory
         ui.selectButton = selectBtn;
 
         ui.rerollDiamondsButton = rerollBtn;
+
+        ui.cancelAdButton = cancelAdBtn;
 
         ui.isCandidateMode = candidateMode;
 
@@ -1082,13 +1100,13 @@ public static class ContractCardFactory
 
         var p = new List<string>();
 
-        if (c.rewardMoney > 0)      p.Add("💵 +" + AnimatedMoneyText.FormatMoney(c.rewardMoney));
+        if (c.rewardMoney > 0)      p.Add(Loc.Format(LocKeys.ContractRewardMoney, AnimatedMoneyText.FormatMoney(c.rewardMoney)));
 
-        if (c.rewardDiamonds > 0)   p.Add("💎 +" + c.rewardDiamonds);
+        if (c.rewardDiamonds > 0)   p.Add(Loc.Format(LocKeys.ContractRewardDiam, c.rewardDiamonds));
 
-        if (c.rewardReputation > 0) p.Add("⭐ +" + c.rewardReputation + " REP");
+        if (c.rewardReputation > 0) p.Add(Loc.Format(LocKeys.ContractRewardRep, c.rewardReputation));
 
-        if (c.rewardStudioXP > 0)   p.Add("📈 +" + c.rewardStudioXP + " XP");
+        if (c.rewardStudioXP > 0)   p.Add(Loc.Format(LocKeys.ContractRewardXP, c.rewardStudioXP));
 
         return p.Count > 0 ? string.Join("  ", p) : "—";
 

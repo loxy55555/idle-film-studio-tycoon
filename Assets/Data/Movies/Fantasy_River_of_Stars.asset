@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Beyond Frostpe A K
   genre: 6
   tagline: A river flows upward carrying constellations.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: A river flows upward carrying constellations.
+  synopsisEn: In lands where magic and destiny intertwine, an unlikely hero embarks
+    on the journey of a lifetime.
+  synopsisFr: "Dans des terres o\xF9 magie et destin s'entrelacent, un h\xE9ros improbable
+    se lance dans le voyage de sa vie."
+  synopsisDe: "In L\xE4ndern, wo Magie und Schicksal sich verweben, bricht ein unwahrscheinlicher
+    Held zur Reise seines Lebens auf."
+  synopsisJa: "\u9B54\u6CD5\u3068\u904B\u547D\u304C\u7D61\u307F\u5408\u3046\u571F\u5730\u3067\u3001\u601D\u308F\u306C\u82F1\u96C4\u304C\u751F\u6DAF\u306E\u65C5\u3078\u3068\u8E0F\u307F\u51FA\u3059\u3002"
+  cost: 15000
+  baseReward: 27000
+  baseRep: 117
+  duration: 2700
+  quality: 3.14
   unlockStudioLevel: 1
   unlockCityLevel: 5
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: BeyondFrostpeAK.png
   posterSprite: {fileID: 21300000, guid: c94d27f6dc872f04e999bdf1300c9002, type: 3}
-  catalogTier: 1
+  catalogTier: 3
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

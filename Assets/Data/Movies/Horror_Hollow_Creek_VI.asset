@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Hollow Creek VI
   genre: 2
   tagline: Return to the source of every nightmare.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Return to the source of every nightmare.
+  synopsisEn: Hollow Creek VI takes horror into unexplored territory with a disturbance
+    that questions the foundations of perception itself.
+  synopsisFr: "Hollow Creek VI emm\xE8ne l'horreur en territoire inexplor\xE9 avec
+    une perturbation qui remet en question les fondements de la perception."
+  synopsisDe: "Hollow Creek VI treibt den Horror in unerforschtes Terrain mit einer
+    Ersch\xFCtterung, die die Grundlagen der Wahrnehmung in Frage stellt."
+  synopsisJa: "Hollow Creek VI\u306F\u30DB\u30E9\u30FC\u3092\u672A\u8E0F\u306E\u9818\u57DF\u3078\u8A98\u3044\u3001\u77E5\u899A\u306E\u6839\u672C\u3092\u63FA\u308B\u304C\u3059\u602A\u7570\u3092\u63CF\u304F\u3002"
+  cost: 2450
+  baseReward: 4350
+  baseRep: 22
+  duration: 60
+  quality: 2.28
   unlockStudioLevel: 1
   unlockCityLevel: 4
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: HollowCreekVI.png
   posterSprite: {fileID: -8868915216769075976, guid: 54e9f44ac9ef57e469fc39135cf8f3da, type: 3}
-  catalogTier: 1
+  catalogTier: 2
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

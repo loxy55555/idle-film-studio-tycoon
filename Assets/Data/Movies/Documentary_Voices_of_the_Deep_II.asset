@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Edge Of The Volcano
   genre: 9
   tagline: Return to trenches no light reaches.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: Return to trenches no light reaches.
+  synopsisEn: Edge Of The Volcano examines with depth and honesty a topic that challenges
+    contemporary society.
+  synopsisFr: "Edge Of The Volcano examine avec profondeur et honn\xEAtet\xE9 un
+    sujet qui interpelle la soci\xE9t\xE9 contemporaine."
+  synopsisDe: Edge Of The Volcano untersucht mit Tiefe und Ehrlichkeit ein Thema,
+    das die heutige Gesellschaft herausfordert.
+  synopsisJa: "Edge Of The Volcano\u306F\u73FE\u4EE3\u793E\u4F1A\u306B\u554F\u3044\u304B\u3051\u308B\u30C6\u30FC\u30DE\u3092\u3001\u6DF1\u307F\u3068\u8AA0\u5B9F\u3055\u3092\u3082\u3063\u3066\u8003\u5BDF\u3059\u308B\u3002"
+  cost: 160000
+  baseReward: 285000
+  baseRep: 906
+  duration: 2700
+  quality: 4.94
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: EdgeOfTheVolcano.png
   posterSprite: {fileID: 21300000, guid: 9eb3fa6c39f547f4fa9b4e81f72cd666, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0

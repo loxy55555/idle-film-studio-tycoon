@@ -15,11 +15,19 @@ MonoBehaviour:
   movieName: Cities Of Tomorrow
   genre: 9
   tagline: One person saves a nation's film heritage.
-  cost: 1
-  baseReward: 1
-  baseRep: 0.1
-  duration: 6
-  quality: 1
+  synopsis: One person saves a nation's film heritage.
+  synopsisEn: Cities Of Tomorrow examines with depth and honesty a topic that challenges
+    contemporary society.
+  synopsisFr: "Cities Of Tomorrow examine avec profondeur et honn\xEAtet\xE9 un sujet
+    qui interpelle la soci\xE9t\xE9 contemporaine."
+  synopsisDe: Cities Of Tomorrow untersucht mit Tiefe und Ehrlichkeit ein Thema,
+    das die heutige Gesellschaft herausfordert.
+  synopsisJa: "Cities Of Tomorrow\u306F\u73FE\u4EE3\u793E\u4F1A\u306B\u554F\u3044\u304B\u3051\u308B\u30C6\u30FC\u30DE\u3092\u3001\u6DF1\u307F\u3068\u8AA0\u5B9F\u3055\u3092\u3082\u3063\u3066\u8003\u5BDF\u3059\u308B\u3002"
+  cost: 135000
+  baseReward: 245000
+  baseRep: 805
+  duration: 2700
+  quality: 4.84
   unlockStudioLevel: 1
   unlockCityLevel: 8
   unlockReputation: 0
@@ -28,7 +36,7 @@ MonoBehaviour:
   genreIconKey: 
   posterFile: CitiesOfTomorrow.png
   posterSprite: {fileID: 21300000, guid: 32a5b0fdda12ffd40892baf1d56c3962, type: 3}
-  catalogTier: 1
+  catalogTier: 5
   contentKind: 0
   sagaId: 
   sagaEntryIndex: 0
