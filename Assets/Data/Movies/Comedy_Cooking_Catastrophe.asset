@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: CookingCatastrophe.png
+  posterFile: cookingcatastrophe.jpg
   posterSprite: {fileID: 21300000, guid: d686acecb78a1094a8ea2da87890dc46, type: 3}
   catalogTier: 1
   contentKind: 0

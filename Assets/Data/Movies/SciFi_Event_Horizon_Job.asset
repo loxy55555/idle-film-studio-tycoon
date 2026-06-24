@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: EventHorizonJob.png
+  posterFile: eventhorizonjob.jpg
   posterSprite: {fileID: 21300000, guid: ea570bc247cbd69489641f4eed67e3d2, type: 3}
   catalogTier: 1
   contentKind: 0

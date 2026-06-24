@@ -69,8 +69,22 @@ public class PrestigeSystem : MonoBehaviour
     /// <summary>
     /// Claim one Oscar when reputation threshold is met.
     /// Does NOT reset money, upgrades, departments, movies, contracts, or studio level.
+    /// NOTE: this overload increments and fires the event together (legacy path).
+    /// Prefer the split GameHub.ClaimOscar() path that saves before firing the event.
     /// </summary>
     public bool TryClaimOscar(float reputation)
+    {
+        if (!CanClaimOscar(reputation)) return false;
+        GainOscar();
+        return true;
+    }
+
+    /// <summary>
+    /// Increment Oscar count WITHOUT firing OnOscarGained.
+    /// Used by GameHub.ClaimOscar() so the save can happen before UI events fire.
+    /// Returns true if the count actually changed.
+    /// </summary>
+    public bool IncrementOscarSilent(float reputation)
     {
         if (!CanClaimOscar(reputation))
         {
@@ -78,9 +92,16 @@ public class PrestigeSystem : MonoBehaviour
             return false;
         }
 
-        GainOscar();
-        return true;
+        int prev = oscars;
+        oscars = Mathf.Min(oscars + 1, TotalOscars);
+        return oscars != prev;
     }
+
+    /// <summary>
+    /// Fire OnOscarGained after the save has been committed.
+    /// Call only after IncrementOscarSilent returned true.
+    /// </summary>
+    public void NotifyOscarGained() => OnOscarGained?.Invoke();
 
     /// <summary>Legacy entry point — now claim-only, no reset.</summary>
     public void Prestige(StudioManager studio, DepartmentSystem departments)

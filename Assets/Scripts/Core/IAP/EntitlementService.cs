@@ -113,6 +113,11 @@ public static class EntitlementService
         return false;
     }
 
+    // Maximum entries kept in the fulfillment ledger. Non-consumables are never trimmed.
+    // Consumable entries older than LedgerConsumableTtlDays are evicted when the cap is hit.
+    const int  LedgerMaxEntries        = 100;
+    const long LedgerConsumableTtlDays = 60;
+
     public static void RecordFulfilledTransaction(string transactionId, string productId)
     {
         if (string.IsNullOrEmpty(transactionId)) return;
@@ -123,10 +128,30 @@ public static class EntitlementService
         list.Add(new IapTransactionEntry
         {
             transactionId = transactionId,
-            productId       = productId,
-            fulfilledUnix   = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+            productId     = productId,
+            fulfilledUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
         });
+
+        if (list.Count > LedgerMaxEntries)
+            TrimConsumableLedger(list);
+
         _data.fulfilledTransactions = list.ToArray();
+    }
+
+    // Evict the oldest consumable entries that are past TTL to keep the ledger bounded.
+    // Non-consumable entries (packs, NoAds) are never removed — there are at most 4 of them.
+    static void TrimConsumableLedger(System.Collections.Generic.List<IapTransactionEntry> list)
+    {
+        long cutoffUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - LedgerConsumableTtlDays * 86400L;
+        for (int i = 0; i < list.Count && list.Count > LedgerMaxEntries; i++)
+        {
+            var e = list[i];
+            if (e != null && IapProductCatalog.IsConsumable(e.productId) && e.fulfilledUnix < cutoffUnix)
+            {
+                list.RemoveAt(i);
+                i--;
+            }
+        }
     }
 
     public static void RecordRestore()

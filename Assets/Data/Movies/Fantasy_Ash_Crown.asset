@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_Ash_Crown
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Emer A Ld To Wer
+  movieName: The Emerald Tower
   genre: 6
   tagline: Throne of embers passes to an unlikely ruler.
   synopsis: "La fantas\xEDa como espejo del alma humana: una historia que habla de
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheEmerALdToWer.png
+  posterFile: theemeraldtower.jpg
   posterSprite: {fileID: 21300000, guid: ea7c57c0b51bbf148b3db9c1369e84f2, type: 3}
   catalogTier: 3
   contentKind: 0

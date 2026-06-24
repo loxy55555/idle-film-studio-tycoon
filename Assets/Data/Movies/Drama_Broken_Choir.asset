@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BrokenChoir.png
+  posterFile: brokenchoir.jpg
   posterSprite: {fileID: 21300000, guid: 68285e13d87811249918f86a521ef269, type: 3}
   catalogTier: 1
   contentKind: 0

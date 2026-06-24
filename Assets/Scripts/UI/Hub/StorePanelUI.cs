@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// FASE 15.2A / 15.9D — Store UI wired to PurchaseManager (Google Play Billing).
+/// FASE 15.2A / 15.9D / 17B — Store UI wired to PurchaseManager (Google Play Billing).
 ///   • Diamond packs / premium packs / NoAds — real IAP
 ///   • Rewarded ads unchanged
-///   • Offline Premium — still simulated (out of 15.9D SKU scope)
+///   • Offline Premium (Productor Remoto) — hidden from V1.0 store UI (FASE 17B.0)
 /// </summary>
 public class StorePanelUI : MonoBehaviour
 {
@@ -65,8 +65,11 @@ public class StorePanelUI : MonoBehaviour
         if (pm == null) return;
         pm.OnCatalogReady += RefreshLocalization;
         pm.OnEntitlementsChanged += RefreshLocalization;
+        pm.OnIapError += OnIapError;
         _iapSubscribed = true;
     }
+
+    void OnIapError(IapErrorKind kind) => RefreshLocalization();
 
     void OnDestroy()
     {
@@ -75,6 +78,7 @@ public class StorePanelUI : MonoBehaviour
         {
             PurchaseManager.Instance.OnCatalogReady -= RefreshLocalization;
             PurchaseManager.Instance.OnEntitlementsChanged -= RefreshLocalization;
+            PurchaseManager.Instance.OnIapError -= OnIapError;
         }
         UserPrefs.OnLanguageChanged -= RefreshLocalization;
         AdRewardUI.Register(null);
@@ -284,16 +288,15 @@ public class StorePanelUI : MonoBehaviour
         BuildSubtleHeader(content.transform, Loc.Get(LocKeys.StoreSectionFreeRewards));
         var fRow = BuildRow(content.transform, 200f);
         BuildAdSimpleCard(fRow, null, Loc.Get(LocKeys.StoreProdFreeDiam),
-            $"+{AdRewardSystem.FreeDiamondsReward}  (1/{AdRewardSystem.LimitFreeDiamonds}/día)",
+            $"+{AdRewardSystem.FreeDiamondsReward}  (1/{AdRewardSystem.LimitFreeDiamonds}{Loc.Get(LocKeys.StorePerDay)})",
             ACCENT_GREEN, AdRewardSystem.PlacementFreeDiamonds);
         var freePadding = new GameObject("FreePad", typeof(RectTransform));
         freePadding.transform.SetParent(fRow, false);
         freePadding.AddComponent<LayoutElement>().flexibleWidth = 1f;
 
-        // ── BLOQUE B: Premium permanente — header dorado, máxima elegancia ────
+        // ── BLOQUE B: Premium permanente — Sin Anuncios (V1.0) ─────────────────
         BuildSectionHeader(content.transform, Loc.Get(LocKeys.StoreSectionPremium));
         var premiumGroup = BuildPremiumGroupContainer(content.transform);
-        BuildOfflinePremiumBanner(premiumGroup);
         BuildNoAdsBanner(premiumGroup);
     }
 
@@ -525,11 +528,11 @@ public class StorePanelUI : MonoBehaviour
         spacer.AddComponent<LayoutElement>().flexibleHeight = 1f;
 
         string price = GetIapPrice(productId);
-        bool unavailable = PurchaseManager.Instance != null && !PurchaseManager.Instance.IsReady;
-        BuildIAPButton(card.transform, unavailable ? Loc.Get(LocKeys.IapUnavailable) : price, -1f, () =>
+        bool blocked = IsIapPurchaseBlocked();
+        BuildIAPButton(card.transform, price, -1f, () =>
         {
             PurchaseManager.Instance?.Purchase(productId);
-        }, ACCENT_BLUE, unavailable);
+        }, ACCENT_BLUE, blocked);
     }
 
     // ── Premium Pack card ─────────────────────────────────────────────────────
@@ -664,7 +667,7 @@ public class StorePanelUI : MonoBehaviour
         else
         {
             int uses = AdRewardSystem.UsesRemaining(placement);
-            text = uses > 0 ? $"×2  ·  {uses}/{GetLimit(placement)}/día" : Loc.Get(LocKeys.AdLimitReached);
+            text = uses > 0 ? $"×2  ·  {uses}/{GetLimit(placement)}{Loc.Get(LocKeys.StorePerDay)}" : Loc.Get(LocKeys.AdLimitReached);
         }
 
         var tmp = RuntimeTmpText.Create(parent, text, 14f, accent, FontStyles.Bold, TextAlignmentOptions.Center, "Detail");
@@ -755,8 +758,8 @@ public class StorePanelUI : MonoBehaviour
         }
     }
 
-    // ── Offline Premium banner ─────────────────────────────────────────────────
-
+    // ── Offline Premium banner (V1.0 hidden — internal system retained) ────────
+#if false // FASE 17B.0 — Productor Remoto not in V1.0
     void BuildOfflinePremiumBanner(Transform parent)
     {
         bool owned = PremiumFeatures.Instance?.OfflinePremiumUnlocked ?? false;
@@ -844,6 +847,7 @@ public class StorePanelUI : MonoBehaviour
             },
             -1f, BTN_AD);
     }
+#endif
 
     // ── No Ads banner ─────────────────────────────────────────────────────────
 
@@ -915,10 +919,26 @@ public class StorePanelUI : MonoBehaviour
             -1f, BTN_AD);
     }
 
-    string GetIapPrice(string productId, string fallback = null) =>
-        PurchaseManager.Instance != null
-            ? PurchaseManager.Instance.GetLocalizedPrice(productId)
-            : fallback ?? IapProductCatalog.GetFallbackPrice(productId);
+    string GetIapPrice(string productId, string fallback = null)
+    {
+        var pm = PurchaseManager.Instance;
+        if (pm == null)
+            return fallback ?? IapProductCatalog.GetFallbackPrice(productId);
+
+        string status = pm.GetStoreStatusLabel();
+        if (status != null)
+            return status;
+
+        return pm.GetLocalizedPrice(productId);
+    }
+
+    bool IsIapPurchaseBlocked()
+    {
+        var pm = PurchaseManager.Instance;
+        if (pm == null) return true;
+        if (!pm.IsReady) return true;
+        return pm.LastErrorKind == IapErrorKind.NoProductsAvailable;
+    }
 
     bool IsNoAdsOwned() =>
         PurchaseManager.Instance?.IsOwned(IapProductCatalog.NoAds) == true
@@ -927,14 +947,13 @@ public class StorePanelUI : MonoBehaviour
     // ── BLOQUE B: Premium group container ────────────────────────────────────
 
     /// <summary>
-    /// Wraps Productor Remoto + Sin Anuncios in a shared container so both
-    /// permanent upgrades read as a unified premium tier.
+    /// Wraps Sin Anuncios in a shared premium container (FASE 17B.0: Productor Remoto hidden).
     /// </summary>
     Transform BuildPremiumGroupContainer(Transform parent)
     {
         var container = new GameObject("PremiumGroup", typeof(RectTransform), typeof(Image));
         container.transform.SetParent(parent, false);
-        // Very slightly purple-tinted dark — just enough to visually unify the two banners
+        // Very slightly purple-tinted dark — visual frame for premium section
         container.GetComponent<Image>().color = new Color(0.08f, 0.07f, 0.14f, 1f);
 
         var vlg = container.AddComponent<VerticalLayoutGroup>();

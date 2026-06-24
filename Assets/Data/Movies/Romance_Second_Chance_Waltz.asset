@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SecondChanceWaltz.png
+  posterFile: secondchancewaltz.jpg
   posterSprite: {fileID: 21300000, guid: adccb18cf80bc814bbd07e9dcd5e2142, type: 3}
   catalogTier: 1
   contentKind: 0

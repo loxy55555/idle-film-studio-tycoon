@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: UndertheBed.png
+  posterFile: underthebed.jpg
   posterSprite: {fileID: 21300000, guid: 40e41108a3fb64440b156dc5d377f251, type: 3}
   catalogTier: 2
   contentKind: 0

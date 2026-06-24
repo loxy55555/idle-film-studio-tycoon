@@ -54,7 +54,7 @@ public class FtueController : MonoBehaviour
         FtueLog.LoadedStep((int)FtueState.Step);
         FtueLog.State("OnGameReady");
 
-        if (FtueState.Disabled)
+        if (FtueState.DisabledForPreBeta || FtueState.Disabled)
         {
             FtueLog.TutorialSkipped();
             FtueLog.Info("Disabled via debug flag — skipping FTUE.");

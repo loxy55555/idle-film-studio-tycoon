@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheGoodbyeRoom.png
+  posterFile: thegoodbyeroom.jpg
   posterSprite: {fileID: 21300000, guid: a5e234a414e75b945a99c3dd272951b2, type: 3}
   catalogTier: 2
   contentKind: 0

@@ -3,7 +3,7 @@ using UnityEngine.Purchasing;
 
 /// <summary>
 /// FASE 15.9D — Central IAP SKU catalog.
-/// Package: com.unity.purchasing 4.12.2 (Unity IAP 4.x, Google Play, Unity 6000.4).
+/// Package: com.unity.purchasing 4.11.0 (Unity IAP 4.x, Google Play).
 /// </summary>
 public static class IapProductCatalog
 {

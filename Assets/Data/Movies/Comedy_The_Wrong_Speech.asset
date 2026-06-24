@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheWrongSpeech.png
+  posterFile: thewrongspeech.jpg
   posterSprite: {fileID: 21300000, guid: e6f2e59d11c063b489f6a223d47daac0, type: 3}
   catalogTier: 2
   contentKind: 0

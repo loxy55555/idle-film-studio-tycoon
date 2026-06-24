@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: MismatchedPair.png
+  posterFile: mismatchedpair.jpg
   posterSprite: {fileID: 21300000, guid: f790cf24e53802d4a98235746b7eb5ea, type: 3}
   catalogTier: 2
   contentKind: 0

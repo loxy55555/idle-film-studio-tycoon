@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: GlassOrbit.png
+  posterFile: glassorbit.jpg
   posterSprite: {fileID: 21300000, guid: ef346f93e6617674e8622bb0856f2ac4, type: 3}
   catalogTier: 1
   contentKind: 0

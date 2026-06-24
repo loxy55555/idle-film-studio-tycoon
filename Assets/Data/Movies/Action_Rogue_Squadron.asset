@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: RogueSquadron.png
+  posterFile: roguesquadron.jpg
   posterSprite: {fileID: 21300000, guid: af6202817ba4c8543a03c328c9d7b34a, type: 3}
   catalogTier: 3
   contentKind: 0

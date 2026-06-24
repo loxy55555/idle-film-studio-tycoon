@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: Outrider.png
+  posterFile: outrider.jpg
   posterSprite: {fileID: 21300000, guid: 3792b1892abadb24992a0980c3f9c562, type: 3}
   catalogTier: 2
   contentKind: 0

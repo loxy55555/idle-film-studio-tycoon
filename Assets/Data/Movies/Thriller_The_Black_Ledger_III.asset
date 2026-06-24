@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheBlackLedgerIII.png
+  posterFile: theblackledgerIII.jpg
   posterSprite: {fileID: 5158292789185485195, guid: 797e6be1a37564c4fb53d6a89279c908, type: 3}
   catalogTier: 3
   contentKind: 4

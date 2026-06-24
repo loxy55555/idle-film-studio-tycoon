@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>Premium active production slot layout (Phase 9.0 / 10.3 discovery).</summary>
 public static class ActiveProductionSlotLayout
 {
-    public const float SlotHeight = 140f;
+    public const float SlotHeight = 198f;
 
     static readonly Color TextPrimary   = CinematicTheme.TextPrimary;
     static readonly Color TextSecondary = CinematicTheme.TextSecondary;
@@ -28,11 +28,15 @@ public static class ActiveProductionSlotLayout
         public Slider progressBar;
         public SmoothProgressBar smoothBar;
         public RectTransform progressRow;
+        public RectTransform actionsRow;
         public RectTransform metaRow;
         public RectTransform bodyRow;
         public Button discoverButton;
         public TextMeshProUGUI discoverLabel;
         public CanvasGroup discoverGroup;
+        public RectTransform speedUpRow;
+        public Button speedUpButton;
+        public TextMeshProUGUI speedUpLabel;
     }
 
     public static SlotRefs Create(Transform parent)
@@ -171,6 +175,48 @@ public static class ActiveProductionSlotLayout
         SetupSlider(refs.progressBar);
         ReadOnlySlider.Configure(refs.progressBar);
         refs.smoothBar = barGo.AddComponent<SmoothProgressBar>();
+
+        // FASE 19 — Speed-up integrated in slot footer (below progress bar)
+        refs.actionsRow = CreatePanel(go.transform, "ActionsRow", new Color(1f, 1f, 1f, 0.04f));
+        LE(refs.actionsRow, 38f);
+        var actionsPad = refs.actionsRow.gameObject.AddComponent<HorizontalLayoutGroup>();
+        actionsPad.padding = new RectOffset(8, 8, 4, 4);
+        actionsPad.childControlWidth = actionsPad.childControlHeight = true;
+        actionsPad.childForceExpandWidth = true;
+        actionsPad.childForceExpandHeight = true;
+
+        refs.speedUpRow = refs.actionsRow;
+        var speedGo = new GameObject("SpeedUpBtn", typeof(RectTransform), typeof(Image), typeof(Button));
+        speedGo.transform.SetParent(refs.actionsRow, false);
+        HudSkinProvider.ApplyButton(speedGo.GetComponent<Image>(), HudButtonVariant.Secondary);
+        speedGo.AddComponent<UIButtonScale>();
+        LE(speedGo.GetComponent<RectTransform>(), 30f);
+        refs.speedUpButton = speedGo.GetComponent<Button>();
+
+        var speedHLG = speedGo.AddComponent<HorizontalLayoutGroup>();
+        speedHLG.padding = new RectOffset(8, 8, 4, 4);
+        speedHLG.spacing = 6;
+        speedHLG.childAlignment = TextAnchor.MiddleCenter;
+        speedHLG.childControlWidth = speedHLG.childControlHeight = true;
+        speedHLG.childForceExpandWidth = speedHLG.childForceExpandHeight = false;
+
+        var speedIconWrap = new GameObject("SpeedIconWrap", typeof(RectTransform));
+        speedIconWrap.transform.SetParent(speedGo.transform, false);
+        var speedIconLE = speedIconWrap.AddComponent<LayoutElement>();
+        speedIconLE.preferredWidth = speedIconLE.preferredHeight = 20f;
+        speedIconLE.minWidth = speedIconLE.minHeight = 20f;
+        speedIconLE.flexibleWidth = 0f;
+        UIIconGraphic.Apply(
+            UIIconGraphic.EnsureChildIcon(speedIconWrap.transform, "SpeedIcon", 20f),
+            UIIconCatalog.GetUtilitySpeedProduction());
+
+        refs.speedUpLabel = RuntimeTmpText.Create(speedGo.transform, Loc.Get(LocKeys.ProdSpeedUpTitle),
+            14f, TextPrimary, FontStyles.Bold, TextAlignmentOptions.Center, "Label");
+        refs.speedUpLabel.enableAutoSizing = true;
+        refs.speedUpLabel.fontSizeMin = 13f;
+        refs.speedUpLabel.fontSizeMax = 15f;
+        refs.speedUpLabel.raycastTarget = false;
+        refs.actionsRow.gameObject.SetActive(false);
 
         refs.root = go.GetComponent<RectTransform>();
         return refs;

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LaughTrack.png
+  posterFile: laughtrack.jpg
   posterSprite: {fileID: 21300000, guid: 9b676a563de722c4595f15d94ddeb857, type: 3}
   catalogTier: 3
   contentKind: 0

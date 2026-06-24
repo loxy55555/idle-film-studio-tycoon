@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: ShadowTriggerII.png
+  posterFile: shadowtriggerII.jpg
   posterSprite: {fileID: 6939083947542768106, guid: 31fce67cc07a04a4aa9ca80c473c1343, type: 3}
   catalogTier: 1
   contentKind: 4

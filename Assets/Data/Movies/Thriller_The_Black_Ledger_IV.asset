@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheBlackLedgerIV.png
+  posterFile: theblackledgerIV.jpg
   posterSprite: {fileID: 3698447589510546475, guid: 349d22dd3394edc4cae4f691c5341c3d, type: 3}
   catalogTier: 3
   contentKind: 4

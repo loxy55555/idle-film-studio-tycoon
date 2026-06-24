@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheShadowNetwork.png
+  posterFile: theshadownetwork.jpg
   posterSprite: {fileID: 21300000, guid: cff1728984d923e478ec350eccbbe6b2, type: 3}
   catalogTier: 4
   contentKind: 0

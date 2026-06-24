@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 3
   posterColorHex: 1
   genreIconKey: 
-  posterFile: SongoftheForgottenRealm.png
+  posterFile: songoftheforgottenrealm.jpg
   posterSprite: {fileID: 21300000, guid: a1f30d1081c24df48a5ffa016e4eeb91, type: 3}
   catalogTier: 5
   contentKind: 0

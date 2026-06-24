@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheBackupPlan.png
+  posterFile: thebackupplan.jpg
   posterSprite: {fileID: 21300000, guid: bc82e5f1d16238d47bfb4cab1d723e1c, type: 3}
   catalogTier: 2
   contentKind: 0

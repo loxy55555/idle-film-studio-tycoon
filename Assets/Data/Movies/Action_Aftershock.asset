@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: NightConvoy.png
+  posterFile: nightconvoy.jpg
   posterSprite: {fileID: 21300000, guid: b29ca3b76f256cf4c896b861a49faebe, type: 3}
   catalogTier: 5
   contentKind: 0

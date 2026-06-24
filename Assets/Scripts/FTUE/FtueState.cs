@@ -24,6 +24,9 @@ public static class FtueState
         LoadFromPlayerPrefs();
     }
 
+    /// <summary>FASE 19 — Pre-beta: skip FTUE popups; player enters gameplay directly.</summary>
+    public const bool DisabledForPreBeta = true;
+
     /// <summary>Runtime kill-switch (debug / recovery). Not stored in game save.</summary>
     public static bool Disabled
     {
@@ -48,7 +51,7 @@ public static class FtueState
 
     public static void Reset()
     {
-        if (IsPersistedCompleted)
+        if (DisabledForPreBeta || IsPersistedCompleted)
         {
             Completed = true;
             Step = FtueStep.Done;
@@ -61,7 +64,7 @@ public static class FtueState
 
     public static void ApplySave(bool completed, int step)
     {
-        if (IsPersistedCompleted || completed)
+        if (DisabledForPreBeta || IsPersistedCompleted || completed)
         {
             Completed = true;
             Step = FtueStep.Done;

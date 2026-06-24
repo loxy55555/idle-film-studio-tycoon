@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BlackwaterIII.png
+  posterFile: blackwaterIII.jpg
   posterSprite: {fileID: -99970412794504429, guid: 5991e64850816434488e1dc5d1be9577, type: 3}
   catalogTier: 2
   contentKind: 4

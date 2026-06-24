@@ -22,7 +22,6 @@ public static class GameplayRefreshService
             {
                 if (!ok) return;
                 Debug.Log("[Offers] RefreshConsumed");
-                FirebaseManager.Instance?.LogAdRewarded(ProductionOffersPlacement);
                 CompleteProductionRefresh(onSuccess);
             },
             onDiamonds: () => { Debug.Log("[Offers] RefreshConsumed"); CompleteProductionRefresh(onSuccess); });
@@ -41,7 +40,6 @@ public static class GameplayRefreshService
             onAd: ok =>
             {
                 if (!ok) return;
-                FirebaseManager.Instance?.LogAdRewarded(ContractCandidatesPlacement);
                 CompleteContractRefresh(onSuccess);
             },
             onDiamonds: () => CompleteContractRefresh(onSuccess));
@@ -76,8 +74,11 @@ public static class GameplayRefreshService
 
     public static bool TrySpendDiamonds(int amount)
     {
-        var wallet = GameHub.Instance?.diamonds;
-        return wallet != null && wallet.TrySpend(amount);
+        var hub = GameHub.Instance;
+        var wallet = hub?.diamonds;
+        if (wallet == null || !wallet.TrySpend(amount)) return false;
+        hub.save?.Save("DiamondSpend");
+        return true;
     }
 
     public static void TryShowAd(string placementId, Action<bool> onComplete)
@@ -88,7 +89,8 @@ public static class GameplayRefreshService
             return;
         }
 
-        Debug.Log($"[GameplayRefresh] No ads provider — simulating success for '{placementId}'.");
-        onComplete?.Invoke(true);
+        Debug.LogWarning($"[GameplayRefresh] No ads provider — cannot show ad for '{placementId}'.");
+        AdRewardUI.ShowMessage(Loc.Get(LocKeys.AdUnavailable));
+        onComplete?.Invoke(false);
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_Witch_s_Bargain
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Kingdom Of Silent Moon S
+  movieName: The Kingdom Of Silent Moons
   genre: 6
   tagline: Power offered. Price deferred. Never free.
   synopsis: Las leyendas cobran vida cuando quienes las protagonizan descubren que
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheKingdomOfSilentMoonS.png
+  posterFile: thekingdomofsilentmoons.jpg
   posterSprite: {fileID: 21300000, guid: 980ab7182e3c5774ca42724eb9ab0963, type: 3}
   catalogTier: 3
   contentKind: 0

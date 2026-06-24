@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Uncle_Gary_VI
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Ye A Reveryth In Gbroke
+  movieName: The Year Everything Broke
   genre: 3
   tagline: Gary's wedding. Everyone else pays the price.
   synopsis: "La vida tiene una forma peculiar de complicarse justo cuando m\xE1s
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheYeAReverythInGbroke.png
+  posterFile: theyeareverythingbroke.jpg
   posterSprite: {fileID: 21300000, guid: e6f159d5976b96741acadb2f3a44d2fd, type: 3}
   catalogTier: 3
   contentKind: 0

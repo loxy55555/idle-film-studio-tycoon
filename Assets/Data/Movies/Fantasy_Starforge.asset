@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheHiddenGrove.png
+  posterFile: thehiddengrove.jpg
   posterSprite: {fileID: 21300000, guid: 740ef59cda76107409e4baa3d3923356, type: 3}
   catalogTier: 3
   contentKind: 0

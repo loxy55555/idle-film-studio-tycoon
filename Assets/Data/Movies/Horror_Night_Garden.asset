@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Horror_Night_Garden
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Bene At H A Sh Hill
+  movieName: Beneath Ash Hill
   genre: 2
   tagline: Plants grow toward sleeping faces.
   synopsis: Las reglas del mundo conocido dejan de aplicarse cuando lo imposible
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BeneAtHAShHill.png
+  posterFile: beneathashhill.jpg
   posterSprite: {fileID: 21300000, guid: 22ea9cbc0ffb0584483b67a9bed2fe87, type: 3}
   catalogTier: 2
   contentKind: 0

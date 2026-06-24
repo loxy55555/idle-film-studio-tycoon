@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SunsetClause.png
+  posterFile: sunsetclause.jpg
   posterSprite: {fileID: 21300000, guid: 475f745c2270a204482b78beee7a369c, type: 3}
   catalogTier: 3
   contentKind: 0

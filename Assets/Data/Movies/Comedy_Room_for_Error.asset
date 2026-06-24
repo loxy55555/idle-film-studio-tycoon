@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Room_for_Error
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: City H A Lldis A Ster
+  movieName: City Hall Disaster
   genre: 3
   tagline: Airbnb listing omits the haunted annex.
   synopsis: 'Malentendidos, coincidencias imposibles y decisiones cuestionables:
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: CityHALldisASter.png
+  posterFile: cityhalldisaster.jpg
   posterSprite: {fileID: 21300000, guid: 013aba28eea4e2d478fbdee1419a5289, type: 3}
   catalogTier: 2
   contentKind: 0

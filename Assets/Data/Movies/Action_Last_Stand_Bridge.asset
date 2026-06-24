@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LastStandBridge.png
+  posterFile: laststandbridge.jpg
   posterSprite: {fileID: 21300000, guid: d3091f9e6ae9ca245b8e13932fd69fc2, type: 3}
   catalogTier: 2
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheEmptyColony.png
+  posterFile: theemptycolony.jpg
   posterSprite: {fileID: 21300000, guid: d777254f5794e0f4b926f0267c3911e8, type: 3}
   catalogTier: 2
   contentKind: 4

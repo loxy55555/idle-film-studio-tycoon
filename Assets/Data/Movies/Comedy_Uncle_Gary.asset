@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: UncleGary.png
+  posterFile: unclegary.jpg
   posterSprite: {fileID: 21300000, guid: 2e5d243aa1f6a7642ab453c283b23b71, type: 3}
   catalogTier: 2
   contentKind: 4

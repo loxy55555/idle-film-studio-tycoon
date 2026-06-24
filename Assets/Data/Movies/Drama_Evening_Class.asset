@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Drama_Evening_Class
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The L On G Road Home
+  movieName: The Long Road Home
   genre: 1
   tagline: Adults learn to read and to hope again.
   synopsis: "Una historia de p\xE9rdida, redenci\xF3n y esperanza que retrata con
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLOnGRoadHome.png
+  posterFile: thelongroadhome.jpg
   posterSprite: {fileID: 21300000, guid: 5eef885b0656fa244a231399fd721cca, type: 3}
   catalogTier: 2
   contentKind: 0

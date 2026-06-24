@@ -117,7 +117,7 @@ public class GameFeelUI : MonoBehaviour
         EnqueuePanel(new PanelRequest
         {
             title      = Loc.Get(LocKeys.GameFeelContractComplete),
-            subtitle   = contract.contractTitle,
+            subtitle   = ContractSystem.GetLocalizedTitle(contract),
             lines      = lines.ToArray(),
             lineColors = colors.ToArray(),
             prominent  = false,
@@ -127,7 +127,6 @@ public class GameFeelUI : MonoBehaviour
     void OnOscarGained()
     {
         int oscars = _prestige != null ? _prestige.oscars : 0;
-
         var target = oscarTarget != null ? oscarTarget : popupParent;
         if (target != null)
             UIAnimationService.PlayStarEarned(target, null);
@@ -265,11 +264,14 @@ public class GameFeelUI : MonoBehaviour
         else if (req.requireDismiss && !string.IsNullOrEmpty(req.posterColorHex))
             AddPanelPoster(go.transform, null, req.posterColorHex);
 
-        for (int i = 0; i < req.lines.Length; i++)
+        if (req.lines != null)
         {
-            if (string.IsNullOrWhiteSpace(req.lines[i])) continue;
-            Color c = req.lineColors != null && i < req.lineColors.Length ? req.lineColors[i] : titleColor;
-            AddPanelText(go.transform, req.lines[i], 20, c, FontStyles.Bold);
+            for (int i = 0; i < req.lines.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(req.lines[i])) continue;
+                Color c = req.lineColors != null && i < req.lineColors.Length ? req.lineColors[i] : titleColor;
+                AddPanelText(go.transform, req.lines[i], 20, c, FontStyles.Bold);
+            }
         }
 
         var seq = UIAnimationService.PlayRewardPopup(rt, cg, req.prominent);

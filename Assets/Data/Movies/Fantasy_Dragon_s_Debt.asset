@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_Dragon_s_Debt
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Forgotten M A Ge
+  movieName: The Forgotten Mage
   genre: 6
   tagline: A dragon saved a village. The bill is due.
   synopsis: "En tierras donde la magia y el destino se entrelazan, un h\xE9roe improbable
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheForgottenMAGe.png
+  posterFile: theforgottenmage.jpg
   posterSprite: {fileID: 21300000, guid: ca1d5d3b4b174f14aad885b768dab38a, type: 3}
   catalogTier: 3
   contentKind: 0

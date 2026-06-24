@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLongRoadII.png
+  posterFile: thelongroadII.jpg
   posterSprite: {fileID: 8147432490326903212, guid: cd5a59482a93da044b5fc2f5caf6a710, type: 3}
   catalogTier: 1
   contentKind: 4

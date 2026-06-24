@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: ProjectHelix.png
+  posterFile: projecthelix.jpg
   posterSprite: {fileID: 21300000, guid: c51ca32e0836c4d4fa83fb1f1e1bb7dd, type: 3}
   catalogTier: 2
   contentKind: 0

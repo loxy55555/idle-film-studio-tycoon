@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheHiddenCrownV.png
+  posterFile: thehiddencrownV.jpg
   posterSprite: {fileID: -118158345089423796, guid: 824bac91723ce4049a7ac3cc8fa900ad, type: 3}
   catalogTier: 3
   contentKind: 0

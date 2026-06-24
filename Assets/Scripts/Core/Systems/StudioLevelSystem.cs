@@ -23,16 +23,31 @@ public class StudioLevelSystem : MonoBehaviour
     public int AddXP(float amount)
     {
         XP += amount;
+        int firstNewLevel = Level + 1;
         int levelUps = 0;
+
+        // DATA PHASE — increment level and update contract tracking (no UI events yet).
+        // If this loop were mixed with OnLevelUp invocations and a subscriber threw,
+        // the remaining level-ups and contract notifications would be silently skipped.
         while (XP >= XPToNext)
         {
             XP -= XPToNext;
             Level++;
             levelUps++;
-            OnLevelUp?.Invoke(Level);
             Debug.Log($"[StudioLevel] Level up → {Level}");
             GameHub.Instance?.contracts?.OnStudioLevelUp(Level);
         }
+
+        // UI EVENT PHASE — fire OnLevelUp for each new level, isolated from the data loop.
+        for (int lvl = firstNewLevel; lvl <= Level; lvl++)
+        {
+            try { OnLevelUp?.Invoke(lvl); }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[StudioLevel] OnLevelUp UI error for level {lvl}: {ex}");
+            }
+        }
+
         return levelUps;
     }
 

@@ -17,7 +17,7 @@ public class RefreshChoiceDialogUI : MonoBehaviour
     TextMeshProUGUI _titleText;
     TextMeshProUGUI _subtitleText;
     TextMeshProUGUI _adLabel;
-    TextMeshProUGUI _diamondLabel;
+    Transform _diamondButtonRoot;
     TextMeshProUGUI _cancelLabel;
     Action<bool> _onAd;
     Action _onDiamonds;
@@ -52,60 +52,96 @@ public class RefreshChoiceDialogUI : MonoBehaviour
         Stretch(backdrop);
         backdrop.gameObject.AddComponent<Button>().onClick.AddListener(Close);
 
-        // A3: Full-width dialog for mobile legibility
+        // FASE 16.5G — compact popup: full width, height fits content, vertically centered
         _panel = CreatePanel(root, "Panel", Color.clear);
         var panelRT = _panel;
-        panelRT.anchorMin = new Vector2(0.05f, 0.20f);
-        panelRT.anchorMax = new Vector2(0.95f, 0.80f);
-        panelRT.offsetMin = panelRT.offsetMax = Vector2.zero;
+        panelRT.anchorMin = new Vector2(0.04f, 0.5f);
+        panelRT.anchorMax = new Vector2(0.96f, 0.5f);
+        panelRT.pivot = new Vector2(0.5f, 0.5f);
+        panelRT.anchoredPosition = Vector2.zero;
+        panelRT.sizeDelta = Vector2.zero;
         HudSkinProvider.ApplyPanel(_panel.GetComponent<Image>(), HudPanelVariant.Card);
+
+        var panelCsf = _panel.gameObject.AddComponent<ContentSizeFitter>();
+        panelCsf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        panelCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         var vlg = _panel.gameObject.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(16, 16, 16, 16);
-        vlg.spacing = 10;
+        vlg.spacing = 12;
         vlg.childAlignment = TextAnchor.UpperCenter;
         vlg.childControlWidth = vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
 
-        _titleText = RuntimeTmpText.Create(_panel, string.Empty, 16f, TextPrimary,
+        _titleText = RuntimeTmpText.Create(_panel, string.Empty, 18f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Title");
-        LE(_titleText.rectTransform, 28f);
+        _titleText.enableAutoSizing = true;
+        _titleText.fontSizeMin = 16f;
+        _titleText.fontSizeMax = 20f;
+        LE(_titleText.rectTransform, 40f);
 
-        _subtitleText = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.RefreshChoosePayment), 11f, TextSecondary,
+        _subtitleText = RuntimeTmpText.Create(_panel, Loc.Get(LocKeys.RefreshPaymentHint), 14f, TextSecondary,
             FontStyles.Normal, TextAlignmentOptions.Center, "Subtitle");
-        LE(_subtitleText.rectTransform, 24f);
+        _subtitleText.enableAutoSizing = true;
+        _subtitleText.fontSizeMin = 13f;
+        _subtitleText.fontSizeMax = 16f;
+        LE(_subtitleText.rectTransform, 32f);
 
-        _adLabel = CreateActionButton(_panel, LocKeys.RefreshWatchAd, HudButtonVariant.Primary, OnAdClicked);
-        _diamondLabel = CreateActionButton(_panel, LocKeys.RefreshSpendDiamonds, HudButtonVariant.Primary, OnDiamondClicked);
+        _adLabel = CreateTextActionButton(_panel, LocKeys.RefreshWatchAd, HudButtonVariant.Primary, OnAdClicked);
+        _diamondButtonRoot = CreateDiamondActionButton(_panel, HudButtonVariant.Primary, OnDiamondClicked);
 
         var cancelGo = new GameObject("CancelBtn", typeof(RectTransform), typeof(Image), typeof(Button));
         cancelGo.transform.SetParent(_panel, false);
         HudSkinProvider.ApplyButton(cancelGo.GetComponent<Image>(), HudButtonVariant.Secondary);
         cancelGo.AddComponent<UIButtonScale>();
-        LE(cancelGo.GetComponent<RectTransform>(), 34f);
+        LE(cancelGo.GetComponent<RectTransform>(), 56f);
         cancelGo.GetComponent<Button>().onClick.AddListener(Close);
-        _cancelLabel = RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 12f, TextPrimary,
+        _cancelLabel = RuntimeTmpText.Create(cancelGo.transform, Loc.Get(LocKeys.ProdBudgetCancel), 16f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
+        _cancelLabel.enableAutoSizing = true;
+        _cancelLabel.fontSizeMin = 14f;
+        _cancelLabel.fontSizeMax = 18f;
     }
 
-    TextMeshProUGUI CreateActionButton(Transform parent, string locKey, HudButtonVariant variant, UnityEngine.Events.UnityAction onClick)
+    TextMeshProUGUI CreateTextActionButton(Transform parent, string locKey, HudButtonVariant variant, UnityEngine.Events.UnityAction onClick)
     {
         var go = new GameObject("Btn_" + locKey, typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
         HudSkinProvider.ApplyButton(go.GetComponent<Image>(), variant);
         go.AddComponent<UIButtonScale>();
-        LE(go.GetComponent<RectTransform>(), 40f);
+        LE(go.GetComponent<RectTransform>(), 80f);
         go.GetComponent<Button>().onClick.AddListener(onClick);
-        return RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 13f, TextPrimary,
+        var lbl = RuntimeTmpText.Create(go.transform, Loc.Get(locKey), 16f, TextPrimary,
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
+        lbl.enableAutoSizing = true;
+        lbl.fontSizeMin = 16f;
+        lbl.fontSizeMax = 18f;
+        return lbl;
+    }
+
+    Transform CreateDiamondActionButton(Transform parent, HudButtonVariant variant, UnityEngine.Events.UnityAction onClick)
+    {
+        var go = new GameObject("Btn_DiamondCost", typeof(RectTransform), typeof(Image), typeof(Button));
+        go.transform.SetParent(parent, false);
+        HudSkinProvider.ApplyButton(go.GetComponent<Image>(), variant);
+        go.AddComponent<UIButtonScale>();
+        LE(go.GetComponent<RectTransform>(), 80f);
+        go.GetComponent<Button>().onClick.AddListener(onClick);
+        return go.transform;
+    }
+
+    void RefreshDiamondButton()
+    {
+        if (_diamondButtonRoot == null) return;
+        DiamondCostButtonLayout.Build(_diamondButtonRoot, Loc.Get(LocKeys.RefreshSpendDiamonds), _diamondCost, 24f, 16f, TextPrimary);
     }
 
     void RefreshLocalization()
     {
-        if (_subtitleText) _subtitleText.text = Loc.Get(LocKeys.RefreshChoosePayment);
+        if (_subtitleText) _subtitleText.text = Loc.Get(LocKeys.RefreshPaymentHint);
         if (_adLabel) _adLabel.text = Loc.Get(LocKeys.RefreshWatchAd);
-        if (_diamondLabel) _diamondLabel.text = Loc.Get(LocKeys.RefreshSpendDiamonds);
+        RefreshDiamondButton();
         if (_cancelLabel) _cancelLabel.text = Loc.Get(LocKeys.ProdBudgetCancel);
     }
 

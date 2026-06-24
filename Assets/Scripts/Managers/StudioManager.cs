@@ -477,27 +477,30 @@ public class StudioManager : MonoBehaviour
 
     public long CurrentIncome => (long)cachedPassiveIncome;
 
+    // Reused across calls to avoid a new List<> allocation every frame (called from Update).
+    readonly List<ProductionSlotSnapshot> _snapshotCache = new();
+
     public IReadOnlyList<ProductionSlotSnapshot> GetProductionSnapshots()
     {
-        var list = new List<ProductionSlotSnapshot>(_productions.Count);
+        _snapshotCache.Clear();
         foreach (var p in _productions)
         {
             if (p.config == null) continue;
             float total = Mathf.Max(p.totalDuration, 0.01f);
-            list.Add(new ProductionSlotSnapshot
+            _snapshotCache.Add(new ProductionSlotSnapshot
             {
-                isActive         = true,
-                movieKey         = p.config.name,
-                movieName        = p.config.movieName,
-                genre            = p.config.genre,
-                progress01       = p.awaitingDiscovery ? 1f : Mathf.Clamp01(p.elapsed / total),
-                timeLeftSeconds  = p.awaitingDiscovery ? 0f : Mathf.Max(0f, total - p.elapsed),
-                rewardMoney      = p.pendingReward,
-                rewardRep        = p.pendingRep,
+                isActive          = true,
+                movieKey          = p.config.name,
+                movieName         = p.config.movieName,
+                genre             = p.config.genre,
+                progress01        = p.awaitingDiscovery ? 1f : Mathf.Clamp01(p.elapsed / total),
+                timeLeftSeconds   = p.awaitingDiscovery ? 0f : Mathf.Max(0f, total - p.elapsed),
+                rewardMoney       = p.pendingReward,
+                rewardRep         = p.pendingRep,
                 awaitingDiscovery = p.awaitingDiscovery,
             });
         }
-        return list;
+        return _snapshotCache;
     }
 
     void NotifyProductionsChanged() => OnProductionsChanged?.Invoke();
@@ -538,7 +541,9 @@ public class StudioManager : MonoBehaviour
 
         {
 
-            SetStatus(blockReason ?? "Slot de producción ocupado");
+            ShowProductionBlockMessage(blockReason ?? Loc.Get(LocKeys.UxNoSlotsAvailable));
+
+            SetStatus(blockReason ?? Loc.Get(LocKeys.UxNoSlotsAvailable));
 
             return;
 
@@ -554,7 +559,9 @@ public class StudioManager : MonoBehaviour
 
         {
 
-            SetStatus("Dinero insuficiente");
+            ShowProductionBlockMessage(Loc.Get(LocKeys.UxNotEnoughMoney));
+
+            SetStatus(Loc.Get(LocKeys.UxNotEnoughMoney));
 
             return;
 
@@ -569,9 +576,13 @@ public class StudioManager : MonoBehaviour
         currentMovies = _productions.Count;
 
         UpdateProductionFlags();
-        NotifyProductionStarted(config);
-        NotifyProductionsChanged();
+        NotifyProductionStarted(config); // DATA: removes movie from offers pool
+
+        // ── SAVE before UI event ────────────────────────────────────────────────
         GameHub.Instance?.save?.Save("StartMovie");
+
+        try { NotifyProductionsChanged(); }
+        catch (System.Exception ex) { Debug.LogError($"[StudioManager] StartMovie UI event error (save ya guardado): {ex}"); }
 
         StartCoroutine(ProductionRoutine(production));
 
@@ -640,7 +651,7 @@ public class StudioManager : MonoBehaviour
 
     {
 
-        SetStatus("Produciendo: " + production.config.movieName);
+        SetStatus(Loc.Format(LocKeys.ProdStatusProducingFmt, production.config.movieName));
 
 
 
@@ -679,9 +690,71 @@ public class StudioManager : MonoBehaviour
 
         TrackRecentProduction(production.config);
         UpdateProductionFlags();
-        RefreshProductionUI();
-        SetStatus(Loc.Get(LocKeys.ProdStatusComplete));
+
+        // ── SAVE before UI events ───────────────────────────────────────────────
         GameHub.Instance?.save?.Save("ProductionAwaitingDiscovery");
+
+        try
+        {
+            RefreshProductionUI();
+            NotifyProductionsChanged();
+            SetStatus(Loc.Get(LocKeys.ProdStatusComplete));
+        }
+        catch (System.Exception ex) { Debug.LogError($"[StudioManager] FinalizeProduction UI event error (save ya guardado): {ex}"); }
+    }
+
+    static void ShowProductionBlockMessage(string message)
+    {
+        if (string.IsNullOrEmpty(message)) return;
+        AdRewardUI.ShowMessage(message);
+    }
+
+    ActiveProduction FindActiveProduction(string movieKey)
+    {
+        if (string.IsNullOrEmpty(movieKey)) return null;
+        foreach (var p in _productions)
+        {
+            if (p.awaitingDiscovery || p.config == null) continue;
+            if (p.config.name == movieKey) return p;
+        }
+        return null;
+    }
+
+    /// <summary>FASE 17C — Spend diamonds to reduce active production time (fixed minutes).</summary>
+    public bool TrySpeedUpProduction(string movieKey, float secondsToReduce, int diamondCost)
+    {
+        if (secondsToReduce <= 0f || diamondCost <= 0) return false;
+
+        var production = FindActiveProduction(movieKey);
+        if (production == null) return false;
+
+        float timeLeft = production.totalDuration - production.elapsed;
+        if (timeLeft <= 0f || secondsToReduce > timeLeft) return false;
+
+        var wallet = GameHub.Instance?.diamonds;
+        if (wallet == null || !wallet.TrySpend(diamondCost)) return false;
+
+        production.elapsed += secondsToReduce;
+        if (production.elapsed >= production.totalDuration)
+        {
+            production.elapsed = production.totalDuration;
+            FinalizeProduction(production, production.totalDuration);
+        }
+
+        UpdateProductionFlags();
+
+        // ── SAVE before UI events ───────────────────────────────────────────────
+        GameHub.Instance?.save?.Save("ProductionSpeedUp");
+
+        try
+        {
+            RefreshProductionUI();
+            NotifyProductionsChanged();
+        }
+        catch (System.Exception ex) { Debug.LogError($"[StudioManager] SpeedUp UI event error (save ya guardado): {ex}"); }
+
+        Debug.Log($"[ProductionSpeedUp] {movieKey} -{secondsToReduce / 60f:0}min for {diamondCost} diamonds.");
+        return true;
     }
 
     ActiveProduction FindAwaitingProduction(string movieKey)
@@ -728,9 +801,9 @@ public class StudioManager : MonoBehaviour
         rep   *= BoostSystem.Multiplier(BoostSystem.BoostType.Rep);
         xp    *= BoostSystem.Multiplier(BoostSystem.BoostType.XP);
 
+        // ── DATA CHANGES ────────────────────────────────────────────────────────
         AddMoney(reward);
         reputation += rep;
-        OnReputationChanged?.Invoke(reputation);
         RecalculateIncome();
         SL?.AddXP(xp);
 
@@ -743,24 +816,38 @@ public class StudioManager : MonoBehaviour
         if (U != null) maxMovieSlots = U.GetMaxMovieSlots();
 
         bool isFirstDiscovery = MarkMovieCompleted(p.config);
-
-        OnMovieCompleted?.Invoke(new MovieCompletePayload
-        {
-            movieName           = p.config.movieName,
-            moneyReward         = reward,
-            repGain             = rep,
-            xpGain              = xp,
-            varietyBonusPercent = varietyBonusPct,
-            config              = p.config,
-            isFirstDiscovery    = isFirstDiscovery,
-        });
-
         RecordHistory(p.config.movieName, reward, rep, xp);
         UpdateProductionFlags();
-        RefreshProductionUI();
-        SetStatus(string.Format("{0} descubierta! +${1:N0}  +{2:0.0} REP",
-            p.config.movieName, reward, rep));
+
+        // ── SAVE (before any UI event) ──────────────────────────────────────────
         GameHub.Instance?.save?.Save("MovieDiscovered");
+
+        // ── UI EVENTS (after save — exceptions cannot corrupt the save) ─────────
+        try
+        {
+            OnReputationChanged?.Invoke(reputation);
+            RefreshProductionUI();
+            NotifyProductionsChanged();
+            SetStatus(Loc.Format(LocKeys.ProdMovieDiscoveredFmt, p.config.movieName, reward, rep));
+
+            // OnMovieCompleted triggers the full premiere sequence (DOTween, panels, etc.)
+            // and is the highest-risk subscriber — must be last so any exception here
+            // doesn't prevent the status/UI refresh above from running either.
+            OnMovieCompleted?.Invoke(new MovieCompletePayload
+            {
+                movieName           = p.config.movieName,
+                moneyReward         = reward,
+                repGain             = rep,
+                xpGain              = xp,
+                varietyBonusPercent = varietyBonusPct,
+                config              = p.config,
+                isFirstDiscovery    = isFirstDiscovery,
+            });
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[StudioManager] FinalizeDiscovery UI event error (save ya guardado): {ex}");
+        }
     }
 
 
@@ -782,6 +869,11 @@ public class StudioManager : MonoBehaviour
         if (entries == null || entries.Length == 0)
 
         {
+
+            // Sync slot cap from upgrades even when there are no active productions,
+            // otherwise maxMovieSlots stays at its default (1) and the UI shows
+            // unlocked extra slots as locked until the next movie completes.
+            if (U != null) maxMovieSlots = U.GetMaxMovieSlots();
 
             UpdateProductionFlags();
 
@@ -900,6 +992,7 @@ public class StudioManager : MonoBehaviour
         UpdateProductionFlags();
 
         RefreshProductionUI();
+        NotifyProductionsChanged();
 
     }
 
@@ -1114,8 +1207,6 @@ public class StudioManager : MonoBehaviour
         if (movieProgressBar != null)
 
             movieProgressBar.value = ProductionProgress;
-
-        NotifyProductionsChanged();
 
     }
 

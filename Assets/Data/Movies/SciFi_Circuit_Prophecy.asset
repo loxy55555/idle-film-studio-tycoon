@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: CircuitProphecy.png
+  posterFile: circuitprophecy.jpg
   posterSprite: {fileID: 21300000, guid: 40bddc7b225a72f44867c1b7310f1a60, type: 3}
   catalogTier: 1
   contentKind: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Drama_Ash_and_Honey
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Logest Sea S On
+  movieName: The Longest Season
   genre: 1
   tagline: Bitterness and sweetness in the same jar.
   synopsis: "The Logest Sea S On explora los v\xEDnculos que nos definen y las decisiones
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLogestSeaSOn.png
+  posterFile: thelogestseason.jpg
   posterSprite: {fileID: 21300000, guid: 63897c02cffd25745bcd7b857f1ce2da, type: 3}
   catalogTier: 2
   contentKind: 0

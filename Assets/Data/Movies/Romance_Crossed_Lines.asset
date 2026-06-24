@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Romance_Crossed_Lines
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Last T Rain To P A Ris
+  movieName: The Last Train To Paris
   genre: 4
   tagline: Phone wrong number. Right person.
   synopsis: "Una historia de amor que abarca continentes, d\xE9cadas y vidas enteras
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastTRainToPARis.png
+  posterFile: thelasttraintoparis.jpg
   posterSprite: {fileID: 21300000, guid: 77f3c163bf849d043a22922827a3bcb6, type: 3}
   catalogTier: 3
   contentKind: 0

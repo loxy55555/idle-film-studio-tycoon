@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: ParallelEarth.png
+  posterFile: parallelearth.jpg
   posterSprite: {fileID: 21300000, guid: 8266dc1957a8e78428b6797ebfbaaacd, type: 3}
   catalogTier: 2
   contentKind: 4

@@ -109,6 +109,12 @@ public class MovieButtonUI : MonoBehaviour
 
         ProductionBudgetPickerUI.Show(movieConfig, budget =>
         {
+            if (!_studio.CanStartMovie(movieConfig, out var blockReason))
+            {
+                AdRewardUI.ShowMessage(blockReason ?? Loc.Get(LocKeys.UxNoSlotsAvailable));
+                return;
+            }
+
             _studio.StartMovie(movieConfig, budget);
             AudioManager.Instance?.PlaySfx("filmstart");
         });

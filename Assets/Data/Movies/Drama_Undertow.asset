@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastSummerHouse.png
+  posterFile: thelastsummerhouse.jpg
   posterSprite: {fileID: 21300000, guid: 6a8933c4d1467664eb12473cdb42b00b, type: 3}
   catalogTier: 1
   contentKind: 0

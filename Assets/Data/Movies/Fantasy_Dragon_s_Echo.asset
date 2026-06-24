@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheSilvercrown.png
+  posterFile: thesilvercrown.jpg
   posterSprite: {fileID: 21300000, guid: 215aa739028b582449ed9cb844ee234f, type: 3}
   catalogTier: 1
   contentKind: 0

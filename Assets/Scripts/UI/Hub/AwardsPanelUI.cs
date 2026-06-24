@@ -155,8 +155,11 @@ public class AwardsPanelUI : MonoBehaviour
     {
         int current = _prestige?.oscars ?? 0;
         int slot    = Mathf.Clamp(current - 1, 0, SHOWCASE_SLOTS - 1);
-        AnimateStarEarned(slot);
+
+        // RefreshAll updates grid state first; AnimateStarEarned then animates the glow
+        // on the already-updated slot — prevents DOTween from being overridden by RefreshAll.
         RefreshAll();
+        AnimateStarEarned(slot);
     }
 
     // ── DOTween stub ─────────────────────────────────────────────────────────
@@ -177,9 +180,15 @@ public class AwardsPanelUI : MonoBehaviour
         if (_built) return;
         _built = true;
 
-        // Clear any legacy children from pre-8.6B builds
+        // BUG FIX: DestroyImmediate in Play mode immediately destroys objects, breaking
+        // any active DOTween animations that hold references to them.
+        // Use Destroy() (deferred) in Play mode; DestroyImmediate only in edit mode.
         for (int i = transform.childCount - 1; i >= 0; i--)
-            DestroyImmediate(transform.GetChild(i).gameObject);
+        {
+            var ch = transform.GetChild(i);
+            if (Application.isPlaying) Destroy(ch.gameObject);
+            else DestroyImmediate(ch.gameObject);
+        }
 
         var rt = GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
         Stretch(rt);
@@ -550,8 +559,15 @@ public class AwardsPanelUI : MonoBehaviour
         r1hlg.childControlWidth = r1hlg.childControlHeight = true;
         r1hlg.childForceExpandWidth = false; r1hlg.childForceExpandHeight = true;
 
-        var installIcon = Tmp(row1.transform, "★", 22f, TEXT_GOLD, FontStyles.Normal);
-        installIcon.gameObject.AddComponent<LayoutElement>().preferredWidth = 36f;
+        // U+2605 "★" is not in the project TMP font atlas — it renders as a white square.
+        // Use the award star sprite from UIIconCatalog instead of a TMP character.
+        var levelIconGo = new GameObject("LevelIcon", typeof(RectTransform), typeof(Image));
+        levelIconGo.transform.SetParent(row1.transform, false);
+        var levelIconImg = levelIconGo.GetComponent<Image>();
+        levelIconImg.raycastTarget = false;
+        levelIconImg.preserveAspect = true;
+        UIIconGraphic.Apply(levelIconImg, UIIconCatalog.GetAwardStar());
+        levelIconGo.AddComponent<LayoutElement>().preferredWidth = 36f;
 
         var installName = Tmp(row1.transform, "—", 18f, TEXT_PRI, FontStyles.Bold);
         installName.alignment = TextAlignmentOptions.MidlineLeft;

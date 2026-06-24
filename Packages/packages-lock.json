@@ -10,6 +10,16 @@
       },
       "hash": "78ee5418415953b79c358bfe6355fcc3fde7912b"
     },
+    "com.google.ads.mobile": {
+      "version": "https://github.com/googleads/googleads-mobile-unity.git?path=packages/com.google.ads.mobile#v11.2.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.187",
+        "com.unity.modules.androidjni": "1.0.0"
+      },
+      "hash": "8b2a619e7465c1ecdf5052241586a8f1c1008773"
+    },
     "com.google.external-dependency-manager": {
       "version": "file:../GooglePackages/com.google.external-dependency-manager-1.2.187.tgz",
       "depth": 0,
@@ -256,12 +266,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.11.0",
+      "version": "4.12.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.services.core": "1.8.2",
+        "com.unity.services.core": "1.12.5",
         "com.unity.modules.androidjni": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0"

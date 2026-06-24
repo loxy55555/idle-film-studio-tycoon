@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLanternParade.png
+  posterFile: thelanternparade.jpg
   posterSprite: {fileID: 21300000, guid: f236901ab1a1fd9448185380c052b7ef, type: 3}
   catalogTier: 5
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheWatcherInRoom12.png
+  posterFile: thewatcherinroom12.jpg
   posterSprite: {fileID: 21300000, guid: dc2248a4509e0824699b4f20d3809a92, type: 3}
   catalogTier: 2
   contentKind: 0

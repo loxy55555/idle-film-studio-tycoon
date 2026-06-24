@@ -58,11 +58,17 @@ public class ProductionBudgetPickerUI : MonoBehaviour
 
         _panel = CreatePanel(root, "Panel", Color.clear);
         var panelRT = _panel;
-        // A2: Doubled visual size for mobile legibility
-        panelRT.anchorMin = new Vector2(0.04f, 0.05f);
-        panelRT.anchorMax = new Vector2(0.96f, 0.95f);
-        panelRT.offsetMin = panelRT.offsetMax = Vector2.zero;
+        // FASE 16.5F — compact popup: full width, height fits content, vertically centered
+        panelRT.anchorMin = new Vector2(0.04f, 0.5f);
+        panelRT.anchorMax = new Vector2(0.96f, 0.5f);
+        panelRT.pivot = new Vector2(0.5f, 0.5f);
+        panelRT.anchoredPosition = Vector2.zero;
+        panelRT.sizeDelta = Vector2.zero;
         HudSkinProvider.ApplyPanel(_panel.GetComponent<Image>(), HudPanelVariant.Card);
+
+        var panelCsf = _panel.gameObject.AddComponent<ContentSizeFitter>();
+        panelCsf.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        panelCsf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         var vlg = _panel.gameObject.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(16, 16, 16, 16);
@@ -114,7 +120,7 @@ public class ProductionBudgetPickerUI : MonoBehaviour
             FontStyles.Bold, TextAlignmentOptions.Center, "Label");
         cancelLbl.enableAutoSizing = true;
         cancelLbl.fontSizeMin = 14f;
-        LE(cancelGo.GetComponent<RectTransform>(), 44f);
+        LE(cancelLbl.rectTransform, 28f);
     }
 
     // Returns the stats label so it can be refreshed in Open() with actual duration

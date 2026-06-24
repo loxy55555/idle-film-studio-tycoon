@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheForgottenWell.png
+  posterFile: theforgottenwell.jpg
   posterSprite: {fileID: 21300000, guid: fe38cf8e2e30e93478d81679ee3510e2, type: 3}
   catalogTier: 2
   contentKind: 0

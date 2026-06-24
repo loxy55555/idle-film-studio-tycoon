@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheClockworkFox.png
+  posterFile: theclockworkfox.jpg
   posterSprite: {fileID: 21300000, guid: 0228dabd15a577c44a7947398a6eb887, type: 3}
   catalogTier: 4
   contentKind: 0

@@ -184,8 +184,9 @@ public class ContractSystem : MonoBehaviour
         _candidates[idx] = replacement;
 
         Debug.Log($"[ContractSystem] Rerolled [{old.contractTitle}] → [{replacement.contractTitle}]");
-        OnContractUpdated?.Invoke();
         GameHub.Instance?.save?.Save("ContractReroll");
+        try { OnContractUpdated?.Invoke(); }
+        catch (System.Exception ex) { Debug.LogError($"[ContractSystem] Reroll UI event error: {ex}"); }
         return true;
     }
 
@@ -200,9 +201,16 @@ public class ContractSystem : MonoBehaviour
             _progress[contract.id] = 0f;
 
         Debug.Log($"[ContractSystem] Selected contract: {contract.contractTitle}");
-        OnContractSelected?.Invoke(contract);
-        OnContractUpdated?.Invoke();
         GameHub.Instance?.save?.Save("ContractSelected");
+        try
+        {
+            OnContractSelected?.Invoke(contract);
+            OnContractUpdated?.Invoke();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[ContractSystem] Excepción en evento UI selección contrato (save ya guardado): {ex}");
+        }
         return true;
     }
 
@@ -223,8 +231,15 @@ public class ContractSystem : MonoBehaviour
         GenerateCandidates(studioLevel);
 
         Debug.Log($"[ContractSystem] Active contract '{cancelled.contractTitle}' cancelled via ad.");
-        OnContractUpdated?.Invoke();
         GameHub.Instance?.save?.Save("ContractCancelledViaAd");
+        try
+        {
+            OnContractUpdated?.Invoke();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[ContractSystem] Excepción en evento UI cancelación contrato (save ya guardado): {ex}");
+        }
         return true;
     }
 
@@ -263,6 +278,33 @@ public class ContractSystem : MonoBehaviour
             default:
                 return false;
         }
+    }
+
+    /// <summary>
+    /// Returns the localized display title for a contract.
+    /// Uses the <c>contract.title.{id}</c> key from the localization table,
+    /// falling back to the baked asset field when no translation exists.
+    /// </summary>
+    public static string GetLocalizedTitle(ContractConfig cfg)
+    {
+        if (cfg == null) return string.Empty;
+        var key = LocKeys.ContractTitlePfx + cfg.id;
+        var loc = Loc.Get(key);
+        return loc == key ? cfg.contractTitle : loc;
+    }
+
+    /// <summary>
+    /// Returns the localized description for a contract.
+    /// Uses the <c>contract.description.{id}</c> key from the localization table,
+    /// falling back to the baked asset field when no translation exists.
+    /// Once translation entries are added to Loc.cs the description will localize automatically.
+    /// </summary>
+    public static string GetLocalizedDescription(ContractConfig cfg)
+    {
+        if (cfg == null) return string.Empty;
+        var key = LocKeys.ContractDescriptionPfx + cfg.id;
+        var loc = Loc.Get(key);
+        return loc == key ? cfg.description : loc;
     }
 
     public static string BuildObjectiveLabel(ContractConfig c)
@@ -402,6 +444,7 @@ public class ContractSystem : MonoBehaviour
         if (contract == null || !_readyToClaim.Contains(contract.id)) return false;
         if (!_active.Contains(contract)) return false;
 
+        // ── DATA CHANGES ────────────────────────────────────────────────────────
         studio.AddMoney(contract.rewardMoney);
         studio.AddReputation(contract.rewardReputation);
         studioLevel?.AddXP(contract.rewardStudioXP);
@@ -420,10 +463,22 @@ public class ContractSystem : MonoBehaviour
         _history.Insert(0, contract);
         if (_history.Count > 10) _history.RemoveAt(_history.Count - 1);
 
-        OnContractClaimed?.Invoke(contract);
         GenerateCandidates(studioLevel?.Level ?? 1);
-        OnContractUpdated?.Invoke();
+
+        // ── SAVE (before UI events) ─────────────────────────────────────────────
         GameHub.Instance?.save?.Save("ContractClaimed");
+
+        // ── UI EVENTS ───────────────────────────────────────────────────────────
+        try
+        {
+            OnContractClaimed?.Invoke(contract);
+            OnContractUpdated?.Invoke();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[ContractSystem] Excepción en evento UI de contrato (save ya guardado): {ex}");
+        }
+
         return true;
     }
 

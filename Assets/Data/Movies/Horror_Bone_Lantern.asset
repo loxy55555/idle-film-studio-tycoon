@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BoneLantern.png
+  posterFile: bonelantern.jpg
   posterSprite: {fileID: 21300000, guid: fef906b2174823e4d9f9b3489682473a, type: 3}
   catalogTier: 1
   contentKind: 0

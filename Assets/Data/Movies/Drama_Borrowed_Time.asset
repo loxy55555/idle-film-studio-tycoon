@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BorrowedTime.png
+  posterFile: borrowedtime.jpg
   posterSprite: {fileID: 21300000, guid: 1066e9ae4bf96504bb733ab519667e73, type: 3}
   catalogTier: 1
   contentKind: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UIIconRegistry
   m_EditorClassIdentifier: Assembly-CSharp::UIIconRegistry
   deptEditor: {fileID: 4115848283974433413, guid: 0302f6c0658599646ba49975f981dae5, type: 3}
-  deptDirector: {fileID: 3610251721386515986, guid: e6063f5361a9dde4b93216b2a63d74c4, type: 3}
+  deptDirector: {fileID: -8929220166858472130, guid: e6063f5361a9dde4b93216b2a63d74c4, type: 3}
   deptActors: {fileID: 8670145138071425503, guid: 357735dac6c42964786074f0846254ed, type: 3}
   deptSound: {fileID: -6389137155892498352, guid: 4c618cf51904c8d4f84325dcc17644e3, type: 3}
   deptCinematography: {fileID: 8535859000005493144, guid: 4d28adc936a87684ba90584ad2a53cbe, type: 3}
@@ -27,7 +27,7 @@ MonoBehaviour:
   deptScript: {fileID: 3655677506034519528, guid: dec34ca07b7d4de45a3581e91336456e, type: 3}
   genreAction: {fileID: 3763834429052838649, guid: 8a7632283fe067643aeebcb031d63048, type: 3}
   genreDrama: {fileID: -8983364413107405337, guid: d0064d74ab9a5c24286e65ca1b349c5f, type: 3}
-  genreHorror: {fileID: -7172426446799748114, guid: d111863b98b2fad4a98797d8990d6349, type: 3}
+  genreHorror: {fileID: -6108136496239892845, guid: d111863b98b2fad4a98797d8990d6349, type: 3}
   genreComedy: {fileID: 2483746508220015439, guid: 251fd2df16fd42a4bb18e464a61c43ee, type: 3}
   genreRomance: {fileID: 1502018219802517407, guid: 8f9cea7682f8b7446a8c551bbfa199b7, type: 3}
   genreSciFi: {fileID: 2967997822200609142, guid: 5ab1b77bf75075846bb9747e42f8dbeb, type: 3}
@@ -47,7 +47,7 @@ MonoBehaviour:
   resTicket: {fileID: 4165712918697415239, guid: e75bac3bd9f1db5469fb7de67ace6cb4, type: 3}
   resExperience: {fileID: 5098140718368970578, guid: 5239b6a0178de1c43bb6604f0e131473, type: 3}
   resDecoCamera: {fileID: -6921472516709491865, guid: 4c9dd69f68a071a4db9cbcb3f06a3104, type: 3}
-  resFilmReel: {fileID: 1676361449612694559, guid: 9a8db3f859974234ea6256bf2abaf0bb, type: 3}
+  resFilmReel: {fileID: -2920641196101921639, guid: 9a8db3f859974234ea6256bf2abaf0bb, type: 3}
   resDiamonds: {fileID: 8806872882384348625, guid: c00b8940c0ec74f43847b3c73f03a2cd, type: 3}
   resSettings: {fileID: 21300000, guid: 7af20d9f878a7df4faeed27cea5411ba, type: 3}
   awardStar: {fileID: -581319534519059004, guid: b34957d6b3dff114c8dd06a1fdf5b852, type: 3}

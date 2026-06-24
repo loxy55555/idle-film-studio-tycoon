@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_The_Glass_Forest_III
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Moon S To Ne Path
+  movieName: Moonstone Path
   genre: 6
   tagline: Forest walks toward the capital at dawn.
   synopsis: "Moon S To Ne Path es un relato \xE9pico de sacrificio, lealtad y la
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: MoonSToNePath.png
+  posterFile: moonstonepath.jpg
   posterSprite: {fileID: 21300000, guid: 2d897ae6edc3f2349944dd28d5341ed4, type: 3}
   catalogTier: 3
   contentKind: 0

@@ -1,0 +1,65 @@
+﻿FASE 16.5E — Restore Corrupt Player Titles
+Whitelist count: 57
+
+UNCHANGED Comedy_Accidental_Guru: Welcome To Disaster
+UNCHANGED Comedy_Accidental_Hero: Late Again
+UNCHANGED Comedy_Double_Booked: Monday Morning
+UNCHANGED Comedy_Improv_Nation: The Last Day Off
+UNCHANGED Comedy_Pizza_Tribunal: The New Neighbors
+UNCHANGED Comedy_Room_for_Error: City Hall Disaster
+UNCHANGED Comedy_Side_Gig: The Wrong Wedding
+UNCHANGED Comedy_The_Great_Mix_Up: The Great Mixup
+UNCHANGED Comedy_Uncle_Gary_IV: Family Emergency
+UNCHANGED Comedy_Uncle_Gary_VI: The Year Everything Broke
+UNCHANGED Comedy_Uncle_Gary_VII: Uncle Gary's Plan
+UNCHANGED Drama_Ash_and_Honey: The Longest Season
+UNCHANGED Drama_Blue_Hour: A Place Called Tomorrow
+UNCHANGED Drama_Evening_Class: The Long Road Home
+UNCHANGED Drama_Fading_Light: Autumn Harbor
+UNCHANGED Drama_Field_Notes: The Old Piano
+UNCHANGED Drama_Open_Field: Before The Rain
+UNCHANGED Drama_Stone_Garden: Between Two Seasons
+UNCHANGED Drama_Two_Rivers: The Bookshop On Cedar Street
+UNCHANGED Drama_Winter_Letters: Winter Letters
+UNCHANGED Fantasy_Ash_Crown: The Emerald Tower
+UNCHANGED Fantasy_Crown_of_Embers: The Last Dragon Keeper
+UNCHANGED Fantasy_Dragon_s_Debt: The Forgotten Mage
+UNCHANGED Fantasy_Glass_Crown: Whisperwind Valley
+UNCHANGED Fantasy_River_of_Stars: Beyond Frost Peak
+UNCHANGED Fantasy_Runebreaker: The Gates Of Elderglen
+UNCHANGED Fantasy_Spellbound_Market: The Golden Stag
+UNCHANGED Fantasy_The_Glass_Forest_III: Moonstone Path
+UNCHANGED Fantasy_Throne_of_Thorns: The Crystal Forest
+UNCHANGED Fantasy_Witch_s_Bargain: The Kingdom Of Silent Moons
+UNCHANGED Horror_Grave_Shift: House At Winter Lake
+UNCHANGED Horror_Moth_Parish: The Bell Beneath The Lake
+UNCHANGED Horror_Night_Garden: Beneath Ash Hill
+UNCHANGED Horror_Pale_Door: The Empty Chapel
+UNCHANGED Horror_Silent_Hive: The Last Broadcast
+UNCHANGED Horror_Skinwalker_Line: The Village Without Names
+UNCHANGED Romance_Beneath_the_Summer_Sky_III: Autumn Promise
+UNCHANGED Romance_Crossed_Lines: The Last Train To Paris
+UNCHANGED Romance_Golden_Hour: Before Sunrise
+UNCHANGED Romance_Letters_in_Rain: The Winter Café
+UNCHANGED Romance_Midnight_Train: Letters Across The Sea
+UNCHANGED Romance_Paper_Hearts: Midnight In Verona
+UNCHANGED Romance_Paris_Delay: Where The Ocean Meets The Sky
+UNCHANGED Romance_Quiet_Harbor: One More Summer
+UNCHANGED SciFi_Code_Genesis: Ghosts Of Europa
+UNCHANGED SciFi_Stellar_Cartel: Event Horizon Array
+UNCHANGED SciFi_The_Last_Colony: The Atlas Paradox
+UNCHANGED Thriller_Cold_Case_Heat: Black Archive
+UNCHANGED Thriller_Glass_Witness: Case 114
+UNCHANGED Thriller_Night_Ledger: Dead Letter Office
+UNCHANGED Thriller_Proxy_Kill: Project Lazarus
+UNCHANGED Thriller_Red_File_12: Silence Evidence
+UNCHANGED Thriller_Red_File_27_II: The Department Below
+UNCHANGED Thriller_Red_File_27_III: The Forgotten Case
+UNCHANGED Thriller_Red_Horizon: The Last Recording
+UNCHANGED Thriller_Shadow_Trigger_III: The Missing Witness
+UNCHANGED Thriller_Silent_Contract: The Ninth Floor
+
+Updated: 0
+Unchanged: 57
+Missing: 0
+OK_NOMBRE_POSTER drift: 0

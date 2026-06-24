@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Horror_Silent_Hive
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Last Bo A Dc A St
+  movieName: The Last Broadcast
   genre: 2
   tagline: Bees stop buzzing. Then people stop speaking.
   synopsis: "The Last Bo A Dc A St lleva el horror a territorios inexplorados con
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastBoADcASt.png
+  posterFile: thelastboadcast.jpg
   posterSprite: {fileID: 21300000, guid: fc19f7cb67de9d5469c7f7cbc286c775, type: 3}
   catalogTier: 2
   contentKind: 0

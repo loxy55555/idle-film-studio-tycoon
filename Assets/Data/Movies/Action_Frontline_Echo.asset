@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: FrontlineEcho.png
+  posterFile: frontlineecho.jpg
   posterSprite: {fileID: 21300000, guid: c9e49601696deb04c8cee3ca649d8cf7, type: 3}
   catalogTier: 1
   contentKind: 0

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 /// <summary>Simple key-based localization table (Phase 8.1).</summary>
 public static class Loc
 {
-    public const string DefaultLanguage = "es";
+    public const string DefaultLanguage = "en";
 
     static string _language = DefaultLanguage;
 
@@ -99,8 +99,13 @@ public static class Loc
             { LocKeys.ProdOfferMoney, "Dinero: {0}" },
             { LocKeys.ProdOfferRep, "Rep: +{0}" },
             { LocKeys.RefreshChoosePayment, "Elige cómo pagar" },
-            { LocKeys.RefreshWatchAd, "VER ANUNCIO" },
-            { LocKeys.RefreshSpendDiamonds, "GASTAR DIAMANTES" },
+            { LocKeys.RefreshPaymentHint, "Ver anuncio o pagar con diamantes:" },
+            { LocKeys.RefreshWatchAd, "Ver anuncio" },
+            { LocKeys.RefreshSpendDiamonds, "Gastar diamantes" },
+            { LocKeys.RefreshDiamondsFmt, "{0} 💎" },
+            { LocKeys.ProdSpeedUpTitle, "Finalizar antes" },
+            { LocKeys.ProdSpeedUpOption5Fmt, "Reduce 5 min" },
+            { LocKeys.ProdSpeedUpOption15Fmt, "Reduce 15 min" },
             { LocKeys.ContractRefresh, "ACTUALIZAR CONTRATOS" },
             { LocKeys.ContractSelect, "ELEGIR" },
             { LocKeys.ContractChoosePrompt, "Elige un contrato" },
@@ -196,6 +201,10 @@ public static class Loc
             { LocKeys.IapRestoreFailed,   "No se pudieron restaurar las compras" },
             { LocKeys.IapPurchaseFailed,  "Compra cancelada o fallida" },
             { LocKeys.IapUnavailable,     "Tienda no disponible" },
+            { LocKeys.IapInitFailed,      "No se pudo conectar con Google Play" },
+            { LocKeys.IapNoProducts,      "Productos no disponibles en Play Console" },
+            { LocKeys.IapProductNotFound, "Producto no encontrado en la tienda" },
+            { LocKeys.IapConnecting,      "Conectando con la tienda…" },
             { LocKeys.IapPackActivatedFmt,"Pack activado: {0}" },
             { LocKeys.SettingsClose,      "CERRAR" },
             { LocKeys.SettingsMusic,      "Música" },
@@ -470,6 +479,35 @@ public static class Loc
             { LocKeys.ContractTitlePfx + "c_rep_5000",          "Icono Global" },
             { LocKeys.ContractTitlePfx + "c_blockbuster",       "El Gran Blockbuster" },
 
+            // ── Contract descriptions ─────────────────────────────────────────
+            { LocKeys.ContractDescriptionPfx + "c_three_movies",      "Produce 3 películas." },
+            { LocKeys.ContractDescriptionPfx + "c_first_reputation",  "Alcanza 20 puntos de reputación." },
+            { LocKeys.ContractDescriptionPfx + "c_first_movie",       "Produce tu primera película." },
+            { LocKeys.ContractDescriptionPfx + "c_action_fan",        "Produce 2 películas de acción." },
+            { LocKeys.ContractDescriptionPfx + "c_romance_story",     "Produce 2 películas de romance." },
+            { LocKeys.ContractDescriptionPfx + "c_first_upgrade",     "Gasta $500 en mejoras." },
+            { LocKeys.ContractDescriptionPfx + "c_fantasy_realm",     "Produce 2 películas de fantasía." },
+            { LocKeys.ContractDescriptionPfx + "c_thriller_night",    "Produce 2 thrillers." },
+            { LocKeys.ContractDescriptionPfx + "c_documentary_truth", "Produce 2 documentales." },
+            { LocKeys.ContractDescriptionPfx + "c_drama_fan",         "Produce 2 películas de drama." },
+            { LocKeys.ContractDescriptionPfx + "c_animation_studio",  "Produce 2 películas de animación." },
+            { LocKeys.ContractDescriptionPfx + "c_rep_50",            "Alcanza 50 de reputación." },
+            { LocKeys.ContractDescriptionPfx + "c_horror_night",      "Produce 3 películas de terror." },
+            { LocKeys.ContractDescriptionPfx + "c_speed_run",         "Produce una película en menos de 10 segundos." },
+            { LocKeys.ContractDescriptionPfx + "c_studio_level5",     "Llega al nivel 5 del estudio." },
+            { LocKeys.ContractDescriptionPfx + "c_rep_200",           "Alcanza 200 de reputación." },
+            { LocKeys.ContractDescriptionPfx + "c_comedy_king",       "Produce 5 comedias." },
+            { LocKeys.ContractDescriptionPfx + "c_studio_level10",    "Llega al nivel 10 del estudio." },
+            { LocKeys.ContractDescriptionPfx + "c_ten_movies",        "Produce 10 películas." },
+            { LocKeys.ContractDescriptionPfx + "c_scifi_pioneer",     "Produce 3 películas de Sci-Fi." },
+            { LocKeys.ContractDescriptionPfx + "c_studio_level15",    "Llega al nivel 15 del estudio." },
+            { LocKeys.ContractDescriptionPfx + "c_rep_1000",          "Alcanza 1000 de reputación." },
+            { LocKeys.ContractDescriptionPfx + "c_all_genres",        "Produce una película de cada género." },
+            { LocKeys.ContractDescriptionPfx + "c_big_spender",       "Gasta $50,000 en mejoras." },
+            { LocKeys.ContractDescriptionPfx + "c_studio_level20",    "Llega al nivel 20 del estudio." },
+            { LocKeys.ContractDescriptionPfx + "c_rep_5000",          "Alcanza 5000 de reputación." },
+            { LocKeys.ContractDescriptionPfx + "c_blockbuster",       "Produce 5 películas de acción de alta calidad." },
+
             // ── Oscar / installation progress ────────────────────────────────
             { LocKeys.InstOscarProgress,  "{0} / {1} OSC" },
             { LocKeys.InstOscarMax,       "{0} OSC · MÁXIMO" },
@@ -498,6 +536,11 @@ public static class Loc
 
             // ── Ad reward feedback (FASE 15.2A) ──────────────────────────────
             { LocKeys.AdLimitReached,        "Límite diario alcanzado" },
+            { LocKeys.AdUnavailable,         "No hay anuncios disponibles en este momento. Inténtalo de nuevo más tarde." },
+            { LocKeys.AdNotReady,          "Anuncio no listo. Inténtalo de nuevo en unos segundos." },
+            { LocKeys.AdNotInitialized,    "Anuncios aún no disponibles. Inténtalo de nuevo en unos segundos." },
+            { LocKeys.AdLoadFailed,        "No se pudo cargar el anuncio. Inténtalo más tarde." },
+            { LocKeys.AdAlreadyShowing,    "Ya hay un anuncio en curso." },
             { LocKeys.FreeDiamondsAwarded,   "+{0} diamantes" },
             { LocKeys.BoostActivated,        "¡Boost activado! ×2 durante 10 min" },
             { LocKeys.BoostAlreadyActive,    "Ya tienes este boost activo" },
@@ -542,11 +585,41 @@ public static class Loc
             { LocKeys.UxGoToStore,         "Ir a tienda" },
             { LocKeys.UxCancelAction,      "Cancelar" },
             { LocKeys.UxNoSlotsAvailable,  "No hay slots disponibles." },
+            { LocKeys.UxNotEnoughMoney,    "No tienes suficiente dinero." },
 
             // ── Contract cancel via ad (FASE 16.1 — D3) ──────────────────────
             { LocKeys.ContractCancelWithAd,  "Cancelar contrato" },
+            { LocKeys.ContractCancelWatchAdPrompt, "¿Ver un anuncio para cancelar este contrato?" },
+            { LocKeys.ContractCancelConfirmNoAds, "¿Cancelar este contrato?" },
             { LocKeys.ContractCancelConfirm, "¿Cancelar el contrato activo?" },
             { LocKeys.ContractCancelDone,    "Contrato cancelado. Nuevas opciones generadas." },
+
+            // ── HUD structural labels ─────────────────────────────────────────────
+            { LocKeys.HudTabNominations,   "NOMINACIONES" },
+            { LocKeys.HudTabPresentations, "PRESENTACIONES" },
+            { LocKeys.HudTabSagas,         "SAGAS" },
+            { LocKeys.HudTabLegendary,     "LEGENDARIAS" },
+            { LocKeys.HudSectionSave,      "GUARDAR" },
+            { LocKeys.HudSectionHelp,      "AYUDA" },
+            { LocKeys.HudSectionCredits,   "CRÉDITOS" },
+
+            // ── Store per-day suffix ──────────────────────────────────────────────
+            { LocKeys.StorePerDay, "/día" },
+
+            // ── Production status / discovery ─────────────────────────────────────
+            { LocKeys.ProdStatusProducingFmt,  "Produciendo: {0}" },
+            { LocKeys.ProdMovieDiscoveredFmt,  "{0} descubierta! +${1:N0}  +{2:0.0} REP" },
+            { LocKeys.ProdMovieInvalid,        "Película no válida" },
+            { LocKeys.ProdLegendaryNeedsSlots, "Se necesitan 2 slots libres para una producción legendaria" },
+
+            // ── City unlock popups ────────────────────────────────────────────────
+            { LocKeys.CityUnlockDepts,        "Nuevos departamentos disponibles" },
+            { LocKeys.CityUnlockMovies,       "Nuevas películas desbloqueadas" },
+            { LocKeys.CityUnlockMoviesFmt,    "+{0} título(s) en catálogo" },
+            { LocKeys.CityUnlockUpgrades,     "Nuevas mejoras disponibles" },
+            { LocKeys.CityUnlockUpgradesFmt,  "+{0} mejora(s)" },
+            { LocKeys.CityUnlockContracts,    "Nuevos contratos disponibles" },
+            { LocKeys.CityUnlockContractsFmt, "+{0} contrato(s)" },
         };
 
         static Dictionary<string, string> En(Dictionary<string, string> es)
@@ -590,8 +663,13 @@ public static class Loc
             d[LocKeys.ProdOfferMoney] = "Money: {0}";
             d[LocKeys.ProdOfferRep] = "Rep: +{0}";
             d[LocKeys.RefreshChoosePayment] = "Choose payment";
-            d[LocKeys.RefreshWatchAd] = "WATCH AD";
-            d[LocKeys.RefreshSpendDiamonds] = "SPEND DIAMONDS";
+            d[LocKeys.RefreshPaymentHint]   = "Watch an ad or pay with diamonds:";
+            d[LocKeys.RefreshWatchAd] = "Watch ad";
+            d[LocKeys.RefreshSpendDiamonds] = "Spend diamonds";
+            d[LocKeys.RefreshDiamondsFmt] = "{0} 💎";
+            d[LocKeys.ProdSpeedUpTitle] = "Finish early";
+            d[LocKeys.ProdSpeedUpOption5Fmt] = "Reduce 5 min";
+            d[LocKeys.ProdSpeedUpOption15Fmt] = "Reduce 15 min";
             d[LocKeys.ContractRefresh] = "REFRESH CONTRACTS";
             d[LocKeys.ContractSelect] = "CHOOSE";
             d[LocKeys.ContractChoosePrompt] = "Choose a contract";
@@ -674,6 +752,10 @@ public static class Loc
             d[LocKeys.IapRestoreFailed]   = "Could not restore purchases";
             d[LocKeys.IapPurchaseFailed]  = "Purchase cancelled or failed";
             d[LocKeys.IapUnavailable]     = "Store unavailable";
+            d[LocKeys.IapInitFailed]      = "Could not connect to Google Play";
+            d[LocKeys.IapNoProducts]      = "Products not available in Play Console";
+            d[LocKeys.IapProductNotFound] = "Product not found in store";
+            d[LocKeys.IapConnecting]      = "Connecting to store…";
             d[LocKeys.IapPackActivatedFmt]= "Pack activated: {0}";
             d[LocKeys.SettingsClose]      = "CLOSE";
             d[LocKeys.SettingsMusic]      = "Music";
@@ -915,6 +997,35 @@ public static class Loc
             d[LocKeys.ContractTitlePfx + "c_rep_5000"]          = "Global Icon";
             d[LocKeys.ContractTitlePfx + "c_blockbuster"]       = "The Big Blockbuster";
 
+            // Contract descriptions
+            d[LocKeys.ContractDescriptionPfx + "c_three_movies"]      = "Produce 3 movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_reputation"]  = "Reach 20 reputation points.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_movie"]       = "Produce your first movie.";
+            d[LocKeys.ContractDescriptionPfx + "c_action_fan"]        = "Produce 2 action movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_romance_story"]     = "Produce 2 romance movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_upgrade"]     = "Spend $500 on upgrades.";
+            d[LocKeys.ContractDescriptionPfx + "c_fantasy_realm"]     = "Produce 2 fantasy movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_thriller_night"]    = "Produce 2 thrillers.";
+            d[LocKeys.ContractDescriptionPfx + "c_documentary_truth"] = "Produce 2 documentaries.";
+            d[LocKeys.ContractDescriptionPfx + "c_drama_fan"]         = "Produce 2 drama movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_animation_studio"]  = "Produce 2 animated movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_50"]            = "Reach 50 reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_horror_night"]      = "Produce 3 horror movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_speed_run"]         = "Produce a movie in under 10 seconds.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level5"]     = "Reach studio level 5.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_200"]           = "Reach 200 reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_comedy_king"]       = "Produce 5 comedies.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level10"]    = "Reach studio level 10.";
+            d[LocKeys.ContractDescriptionPfx + "c_ten_movies"]        = "Produce 10 movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_scifi_pioneer"]     = "Produce 3 Sci-Fi movies.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level15"]    = "Reach studio level 15.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_1000"]          = "Reach 1,000 reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_all_genres"]        = "Produce a movie of each genre.";
+            d[LocKeys.ContractDescriptionPfx + "c_big_spender"]       = "Spend $50,000 on upgrades.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level20"]    = "Reach studio level 20.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_5000"]          = "Reach 5,000 reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_blockbuster"]       = "Produce 5 high-quality action movies.";
+
             // Oscar / installation progress
             d[LocKeys.InstOscarProgress]  = "{0} / {1} OSC";
             d[LocKeys.InstOscarMax]       = "{0} OSC · MAX";
@@ -943,6 +1054,11 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Daily limit reached";
+            d[LocKeys.AdUnavailable]         = "No ads available at the moment. Please try again later.";
+            d[LocKeys.AdNotReady]            = "Ad not ready. Please try again in a few seconds.";
+            d[LocKeys.AdNotInitialized]      = "Ads are not ready yet. Please try again in a few seconds.";
+            d[LocKeys.AdLoadFailed]          = "Could not load the ad. Please try again later.";
+            d[LocKeys.AdAlreadyShowing]      = "An ad is already playing.";
             d[LocKeys.FreeDiamondsAwarded]   = "+{0} diamonds added";
             d[LocKeys.BoostActivated]        = "Boost activated! ×2 for 10 min";
             d[LocKeys.BoostAlreadyActive]    = "You already have this boost active";
@@ -977,7 +1093,38 @@ public static class Loc
             d[LocKeys.UxGoToStore]         = "Go to store";
             d[LocKeys.UxCancelAction]      = "Cancel";
             d[LocKeys.UxNoSlotsAvailable]  = "No production slots available.";
+            d[LocKeys.UxNotEnoughMoney]    = "Not enough money.";
+
+            // HUD structural labels
+            d[LocKeys.HudTabNominations]   = "NOMINATIONS";
+            d[LocKeys.HudTabPresentations] = "PRESENTATIONS";
+            d[LocKeys.HudTabSagas]         = "SAGAS";
+            d[LocKeys.HudTabLegendary]     = "LEGENDARIES";
+            d[LocKeys.HudSectionSave]      = "SAVE";
+            d[LocKeys.HudSectionHelp]      = "HELP";
+            d[LocKeys.HudSectionCredits]   = "CREDITS";
+
+            // Store per-day suffix
+            d[LocKeys.StorePerDay] = "/day";
+
+            // Production status / discovery
+            d[LocKeys.ProdStatusProducingFmt]  = "Producing: {0}";
+            d[LocKeys.ProdMovieDiscoveredFmt]  = "{0} released! +${1:N0}  +{2:0.0} REP";
+            d[LocKeys.ProdMovieInvalid]        = "Invalid movie";
+            d[LocKeys.ProdLegendaryNeedsSlots] = "Legendary productions need 2 free slots";
+
+            // City unlock popups
+            d[LocKeys.CityUnlockDepts]        = "New departments available";
+            d[LocKeys.CityUnlockMovies]       = "New movies unlocked";
+            d[LocKeys.CityUnlockMoviesFmt]    = "+{0} title(s) in catalog";
+            d[LocKeys.CityUnlockUpgrades]     = "New upgrades available";
+            d[LocKeys.CityUnlockUpgradesFmt]  = "+{0} upgrade(s)";
+            d[LocKeys.CityUnlockContracts]    = "New contracts available";
+            d[LocKeys.CityUnlockContractsFmt] = "+{0} contract(s)";
+
             d[LocKeys.ContractCancelWithAd]  = "Cancel contract";
+            d[LocKeys.ContractCancelWatchAdPrompt] = "Watch an ad to cancel this contract?";
+            d[LocKeys.ContractCancelConfirmNoAds]  = "Cancel this contract?";
             d[LocKeys.ContractCancelConfirm] = "Cancel the active contract?";
             d[LocKeys.ContractCancelDone]    = "Contract cancelled. New options generated.";
             return d;
@@ -1024,8 +1171,13 @@ public static class Loc
             d[LocKeys.ProdOfferMoney] = "Argent: {0}";
             d[LocKeys.ProdOfferRep] = "Rép.: +{0}";
             d[LocKeys.RefreshChoosePayment] = "Choisissez le paiement";
-            d[LocKeys.RefreshWatchAd] = "VOIR UNE PUB";
-            d[LocKeys.RefreshSpendDiamonds] = "DÉPENSER DES DIAMANTS";
+            d[LocKeys.RefreshPaymentHint]   = "Voir une pub ou payer en diamants :";
+            d[LocKeys.RefreshWatchAd] = "Voir une pub";
+            d[LocKeys.RefreshSpendDiamonds] = "Dépenser des diamants";
+            d[LocKeys.RefreshDiamondsFmt] = "{0} 💎";
+            d[LocKeys.ProdSpeedUpTitle] = "Terminer avant";
+            d[LocKeys.ProdSpeedUpOption5Fmt] = "Réduire 5 min";
+            d[LocKeys.ProdSpeedUpOption15Fmt] = "Réduire 15 min";
             d[LocKeys.ContractRefresh] = "ACTUALISER LES CONTRATS";
             d[LocKeys.ProdRarityCommon] = "Commune";
             d[LocKeys.ProdRarityRare] = "Rare";
@@ -1079,6 +1231,10 @@ public static class Loc
             d[LocKeys.IapRestoreFailed]   = "Impossible de restaurer les achats";
             d[LocKeys.IapPurchaseFailed]  = "Achat annulé ou échoué";
             d[LocKeys.IapUnavailable]     = "Boutique indisponible";
+            d[LocKeys.IapInitFailed]      = "Impossible de se connecter à Google Play";
+            d[LocKeys.IapNoProducts]      = "Produits non disponibles dans Play Console";
+            d[LocKeys.IapProductNotFound] = "Produit introuvable dans la boutique";
+            d[LocKeys.IapConnecting]      = "Connexion à la boutique…";
             d[LocKeys.IapPackActivatedFmt]= "Pack activé : {0}";
             d[LocKeys.SettingsClose]      = "FERMER";
             d[LocKeys.SettingsMusic]      = "Musique";
@@ -1150,6 +1306,11 @@ public static class Loc
             d[LocKeys.ContractNoActive]      = "Aucun contrat actif";
             d[LocKeys.ContractReadyClaim]    = "Prêt à réclamer !";
             d[LocKeys.ContractObjective]     = "OBJECTIF";
+            d[LocKeys.ContractCancelWithAd]          = "Annuler le contrat";
+            d[LocKeys.ContractCancelWatchAdPrompt]   = "Regarder une pub pour annuler ce contrat ?";
+            d[LocKeys.ContractCancelConfirmNoAds]    = "Annuler ce contrat ?";
+            d[LocKeys.ContractCancelConfirm]         = "Annuler le contrat actif ?";
+            d[LocKeys.ContractCancelDone]            = "Contrat annulé. Nouvelles options générées.";
 
             // Collection screen
             d[LocKeys.CollectionScreenTitle]   = "MA COLLECTION";
@@ -1339,6 +1500,35 @@ public static class Loc
             d[LocKeys.ContractTitlePfx + "c_rep_5000"]          = "Icône Mondiale";
             d[LocKeys.ContractTitlePfx + "c_blockbuster"]       = "Le Grand Blockbuster";
 
+            // Contract descriptions
+            d[LocKeys.ContractDescriptionPfx + "c_three_movies"]      = "Produis 3 films.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_reputation"]  = "Atteins 20 points de réputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_movie"]       = "Produis ton premier film.";
+            d[LocKeys.ContractDescriptionPfx + "c_action_fan"]        = "Produis 2 films d'action.";
+            d[LocKeys.ContractDescriptionPfx + "c_romance_story"]     = "Produis 2 films romantiques.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_upgrade"]     = "Dépense 500 $ en améliorations.";
+            d[LocKeys.ContractDescriptionPfx + "c_fantasy_realm"]     = "Produis 2 films fantastiques.";
+            d[LocKeys.ContractDescriptionPfx + "c_thriller_night"]    = "Produis 2 thrillers.";
+            d[LocKeys.ContractDescriptionPfx + "c_documentary_truth"] = "Produis 2 documentaires.";
+            d[LocKeys.ContractDescriptionPfx + "c_drama_fan"]         = "Produis 2 drames.";
+            d[LocKeys.ContractDescriptionPfx + "c_animation_studio"]  = "Produis 2 films d'animation.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_50"]            = "Atteins 50 de réputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_horror_night"]      = "Produis 3 films d'horreur.";
+            d[LocKeys.ContractDescriptionPfx + "c_speed_run"]         = "Produis un film en moins de 10 secondes.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level5"]     = "Atteins le niveau 5 du studio.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_200"]           = "Atteins 200 de réputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_comedy_king"]       = "Produis 5 comédies.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level10"]    = "Atteins le niveau 10 du studio.";
+            d[LocKeys.ContractDescriptionPfx + "c_ten_movies"]        = "Produis 10 films.";
+            d[LocKeys.ContractDescriptionPfx + "c_scifi_pioneer"]     = "Produis 3 films de science-fiction.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level15"]    = "Atteins le niveau 15 du studio.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_1000"]          = "Atteins 1 000 de réputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_all_genres"]        = "Produis un film de chaque genre.";
+            d[LocKeys.ContractDescriptionPfx + "c_big_spender"]       = "Dépense 50 000 $ en améliorations.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level20"]    = "Atteins le niveau 20 du studio.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_5000"]          = "Atteins 5 000 de réputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_blockbuster"]       = "Produis 5 films d'action de haute qualité.";
+
             // Oscar / installation progress
             d[LocKeys.InstOscarProgress]  = "{0} / {1} OSC";
             d[LocKeys.InstOscarMax]       = "{0} OSC · MAX";
@@ -1367,6 +1557,11 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Limite quotidienne atteinte";
+            d[LocKeys.AdUnavailable]         = "Aucune publicité disponible pour le moment. Réessayez plus tard.";
+            d[LocKeys.AdNotReady]            = "Publicité pas prête. Réessayez dans quelques secondes.";
+            d[LocKeys.AdNotInitialized]      = "Publicités pas encore prêtes. Réessayez dans quelques secondes.";
+            d[LocKeys.AdLoadFailed]          = "Impossible de charger la publicité. Réessayez plus tard.";
+            d[LocKeys.AdAlreadyShowing]      = "Une publicité est déjà en cours.";
             d[LocKeys.FreeDiamondsAwarded]   = "+{0} diamants ajoutés";
             d[LocKeys.BoostActivated]        = "Boost activé ! ×2 pendant 10 min";
             d[LocKeys.BoostAlreadyActive]    = "Ce boost est déjà actif";
@@ -1396,6 +1591,41 @@ public static class Loc
             d[LocKeys.PackExecutiveDesc]  = "L'édition ultime pour les vrais magnats du cinéma.";
             d[LocKeys.InvestorCooldownFmt] = "CD · {0}m {1}s";
             d[LocKeys.InvestorReady]       = "5 min de revenus";
+
+            // UX feedback (missing from fr)
+            d[LocKeys.UxNotEnoughDiamonds] = "Pas assez de diamants.";
+            d[LocKeys.UxGoToStore]         = "Aller à la boutique";
+            d[LocKeys.UxCancelAction]      = "Annuler";
+            d[LocKeys.UxNoSlotsAvailable]  = "Aucun slot de production disponible.";
+            d[LocKeys.UxNotEnoughMoney]    = "Argent insuffisant.";
+
+            // HUD structural labels
+            d[LocKeys.HudTabNominations]   = "NOMINATIONS";
+            d[LocKeys.HudTabPresentations] = "PRÉSENTATIONS";
+            d[LocKeys.HudTabSagas]         = "SAGAS";
+            d[LocKeys.HudTabLegendary]     = "LÉGENDAIRES";
+            d[LocKeys.HudSectionSave]      = "SAUVEGARDER";
+            d[LocKeys.HudSectionHelp]      = "AIDE";
+            d[LocKeys.HudSectionCredits]   = "CRÉDITS";
+
+            // Store per-day suffix
+            d[LocKeys.StorePerDay] = "/jour";
+
+            // Production status / discovery
+            d[LocKeys.ProdStatusProducingFmt]  = "En production : {0}";
+            d[LocKeys.ProdMovieDiscoveredFmt]  = "{0} sortie! +${1:N0}  +{2:0.0} REP";
+            d[LocKeys.ProdMovieInvalid]        = "Film invalide";
+            d[LocKeys.ProdLegendaryNeedsSlots] = "Les productions légendaires nécessitent 2 slots libres";
+
+            // City unlock popups
+            d[LocKeys.CityUnlockDepts]        = "Nouveaux départements disponibles";
+            d[LocKeys.CityUnlockMovies]       = "Nouveaux films débloqués";
+            d[LocKeys.CityUnlockMoviesFmt]    = "+{0} titre(s) au catalogue";
+            d[LocKeys.CityUnlockUpgrades]     = "Nouvelles améliorations disponibles";
+            d[LocKeys.CityUnlockUpgradesFmt]  = "+{0} amélioration(s)";
+            d[LocKeys.CityUnlockContracts]    = "Nouveaux contrats disponibles";
+            d[LocKeys.CityUnlockContractsFmt] = "+{0} contrat(s)";
+
             return d;
         }
 
@@ -1440,8 +1670,13 @@ public static class Loc
             d[LocKeys.ProdOfferMoney] = "Geld: {0}";
             d[LocKeys.ProdOfferRep] = "Rep.: +{0}";
             d[LocKeys.RefreshChoosePayment] = "Zahlungsart wählen";
-            d[LocKeys.RefreshWatchAd] = "WERBUNG ANSEHEN";
-            d[LocKeys.RefreshSpendDiamonds] = "DIAMANTEN AUSGEBEN";
+            d[LocKeys.RefreshPaymentHint]   = "Werbung ansehen oder Diamanten zahlen:";
+            d[LocKeys.RefreshWatchAd] = "Werbung ansehen";
+            d[LocKeys.RefreshSpendDiamonds] = "Diamanten ausgeben";
+            d[LocKeys.RefreshDiamondsFmt] = "{0} 💎";
+            d[LocKeys.ProdSpeedUpTitle] = "Früher beenden";
+            d[LocKeys.ProdSpeedUpOption5Fmt] = "5 Min. verkürzen";
+            d[LocKeys.ProdSpeedUpOption15Fmt] = "15 Min. verkürzen";
             d[LocKeys.ProdRarityCommon] = "Gewöhnlich";
             d[LocKeys.ProdRarityRare] = "Selten";
             d[LocKeys.ProdRarityEpic] = "Episch";
@@ -1494,6 +1729,10 @@ public static class Loc
             d[LocKeys.IapRestoreFailed]   = "Käufe konnten nicht wiederhergestellt werden";
             d[LocKeys.IapPurchaseFailed]  = "Kauf abgebrochen oder fehlgeschlagen";
             d[LocKeys.IapUnavailable]     = "Shop nicht verfügbar";
+            d[LocKeys.IapInitFailed]      = "Verbindung zu Google Play fehlgeschlagen";
+            d[LocKeys.IapNoProducts]      = "Produkte in Play Console nicht verfügbar";
+            d[LocKeys.IapProductNotFound] = "Produkt im Shop nicht gefunden";
+            d[LocKeys.IapConnecting]      = "Verbindung zum Shop…";
             d[LocKeys.IapPackActivatedFmt]= "Pack aktiviert: {0}";
             d[LocKeys.SettingsClose]      = "SCHLIESSEN";
             d[LocKeys.SettingsMusic]      = "Musik";
@@ -1579,6 +1818,11 @@ public static class Loc
             d[LocKeys.ContractNoActive]      = "Kein aktiver Vertrag";
             d[LocKeys.ContractReadyClaim]    = "Bereit zum Einlösen!";
             d[LocKeys.ContractObjective]     = "ZIEL";
+            d[LocKeys.ContractCancelWithAd]          = "Vertrag kündigen";
+            d[LocKeys.ContractCancelWatchAdPrompt]   = "Werbung ansehen, um diesen Vertrag zu kündigen?";
+            d[LocKeys.ContractCancelConfirmNoAds]    = "Diesen Vertrag kündigen?";
+            d[LocKeys.ContractCancelConfirm]         = "Aktiven Vertrag kündigen?";
+            d[LocKeys.ContractCancelDone]            = "Vertrag gekündigt. Neue Optionen generiert.";
 
             // Collection screen
             d[LocKeys.CollectionScreenTitle]   = "MEINE SAMMLUNG";
@@ -1769,6 +2013,35 @@ public static class Loc
             d[LocKeys.ContractTitlePfx + "c_rep_5000"]          = "Globale Ikone";
             d[LocKeys.ContractTitlePfx + "c_blockbuster"]       = "Der große Blockbuster";
 
+            // Contract descriptions
+            d[LocKeys.ContractDescriptionPfx + "c_three_movies"]      = "Produziere 3 Filme.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_reputation"]  = "Erreiche 20 Reputationspunkte.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_movie"]       = "Produziere deinen ersten Film.";
+            d[LocKeys.ContractDescriptionPfx + "c_action_fan"]        = "Produziere 2 Actionfilme.";
+            d[LocKeys.ContractDescriptionPfx + "c_romance_story"]     = "Produziere 2 Romanzen.";
+            d[LocKeys.ContractDescriptionPfx + "c_first_upgrade"]     = "Gib 500 $ für Upgrades aus.";
+            d[LocKeys.ContractDescriptionPfx + "c_fantasy_realm"]     = "Produziere 2 Fantasyfilme.";
+            d[LocKeys.ContractDescriptionPfx + "c_thriller_night"]    = "Produziere 2 Thriller.";
+            d[LocKeys.ContractDescriptionPfx + "c_documentary_truth"] = "Produziere 2 Dokumentarfilme.";
+            d[LocKeys.ContractDescriptionPfx + "c_drama_fan"]         = "Produziere 2 Dramen.";
+            d[LocKeys.ContractDescriptionPfx + "c_animation_studio"]  = "Produziere 2 Animationsfilme.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_50"]            = "Erreiche 50 Reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_horror_night"]      = "Produziere 3 Horrorfilme.";
+            d[LocKeys.ContractDescriptionPfx + "c_speed_run"]         = "Produziere einen Film in weniger als 10 Sekunden.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level5"]     = "Erreiche Studiolevel 5.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_200"]           = "Erreiche 200 Reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_comedy_king"]       = "Produziere 5 Komödien.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level10"]    = "Erreiche Studiolevel 10.";
+            d[LocKeys.ContractDescriptionPfx + "c_ten_movies"]        = "Produziere 10 Filme.";
+            d[LocKeys.ContractDescriptionPfx + "c_scifi_pioneer"]     = "Produziere 3 Sci-Fi-Filme.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level15"]    = "Erreiche Studiolevel 15.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_1000"]          = "Erreiche 1.000 Reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_all_genres"]        = "Produziere einen Film jedes Genres.";
+            d[LocKeys.ContractDescriptionPfx + "c_big_spender"]       = "Gib 50.000 $ für Upgrades aus.";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level20"]    = "Erreiche Studiolevel 20.";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_5000"]          = "Erreiche 5.000 Reputation.";
+            d[LocKeys.ContractDescriptionPfx + "c_blockbuster"]       = "Produziere 5 Actionfilme von hoher Qualität.";
+
             // Oscar / installation progress
             d[LocKeys.InstOscarProgress]  = "{0} / {1} OSC";
             d[LocKeys.InstOscarMax]       = "{0} OSC · MAX";
@@ -1797,6 +2070,11 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "Tageslimit erreicht";
+            d[LocKeys.AdUnavailable]         = "Keine Werbung verfügbar. Bitte später erneut versuchen.";
+            d[LocKeys.AdNotReady]            = "Werbung nicht bereit. Bitte in ein paar Sekunden erneut versuchen.";
+            d[LocKeys.AdNotInitialized]      = "Werbung noch nicht bereit. Bitte in ein paar Sekunden erneut versuchen.";
+            d[LocKeys.AdLoadFailed]          = "Werbung konnte nicht geladen werden. Bitte später erneut versuchen.";
+            d[LocKeys.AdAlreadyShowing]      = "Eine Werbung läuft bereits.";
             d[LocKeys.FreeDiamondsAwarded]   = "+{0} Diamanten hinzugefügt";
             d[LocKeys.BoostActivated]        = "Boost aktiviert! ×2 für 10 Min";
             d[LocKeys.BoostAlreadyActive]    = "Dieser Boost ist bereits aktiv";
@@ -1826,6 +2104,41 @@ public static class Loc
             d[LocKeys.PackExecutiveDesc]  = "Die ultimative Edition für echte Filmmagnaten.";
             d[LocKeys.InvestorCooldownFmt] = "CD · {0}m {1}s";
             d[LocKeys.InvestorReady]       = "5 Min. Einkommen";
+
+            // UX feedback (missing from de)
+            d[LocKeys.UxNotEnoughDiamonds] = "Nicht genug Diamanten.";
+            d[LocKeys.UxGoToStore]         = "Zum Shop";
+            d[LocKeys.UxCancelAction]      = "Abbrechen";
+            d[LocKeys.UxNoSlotsAvailable]  = "Keine Produktionsslots verfügbar.";
+            d[LocKeys.UxNotEnoughMoney]    = "Nicht genug Geld.";
+
+            // HUD structural labels
+            d[LocKeys.HudTabNominations]   = "NOMINIERUNGEN";
+            d[LocKeys.HudTabPresentations] = "VORFÜHRUNGEN";
+            d[LocKeys.HudTabSagas]         = "SAGAS";
+            d[LocKeys.HudTabLegendary]     = "LEGENDEN";
+            d[LocKeys.HudSectionSave]      = "SPEICHERN";
+            d[LocKeys.HudSectionHelp]      = "HILFE";
+            d[LocKeys.HudSectionCredits]   = "IMPRESSUM";
+
+            // Store per-day suffix
+            d[LocKeys.StorePerDay] = "/Tag";
+
+            // Production status / discovery
+            d[LocKeys.ProdStatusProducingFmt]  = "In Produktion: {0}";
+            d[LocKeys.ProdMovieDiscoveredFmt]  = "{0} erschienen! +${1:N0}  +{2:0.0} REP";
+            d[LocKeys.ProdMovieInvalid]        = "Ungültiger Film";
+            d[LocKeys.ProdLegendaryNeedsSlots] = "Legendäre Produktionen benötigen 2 freie Slots";
+
+            // City unlock popups
+            d[LocKeys.CityUnlockDepts]        = "Neue Abteilungen verfügbar";
+            d[LocKeys.CityUnlockMovies]       = "Neue Filme freigeschaltet";
+            d[LocKeys.CityUnlockMoviesFmt]    = "+{0} Titel im Katalog";
+            d[LocKeys.CityUnlockUpgrades]     = "Neue Verbesserungen verfügbar";
+            d[LocKeys.CityUnlockUpgradesFmt]  = "+{0} Verbesserung(en)";
+            d[LocKeys.CityUnlockContracts]    = "Neue Aufträge verfügbar";
+            d[LocKeys.CityUnlockContractsFmt] = "+{0} Auftrag/Aufträge";
+
             return d;
         }
 
@@ -1873,8 +2186,13 @@ public static class Loc
             d[LocKeys.ProdOfferMoney] = "金額: {0}";
             d[LocKeys.ProdOfferRep] = "評価: +{0}";
             d[LocKeys.RefreshChoosePayment] = "支払い方法を選択";
+            d[LocKeys.RefreshPaymentHint]   = "広告を見るかダイヤで支払う：";
             d[LocKeys.RefreshWatchAd] = "広告を見る";
             d[LocKeys.RefreshSpendDiamonds] = "ダイヤモンドを使う";
+            d[LocKeys.RefreshDiamondsFmt] = "{0} 💎";
+            d[LocKeys.ProdSpeedUpTitle] = "早く完成";
+            d[LocKeys.ProdSpeedUpOption5Fmt] = "5分短縮";
+            d[LocKeys.ProdSpeedUpOption15Fmt] = "15分短縮";
             d[LocKeys.ProdRarityCommon] = "コモン";
             d[LocKeys.ProdRarityRare] = "レア";
             d[LocKeys.ProdRarityEpic] = "エピック";
@@ -1927,6 +2245,10 @@ public static class Loc
             d[LocKeys.IapRestoreFailed]   = "購入を復元できませんでした";
             d[LocKeys.IapPurchaseFailed]  = "購入がキャンセルまたは失敗しました";
             d[LocKeys.IapUnavailable]     = "ストアを利用できません";
+            d[LocKeys.IapInitFailed]      = "Google Playに接続できませんでした";
+            d[LocKeys.IapNoProducts]      = "Play Consoleで商品が利用できません";
+            d[LocKeys.IapProductNotFound] = "ストアに商品が見つかりません";
+            d[LocKeys.IapConnecting]      = "ストアに接続中…";
             d[LocKeys.IapPackActivatedFmt]= "パック有効化: {0}";
             d[LocKeys.SettingsClose]      = "閉じる";
             d[LocKeys.SettingsMusic]      = "音楽";
@@ -2012,6 +2334,11 @@ public static class Loc
             d[LocKeys.ContractNoActive]      = "アクティブな契約なし";
             d[LocKeys.ContractReadyClaim]    = "受け取り準備完了！";
             d[LocKeys.ContractObjective]     = "目標";
+            d[LocKeys.ContractCancelWithAd]          = "契約キャンセル";
+            d[LocKeys.ContractCancelWatchAdPrompt]   = "広告を見てこの契約をキャンセルしますか？";
+            d[LocKeys.ContractCancelConfirmNoAds]    = "この契約をキャンセルしますか？";
+            d[LocKeys.ContractCancelConfirm]         = "アクティブな契約をキャンセルしますか？";
+            d[LocKeys.ContractCancelDone]            = "契約キャンセル済み。新しいオプションが生成されました。";
 
             // Collection screen
             d[LocKeys.CollectionScreenTitle]   = "コレクション";
@@ -2204,6 +2531,35 @@ public static class Loc
             d[LocKeys.ContractTitlePfx + "c_rep_5000"]          = "グローバルアイコン";
             d[LocKeys.ContractTitlePfx + "c_blockbuster"]       = "ビッグブロックバスター";
 
+            // Contract descriptions
+            d[LocKeys.ContractDescriptionPfx + "c_three_movies"]      = "映画を3本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_first_reputation"]  = "評判20ポイントに達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_first_movie"]       = "初めての映画を制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_action_fan"]        = "アクション映画を2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_romance_story"]     = "ロマンス映画を2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_first_upgrade"]     = "アップグレードに$500使う。";
+            d[LocKeys.ContractDescriptionPfx + "c_fantasy_realm"]     = "ファンタジー映画を2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_thriller_night"]    = "スリラーを2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_documentary_truth"] = "ドキュメンタリーを2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_drama_fan"]         = "ドラマ映画を2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_animation_studio"]  = "アニメ映画を2本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_50"]            = "評判50に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_horror_night"]      = "ホラー映画を3本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_speed_run"]         = "10秒以内に映画を1本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level5"]     = "スタジオレベル5に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_200"]           = "評判200に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_comedy_king"]       = "コメディを5本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level10"]    = "スタジオレベル10に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_ten_movies"]        = "映画を10本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_scifi_pioneer"]     = "SF映画を3本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level15"]    = "スタジオレベル15に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_1000"]          = "評判1,000に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_all_genres"]        = "各ジャンルの映画を1本制作する。";
+            d[LocKeys.ContractDescriptionPfx + "c_big_spender"]       = "アップグレードに$50,000使う。";
+            d[LocKeys.ContractDescriptionPfx + "c_studio_level20"]    = "スタジオレベル20に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_rep_5000"]          = "評判5,000に達する。";
+            d[LocKeys.ContractDescriptionPfx + "c_blockbuster"]       = "高品質なアクション映画を5本制作する。";
+
             // Oscar / installation progress
             d[LocKeys.InstOscarProgress]  = "{0} / {1} OSC";
             d[LocKeys.InstOscarMax]       = "{0} OSC · 最大";
@@ -2232,6 +2588,11 @@ public static class Loc
 
             // Ad reward feedback
             d[LocKeys.AdLimitReached]        = "本日の上限に達しました";
+            d[LocKeys.AdUnavailable]         = "現在、広告がありません。後でもう一度お試しください。";
+            d[LocKeys.AdNotReady]            = "広告の準備ができていません。数秒後にもう一度お試しください。";
+            d[LocKeys.AdNotInitialized]      = "広告はまだ準備中です。数秒後にもう一度お試しください。";
+            d[LocKeys.AdLoadFailed]          = "広告を読み込めませんでした。後でもう一度お試しください。";
+            d[LocKeys.AdAlreadyShowing]      = "広告はすでに再生中です。";
             d[LocKeys.FreeDiamondsAwarded]   = "+{0} ダイヤ獲得";
             d[LocKeys.BoostActivated]        = "ブースト起動！10分間 ×2";
             d[LocKeys.BoostAlreadyActive]    = "このブーストはすでに有効です";
@@ -2261,6 +2622,41 @@ public static class Loc
             d[LocKeys.PackExecutiveDesc]  = "真の映画界の大物のための究極のエディション。";
             d[LocKeys.InvestorCooldownFmt] = "CD · {0}分 {1}秒";
             d[LocKeys.InvestorReady]       = "5分の収入";
+
+            // UX feedback (missing from ja)
+            d[LocKeys.UxNotEnoughDiamonds] = "ダイヤモンドが足りません。";
+            d[LocKeys.UxGoToStore]         = "ショップへ";
+            d[LocKeys.UxCancelAction]      = "キャンセル";
+            d[LocKeys.UxNoSlotsAvailable]  = "利用可能な製作スロットがありません。";
+            d[LocKeys.UxNotEnoughMoney]    = "お金が足りません。";
+
+            // HUD structural labels
+            d[LocKeys.HudTabNominations]   = "ノミネート";
+            d[LocKeys.HudTabPresentations] = "上映会";
+            d[LocKeys.HudTabSagas]         = "サーガ";
+            d[LocKeys.HudTabLegendary]     = "レジェンド";
+            d[LocKeys.HudSectionSave]      = "保存";
+            d[LocKeys.HudSectionHelp]      = "ヘルプ";
+            d[LocKeys.HudSectionCredits]   = "クレジット";
+
+            // Store per-day suffix
+            d[LocKeys.StorePerDay] = "/日";
+
+            // Production status / discovery
+            d[LocKeys.ProdStatusProducingFmt]  = "制作中: {0}";
+            d[LocKeys.ProdMovieDiscoveredFmt]  = "{0} 公開! +${1:N0}  +{2:0.0} REP";
+            d[LocKeys.ProdMovieInvalid]        = "無効な映画";
+            d[LocKeys.ProdLegendaryNeedsSlots] = "レジェンド作品には空きスロットが2つ必要です";
+
+            // City unlock popups
+            d[LocKeys.CityUnlockDepts]        = "新しい部署が利用可能";
+            d[LocKeys.CityUnlockMovies]       = "新しい映画が解放されました";
+            d[LocKeys.CityUnlockMoviesFmt]    = "カタログに+{0}タイトル";
+            d[LocKeys.CityUnlockUpgrades]     = "新しいアップグレードが利用可能";
+            d[LocKeys.CityUnlockUpgradesFmt]  = "+{0} アップグレード";
+            d[LocKeys.CityUnlockContracts]    = "新しい契約が利用可能";
+            d[LocKeys.CityUnlockContractsFmt] = "+{0} 契約";
+
             return d;
         }
     }

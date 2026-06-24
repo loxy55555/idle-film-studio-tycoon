@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Drama_Winter_Letters
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Winter  Letters
+  movieName: Winter Letters
   genre: 1
   tagline: Old correspondence reveals a family fracture.
   synopsis: Winter  Letters retrata con sensibilidad las cicatrices invisibles de
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: WinterLetters.png
+  posterFile: winter letters.jpg
   posterSprite: {fileID: 21300000, guid: 10394176575f9e144ab694735358c252, type: 3}
   catalogTier: 1
   contentKind: 4

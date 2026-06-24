@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 3
   posterColorHex: 1
   genreIconKey: 
-  posterFile: TheHollowHouse.png
+  posterFile: thehollowhouse.jpg
   posterSprite: {fileID: 21300000, guid: 79518bdc5278d0f42a6f7963d0a29b9c, type: 3}
   catalogTier: 5
   contentKind: 0

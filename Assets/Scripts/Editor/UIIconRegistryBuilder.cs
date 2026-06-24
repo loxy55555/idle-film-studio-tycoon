@@ -49,7 +49,9 @@ public static class UIIconRegistryBuilder
             foreach (var guid in AssetDatabase.FindAssets("t:Sprite", new[] { root }))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
-                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (!IsWritableProjectAsset(path)) continue;
+
+                var sprite = LoadLargestSprite(path);
                 if (sprite == null) continue;
 
                 var key = MapPathToKey(path);
@@ -64,14 +66,18 @@ public static class UIIconRegistryBuilder
         ApplyMapped(registry, best);
 
         EditorUtility.SetDirty(registry);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssetIfDirty(registry);
 
         if (log)
             Debug.Log($"[UIIconRegistry] Rebuilt with {best.Count} mapped sprites at {RegistryPath}");
 
         return registry;
     }
+
+    static bool IsWritableProjectAsset(string assetPath) =>
+        !string.IsNullOrEmpty(assetPath)
+        && assetPath.StartsWith("Assets/", System.StringComparison.Ordinal)
+        && !assetPath.StartsWith("Packages/", System.StringComparison.Ordinal);
 
     static int ScorePath(string path)
     {
@@ -177,6 +183,27 @@ public static class UIIconRegistryBuilder
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// For multi-sprite textures the auto-slicer may create several sub-assets,
+    /// including tiny slivers at image edges. Always pick the sub-asset with the
+    /// largest pixel area so we get the actual artwork, not a stray fragment.
+    /// </summary>
+    static Sprite LoadLargestSprite(string path)
+    {
+        var allReps = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
+        Sprite largest = null;
+        float maxArea = 0f;
+        foreach (var obj in allReps)
+        {
+            if (obj is Sprite s)
+            {
+                float area = s.rect.width * s.rect.height;
+                if (area > maxArea) { maxArea = area; largest = s; }
+            }
+        }
+        return largest ?? AssetDatabase.LoadAssetAtPath<Sprite>(path);
     }
 
     static void ApplyMapped(UIIconRegistry registry, Dictionary<string, (Sprite sprite, int score)> best)

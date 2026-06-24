@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SteelVeil.png
+  posterFile: steelveil.jpg
   posterSprite: {fileID: 21300000, guid: 515f5e8e1c93b704aab9dcbac97ed6da, type: 3}
   catalogTier: 3
   contentKind: 0

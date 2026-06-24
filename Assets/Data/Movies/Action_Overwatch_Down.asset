@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: OverwatchDown.png
+  posterFile: overwatchdown.jpg
   posterSprite: {fileID: 21300000, guid: 138e1dc6874afcd41baf81da259351ae, type: 3}
   catalogTier: 2
   contentKind: 0

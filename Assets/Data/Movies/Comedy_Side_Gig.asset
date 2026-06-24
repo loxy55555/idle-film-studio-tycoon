@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Side_Gig
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Wr On Gwedd In G
+  movieName: The Wrong Wedding
   genre: 3
   tagline: A temp job becomes a permanent comedy of errors.
   synopsis: "Cuando el azar une a personajes incompatibles, el resultado solo puede
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheWrOnGweddInG.png
+  posterFile: thewrongwedding.jpg
   posterSprite: {fileID: 21300000, guid: d3769e5c0c4972f48940c6d51ef5a580, type: 3}
   catalogTier: 3
   contentKind: 0

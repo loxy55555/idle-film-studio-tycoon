@@ -139,14 +139,14 @@ public class ProductionHudShell : MonoBehaviour
     void ApplyLocalizedButtonLabel()
     {
         if (newProductionButton == null) return;
-        var label = newProductionButton.transform.Find("Label")?.GetComponent<TextMeshProUGUI>()
-                 ?? newProductionButton.GetComponentInChildren<TextMeshProUGUI>();
-        if (label != null)
-        {
-            label.text = Loc.Get(LocKeys.ProdNewProduction);
-            label.fontSize = 17f;
-            label.fontStyle = FontStyles.Bold;
-        }
+
+        DiamondCostButtonLayout.Build(
+            newProductionButton.transform,
+            Loc.Get(LocKeys.ProdNewProduction),
+            GameplayRefreshService.DiamondRefreshCost,
+            22f,
+            15f,
+            Color.white);
 
         var le = newProductionButton.GetComponent<LayoutElement>();
         if (le != null) le.preferredHeight = Mathf.Max(le.preferredHeight, HudLayoutConstants.ProductionActionHeight);

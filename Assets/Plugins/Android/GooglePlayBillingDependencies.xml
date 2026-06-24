@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies>
+  <androidPackages>
+    <androidPackage spec="com.android.billingclient:billing:6.2.1">
+      <repositories>
+        <repository>https://maven.google.com/</repository>
+      </repositories>
+    </androidPackage>
+  </androidPackages>
+</dependencies>

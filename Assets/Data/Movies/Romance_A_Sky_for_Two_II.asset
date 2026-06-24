@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: HorizonsApart.png
+  posterFile: horizonsapart.jpg
   posterSprite: {fileID: 21300000, guid: 132490546275a664b950ea84035ab8ef, type: 3}
   catalogTier: 4
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LifeAbovetheClouds.png
+  posterFile: lifeabovetheclouds.jpg
   posterSprite: {fileID: 21300000, guid: 8179a313867903f4da8046cc8507339d, type: 3}
   catalogTier: 1
   contentKind: 0

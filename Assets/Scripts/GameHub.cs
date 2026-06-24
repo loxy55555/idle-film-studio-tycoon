@@ -234,6 +234,9 @@ public class GameHub : MonoBehaviour
         FirebaseManager.EnsureOn(gameObject);
         FirebaseManager.Instance?.BeginAfterGameHub();
 
+        AdMobRewardedService.EnsureOn(gameObject);
+        AdMobRewardedService.Instance?.BeginAfterGameHub();
+
         OnGameReady?.Invoke();
 
     }
@@ -333,8 +336,22 @@ public class GameHub : MonoBehaviour
     public void ClaimOscar()
     {
         if (prestige == null || studio == null) return;
-        if (!prestige.TryClaimOscar(studio.reputation)) return;
+
+        // DATA: increment silently so save can happen before UI events fire.
+        if (!prestige.IncrementOscarSilent(studio.reputation)) return;
+
         save?.Save("ClaimOscar");
+        Debug.Log($"[ClaimOscar] Oscar #{prestige.oscars} reclamado y guardado.");
+
+        // UI EVENTS: fired after save is committed — any exception here is isolated.
+        try
+        {
+            prestige.NotifyOscarGained();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[ClaimOscar] Excepción en evento UI (save ya guardado): {ex}");
+        }
     }
 
     /// <summary>Legacy alias — permanent Oscar claim, no reset.</summary>

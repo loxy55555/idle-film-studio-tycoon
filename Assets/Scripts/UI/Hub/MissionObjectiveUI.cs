@@ -126,8 +126,7 @@ public class MissionObjectiveUI : MonoBehaviour
             ? Loc.Get(LocKeys.ContractReadyClaim)
             : $"{progress:0}/{target.goalAmount:0}";
 
-        var locTitle = Loc.Get(LocKeys.ContractTitlePfx + target.id);
-        if (locTitle == LocKeys.ContractTitlePfx + target.id) locTitle = target.contractTitle;
+        var locTitle = ContractSystem.GetLocalizedTitle(target);
         SetTexts(
             ready ? Loc.Get(LocKeys.ContractClaim) : Loc.Get(LocKeys.ContractObjective),
             $"{locTitle}\n{progressLine}",

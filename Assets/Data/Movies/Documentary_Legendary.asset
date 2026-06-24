@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 3
   posterColorHex: 1
   genreIconKey: 
-  posterFile: voiceofthedeep.png
+  posterFile: voiceofthedeep.jpg
   posterSprite: {fileID: 21300000, guid: f69eda4197d4dbe4e9b7361a41500011, type: 3}
   catalogTier: 5
   contentKind: 0

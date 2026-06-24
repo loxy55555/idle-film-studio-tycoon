@@ -19,6 +19,15 @@ public static class IapFulfillmentService
             return true;
         }
 
+        // Consumables (diamonds) require a stable transaction ID so the fulfillment ledger can
+        // de-duplicate if ProcessPurchase fires more than once for the same purchase.
+        // Non-consumables are idempotent by nature (ownership flag), so we allow them through.
+        if (string.IsNullOrEmpty(transactionId) && IapProductCatalog.IsConsumable(productId))
+        {
+            Debug.LogWarning($"[IAP] Blocking consumable {productId} — no stable transaction ID; rewards NOT delivered to prevent double-grant.");
+            return false;
+        }
+
         if (IapProductCatalog.IsConsumable(productId))
             return FulfillConsumable(transactionId, productId);
 

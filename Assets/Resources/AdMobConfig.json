@@ -1,0 +1,6 @@
+{
+  "androidAppId": "ca-app-pub-7891351296222703~3411176678",
+  "androidRewardedAdUnitId": "ca-app-pub-7891351296222703/1735132927",
+  "useTestAdsInEditor": true,
+  "_comment": "REPLACE androidAppId and androidRewardedAdUnitId with production IDs from AdMob Console before release. Also update GAD APPLICATION_ID in Assets/Plugins/Android/AndroidManifest.xml to match androidAppId."
+}

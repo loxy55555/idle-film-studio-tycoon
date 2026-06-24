@@ -25,6 +25,7 @@ public class FirebaseManager : MonoBehaviour
     MethodInfo _logEventStringLong;
     MethodInfo _logEventStringDouble;
     MethodInfo _logEventStringString;
+    MethodInfo _logEventParameters;
     Type _firebaseAnalyticsType;
     Type _crashlyticsType;
 
@@ -139,6 +140,17 @@ public class FirebaseManager : MonoBehaviour
                 _logEventStringString = _firebaseAnalyticsType.GetMethod("LogEvent", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(string), typeof(string) }, null);
                 _logEventStringLong = _firebaseAnalyticsType.GetMethod("LogEvent", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(string), typeof(long) }, null);
                 _logEventStringDouble = _firebaseAnalyticsType.GetMethod("LogEvent", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string), typeof(string), typeof(double) }, null);
+
+                var parameterType = Type.GetType("Firebase.Analytics.Parameter, Firebase.Analytics");
+                if (parameterType != null)
+                {
+                    _logEventParameters = _firebaseAnalyticsType.GetMethod(
+                        "LogEvent",
+                        BindingFlags.Public | BindingFlags.Static,
+                        null,
+                        new[] { typeof(string), parameterType.MakeArrayType() },
+                        null);
+                }
             }
 
             IsReady = _firebaseAnalyticsType != null || _crashlyticsType != null;
@@ -235,6 +247,35 @@ public class FirebaseManager : MonoBehaviour
 
     public void LogAdRewarded(string placement) =>
         LogEvent(FirebaseAnalyticsEvents.AdRewarded, FirebaseAnalyticsEvents.ParamPlacement, placement ?? "");
+
+    public void LogAdStarted(string placement) =>
+        LogEvent(FirebaseAnalyticsEvents.AdStarted, FirebaseAnalyticsEvents.ParamPlacement, placement ?? "");
+
+    public void LogAdCompleted(string placement) =>
+        LogEvent(FirebaseAnalyticsEvents.AdCompleted, FirebaseAnalyticsEvents.ParamPlacement, placement ?? "");
+
+    public void LogAdFailed(string placement, string reason)
+    {
+        if (!IsAnalyticsReady || string.IsNullOrEmpty(FirebaseAnalyticsEvents.AdFailed)) return;
+        try
+        {
+            var parameterType = Type.GetType("Firebase.Analytics.Parameter, Firebase.Analytics");
+            if (_logEventParameters != null && parameterType != null)
+            {
+                var arr = Array.CreateInstance(parameterType, 2);
+                arr.SetValue(Activator.CreateInstance(parameterType, FirebaseAnalyticsEvents.ParamPlacement, placement ?? ""), 0);
+                arr.SetValue(Activator.CreateInstance(parameterType, FirebaseAnalyticsEvents.ParamAdReason, reason ?? "unknown"), 1);
+                _logEventParameters.Invoke(null, new object[] { FirebaseAnalyticsEvents.AdFailed, arr });
+                return;
+            }
+
+            LogEvent(FirebaseAnalyticsEvents.AdFailed, FirebaseAnalyticsEvents.ParamPlacement, $"{placement}|{reason}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[Firebase] LogEvent failed (ad_failed): {ex.Message}");
+        }
+    }
 
     public void LogIapPurchase(string productId) =>
         LogEvent(FirebaseAnalyticsEvents.IapPurchase, FirebaseAnalyticsEvents.ParamProductId, productId ?? "");

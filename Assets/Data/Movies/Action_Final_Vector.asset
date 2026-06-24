@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: FinalVector.png
+  posterFile: finalvector.jpg
   posterSprite: {fileID: 21300000, guid: a493faffb16185340863ccba80e6ce69, type: 3}
   catalogTier: 1
   contentKind: 0

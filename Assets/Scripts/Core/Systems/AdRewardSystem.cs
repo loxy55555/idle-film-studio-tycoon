@@ -101,7 +101,6 @@ public static class AdRewardSystem
             {
                 if (!ok) return;
                 DeliverReward(placement);
-                FirebaseManager.Instance?.LogAdRewarded(placement);
             });
         }
     }

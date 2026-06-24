@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: DesertKingdoms.png
+  posterFile: desertkingdoms.jpg
   posterSprite: {fileID: 21300000, guid: e3f89c21a27df994584b4579b2738938, type: 3}
   catalogTier: 5
   contentKind: 0

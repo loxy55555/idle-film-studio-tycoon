@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_Throne_of_Thorns
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Cryst A L Forest
+  movieName: The Crystal Forest
   genre: 6
   tagline: Sit carefully. The throne bites back.
   synopsis: "La fantas\xEDa como espejo del alma humana: una historia que habla de
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheCrystALForest.png
+  posterFile: thecrystalforest.jpg
   posterSprite: {fileID: 21300000, guid: 368fea33323c77440aa2e0b1677239af, type: 3}
   catalogTier: 3
   contentKind: 0

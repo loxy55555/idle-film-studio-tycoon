@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Accidental_Hero
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: L At E A G A In
+  movieName: Late Again
   genre: 3
   tagline: Save the cat. Become mayor accidentally.
   synopsis: 'Malentendidos, coincidencias imposibles y decisiones cuestionables:
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LAtEAGAIn.png
+  posterFile: lateagain.jpg
   posterSprite: {fileID: 21300000, guid: fbcd1e3ccf007604eaad870320f88430, type: 3}
   catalogTier: 3
   contentKind: 0

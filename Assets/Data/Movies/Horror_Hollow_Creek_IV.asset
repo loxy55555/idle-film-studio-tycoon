@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: HollowCreekIV.png
+  posterFile: hollowcreekIV.jpg
   posterSprite: {fileID: 5000431362515006111, guid: 391f3a7fa1ad7da4cadc6983d3c444f5, type: 3}
   catalogTier: 2
   contentKind: 4

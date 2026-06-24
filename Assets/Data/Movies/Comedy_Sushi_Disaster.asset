@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SushiDisaster.png
+  posterFile: sushidisaster.jpg
   posterSprite: {fileID: 21300000, guid: a6cc18b5c0a6a0c4eab5de96bfa2f077, type: 3}
   catalogTier: 2
   contentKind: 0

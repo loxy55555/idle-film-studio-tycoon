@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Accidental_Guru
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Welcome To Dis A Ster
+  movieName: Welcome To Disaster
   genre: 3
   tagline: Accidental wisdom goes viral overnight.
   synopsis: 'El humor como forma de resistencia: una comedia que esconde bajo la
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: WelcomeToDisASter.png
+  posterFile: welcometodisaster.jpg
   posterSprite: {fileID: 21300000, guid: a13ba5b71fe619747bead46ac77bfa55, type: 3}
   catalogTier: 2
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: RainonSunday.png
+  posterFile: rainonsunday.jpg
   posterSprite: {fileID: 21300000, guid: a9cb2efd8efbbef4cb3f2b1b9808f92e, type: 3}
   catalogTier: 1
   contentKind: 0

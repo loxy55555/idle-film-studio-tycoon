@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastForest.png
+  posterFile: thelastforest.jpg
   posterSprite: {fileID: 21300000, guid: 601ba68d20855114d80996a45bf3eb2e, type: 3}
   catalogTier: 5
   contentKind: 0

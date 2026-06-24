@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: CitiesOfTomorrow.png
+  posterFile: citiesoftomorrow.jpg
   posterSprite: {fileID: 21300000, guid: 32a5b0fdda12ffd40892baf1d56c3962, type: 3}
   catalogTier: 5
   contentKind: 0

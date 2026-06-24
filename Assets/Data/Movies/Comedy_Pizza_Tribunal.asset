@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Pizza_Tribunal
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Newneighbors
+  movieName: The New Neighbors
   genre: 3
   tagline: Delivery dispute escalates to municipal court.
   synopsis: "The Newneighbors lleva al l\xEDmite la capacidad de improvisaci\xF3n
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheNewneighbors.png
+  posterFile: thenewneighbors.jpg
   posterSprite: {fileID: 21300000, guid: 59410962bf7f6c44da919278956820d9, type: 3}
   catalogTier: 3
   contentKind: 0

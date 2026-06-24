@@ -495,6 +495,9 @@ public class UpgradeCardUI : MonoBehaviour
         }
         else
         {
+            var placeholder = badgeRt.Find("BadgePlaceholder");
+            if (placeholder != null)
+                placeholder.gameObject.SetActive(false);
             UIIconGraphic.Apply(icon, sprite);
         }
     }

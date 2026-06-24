@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Romance_Midnight_Train
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Letters A Cross The Sea
+  movieName: Letters Across The Sea
   genre: 4
   tagline: Share a compartment. Share a future.
   synopsis: Entre el amor y las circunstancias adversas, algunos lazos resultan imposibles
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LettersACrossTheSea.png
+  posterFile: lettersacrossthesea.jpg
   posterSprite: {fileID: 21300000, guid: 10c8f40f1284654478f2487226801505, type: 3}
   catalogTier: 3
   contentKind: 0

@@ -52,8 +52,14 @@ public static class LocKeys
     public const string ProdOfferRep           = "prod.offer.rep";
 
     public const string RefreshChoosePayment   = "refresh.choose_payment";
+    public const string RefreshPaymentHint       = "refresh.payment_hint";
     public const string RefreshWatchAd         = "refresh.watch_ad";
     public const string RefreshSpendDiamonds   = "refresh.spend_diamonds";
+    public const string RefreshDiamondsFmt     = "refresh.diamonds_fmt";
+
+    public const string ProdSpeedUpTitle       = "prod.speedup.title";
+    public const string ProdSpeedUpOption5Fmt  = "prod.speedup.option5_fmt";
+    public const string ProdSpeedUpOption15Fmt = "prod.speedup.option15_fmt";
 
     public const string ContractRefresh        = "contract.refresh";
     public const string ContractSelect         = "contract.select";
@@ -155,6 +161,10 @@ public static class LocKeys
     public const string IapRestoreFailed    = "iap.restore_failed";
     public const string IapPurchaseFailed   = "iap.purchase_failed";
     public const string IapUnavailable      = "iap.unavailable";
+    public const string IapInitFailed       = "iap.init_failed";
+    public const string IapNoProducts       = "iap.no_products";
+    public const string IapProductNotFound  = "iap.product_not_found";
+    public const string IapConnecting       = "iap.connecting";
     public const string IapPackActivatedFmt = "iap.pack_activated_fmt";
     public const string SettingsClose       = "settings.close";
 
@@ -376,11 +386,17 @@ public static class LocKeys
     public const string SagaCompleted      = "saga.completed";     // {0}/{1} COMPLETADA
     public const string SagaBlockReason    = "saga.block_reason";  // Complete entry {0} first
 
-    // ─── Contract titles (prefix + contract.id) ───────────────────────────────
-    public const string ContractTitlePfx   = "contract.title.";
+    // ─── Contract titles and descriptions (prefix + contract.id) ────────────────
+    public const string ContractTitlePfx       = "contract.title.";
+    public const string ContractDescriptionPfx = "contract.description.";
 
     // ─── Ad reward feedback ────────────────────────────────────────────────────
     public const string AdLimitReached     = "ad.limit_reached";
+    public const string AdUnavailable      = "ad.unavailable";      // unified "no ads" message shown to player
+    public const string AdNotReady         = "ad.not_ready";        // kept for internal fallback
+    public const string AdNotInitialized   = "ad.not_initialized";  // kept for internal fallback
+    public const string AdLoadFailed       = "ad.load_failed";      // kept for internal fallback
+    public const string AdAlreadyShowing   = "ad.already_showing";
     public const string FreeDiamondsAwarded = "ad.free_diamonds_awarded"; // {0} = count
     public const string BoostActivated     = "ad.boost_activated";
     public const string BoostAlreadyActive = "ad.boost_already_active";
@@ -426,14 +442,44 @@ public static class LocKeys
     public const string UxGoToStore         = "ux.go_to_store";
     public const string UxCancelAction      = "ux.cancel_action";
     public const string UxNoSlotsAvailable  = "ux.no_slots_available";
+    public const string UxNotEnoughMoney    = "ux.not_enough_money";
 
     // ─── Contract cancel via ad (FASE 16.1 — D3) ─────────────────────────────
     public const string ContractCancelWithAd  = "contract.cancel_with_ad";
+    public const string ContractCancelWatchAdPrompt = "contract.cancel_watch_ad_prompt";
+    public const string ContractCancelConfirmNoAds    = "contract.cancel_confirm_no_ads";
     public const string ContractCancelConfirm = "contract.cancel_confirm";
     public const string ContractCancelDone    = "contract.cancel_done";
 
     // ─── Investor ready (properly localized) ──────────────────────────────────
     public const string InvestorReadyLabel = "investor.ready_label";
+
+    // ─── HUD structural labels (sub-tabs & section headers) ──────────────────
+    public const string HudTabNominations   = "hud.tab.nominations";
+    public const string HudTabPresentations = "hud.tab.presentations";
+    public const string HudTabSagas         = "hud.tab.sagas";
+    public const string HudTabLegendary     = "hud.tab.legendary";
+    public const string HudSectionSave      = "hud.section.save";
+    public const string HudSectionHelp      = "hud.section.help";
+    public const string HudSectionCredits   = "hud.section.credits";
+
+    // ─── Store per-day suffix ─────────────────────────────────────────────────
+    public const string StorePerDay = "store.per_day";
+
+    // ─── Production status / discovery (localized) ────────────────────────────
+    public const string ProdStatusProducingFmt  = "prod.status.producing_fmt";
+    public const string ProdMovieDiscoveredFmt  = "prod.movie_discovered_fmt";
+    public const string ProdMovieInvalid        = "prod.movie_invalid";
+    public const string ProdLegendaryNeedsSlots = "prod.legendary_needs_slots";
+
+    // ─── City unlock popups ───────────────────────────────────────────────────
+    public const string CityUnlockDepts        = "city.unlock.depts";
+    public const string CityUnlockMovies       = "city.unlock.movies";
+    public const string CityUnlockMoviesFmt    = "city.unlock.movies_fmt";
+    public const string CityUnlockUpgrades     = "city.unlock.upgrades";
+    public const string CityUnlockUpgradesFmt  = "city.unlock.upgrades_fmt";
+    public const string CityUnlockContracts    = "city.unlock.contracts";
+    public const string CityUnlockContractsFmt = "city.unlock.contracts_fmt";
 }
 
 public static class DepartmentLocKeys

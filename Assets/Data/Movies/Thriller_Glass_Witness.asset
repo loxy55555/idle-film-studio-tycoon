@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Thriller_Glass_Witness
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: C A Se114
+  movieName: Case 114
   genre: 7
   tagline: Testimony recorded in a mirror maze.
   synopsis: "La verdad est\xE1 m\xE1s cerca de lo que parece, pero descubrirla podr\xEDa
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: CASe114.png
+  posterFile: case114.jpg
   posterSprite: {fileID: 21300000, guid: 9c66b60b3aa0fdf43b5ab07d84658423, type: 3}
   catalogTier: 4
   contentKind: 0

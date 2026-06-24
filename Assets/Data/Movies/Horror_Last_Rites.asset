@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: RedCreek.png
+  posterFile: redcreek.jpg
   posterSprite: {fileID: 21300000, guid: 621002b296dc1c64f9b6e65fdd52eda9, type: 3}
   catalogTier: 2
   contentKind: 0

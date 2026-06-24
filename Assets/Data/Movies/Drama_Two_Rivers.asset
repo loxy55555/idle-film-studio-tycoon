@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Drama_Two_Rivers
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Bookshop On Ced A Rstreet
+  movieName: The Bookshop On Cedar Street
   genre: 1
   tagline: Two towns. One water rights war. One family.
   synopsis: "Entre el amor, el dolor y la esperanza, los protagonistas descubren
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheBookshopOnCedARstreet.png
+  posterFile: thebookshoponcedarstreet.jpg
   posterSprite: {fileID: 21300000, guid: f1454fc6ac1fa9345a0d9f9e161ec0ea, type: 3}
   catalogTier: 1
   contentKind: 0

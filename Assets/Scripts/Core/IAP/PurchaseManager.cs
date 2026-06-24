@@ -4,23 +4,27 @@ using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;
 
 /// <summary>
-/// FASE 15.9D — Unity IAP 4.x bridge (Google Play). Initialize only after LoadGame.
+/// FASE 15.9D / 17B — Unity IAP 4.x bridge (Google Play). Initialize only after LoadGame.
 /// </summary>
 public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
 {
     public static PurchaseManager Instance { get; private set; }
 
     public event Action OnCatalogReady;
-    public event Action<string> PurchaseFailed;
+    public event Action<string, IapErrorKind> PurchaseFailed;
+    public event Action<IapErrorKind> OnIapError;
     public event Action OnEntitlementsChanged;
 
     public bool IsReady { get; private set; }
     public bool IsPurchaseInFlight { get; private set; }
     public bool IsRestoring { get; private set; }
+    public IapErrorKind LastErrorKind { get; private set; } = IapErrorKind.None;
+    public string LastErrorDetail { get; private set; }
 
     IStoreController _store;
     IExtensionProvider _extensions;
     bool _initializeRequested;
+    bool _initFailed;
     bool _silentRestorePending = true;
 
     public static void EnsureOn(GameObject host)
@@ -58,7 +62,7 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         foreach (string id in IapProductCatalog.AllProductIds)
             builder.AddProduct(id, IapProductCatalog.ToUnityProductType(id));
 
-        Debug.Log($"[IAP] Initializing Unity Purchasing {IapProductCatalog.PackageVersion}...");
+        Debug.Log($"[IAP] Initializing Unity Purchasing {IapProductCatalog.PackageVersion} — {IapProductCatalog.AllProductIds.Length} SKUs.");
         UnityPurchasing.Initialize(this, builder);
     }
 
@@ -68,8 +72,9 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
 
         if (!IsReady || _store == null)
         {
-            PurchaseFailed?.Invoke(productId);
-            AdRewardUI.ShowMessage(Loc.Get(LocKeys.IapUnavailable));
+            var kind = ResolveNotReadyErrorKind();
+            NotifyError(kind, $"Purchase blocked — store not ready ({productId})");
+            PurchaseFailed?.Invoke(productId, kind);
             return;
         }
 
@@ -83,10 +88,18 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         }
 
         var product = _store.products.WithID(productId);
-        if (product == null || !product.availableToPurchase)
+        if (product == null)
         {
-            PurchaseFailed?.Invoke(productId);
-            AdRewardUI.ShowMessage(Loc.Get(LocKeys.IapUnavailable));
+            NotifyError(IapErrorKind.ProductNotFound, $"Product missing from catalog: {productId}");
+            PurchaseFailed?.Invoke(productId, IapErrorKind.ProductNotFound);
+            return;
+        }
+
+        if (!product.availableToPurchase)
+        {
+            NotifyError(IapErrorKind.NoProductsAvailable,
+                $"Product not available in Play Console: {productId} (availableToPurchase=false)");
+            PurchaseFailed?.Invoke(productId, IapErrorKind.NoProductsAvailable);
             return;
         }
 
@@ -98,7 +111,8 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
     {
         if (!IsReady || _extensions == null)
         {
-            AdRewardUI.ShowMessage(Loc.Get(LocKeys.IapRestoreFailed));
+            var kind = ResolveNotReadyErrorKind();
+            NotifyError(kind, "Restore blocked — store not ready");
             return;
         }
 
@@ -110,6 +124,7 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         if (google == null)
         {
             IsRestoring = false;
+            NotifyError(IapErrorKind.InitializationFailure, "IGooglePlayStoreExtensions unavailable");
             AdRewardUI.ShowMessage(Loc.Get(LocKeys.IapRestoreFailed));
             return;
         }
@@ -150,6 +165,26 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         return IapProductCatalog.GetFallbackPrice(productId);
     }
 
+    public string GetStoreStatusLabel()
+    {
+        if (!IsReady)
+            return Loc.Get(GetNotReadyLabelKey());
+
+        if (LastErrorKind == IapErrorKind.NoProductsAvailable)
+            return Loc.Get(LocKeys.IapNoProducts);
+
+        return null;
+    }
+
+    public static string GetErrorMessage(IapErrorKind kind) => kind switch
+    {
+        IapErrorKind.InitializationFailure => Loc.Get(LocKeys.IapInitFailed),
+        IapErrorKind.NoProductsAvailable   => Loc.Get(LocKeys.IapNoProducts),
+        IapErrorKind.ProductNotFound       => Loc.Get(LocKeys.IapProductNotFound),
+        IapErrorKind.PurchaseFailed        => Loc.Get(LocKeys.IapPurchaseFailed),
+        _                                  => Loc.Get(LocKeys.IapUnavailable),
+    };
+
     public bool IsOwned(string productId)
     {
         if (string.IsNullOrEmpty(productId) || IapProductCatalog.IsConsumable(productId))
@@ -173,6 +208,11 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         _store = controller;
         _extensions = extensions;
         IsReady = true;
+        _initFailed = false;
+        LastErrorKind = IapErrorKind.None;
+        LastErrorDetail = null;
+
+        LogCatalogDiagnostics();
         Debug.Log("[IAP] Initialized successfully.");
         OnCatalogReady?.Invoke();
 
@@ -186,14 +226,20 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
 
     public void OnInitializeFailed(InitializationFailureReason error)
     {
-        Debug.LogWarning("[IAP] Initialize failed: " + error);
-        IsReady = false;
+        OnInitializeFailed(error, error.ToString());
     }
 
     public void OnInitializeFailed(InitializationFailureReason error, string message)
     {
-        Debug.LogWarning("[IAP] Initialize failed: " + error + " — " + message);
         IsReady = false;
+        _initFailed = true;
+
+        var kind = error == InitializationFailureReason.NoProductsAvailable
+            ? IapErrorKind.NoProductsAvailable
+            : IapErrorKind.InitializationFailure;
+
+        NotifyError(kind, $"Initialize failed: {error} — {message}");
+        OnCatalogReady?.Invoke();
     }
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
@@ -208,6 +254,10 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         {
             FirebaseManager.Instance?.LogIapPurchase(productId);
             OnEntitlementsChanged?.Invoke();
+        }
+        else
+        {
+            Debug.LogWarning($"[IAP] Fulfillment failed for {productId} (tx {txId})");
         }
 
         return PurchaseProcessingResult.Complete;
@@ -227,9 +277,8 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
     {
         IsPurchaseInFlight = false;
         string id = product?.definition?.id ?? "unknown";
-        Debug.LogWarning($"[IAP] Purchase failed: {id} — {reason}");
-        PurchaseFailed?.Invoke(id);
-        AdRewardUI.ShowMessage(Loc.Get(LocKeys.IapPurchaseFailed));
+        NotifyError(IapErrorKind.PurchaseFailed, $"Purchase failed: {id} — {reason}");
+        PurchaseFailed?.Invoke(id, IapErrorKind.PurchaseFailed);
     }
 
     void ApplyRestoreFromStore()
@@ -248,12 +297,72 @@ public class PurchaseManager : MonoBehaviour, IDetailedStoreListener
         OnEntitlementsChanged?.Invoke();
     }
 
+    void LogCatalogDiagnostics()
+    {
+        if (_store == null) return;
+
+        int available = 0;
+        foreach (string id in IapProductCatalog.AllProductIds)
+        {
+            var product = _store.products.WithID(id);
+            bool purchasable = product != null && product.availableToPurchase;
+            if (purchasable) available++;
+
+            string price = product?.metadata?.localizedPriceString ?? "(no price)";
+            Debug.Log($"[IAP] SKU {id}: available={purchasable}, price={price}");
+        }
+
+        if (available == 0)
+        {
+            NotifyError(IapErrorKind.NoProductsAvailable,
+                "Initialized but 0/8 products availableToPurchase — create SKUs in Play Console");
+        }
+    }
+
+    IapErrorKind ResolveNotReadyErrorKind()
+    {
+        if (_initFailed)
+            return LastErrorKind != IapErrorKind.None ? LastErrorKind : IapErrorKind.InitializationFailure;
+        return IapErrorKind.InitializationFailure;
+    }
+
+    string GetNotReadyLabelKey()
+    {
+        if (_initFailed)
+            return LastErrorKind switch
+            {
+                IapErrorKind.NoProductsAvailable => LocKeys.IapNoProducts,
+                IapErrorKind.InitializationFailure => LocKeys.IapInitFailed,
+                _ => LocKeys.IapInitFailed,
+            };
+        return LocKeys.IapConnecting;
+    }
+
+    void NotifyError(IapErrorKind kind, string detail)
+    {
+        LastErrorKind = kind;
+        LastErrorDetail = detail;
+        Debug.LogWarning($"[IAP] {kind}: {detail}");
+        AdRewardUI.ShowMessage(GetErrorMessage(kind));
+        OnIapError?.Invoke(kind);
+    }
+
     static string ResolveTransactionId(Product product)
     {
+        // Google Play always provides transactionID for confirmed purchases. Use it as the
+        // primary idempotency key so the fulfillment ledger can reliably de-duplicate.
         if (!string.IsNullOrEmpty(product.transactionID))
             return product.transactionID;
+
+        // Fallback: derive a stable key from the receipt payload (same purchase = same receipt).
+        // GetHashCode on Mono/Unity is deterministic within an installation, sufficient here.
         if (!string.IsNullOrEmpty(product.receipt))
-            return product.receipt.GetHashCode().ToString();
-        return Guid.NewGuid().ToString("N");
+            return "receipt:" + product.receipt.GetHashCode().ToString();
+
+        // No stable identifier available. Return empty rather than a random GUID, which would
+        // bypass the idempotency check on every call. The caller guards against empty IDs for
+        // consumables (IapFulfillmentService.TryFulfillNewPurchase).
+        Debug.LogWarning("[IAP] ResolveTransactionId: no transactionID or receipt for product " + product.definition?.id);
+        return string.Empty;
     }
 }

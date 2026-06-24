@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: Resolute.png
+  posterFile: resolute.jpg
   posterSprite: {fileID: 21300000, guid: 603691c21b5b5af40bdea3d1cd006b00, type: 3}
   catalogTier: 3
   contentKind: 0

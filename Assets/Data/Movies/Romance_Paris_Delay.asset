@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Romance_Paris_Delay
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Where  The   Ocean  Meets  The   Sky
+  movieName: Where The Ocean Meets The Sky
   genre: 4
   tagline: Missed flight. Found connection.
   synopsis: "Una historia que explora la vulnerabilidad y la valent\xEDa de quienes
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: WhereTheOceanMeetsTheSky.png
+  posterFile: where the ocean meets the sky.jpg
   posterSprite: {fileID: 21300000, guid: 55e08af298a300c43a2cc7bc813f5b6f, type: 3}
   catalogTier: 3
   contentKind: 0

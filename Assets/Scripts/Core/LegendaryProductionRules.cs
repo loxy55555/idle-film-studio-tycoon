@@ -33,7 +33,7 @@ public static class LegendaryProductionRules
         blockReason = null;
         if (cfg == null)
         {
-            blockReason = "Película no válida";
+            blockReason = Loc.Get(LocKeys.ProdMovieInvalid);
             return false;
         }
 
@@ -41,8 +41,8 @@ public static class LegendaryProductionRules
         if (usedSlotUnits + cost <= maxSlots) return true;
 
         blockReason = IsLegendary(cfg)
-            ? "Se necesitan 2 slots libres para una producción legendaria"
-            : "Slot de producción ocupado";
+            ? Loc.Get(LocKeys.ProdLegendaryNeedsSlots)
+            : Loc.Get(LocKeys.UxNoSlotsAvailable);
         return false;
     }
 }

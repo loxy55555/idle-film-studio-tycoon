@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Drama_Blue_Hour
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: A Pl A Cec A Lled Tomorrow
+  movieName: A Place Called Tomorrow
   genre: 1
   tagline: Twilight conversations that change everything.
   synopsis: "El drama m\xE1s poderoso es el que refleja con exactitud lo que todos
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: APlACecALledTomorrow.png
+  posterFile: aplacecalledtomorrow.jpg
   posterSprite: {fileID: 21300000, guid: ee7cb64ec5e088647b13966e1e5f4d2d, type: 3}
   catalogTier: 1
   contentKind: 0

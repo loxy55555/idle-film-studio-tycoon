@@ -258,7 +258,7 @@ public static class MovieCollectionService
         MovieCatalogTier.Tier2 => "Tier 2",
         MovieCatalogTier.Tier3 => "Tier 3",
         MovieCatalogTier.Tier4 => "Tier 4",
-        MovieCatalogTier.Epic  => "Épica",
+        MovieCatalogTier.Epic  => Loc.Get(LocKeys.ProdRarityEpic),
         _                      => tier.ToString(),
     };
 }

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SilentExtraction.png
+  posterFile: silentextraction.jpg
   posterSprite: {fileID: 21300000, guid: b428c39332ace6d4c9aa2f12de48600d, type: 3}
   catalogTier: 3
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: MidnightExtraction.png
+  posterFile: midnightextraction.jpg
   posterSprite: {fileID: 21300000, guid: 95da76d6bfd4baa449298e2575b48861, type: 3}
   catalogTier: 2
   contentKind: 0

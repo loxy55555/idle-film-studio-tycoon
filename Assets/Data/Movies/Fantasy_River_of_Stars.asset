@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_River_of_Stars
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Beyond Frostpe A K
+  movieName: Beyond Frost Peak
   genre: 6
   tagline: A river flows upward carrying constellations.
   synopsis: Un universo construido con la riqueza de un mito y la profundidad de
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BeyondFrostpeAK.png
+  posterFile: beyondfrostpeak.jpg
   posterSprite: {fileID: 21300000, guid: c94d27f6dc872f04e999bdf1300c9002, type: 3}
   catalogTier: 3
   contentKind: 0

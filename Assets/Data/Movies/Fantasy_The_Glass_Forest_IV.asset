@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheGlassForestIV.png
+  posterFile: theglassforestIV.jpg
   posterSprite: {fileID: -9210713818034708541, guid: b16b37353ae54f840bb0079d0a14660a, type: 3}
   catalogTier: 3
   contentKind: 0

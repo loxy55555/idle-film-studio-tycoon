@@ -14,7 +14,6 @@ public class InsufficientDiamondsDialog : MonoBehaviour
 
     static readonly Color OverlayDim  = new Color(0f, 0f, 0f, 0.78f);
     static readonly Color TextPrimary = CinematicTheme.TextPrimary;
-    static readonly Color TextSec     = CinematicTheme.SilverBase;
     static readonly Color GoldAccent  = CinematicTheme.GoldBright;
 
     RectTransform   _panel;
@@ -26,13 +25,38 @@ public class InsufficientDiamondsDialog : MonoBehaviour
 
     /// <summary>
     /// Shows the "Not enough diamonds" dialog.
-    /// <paramref name="onGoToStore"/> is invoked if the player taps the store button.
+    /// If <paramref name="onGoToStore"/> is null the "Go to store" button
+    /// automatically navigates to the store tab via BottomNav.
     /// </summary>
     public static void Show(System.Action onGoToStore = null)
     {
         EnsureInstance();
         if (Instance == null) return;
-        Instance.Open(onGoToStore);
+        Instance.Open(onGoToStore ?? NavigateToStore);
+    }
+
+    /// <summary>
+    /// Default "Go to store" navigation used when no custom callback is provided.
+    /// Finds the first BottomNav button whose name contains "Shop", "Tienda" or "Store"
+    /// and invokes its onClick — this mirrors the app's own tab-switch gesture.
+    /// </summary>
+    static void NavigateToStore()
+    {
+        var nav = GameObject.Find("BottomNav");
+        if (nav == null)
+        {
+            Debug.LogWarning("[InsufficientDiamondsDialog] BottomNav not found — cannot open store.");
+            return;
+        }
+        foreach (var btn in nav.GetComponentsInChildren<Button>(true))
+        {
+            if (btn.name.Contains("Shop") || btn.name.Contains("Tienda") || btn.name.Contains("Store"))
+            {
+                btn.onClick.Invoke();
+                return;
+            }
+        }
+        Debug.LogWarning("[InsufficientDiamondsDialog] Store button not found in BottomNav.");
     }
 
     // ── Instance bootstrap ─────────────────────────────────────────────────────

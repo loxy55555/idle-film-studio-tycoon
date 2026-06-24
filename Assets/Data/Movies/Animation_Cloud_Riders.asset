@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheOceanBeyondMaps.png
+  posterFile: theoceanbeyondmaps.jpg
   posterSprite: {fileID: 21300000, guid: 39d5eb9de3b5de642acad4e43979f1af, type: 3}
   catalogTier: 4
   contentKind: 0

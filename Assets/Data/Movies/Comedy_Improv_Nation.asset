@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Comedy_Improv_Nation
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Last Day Of F
+  movieName: The Last Day Off
   genre: 3
   tagline: Nationwide improv tournament. No one is ready.
   synopsis: "The Last Day Of F eleva la comedia a una dimensi\xF3n de absurdo tan
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastDayOfF.png
+  posterFile: thelastdayoff.jpg
   posterSprite: {fileID: 21300000, guid: 118ced1747dff2e4ba9cd215952157c8, type: 3}
   catalogTier: 3
   contentKind: 0

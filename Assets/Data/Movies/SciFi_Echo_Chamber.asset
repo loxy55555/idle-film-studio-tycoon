@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: EchoChamber.png
+  posterFile: echochamber.jpg
   posterSprite: {fileID: 21300000, guid: 635fe4ecfd56e704fb15bb8f35855c4c, type: 3}
   catalogTier: 1
   contentKind: 0

@@ -626,7 +626,7 @@ public class SettingsOverlayUI : MonoBehaviour
             ("FILM PRODUCER TYCOON",                      28f, FontStyles.Bold,   TEXT_PRIMARY, 44f),
             ("",                                          10f, FontStyles.Normal, TEXT_DIM,      14f),
             (Loc.Get(LocKeys.CreditsCreatedBy),           16f, FontStyles.Normal, TEXT_DIM,      24f),
-            ("Eliseu Ramió",                              26f, FontStyles.Bold,   TEXT_PRIMARY,  40f),
+            ("Vosnos Games",                              26f, FontStyles.Bold,   TEXT_PRIMARY,  40f),
             ("",                                          28f, FontStyles.Normal, TEXT_DIM,      28f),
             (Loc.Get(LocKeys.CreditsPoweredBy),           15f, FontStyles.Normal, TEXT_DIM,      24f),
             ("",                                           8f, FontStyles.Normal, TEXT_DIM,       8f),

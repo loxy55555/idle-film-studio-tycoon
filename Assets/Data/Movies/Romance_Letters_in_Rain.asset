@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Romance_Letters_in_Rain
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: "The Winter C A F\xE9"
+  movieName: The Winter Café
   genre: 4
   tagline: Love letters survive a stormy season.
   synopsis: "Dos caminos que nunca debieron cruzarse se encuentran en el momento
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheWinterCAF.png
+  posterFile: thewintercafé.jpg
   posterSprite: {fileID: 21300000, guid: bddf7d6fafc33e249b942673b7a6bd2b, type: 3}
   catalogTier: 3
   contentKind: 0

@@ -73,8 +73,12 @@ public class BoostSystem : MonoBehaviour
         if (type == BoostType.Income)
             GameHub.Instance?.studio?.RecalculateIncome();
 
-        OnBoostsChanged?.Invoke();
+        // ── SAVE before UI event ────────────────────────────────────────────────
         GameHub.Instance?.save?.Save("BoostActivated_" + type);
+
+        try { OnBoostsChanged?.Invoke(); }
+        catch (System.Exception ex) { Debug.LogError($"[BoostSystem] UI event error (save ya guardado): {ex}"); }
+
         Debug.Log($"[BoostSystem] Activated {type} boost for {BoostDurationSeconds / 60f:0.0} min.");
         return true;
     }

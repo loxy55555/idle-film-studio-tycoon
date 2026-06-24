@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheBookOfUs.png
+  posterFile: thebookofus.jpg
   posterSprite: {fileID: 21300000, guid: 80bf97660bd56e141b3aba894f2afaa2, type: 3}
   catalogTier: 3
   contentKind: 0

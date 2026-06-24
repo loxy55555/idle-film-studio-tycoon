@@ -57,11 +57,24 @@ public class CitySystem : MonoBehaviour
 
         int oldLevel = Level;
         Level++;
-        OnCityLevelChanged?.Invoke(Level);
-        CityProgressionNotifier.NotifyLevelUp(oldLevel, Level);
+        Debug.Log($"[CitySystem] TryUpgrade: nivel {oldLevel} → {Level}");
+
+        // BUG FIX (same pattern as ClaimOscar): save BEFORE firing events so the city
+        // level is persisted even if any UI subscriber throws an exception.
+        GameHub.Instance?.save?.Save("CityUpgrade");
+
+        try
+        {
+            OnCityLevelChanged?.Invoke(Level);
+            CityProgressionNotifier.NotifyLevelUp(oldLevel, Level);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[CitySystem] Excepción en evento UI de ciudad (save ya fue guardado): {ex}");
+        }
+
         _studio?.RecalculateIncome();
         GameHub.Instance?.contracts?.RefreshContracts(GameHub.Instance?.studioLevel?.Level ?? 1);
-        GameHub.Instance?.save?.Save("CityUpgrade");
         return true;
     }
 

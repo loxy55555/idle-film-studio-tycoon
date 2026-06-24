@@ -128,7 +128,12 @@ public static class HudDefinitiveStructureBuilder
         var mejorasPanel = mejorasCol != null ? mejorasCol.Find("MejorasPanel") as RectTransform : null;
         var contratosPanel = contratosCol != null ? contratosCol.Find("ContratosPanel") as RectTransform : null;
 
-        var subTabs = HudSubTabShell.Create(panel, "Studio", new[] { "DEPARTAMENTOS", "MEJORAS", "CONTRATOS" });
+        var subTabs = HudSubTabShell.Create(panel, "Studio", new[]
+        {
+            Loc.Get(LocKeys.StudTabDepts),
+            Loc.Get(LocKeys.StudTabMejoras),
+            Loc.Get(LocKeys.StudTabContratos),
+        });
 
         if (deptBar != null)
         {
@@ -168,11 +173,16 @@ public static class HudDefinitiveStructureBuilder
             return;
 
         var existingChildren = CaptureChildren(panel);
-        var subTabs = HudSubTabShell.Create(panel, "Premios",
-            new[] { "NOMINACIONES", "PRESENTACIONES", "ESTRELLAS DE ORO", "INSTALACIONES" });
+        var subTabs = HudSubTabShell.Create(panel, "Premios", new[]
+        {
+            Loc.Get(LocKeys.HudTabNominations),
+            Loc.Get(LocKeys.HudTabPresentations),
+            Loc.Get(LocKeys.AwardsTitle),
+            Loc.Get(LocKeys.InstProgressScreen),
+        });
 
-        HudSubTabShell.CreateSection(subTabs.panels[0], "NOMINACIONES", flexibleHeight: false);
-        HudSubTabShell.CreateSection(subTabs.panels[1], "PRESENTACIONES", flexibleHeight: false);
+        HudSubTabShell.CreateSection(subTabs.panels[0], Loc.Get(LocKeys.HudTabNominations), flexibleHeight: false);
+        HudSubTabShell.CreateSection(subTabs.panels[1], Loc.Get(LocKeys.HudTabPresentations), flexibleHeight: false);
 
         foreach (var child in existingChildren)
         {
@@ -204,7 +214,12 @@ public static class HudDefinitiveStructureBuilder
         if (panel.GetComponent<CollectionHudShell>() is { subNavigation: not null })
             return;
 
-        var subTabs = HudSubTabShell.Create(panel, "Collection", new[] { "COLECCIÓN", "SAGAS", "LEGENDARIAS" });
+        var subTabs = HudSubTabShell.Create(panel, "Collection", new[]
+        {
+            Loc.Get(LocKeys.CollectionTitle),
+            Loc.Get(LocKeys.HudTabSagas),
+            Loc.Get(LocKeys.HudTabLegendary),
+        });
 
         var movieTab = productionPanel.GetComponent<MovieTabUI>();
         var collectionUI = subTabs.panels[0].GetComponent<MovieCollectionUI>();
@@ -213,8 +228,8 @@ public static class HudDefinitiveStructureBuilder
         if (movieTab != null)
             collectionUI.allMovies = movieTab.allMovies;
 
-        HudSubTabShell.CreateSection(subTabs.panels[1], "SAGAS", flexibleHeight: false);
-        HudSubTabShell.CreateSection(subTabs.panels[2], "LEGENDARIAS", flexibleHeight: false);
+        HudSubTabShell.CreateSection(subTabs.panels[1], Loc.Get(LocKeys.HudTabSagas), flexibleHeight: false);
+        HudSubTabShell.CreateSection(subTabs.panels[2], Loc.Get(LocKeys.HudTabLegendary), flexibleHeight: false);
 
         var shell = panel.gameObject.GetComponent<CollectionHudShell>() ?? panel.gameObject.AddComponent<CollectionHudShell>();
         shell.Configure(new CollectionHudShellBuildResult
@@ -244,10 +259,10 @@ public static class HudDefinitiveStructureBuilder
 
         var build = new MenuHudShellBuildResult
         {
-            settingsSection = HudSubTabShell.CreateSection(panel.gameObject, "AJUSTES", flexibleHeight: false),
-            saveSection     = HudSubTabShell.CreateSection(panel.gameObject, "GUARDAR", flexibleHeight: false),
-            helpSection     = HudSubTabShell.CreateSection(panel.gameObject, "AYUDA", flexibleHeight: false),
-            creditsSection  = HudSubTabShell.CreateSection(panel.gameObject, "CRÉDITOS", flexibleHeight: false),
+            settingsSection = HudSubTabShell.CreateSection(panel.gameObject, Loc.Get(LocKeys.SettingsTitle),      flexibleHeight: false),
+            saveSection     = HudSubTabShell.CreateSection(panel.gameObject, Loc.Get(LocKeys.HudSectionSave),     flexibleHeight: false),
+            helpSection     = HudSubTabShell.CreateSection(panel.gameObject, Loc.Get(LocKeys.HudSectionHelp),     flexibleHeight: false),
+            creditsSection  = HudSubTabShell.CreateSection(panel.gameObject, Loc.Get(LocKeys.HudSectionCredits),  flexibleHeight: false),
         };
 
         var shell = panel.gameObject.GetComponent<MenuHudShell>() ?? panel.gameObject.AddComponent<MenuHudShell>();

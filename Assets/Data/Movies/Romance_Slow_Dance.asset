@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: SlowDance.png
+  posterFile: slowdance.jpg
   posterSprite: {fileID: 21300000, guid: 01d8abbe336a0274b86091a7b3439cef, type: 3}
   catalogTier: 1
   contentKind: 0

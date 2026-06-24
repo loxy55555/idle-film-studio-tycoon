@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastDominion.png
+  posterFile: thelastdominion.jpg
   posterSprite: {fileID: 21300000, guid: ea5dda0a4fa284e45bafaab5bc1560ed, type: 3}
   catalogTier: 1
   contentKind: 0

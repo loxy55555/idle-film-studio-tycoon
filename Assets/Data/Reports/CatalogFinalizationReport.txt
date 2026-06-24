@@ -4,7 +4,7 @@ FASE 5.4 — Catalog Finalization Report
 CHANGES APPLIED
   Animation_Little_Giants_II : Little Giants II -> Big Trouble Club
   Romance_A_Sky_for_Two_II : A Sky for Two II -> Horizons Apart
-  Documentary_Legendary    : VoicesoftheDeep.png -> voiceofthedeep.png
+  Documentary_Legendary    : VoicesoftheDeep.png -> voiceofthedeep.jpg
 
 RENAME VERIFICATION
   OK — legendary conflict renames applied

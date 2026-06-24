@@ -122,7 +122,10 @@ public class SaveSystem : MonoBehaviour
         if (pause) Save("ApplicationPause");
     }
 
-    void OnApplicationQuit() => Save("ApplicationQuit");
+    void OnApplicationQuit()
+    {
+        Save("ApplicationQuit");
+    }
 
     // ─── Public API ──────────────────────────────────────────────────────────
 
@@ -132,7 +135,6 @@ public class SaveSystem : MonoBehaviour
         if (hub == null) return;
 
         var data = BuildSaveData(hub);
-
         try
         {
             string json = JsonUtility.ToJson(data, true);
@@ -190,9 +192,13 @@ public class SaveSystem : MonoBehaviour
             if (data == null)
                 throw new InvalidDataException("JsonUtility returned null.");
 
-            if (data.money == 0 && data.reputation == 0f)
+            // A real save always has saveTimestampUnix set (BuildSaveData writes it since v3).
+            // Only apply the blank-parse heuristic when no timestamp is present (ancient pre-v3 saves).
+            // This prevents falsely rejecting legitimate saves where the player has 0 money and 0 rep.
+            if (data.saveTimestampUnix <= 0 && data.money == 0 && data.reputation == 0f)
                 return SaveLoadResult.NotFound;
 
+            Debug.Log($"[SaveSystem] Cargando save v{data.version} — oscars={data.oscars}  rep={data.reputation:F0}  money={data.money}  city={data.cityLevel}  ftue={data.ftueCompleted}");
             ApplyLoadedData(data);
             Debug.Log($"[SaveSystem] Loaded v{data.version} from {Path.GetFileName(path)} | ftueCompleted={FtueState.Completed} ftueStep={FtueState.Step} offers={MovieOfferState.HasActiveOffers}");
             return SaveLoadResult.Success;
@@ -446,12 +452,28 @@ public class SaveSystem : MonoBehaviour
         PendingMigrationSave = false;
 
         if (data.version < 7)
+        {
+            // MigrateV6ToV7 already calls EntitlementService.LoadFromSave internally.
             PendingMigrationSave = MigrateV6ToV7(data);
-
-        if (data.version >= 7 && data.iap != null)
-            EntitlementService.LoadFromSave(data.iap);
-        else if (!PendingMigrationSave)
-            EntitlementService.LoadFromSave(data.iap);
+        }
+        else
+        {
+            // v7+ save: iap may be null if the save was written before the field existed
+            // or if JSON deserialization produced a partial object. Build a safe fallback
+            // that preserves NoAds ownership inferred from premiumFeatures rather than
+            // silently resetting the player's entitlements to an empty state.
+            var iapToLoad = data.iap;
+            if (iapToLoad == null)
+            {
+                iapToLoad = new IapSaveData
+                {
+                    fulfilledTransactions = Array.Empty<IapTransactionEntry>(),
+                    noAdsOwned            = data.premiumFeatures?.noAdsPurchased == true,
+                };
+                Debug.LogWarning("[Save] v7 save has null iap block — reconstructed minimal entitlements from premiumFeatures.");
+            }
+            EntitlementService.LoadFromSave(iapToLoad);
+        }
 
         EntitlementService.SyncPremiumFeaturesFromIap();
     }

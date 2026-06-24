@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: LoveinTransit.png
+  posterFile: loveintransit.jpg
   posterSprite: {fileID: 21300000, guid: 2e5079045518d154ba3b268aed820e6b, type: 3}
   catalogTier: 2
   contentKind: 0

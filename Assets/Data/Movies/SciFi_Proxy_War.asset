@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: ProxyWar.png
+  posterFile: proxywar.jpg
   posterSprite: {fileID: 21300000, guid: bfe467de90c77be49b47360b4ec02a6b, type: 3}
   catalogTier: 1
   contentKind: 0

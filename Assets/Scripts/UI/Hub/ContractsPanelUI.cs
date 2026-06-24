@@ -396,17 +396,15 @@ public class ContractsPanelUI : MonoBehaviour
 
         _refreshButtonRoot.AddComponent<UIButtonScale>();
 
-        ApplyFixedSlotLayout(_refreshButtonRoot, 36f);
+        ApplyFixedSlotLayout(_refreshButtonRoot, 40f);
 
-
-
-        var lbl = RuntimeTmpText.Create(_refreshButtonRoot.transform, Loc.Get(LocKeys.ContractRefresh), 13f,
-
-            Color.white, FontStyles.Bold, TextAlignmentOptions.Center, "Label");
-
-        lbl.enableAutoSizing = true;
-
-
+        DiamondCostButtonLayout.Build(
+            _refreshButtonRoot.transform,
+            Loc.Get(LocKeys.ContractRefresh),
+            GameplayRefreshService.DiamondRefreshCost,
+            20f,
+            13f,
+            Color.white);
 
         _refreshButtonRoot.GetComponent<Button>().onClick.AddListener(() =>
 
@@ -769,7 +767,8 @@ public static class ContractCardFactory
 
 
 
-        var title = MakeText(cardGo.transform, activeMode ? Loc.Get(LocKeys.ContractActive) : cfg.contractTitle,
+        var title = MakeText(cardGo.transform,
+            activeMode ? Loc.Get(LocKeys.ContractActive) : ContractSystem.GetLocalizedTitle(cfg),
             activeMode ? 17f : 22f, activeMode ? ACCENT_GOLD : TEXT_PRI, FontStyles.Bold);
 
         title.GetComponent<RectTransform>().gameObject.AddComponent<LayoutElement>().preferredHeight = activeMode ? 18f : 30f;
@@ -796,7 +795,7 @@ public static class ContractCardFactory
 
 
 
-        var desc = MakeText(cardGo.transform, cfg.description, activeMode ? 12f : 17f, TEXT_SEC);
+        var desc = MakeText(cardGo.transform, ContractSystem.GetLocalizedDescription(cfg), activeMode ? 12f : 17f, TEXT_SEC);
 
         desc.textWrappingMode = TextWrappingModes.Normal;
 
@@ -931,11 +930,7 @@ public static class ContractCardFactory
 
             rerollLE.flexibleWidth = 0f;
 
-            var rerollLbl = MakeText(rerollGo.transform, Loc.Get(LocKeys.ContractRerollBtn), 14, TEXT_PRI, FontStyles.Bold);
-
-            rerollLbl.alignment = TextAlignmentOptions.Center;
-
-            Stretch(rerollLbl.rectTransform);
+            DiamondCostButtonLayout.Build(rerollGo.transform, null, 5, 20f, 14f, TEXT_PRI);
 
             rerollBtn = rerollGo.GetComponent<Button>();
 

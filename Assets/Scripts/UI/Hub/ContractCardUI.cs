@@ -141,7 +141,9 @@ public class ContractCardUI : MonoBehaviour
         if (contract == null) return;
 
         if (titleText != null)
-            titleText.text = isCandidateMode || isHistoryMode ? contract.contractTitle : Loc.Get(LocKeys.ContractActive);
+            titleText.text = isCandidateMode || isHistoryMode
+                ? ContractSystem.GetLocalizedTitle(contract)
+                : Loc.Get(LocKeys.ContractActive);
 
         if (isHistoryMode) return;
 
@@ -154,7 +156,7 @@ public class ContractCardUI : MonoBehaviour
 
         if (descText != null)
         {
-            descText.text = contract.description;
+            descText.text = ContractSystem.GetLocalizedDescription(contract);
             descText.gameObject.SetActive(isCandidateMode);
         }
         if (objectiveText != null)
@@ -226,6 +228,9 @@ public class ContractCardUI : MonoBehaviour
 
         if (selectButton != null)
             selectButton.gameObject.SetActive(false);
+
+        if (cancelAdButton != null)
+            cancelAdButton.gameObject.SetActive(!ready);
     }
 
     string BuildRewardString()
@@ -236,21 +241,6 @@ public class ContractCardUI : MonoBehaviour
         if (contract.rewardReputation > 0) parts.Add(Loc.Format(LocKeys.ContractRewardRep, contract.rewardReputation));
         if (contract.rewardStudioXP > 0)   parts.Add(Loc.Format(LocKeys.ContractRewardXP, contract.rewardStudioXP));
         return parts.Count > 0 ? string.Join("  ", parts) : "—";
-    }
-
-    static void NavigateToStore()
-    {
-        // Navigate to the store tab by clicking its BottomNav button
-        var nav = GameObject.Find("BottomNav");
-        if (nav == null) return;
-        foreach (var btn in nav.GetComponentsInChildren<UnityEngine.UI.Button>(true))
-        {
-            if (btn.name.Contains("Shop") || btn.name.Contains("Tienda") || btn.name.Contains("Store"))
-            {
-                btn.onClick.Invoke();
-                return;
-            }
-        }
     }
 
     void OnClaimClicked()
@@ -274,7 +264,7 @@ public class ContractCardUI : MonoBehaviour
 
         if (diamonds.Balance < RerollDiamondCost)
         {
-            InsufficientDiamondsDialog.Show(NavigateToStore);
+            InsufficientDiamondsDialog.Show();
             return;
         }
 
@@ -299,18 +289,21 @@ public class ContractCardUI : MonoBehaviour
         bool noAds = PremiumFeatures.Instance?.NoAdsPurchased ?? false;
         int level  = _studioLevel?.Level ?? 1;
 
-        if (noAds)
-        {
-            ExecuteContractCancel(level);
-        }
-        else
-        {
-            GameplayRefreshService.TryShowAd(AdRewardSystem.PlacementCancelContract, ok =>
+        ContractCancelConfirmDialogUI.Show(requiresAd: !noAds,
+            onConfirm: () =>
             {
-                if (!ok) return;
-                ExecuteContractCancel(level);
+                if (noAds)
+                {
+                    ExecuteContractCancel(level);
+                    return;
+                }
+
+                GameplayRefreshService.TryShowAd(AdRewardSystem.PlacementCancelContract, ok =>
+                {
+                    if (!ok) return;
+                    ExecuteContractCancel(level);
+                });
             });
-        }
     }
 
     void ExecuteContractCancel(int studioLevel)

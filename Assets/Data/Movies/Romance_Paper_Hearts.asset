@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Romance_Paper_Hearts
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: Mid Night In Ver On A
+  movieName: Midnight In Verona
   genre: 4
   tagline: Origami notes left on park benches.
   synopsis: "Una historia de amor que abarca continentes, d\xE9cadas y vidas enteras
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: MidNightInVerOnA.png
+  posterFile: midnightinverona.jpg
   posterSprite: {fileID: 21300000, guid: 39dd2e64bd9f9fc45b750baeb195f8d2, type: 3}
   catalogTier: 3
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: Crosswind.png
+  posterFile: crosswind.jpg
   posterSprite: {fileID: 21300000, guid: 414a2933d91cdb44ea64339052951cba, type: 3}
   catalogTier: 1
   contentKind: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Thriller_Red_File_27_III
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Forgotten C A Se
+  movieName: The Forgotten Case
   genre: 7
   tagline: Case number changes. Truth does not.
   synopsis: "Una conspiraci\xF3n de dimensiones globales cuya resoluci\xF3n reescribir\xE1
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheForgottenCASe.png
+  posterFile: theforgottencase.jpg
   posterSprite: {fileID: 21300000, guid: 61663ad4bf1febc42958de4cb0950a4d, type: 3}
   catalogTier: 4
   contentKind: 0

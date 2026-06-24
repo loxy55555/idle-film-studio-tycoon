@@ -9,8 +9,6 @@ public class MultiProductionPanelUI : MonoBehaviour
 {
     public static MultiProductionPanelUI Instance { get; private set; }
 
-    const float MaxWidgetHeight = 300f;
-
     RectTransform _slotsRoot;
     ScrollRect    _scroll;
     LayoutElement _widgetLE;
@@ -173,12 +171,11 @@ public class MultiProductionPanelUI : MonoBehaviour
 
         float slotH = ActiveProductionSlotLayout.SlotHeight;
         float contentHeight = displayCount * slotH + (displayCount - 1) * 6f + 12f;
-        float widgetHeight  = Mathf.Clamp(contentHeight, slotH + 12f, MaxWidgetHeight);
-        _widgetLE.preferredHeight = widgetHeight;
-        _widgetLE.minHeight = slotH + 12f;
+        _widgetLE.preferredHeight = contentHeight;
+        _widgetLE.minHeight = contentHeight;
         _widgetLE.flexibleHeight = 0f;
 
-        _scroll.enabled = contentHeight > widgetHeight;
+        _scroll.enabled = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_slotsRoot);
     }
 
@@ -212,6 +209,7 @@ public class MultiProductionPanelUI : MonoBehaviour
         public RectTransform root;
         ActiveProductionSlotLayout.SlotRefs _refs;
         string _movieKey;
+        float _timeLeftSeconds;
 
         public static SlotView Create(Transform parent)
         {
@@ -223,7 +221,24 @@ public class MultiProductionPanelUI : MonoBehaviour
                 view._refs.discoverButton.onClick.RemoveAllListeners();
                 view._refs.discoverButton.onClick.AddListener(view.OnDiscoverClicked);
             }
+            if (view._refs.speedUpButton != null)
+            {
+                view._refs.speedUpButton.onClick.RemoveAllListeners();
+                view._refs.speedUpButton.onClick.AddListener(view.OnSpeedUpClicked);
+            }
             return view;
+        }
+
+        void OnSpeedUpClicked()
+        {
+            if (string.IsNullOrEmpty(_movieKey)) return;
+            // Guard kept as safety net — button is already non-interactable when no options.
+            if (!ProductionSpeedUpService.HasAnyOption(_timeLeftSeconds)) return;
+
+            ProductionSpeedUpDialogUI.Show(_movieKey, _timeLeftSeconds, () =>
+            {
+                MultiProductionPanelUI.Instance?.Refresh();
+            });
         }
 
         void OnDiscoverClicked()
@@ -251,11 +266,13 @@ public class MultiProductionPanelUI : MonoBehaviour
         public void Apply(ProductionSlotSnapshot snap, MovieConfig[] catalog)
         {
             _movieKey = snap.movieKey;
+            _timeLeftSeconds = snap.timeLeftSeconds;
             ResetTitleTypography();
             _refs.titleText.text = snap.movieName;
 
             if (snap.awaitingDiscovery)
             {
+                SetSpeedUpVisible(false);
                 _refs.statusText.text = Loc.Get(LocKeys.ProdStatusComplete);
                 _refs.statusText.color = CinematicTheme.GoldBright;
                 if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(false);
@@ -273,6 +290,12 @@ public class MultiProductionPanelUI : MonoBehaviour
             }
             else
             {
+                // Show the row for any active production; interactable only when options exist.
+                bool hasOption = ProductionSpeedUpService.HasAnyOption(snap.timeLeftSeconds);
+                SetSpeedUpVisible(snap.timeLeftSeconds > 0f);
+                SetSpeedUpInteractable(hasOption);
+                if (_refs.speedUpLabel != null)
+                    _refs.speedUpLabel.text = Loc.Get(LocKeys.ProdSpeedUpTitle);
                 _refs.statusText.text = Loc.Get(LocKeys.ProdStatusProducing);
                 _refs.statusText.color = CinematicTheme.GoldBase;
                 if (_refs.progressRow != null) _refs.progressRow.gameObject.SetActive(true);
@@ -330,6 +353,8 @@ public class MultiProductionPanelUI : MonoBehaviour
         public void ApplyIdle()
         {
             _movieKey = null;
+            _timeLeftSeconds = 0f;
+            SetSpeedUpVisible(false);
             ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
             ResetTitleTypography();
             _refs.titleText.text = Loc.Get(LocKeys.ProdNoActive);
@@ -358,6 +383,8 @@ public class MultiProductionPanelUI : MonoBehaviour
         public void ApplyLocked()
         {
             _movieKey = null;
+            _timeLeftSeconds = 0f;
+            SetSpeedUpVisible(false);
             ActiveProductionSlotLayout.SetDiscoverPulse(_refs, false);
             ResetTitleTypography();
             _refs.titleText.text = Loc.Get(LocKeys.ProdSlotLocked);
@@ -398,11 +425,27 @@ public class MultiProductionPanelUI : MonoBehaviour
         public void UpdateProgress(ProductionSlotSnapshot snap)
         {
             if (snap.awaitingDiscovery) return;
+            _timeLeftSeconds = snap.timeLeftSeconds;
+            bool hasOption = ProductionSpeedUpService.HasAnyOption(snap.timeLeftSeconds);
+            SetSpeedUpVisible(snap.timeLeftSeconds > 0f);
+            SetSpeedUpInteractable(hasOption);
             if (_refs.smoothBar != null) _refs.smoothBar.SetNormalized(snap.progress01);
             else if (_refs.progressBar != null) _refs.progressBar.value = snap.progress01;
             _refs.timeText.text = Loc.Format(LocKeys.ProdTimeFmt, ProductionLoc.FormatTimeRemaining(snap.timeLeftSeconds));
             if (_refs.rewardText != null)
                 _refs.rewardText.text = Loc.Format(LocKeys.ProdSlotRewardFmt, AnimatedMoneyText.FormatMoney(snap.rewardMoney), snap.rewardRep);
+        }
+
+        void SetSpeedUpVisible(bool visible)
+        {
+            if (_refs.speedUpRow != null)
+                _refs.speedUpRow.gameObject.SetActive(visible);
+        }
+
+        void SetSpeedUpInteractable(bool interactable)
+        {
+            if (_refs.speedUpButton != null)
+                _refs.speedUpButton.interactable = interactable;
         }
     }
 }

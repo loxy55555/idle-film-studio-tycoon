@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BlackMirrorLake.png
+  posterFile: blackmirrorlake.jpg
   posterSprite: {fileID: 21300000, guid: 9b06d0ac6835d524da66b5a132648927, type: 3}
   catalogTier: 1
   contentKind: 0

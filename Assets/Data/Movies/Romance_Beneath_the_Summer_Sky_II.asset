@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: BeneaththeSummerSkyII.png
+  posterFile: beneaththesummerskyII.jpg
   posterSprite: {fileID: 1695582124974839864, guid: 810a81942c913ba4a84f5923cbd9cb03, type: 3}
   catalogTier: 2
   contentKind: 4

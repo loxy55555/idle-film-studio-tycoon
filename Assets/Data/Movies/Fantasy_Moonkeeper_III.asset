@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: MoonkeeperIII.png
+  posterFile: moonkeeperIII.jpg
   posterSprite: {fileID: -1978827643693386466, guid: 8b205d4b2a9e2634f85e5ae5db8a5570, type: 3}
   catalogTier: 2
   contentKind: 4

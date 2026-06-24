@@ -124,7 +124,7 @@ public static class MovieOfferState
         IReadOnlyCollection<string> completedKeys,
         IEnumerable<MovieConfig> activeProductions = null)
     {
-        PruneInvalid(catalog, completedKeys);
+        PruneInvalid(catalog, completedKeys, activeProductions);
         RefillToFull(catalog, studioLevel, reputation, completedKeys, activeProductions);
     }
 
@@ -143,11 +143,30 @@ public static class MovieOfferState
             _keys[i] = picks[i].name;
     }
 
-    static void PruneInvalid(MovieConfig[] catalog, IReadOnlyCollection<string> completedKeys)
+    static void PruneInvalid(
+        MovieConfig[] catalog,
+        IReadOnlyCollection<string> completedKeys,
+        IEnumerable<MovieConfig> activeProductions = null)
     {
+        var activeKeys = new HashSet<string>();
+        if (activeProductions != null)
+        {
+            foreach (var cfg in activeProductions)
+            {
+                if (cfg != null && !string.IsNullOrEmpty(cfg.name))
+                    activeKeys.Add(cfg.name);
+            }
+        }
+
         for (int i = 0; i < SlotCount; i++)
         {
             if (string.IsNullOrEmpty(_keys[i])) continue;
+
+            if (activeKeys.Contains(_keys[i]))
+            {
+                _keys[i] = null;
+                continue;
+            }
 
             var cfg = FindConfig(catalog, _keys[i]);
             if (cfg == null ||

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: PaperKingdom.png
+  posterFile: paperkingdom.jpg
   posterSprite: {fileID: 21300000, guid: 8fff7d0a65f9ee44eb02cd3846e09c95, type: 3}
   catalogTier: 1
   contentKind: 0

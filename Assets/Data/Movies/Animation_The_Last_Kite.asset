@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastKite.png
+  posterFile: thelastkite.jpg
   posterSprite: {fileID: 21300000, guid: 04787ba251adfe54895096523f2bbfda, type: 3}
   catalogTier: 4
   contentKind: 0

@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: VoidCartographer.png
+  posterFile: voidcartographer.jpg
   posterSprite: {fileID: 21300000, guid: 860d4bec5ff33a74d9d64a57a225b570, type: 3}
   catalogTier: 4
   contentKind: 0

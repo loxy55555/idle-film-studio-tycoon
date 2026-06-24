@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLightBetweenus.png
+  posterFile: thelightbetweenus.jpg
   posterSprite: {fileID: 21300000, guid: f8ec5c1e10f5d91468b2f113f8f7def0, type: 3}
   catalogTier: 3
   contentKind: 0

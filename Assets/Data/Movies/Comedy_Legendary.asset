@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 3
   posterColorHex: 1
   genreIconKey: 
-  posterFile: DetectivePotato.png
+  posterFile: detectivepotato.jpg
   posterSprite: {fileID: 21300000, guid: 700bdd06d7ec77c4db27dae5b46bab4c, type: 3}
   catalogTier: 5
   contentKind: 0

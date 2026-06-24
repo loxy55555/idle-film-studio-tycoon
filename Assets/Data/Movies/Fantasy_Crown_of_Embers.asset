@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87eddd82cae29e54d9902767127c4028, type: 3}
   m_Name: Fantasy_Crown_of_Embers
   m_EditorClassIdentifier: Assembly-CSharp::MovieConfig
-  movieName: The Last Dr A G On Keeper
+  movieName: The Last Dragon Keeper
   genre: 6
   tagline: Fire crown for a queen who hates heat.
   synopsis: "Una profec\xEDa ancestral se cumple entre reinos en guerra y poderes
@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 1
   posterColorHex: 0
   genreIconKey: 
-  posterFile: TheLastDrAGOnKeeper.png
+  posterFile: thelastdragonkeeper.jpg
   posterSprite: {fileID: 21300000, guid: 58397564eddfbca47a95a0cf004c9d65, type: 3}
   catalogTier: 3
   contentKind: 0

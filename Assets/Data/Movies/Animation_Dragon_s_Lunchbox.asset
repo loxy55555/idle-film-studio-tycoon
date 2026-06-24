@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 2
   posterColorHex: 0
   genreIconKey: 
-  posterFile: AThousandFireflies.png
+  posterFile: athousandfireflies.jpg
   posterSprite: {fileID: 21300000, guid: 3f937bfb3355cc14c98c34ec99bd7afd, type: 3}
   catalogTier: 4
   contentKind: 0

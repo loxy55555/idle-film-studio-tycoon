@@ -35,7 +35,7 @@ MonoBehaviour:
   rarity: 0
   posterColorHex: 0
   genreIconKey: 
-  posterFile: PaleSignal.png
+  posterFile: palesignal.jpg
   posterSprite: {fileID: 21300000, guid: b3e7aef7f77570549a8fa328dbe7ddd0, type: 3}
   catalogTier: 2
   contentKind: 0

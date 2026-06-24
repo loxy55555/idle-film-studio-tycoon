@@ -139,8 +139,12 @@ public class UpgradeSystem : MonoBehaviour
         LogEffects($"Purchase:{cfg.id}");
 
         GameHub.Instance?.contracts?.OnMoneySpentOnUpgrade(cost);
-        OnUpgradePurchased?.Invoke();
+
+        // ── SAVE before UI event ────────────────────────────────────────────────
         GameHub.Instance?.save?.Save("PurchaseUpgrade");
+
+        try { OnUpgradePurchased?.Invoke(); }
+        catch (System.Exception ex) { Debug.LogError($"[Upgrade] UI event error post-purchase (save ya guardado): {ex}"); }
 
         Debug.Log($"[Upgrade] Purchased UpgradeId={cfg.id} Level={GetLevel(cfg)}");
         return true;
